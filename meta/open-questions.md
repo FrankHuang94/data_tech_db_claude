@@ -312,3 +312,16 @@ Every `[VERIFY: …]` left in the text is listed here with its chapter. Resolve 
 | ch40 | ch40: [VERIFY: current billed-revenue threshold for Azure IP co-sell eligibility] — older partner blog cites $100K; not used in text. | open |
 | ch40 | ch40: [VERIFY: NVIDIA AI Data Platform launch partner list against NVIDIA newsroom original] — taken from HPCwire/TechPowerUp reposts. | open |
 | ch40 | ch40: [VERIFY: whether current Everpure Cloud Block Store marketplace listings are MACC/EDP-eligible]. | open |
+| ch38 | ch38: [VERIFY: current Fusion licence split] — whether part of the dbt Fusion runtime moved from ELv2 to Apache 2.0 after the 2025 launch; dbt docs and third-party reports conflict. | open |
+| ch38 | ch38: [VERIFY: Iceberg committers by employer] — no published employer-by-employer count of Iceberg PMC/committers found; Whimsy board report gives totals only (25 PMC / 39 committers, 2026). | open |
+| ch38 | ch38: [VERIFY: publication date] — AWS Database Blog "Valkey turns two" (assumed ~March 2026). | open |
+| ch38 | ch38: [VERIFY: Fusion runtime Apache 2.0 claim] — footnote dbt-fusion; later reports not confirmed by dbt docs. | open |
+| ch38 | ch38: [VERIFY: incubator entry date] — Apache Polaris entry into the Apache Incubator (August 2024 per secondary sources; Snowflake announced Polaris June 2024). | open |
+| ch38 | ch38: [VERIFY: exact annual-report URL] — ASF FY2025 annual report (9,905 committers, 295 projects; released 2025-08-27); URL used is an ASF News entry surfaced by search. | open |
+| ch41 | ch41: Confirm Gartner document IDs for "Market Share: Data and Analytics Software, Worldwide, 2024" (6504971?) and the $358B 2029 forecast summary (2025-07-15). Figures confirmed via search snippets; IDs taken from search results. | open |
+| ch41 | ch41: Confirm Gartner document ID 6739234 for integration software technologies ($34.8B, 2024). | open |
+| ch41 | ch41: Verify Confluent FY2025 total revenue $1,167.0M against the FY2025 10-K (carried over from data/ch30_confluent_financials.csv). | open |
+| ch41 | ch41: Verify Snowflake Investor Day 2026 (2026-06-02) TAM (~$225B now, >$460B in five years) on the Snowflake IR deck; current source is an AI-generated transcript summary. | open |
+| ch41 | ch41: Verify Everpure Financial Analyst Meeting (2026-09-23) TAM figures ($108B FY2026 to $207B FY2030; Modern Data Software $22B; Scale AI $9B; enterprise storage $79B; all-flash SAM $34B to $69B) on Financial-Analyst-Meeting-Slide-Deck.pdf; currently from NAND Research write-up. | open |
+| ch41 | ch41: Verify the 2021 DBMS total (~$80B) in TechRepublic/Gartner (carried from data/market_sizes.csv). | open |
+| ch41 | ch41 (not in text, in data): Gartner 2025 DBMS actual (market-share 2025 report, Ronthal) not public; $136.0B row is derived from the 2026 forecast. | open |

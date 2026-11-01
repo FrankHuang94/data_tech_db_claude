@@ -1,0 +1,7 @@
+- ch41: Confirm Gartner document IDs for "Market Share: Data and Analytics Software, Worldwide, 2024" (6504971?) and the $358B 2029 forecast summary (2025-07-15). Figures confirmed via search snippets; IDs taken from search results.
+- ch41: Confirm Gartner document ID 6739234 for integration software technologies ($34.8B, 2024).
+- ch41: Verify Confluent FY2025 total revenue $1,167.0M against the FY2025 10-K (carried over from data/ch30_confluent_financials.csv).
+- ch41: Verify Snowflake Investor Day 2026 (2026-06-02) TAM (~$225B now, >$460B in five years) on the Snowflake IR deck; current source is an AI-generated transcript summary.
+- ch41: Verify Everpure Financial Analyst Meeting (2026-09-23) TAM figures ($108B FY2026 to $207B FY2030; Modern Data Software $22B; Scale AI $9B; enterprise storage $79B; all-flash SAM $34B to $69B) on Financial-Analyst-Meeting-Slide-Deck.pdf; currently from NAND Research write-up.
+- ch41: Verify the 2021 DBMS total (~$80B) in TechRepublic/Gartner (carried from data/market_sizes.csv).
+- ch41 (not in text, in data): Gartner 2025 DBMS actual (market-share 2025 report, Ronthal) not public; $136.0B row is derived from the 2026 forecast.

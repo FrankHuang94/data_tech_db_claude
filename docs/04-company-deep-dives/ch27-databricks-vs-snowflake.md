@@ -6,7 +6,7 @@
 - **Two starting points, one destination.** Databricks began as hosted Spark for data engineers and pushed "up" into SQL warehousing. Snowflake began as a managed SQL warehouse for analysts and pushed "out" into engineering, ML and apps. By 2026 the two product maps are nearly identical: open-table support, a governance catalog, serverless compute, a Postgres database and an agent layer. They still differ on **where the data lives by default** and **who holds the metadata**. Databricks defaults to open Delta/Iceberg files in the customer's bucket. Snowflake defaults to its own managed storage and now offers Iceberg tables as a first-class option.[^cidr][^sigmod16]
 - **Scale is now similar; the reported growth rates are not comparable.** Databricks states a **>$7B revenue run-rate growing >80%** (company-stated, unaudited, fiscal Q2 May–Jul 2026). Snowflake reported **$1.49B of product revenue, +37%** (GAAP) for the same three months, which is ~$5.96B annualised.[^db-7b][^sf-q2] The two figures differ in basis (run-rate vs. recognised revenue), in scope, and in what one "dollar of revenue" contains. On classic compute, Databricks revenue excludes the customer's cloud VM bill. Snowflake revenue always includes the infrastructure.
 - **Pricing units differ, and the list prices are converging.** Databricks sells **DBUs** priced by workload SKU. Snowflake sells **credits** priced by edition. In our illustrative list-price example, the smallest serverless SQL unit on each platform costs about **$3 per hour**. The real cost differences come from runtime, auto-suspend behaviour and negotiated discounts, not from the unit price.[^pricing][^sf-pricing]
-- **Valuation gap.** Databricks' $190B mark is about **27x run-rate**. Snowflake trades at **16.9x EV/NTM revenue** (2026-10-30). Adjusted for growth, Databricks is *cheaper* (~0.34x per point of growth against ~0.48x). A private post-money mark set by preferred stock is still not the same object as a public enterprise value.[^comps-sf][^db-7b]
+- **Valuation gap.** Databricks' $190B mark is about **27x run-rate**. Snowflake trades at **16.9x EV/NTM revenue** (2026-10-30). Adjusted for growth, Databricks is *cheaper* (~0.34x per point of growth against ~0.48x), but only on its own unaudited run-rate and growth figures. The numerators differ too: a private post-money *equity* mark set by preferred stock is not the same object as a public *enterprise value*, and a company-defined run-rate is not GAAP revenue.[^comps-sf][^db-7b]
 - **Everpure angle.** Everpure is a named **launch partner of the Databricks Storage Ecosystem** (2026-06-10), with an OpenSharing connector in private preview. We found no equivalent Snowflake *program* in this session's research. Snowflake reaches on-prem object stores through its S3-compatible storage support [VERIFY: current Snowflake S3-compatible partner list and whether Everpure/Pure is listed]. A dual-platform, format-neutral posture is the obvious option to evaluate.[^storage-eco][^everpure-os][^sf-s3compat]
 
 ## Snapshot table
@@ -24,9 +24,9 @@
 | Net retention | >140% (definition undisclosed) | 126% (trailing-12-month product revenue) | Company-stated KPIs[^db-54][^sf-q2] |
 | $1M+ customers | >800 at >$1M run-rate (Jan 2026) | 828 at >$1M TTM product revenue (Jul 2026) | Company-stated KPIs[^db-54][^sf-q2] |
 | Gross margin | >80% non-GAAP subscription GM (Oct 2024 quarter) | 74.7% non-GAAP product GM; 70.9% GAAP (Q2 FY2027) | Non-GAAP / GAAP[^db-j][^sf-q2] |
-| Profitability | FCF positive on a trailing-12-month basis (no $ disclosed) | GAAP operating margin −17.0%, non-GAAP +15.3% (Q2 FY2027); FY2026 non-GAAP FCF margin 25.5% | Company-stated / GAAP / non-GAAP[^db-54][^sf-q2][^sf-fin] |
+| Profitability | Adjusted FCF positive on a trailing-12-month basis (no $ disclosed; company-stated, non-GAAP) | GAAP operating margin −17.0%, non-GAAP +15.3% (Q2 FY2027); FY2026 non-GAAP FCF margin 25.5% | Company-stated / GAAP / non-GAAP[^db-54][^sf-q2][^sf-fin] |
 | Value | $190B post-money (2026-08-13) | Market cap $107.88B; EV $106.31B (2026-10-30) | Company-stated / market data[^db-7b][^comps-sf] |
-| Disclosed or reported M&A spend (sum of deals with values) | ~$4.4B (MosaicML, Tabular, Neon, Arcion) | ~$1.86B (Streamlit, Neeva, Crunchy Data, Observe, Natoma) | Our sum of `data/ma_deals.csv`; mix of disclosed and press-reported[^ma] |
+| Disclosed or reported M&A spend (sum of deals with values) | ~$4.4B (MosaicML, Tabular, Neon, Arcion) | ~$1.86B (Streamlit, Neeva, Crunchy Data, Observe, Natoma) on filed figures; ~$2.35B using the ~$250M (Crunchy) and ~$1B (Observe) press figures | Our sum of `data/ma_deals.csv`. Bases differ: Databricks' Tabular and Neon values are press-reported; Snowflake's Crunchy, Observe, Neeva and Natoma are 10-Q/10-K purchase consideration (Observe preliminary)[^ma] |
 
 *Figure 27.1 — Snapshot. The bases differ row by row: Databricks figures are company-stated and unaudited, Snowflake's are GAAP or defined KPIs. The two fiscal calendars happen to align (both end Jan 31), so "Q2" covers the same May–Jul 2026 quarter for both.*
 
@@ -210,10 +210,10 @@ Even after these adjustments, **Databricks is very likely growing faster**. The 
 |---|---|---|---|
 | AI talent and models | MosaicML, $1.3B (2023) | Neeva, $185.4M (2023); Applica (2022); TruEra (2024) | Databricks bought a training platform; Snowflake bought search talent, and its CEO came with Neeva |
 | Open formats and catalog | Tabular, ~$2B press-reported (2024) | Built and donated Polaris (2024); Select Star for Horizon (2025) | Databricks bought the Iceberg founders; Snowflake chose open-sourcing over acquiring |
-| Postgres / OLTP | Neon, ~$1B press-reported (2025); Mooncake (2025); Electric (2026, announced) | Crunchy Data, $164.5M disclosed (2025) | Same thesis, one month apart; Databricks paid ~6x more |
+| Postgres / OLTP | Neon, ~$1B press-reported (2025); Mooncake (2025); Electric (2026, announced) | Crunchy Data, $164.5M per 10-Q purchase accounting (~$250M press-reported) (2025) | Same thesis, one month apart; Databricks paid ~6x more on Snowflake's filed figure, ~4x against the press figure (Neon value itself press-reported) |
 | Ingestion / CDC | Arcion, ~$100M (2023) | Datavolo (2024), now Openflow | Parity |
 | Agent governance | Built Unity AI Gateway | Natoma, ~$110M stated (2026, announced) | Buy vs. build |
-| Observability / security | Antimatter, SiftD.ai (2026); Panther (2026) | Observe, $596.2M disclosed (closed 2026-02-02) | Both moving into machine data |
+| Observability / security | Antimatter, SiftD.ai (2026); Panther (2026) | Observe, $596.2M preliminary consideration per 10-K (~$1B press-reported; closed 2026-02-02) | Both moving into machine data |
 | Apps and front ends | Row Zero (2026) | Streamlit, $800M (2022); Numeracy (2019) | Snowflake earlier |
 | Migration | BladeBridge (2025) | — | Databricks subsidises switching |
 | Clean rooms | — | Samooha (2023) | Snowflake's sharing moat |
@@ -275,7 +275,7 @@ The wider field matters as much as the duel. Microsoft Fabric, Google BigQuery a
 1. **Accelerating on a GAAP basis.** Product growth rose from 30% to 37% over three quarters, and FY2027 guidance was raised to $6.07B. That is audited demand, not a stated floor.[^sf-q2][^sf-fin]
 2. **Simplicity and the BI seat.** For SQL-centric organisations Snowflake is still the lowest-operations path. The analyst seat is also where business-user agents (CoWork) get distribution.
 3. **Data-sharing network effects.** Marketplace and clean rooms are a network that open protocols must displace, not merely match.
-4. **Valuation support.** At 16.9x EV/NTM with positive non-GAAP FCF (25.5% FY2026 margin), Snowflake is priced well below Databricks' mark. Any Databricks IPO could re-rate the category upward.[^comps-sf][^sf-fin]
+4. **Valuation support.** At 16.9x EV/NTM (2026-10-30) with positive non-GAAP FCF (25.5% FY2026 margin), Snowflake is priced well below Databricks' ~27x mark on a headline basis (though not on a growth-adjusted one). Any Databricks IPO could re-rate the category upward.[^comps-sf][^sf-fin]
 
 ## Risks / bear case and open questions
 
@@ -337,7 +337,7 @@ See [Ch 45](../06-history-and-future/ch45-storage-moving-up-the-stack.md) for th
 - "Databricks is bigger than Snowflake." *Its stated run-rate is higher, but it is not audited revenue; the last disclosed full year was ~$2.6B (FY ended Jan 2025).*
 - "Snowflake is a closed system." *It supports Iceberg tables in customer storage and donated Polaris; its default is managed storage.*
 - "A DBU costs less than a credit, so Databricks is cheaper." *The units measure different amounts of work; compare cost per workload.*
-- "Databricks is worth 27x, Snowflake 17x, so Databricks is overvalued." *Growth-adjusted, Databricks is cheaper; adjust for preferences and illiquidity before concluding.*
+- "Databricks is worth 27x, Snowflake 17x, so Databricks is overvalued." *Growth-adjusted, and on its own unaudited run-rate, Databricks is cheaper; also adjust for equity-vs-EV, run-rate-vs-GAAP, preferences and illiquidity before concluding.*
 - "Customers pick one." *Most large enterprises run both and connect them.*
 
 ## Key terms
