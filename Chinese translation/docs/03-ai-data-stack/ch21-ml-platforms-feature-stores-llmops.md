@@ -65,7 +65,7 @@ MLflow 从一开始就涵盖了追踪、模型打包格式和注册表。Databri
 2. **时点正确性。** 一条训练样本对应过去的某个时刻。附加到它上面的每一个特征，都必须是在那个时刻可以获知的值，而不是今天的值。如果弄错，就会泄漏未来信息并夸大离线准确率（见下文的实例）。
 3. **复用与延迟。** 可能有五十个模型都需要 `tickets_30d`。如果没有共享定义，每个团队都会各自计算；而在线路径需要在个位数毫秒内给出响应，这是数据仓库查询做不到的。
 
-特征存储用"一个定义、两个存储"同时解决了这三个问题。特征以代码形式只定义一次。物化任务将其计算并写入**[离线存储（offline store)](../glossary.md#offline-store)**——保留带时间戳的完整历史（如今通常是湖仓一体上的 Delta 或 Iceberg 表）；同时写入**[在线存储（online store）](../glossary.md#online-store)**——只在 Redis 或 DynamoDB 等低延迟键值数据库中保存每个实体的最新值。训练通过时点关联从离线存储读取历史数据；服务则按键从在线存储读取最新值。由于两者由同一个数据管道产出，偏差是在设计层面被消除的，而不是靠测试去发现。
+特征存储用"一个定义、两个存储"同时解决了这三个问题。特征以代码形式只定义一次。物化任务将其计算并写入**[离线存储（offline store）](../glossary.md#offline-store)**——保留带时间戳的完整历史（如今通常是湖仓一体上的 Delta 或 Iceberg 表）；同时写入**[在线存储（online store）](../glossary.md#online-store)**——只在 Redis 或 DynamoDB 等低延迟键值数据库中保存每个实体的最新值。训练通过时点关联从离线存储读取历史数据；服务则按键从在线存储读取最新值。由于两者由同一个数据管道产出，偏差是在设计层面被消除的，而不是靠测试去发现。
 
 ```mermaid
 flowchart LR
@@ -175,3 +175,174 @@ Feast 的文档准确描述了这一行为：对每个实体行，它从该行�
 **超大规模云厂商**将整个生命周期捆绑进各自的 AI 平台：AWS 上的 Amazon SageMaker（含 SageMaker Feature Store）和 Bedrock；[^tool-docs] Google Cloud 上的 Vertex AI（2026 年 4 月更名为 Gemini Enterprise Agent Platform）；[^geap] 以及 Azure 上的 Azure Machine Learning 加 Microsoft Foundry（在 Ignite 2025 上由 Azure AI Foundry 更名而来）。[^foundry]
 
 **开源计算保持中立。** Anyscale 背后的分布式计算框架 Ray 于 2025 年 10 月加入 PyTorch Foundation，与 PyTorch 和 vLLM 并列。[^ray-pt] Kubeflow 仍是 Kubernetes 原生的选择，Feast 则是它常见的特征存储搭档，并由 Red Hat 打包进 OpenShift AI。[^rh-feast] 但开放治理并没有保护这些项目背后的厂商：Anyscale 本身就同意出售给 GPU 云厂商 Nscale。[^nscale]
+
+## 设计选择与权衡
+
+| 决策 | 方案 A | 方案 B | A 胜出的情形 | B 胜出的情形 |
+|---|---|---|---|---|
+| 机器学习平台 | 数据平台原生（Databricks、Snowflake） | 最佳组合技术栈（W&B、Feast、Arize、LiteLLM） | 数据已在平台上；跨特征和模型的数据治理与数据血缘最为重要 | 多云、多平台环境；需要深度实验体验的研究型团队 |
+| 特征存储 | 湖仓原生（特征表 = 受治理的表） | 专用特征平台（Tecton 式、Hopsworks） | 批量和近实时特征；成本控制 | 低于 10 ms、高 QPS 且含复杂窗口聚合的流式特征（反欺诈、广告） |
+| 在线存储 | 由平台托管 | 自带（Redis、DynamoDB、Cassandra） | 组件更少 | 已有低延迟基础设施和 SLA |
+| LLM 追踪 | 与框架绑定（LangSmith、MLflow） | 以中立的 OpenTelemetry 接入通用可观测性（Datadog、Splunk、ClickHouse） | 深度智能体调试和评估工作流 | 应用与 AI 遥测统一视图；由安全团队负责 |
+| 模型服务 | 托管 API（Bedrock、Foundry、Cortex） | 在自有 GPU 上自托管引擎（vLLM、NIM） | 需求波动大；前沿闭源模型 | 开放权重上的稳定高负载；数据驻留；GPU 成本控制 |
+| 评估 | 大规模 LLM 作为评判者 | 在较小数据集上进行人工评审 | 每次发布的回归测试 | 校准评判者；高风险领域 |
+
+*图 21.6 — 反复出现的权衡是集成与专精之间的取舍。集成在数据治理和成本上胜出；专精在延迟和规模的极端场景下胜出。*
+
+最佳组合方案的最强版本论证是成立的。平台型特征存储在批量特征上最强。基于流的滑动窗口实时反欺诈和广告排序特征很难做，这正是 Databricks 选择收购 Tecton 而非自建的原因。Weights & Biases 之所以保住了一批忠实的研究用户，是因为其实验体验和报告功能优于各平台的版本。反方观点是：大多数企业模型并非延迟敏感型，而买方（通常是 CDO 而非机器学习研究员）更看重统一的治理模型，而非更好的 UI。
+
+## 主要参与者
+
+| 参与者 | 在这一层中的角色 | 定位（2026 年 11 月） |
+|---|---|---|
+| Databricks | MLflow、Unity Catalog 特征与模型、Mosaic AI、Agent Bricks、Tecton | 自研生命周期最完整；MLflow 作为开放标准（[第 25 章](../04-company-deep-dives/ch25-databricks.md)）[^mlflow3][^tecton-dbx] |
+| Snowflake | Snowflake ML（Feature Store、Model Registry、ML Observability）、Cortex | 生命周期位于治理边界之内；以 TruEra 提供评估（[第 26 章](../04-company-deep-dives/ch26-snowflake.md)）[^sf-ml][^truera] |
+| AWS / Google / Microsoft | SageMaker 与 Bedrock / Gemini Enterprise Agent Platform / Azure ML 与 Foundry | 与计算和模型捆绑；2025–2026 年间更名，转向"智能体平台"[^geap][^foundry] |
+| CoreWeave、Nscale | 收购了 W&B 和 Anyscale 的 GPU 云 | 新兴云厂商向技术栈上层延伸，以增加软件利润率和客户黏性[^wandb][^nscale] |
+| LangChain、Braintrust、Arize | 独立 LLMOps（追踪、评估） | 以开源或开发者为切入点；2025–2026 年融资充裕[^langchain][^braintrust][^arize] |
+| Palo Alto、Check Point、Cisco | 安全与可观测性领域的收购方 | 收购 Protect AI、Portkey、Lakera、Galileo，以掌控 AI 请求路径[^protectai][^portkey][^lakera][^galileo] |
+| Feast、Kubeflow、Ray、vLLM | 开源锚点 | 由基金会托管或社区治理；商业所有者会变，项目会延续[^ray-pt][^rh-feast] |
+
+*图 21.7 — MLOps 工具的所有权已转移到平台、GPU 云和安全厂商手中。开源项目是其中稳定的一层。*
+
+## 历史与发展轨迹
+
+```mermaid
+timeline
+    title MLOps 从单点工具到平台功能，2018 至 2026 年
+    2017 : Uber 介绍带有特征存储的 Michelangelo
+    2018 : Databricks 开源 MLflow
+    2019 : Feast 开源 : Michelangelo 工程师创立 Tecton
+    2020 : SageMaker Feature Store 发布
+    2021 : Vertex AI 发布 : Databricks Feature Store
+    2023 : Databricks 收购 MosaicML : vLLM PagedAttention 论文
+    2024 : Snowflake 收购 TruEra : Snowflake Feature Store 预览版
+    2025 : CoreWeave 完成收购 W and B : 面向生成式 AI 的 MLflow 3 : Databricks 收购 Tecton 资产 : Check Point 收购 Lakera : Ray 加入 PyTorch Foundation : OpenAI 同意收购 Neptune
+    2026 : ClickHouse 收购 Langfuse : Cisco 拟收购 Galileo : Palo Alto 拟收购 Portkey : Nscale 拟收购 Anyscale : Vertex AI 更名
+```
+
+*图 21.8 — 日期依据本节所引资料及 [^history]。每一波工具都被不同类型的收购方买下：2023–2025 年是数据平台，2025–2026 年则是 GPU 云、安全厂商和可观测性厂商。*
+
+**第一阶段：内部平台（2015–2019 年）。** 大型消费互联网公司自建内部平台（Uber 的 Michelangelo、Airbnb 的 Bighead、Google 的 TFX），因为当时市面上没有现成产品。[^michelangelo][^sculley] MLflow 和 Feast 正是在这一时期作为开源的通用化方案诞生的。[^mlflow-launch]
+
+**第二阶段：单点工具热潮（2019–2022 年）。** 风险资本为每个环节资助一家公司。Weights & Biases 于 2023 年以 $1.25B 估值融资（媒体报道）。2022 年，Tecton 的媒体报道估值约为 $900M，Anyscale 的媒体报道估值约为 $1.4B。[^wandb-round][^tecton-dbx][^nscale] 超大规模云厂商在 2020–2021 年推出了特征存储和统一机器学习平台。[^history]
+
+**第三阶段：生成式 AI 重置与吸收（2023–2026 年）。** 大语言模型让许多经典 MLOps 不再那么核心（需要训练的定制模型变少），同时催生了新需求（追踪、评估、护栏、网关）。数据平台收购了最贴近数据的部分：MosaicML、TruEra、Tecton。GPU 云收购了面向开发者的部分：W&B 和 Anyscale。前沿实验室为内部使用收购工具并关停对外服务：OpenAI–Neptune。[^neptune] 安全和可观测性厂商收购了请求路径：Protect AI、Lakera、Portkey、Galileo。Langfuse 出售给 ClickHouse 表明，LLM 追踪不过是又一张高吞吐量的遥测表。[^langfuse]
+
+**下一步走向。** LLMOps 各品类正沿着经典 MLOps 的老路前进，只是把七年压缩成了三年。预计评估和追踪将成为智能体平台的功能（[第 22 章](ch22-agents-and-data.md)），网关将与安全产品合并，而存活下来的独立公司将是那些掌握某项开源标准的企业。MLflow 的地位值得关注：如果它成为跨厂商默认的、兼容 OpenTelemetry 的追踪与评估格式，Databricks 就将掌握这一标准，正如它曾掌握 Delta Lake 一样。
+
+> **类比：金融。** 应将这些收购理解为**把功能整合进平台的"汇总式收购"（roll-up）**，其定价依据的是战略价值而非独立价值。W&B 的媒体报道价格约 $1.7B，约为其上一轮私募估值 $1.25B 的 1.4 倍；[^wandb][^wandb-round] Anyscale 的媒体报道价格约 $1.65B，比媒体报道的 2022 年 $1.38B 估值高出约 20%（本书自行计算）。[^nscale] 对品类领先者而言，这些溢价幅度并不大。其他标的，例如 Tecton（资产交易）和 Neptune（对外部客户停止服务），则体现了人才收购（acquihire）的经济逻辑。对尽职调查的启示是：一个建立在平台数据之上的工具，其潜在收购方可能只有五家左右，这就限制了退出倍数。
+
+## 关键数字
+
+| 指标 | 数值 | 口径 | 来源 / 日期 |
+|---|---|---|---|
+| MLflow 月下载量 | >30M | 公司披露（Databricks） | Databricks 博客，2025-06[^mlflow3] |
+| MLflow 3 追踪集成数 | 20+ 个生成式 AI 库 | 公司披露 | Databricks 博客，2025-06[^mlflow3] |
+| CoreWeave–Weights & Biases | 约 $1.7B；2025-05-05 完成交割 | 媒体报道（The Information） | CoreWeave IR；`data/ma_deals.csv`[^wandb] |
+| W&B 上一轮私募估值 | $1.25B（2023 年） | 媒体报道 | `data/private_funding.csv`[^wandb-round] |
+| Databricks–Tecton | 未披露金额的资产收购；2025-08-22 宣布 | 未披露 | Databricks 博客；Fenwick[^tecton-dbx] |
+| OpenAI–Neptune | <$400M，以股票支付 | 媒体报道（The Information） | VKTR / Reuters 报道，2025-12[^neptune] |
+| Nscale–Anyscale | 约 $1.65B；约 200 名员工 | 媒体报道（Bloomberg 消息源） | TechCrunch，2026-07-30[^nscale] |
+| Palo Alto–Protect AI | 总收购对价 $634.5M | GAAP（10-K，截至 2025-07-31 的财年） | PANW 10-K[^protectai] |
+| Check Point–Lakera | 约 $300M | 媒体报道 | SecurityWeek，2025-09[^lakera] |
+| LangChain B 轮 | $125M，投后估值 $1.25B | 公司宣布融资；估值为媒体报道 | SiliconANGLE，2025-10-20[^langchain] |
+| Braintrust B 轮 | $80M，投后估值 $800M | 媒体报道（CEO 向 Axios 透露） | Axios Pro，2026-02-17[^braintrust] |
+| Inferact（vLLM）种子轮 | $150M，估值 $800M | 媒体报道 | TechCrunch，2026-01-22[^inferact] |
+| 训练检查点，使用 Adam 的 70B 参数模型 | 每个检查点约 1 TB | 估算（权重、fp32 主副本和优化器状态合计约 14 字节/参数） | 依据 ZeRO 论文的核算推导[^zero] |
+
+*图 21.9 — 交易价格集中在 $0.3B 到 $1.7B 之间：金额不小，但与收购它们的平台相比规模很小。检查点这一行说明了为什么这一层会触及存储预算。*
+
+## 存储桥接
+
+> **存储桥接。** 这一层以突发方式写入。同步训练检查点在写入时会让所有 GPU 暂停，而每个 70B 参数模型约需写入 1 TB（估算），因此检查点带宽会直接转化为 GPU 空闲时间。特征存储增加了位于对象存储上、长期保留、按时间分区的历史表；注册表则增加了大量带版本的模型制品，在发布过程中由服务集群同时读取。基于公开信息，战略团队可能评估的选项包括：将 FlashBlade 认证为 Unity Catalog 和 Snowflake 外部卷之下的离线存储及制品存储，以及将 Everpure Data Intelligence 的数据分类功能定位于特征数据集和评估数据集的上游。检查点 I/O 模式和性能细节参见配套的 *Everpure Tech Atlas*。
+
+## 对话手册
+
+**向产品经理提问**
+
+1. "您客户的特征表、模型制品和检查点在物理上存放在哪里？每一项的目录条目归谁所有：数据平台、机器学习平台，还是客户自己？"
+2. "客户从您这里购买哪些 LLMOps 功能（追踪、评估、网关、护栏），又从其数据平台或云厂商那里获得哪些？自 2025–2026 年的一系列收购以来，这一格局有何变化？"
+3. "当客户从经典机器学习转向智能体时，他们在您这一层的支出是增加还是减少？"
+
+**向工程师提问**
+
+1. "您如何保证训练集的时点正确性？使用事件时间还是摄取时间，TTL 设为多少？"
+2. "您如何在生产环境中检测训练/服务偏差：是否记录服务时的特征值，并与离线重算结果进行比对？"
+3. "您的 LLM 评判者是如何以人工标注为基准进行校准的？黄金数据集有多大、多新？"
+
+**好的回答听起来是什么样的。** 具体且量化："特征表是 Unity Catalog 中带时间戳键的 Delta 表；我们记录服务时的特征值，并每天与离线值做差异比对；在一个 1,000 条样本的数据集上，我们的评判者与人工评分员的一致率约为 N%，该数据集每月从生产追踪中刷新。"好的回答会坦承平台的薄弱之处，通常是低延迟流式特征或多云追踪。
+
+**不要这样说**
+
+- "特征存储已死。"独立品类确实整合了，但其功能转移到了 Databricks、Snowflake 和各大云厂商之中。时点正确性对每一个表格类模型仍然重要。
+- "LLM 不需要 MLOps。"它们需要的更多。只是对象变成了提示词、追踪和评估，而不是权重和准确率指标。
+- "Weights & Biases 是 Databricks 的交易。"收购它的是 GPU 云厂商 CoreWeave。
+- "MLflow 是 Databricks 的产品。"它是 Linux Foundation 旗下的开源项目，由 Databricks 主导。托管版 MLflow 才是产品。
+- "离线准确率高就证明模型有效。"如果没有时点关联，这可能只证明了模型能读取未来。
+
+## 深入阅读
+
+- Sculley 等，"Hidden Technical Debt in Machine Learning Systems"（NeurIPS 2015），MLOps 的奠基性论文。[^sculley]
+- Feast 关于时点关联和 TTL 的文档，对应图 21.4 中的机制。[^feast-pit]
+- Kwon 等，"Efficient Memory Management for LLM Serving with PagedAttention"（SOSP 2023），解释 vLLM 为何胜出。[^vllm-paper]
+- Rajbhandari 等，"ZeRO"（2019），介绍大模型训练的内存与检查点核算。[^zero]
+- 相关章节：[第 16 章](ch16-ai-data-lifecycle.md)介绍完整的 AI 数据闭环，[第 20 章](ch20-training-data-supply-chain.md)介绍训练数据，[第 13 章](../02-pipelines-and-governance/ch13-data-quality-observability-lineage.md)介绍数据可观测性——LLM 追踪正越来越像它。
+
+## 关键术语
+
+- [MLOps](../glossary.md#mlops) — 使机器学习生命周期可重复、受治理且可监控的实践与工具。
+- [LLMOps](../glossary.md#llmops) — 面向 LLM 应用改造的 MLOps：提示词、追踪、评估、护栏和网关。
+- [特征存储](../glossary.md#feature-store) — 只定义一次特征，并向训练和推理提供一致特征值的系统。
+- [离线存储](../glossary.md#offline-store) — 特征存储中完整的、带时间戳的历史数据，用于构建训练集。
+- [在线存储](../glossary.md#online-store) — 特征存储中保存最新特征值的低延迟键值副本。
+- [时点关联](../glossary.md#point-in-time-join) — 将每一行标签与其时间戳时刻已知的最新特征值进行关联。
+- [训练/服务偏差](../glossary.md#training-serving-skew) — 训练中与生产中所见特征值之间的不一致。
+- [数据泄漏](../glossary.md#data-leakage) — 预测时不可获得的信息进入训练数据，从而夸大离线准确率。
+- [实验追踪](../glossary.md#experiment-tracking) — 记录每次训练运行的参数、指标、代码和制品，以便比较和复现。
+- [模型注册表](../glossary.md#model-registry) — 带有数据血缘、阶段和审批的模型版本目录。
+- [数据漂移](../glossary.md#data-drift) — 线上输入的分布相对于训练数据发生的变化。
+- [LLM 追踪](../glossary.md#llm-trace) — 对一次 LLM 或智能体请求中每一步骤、token 数、延迟和成本的记录。
+- [LLM 评估](../glossary.md#llm-evaluation) — 对 LLM 应用输出进行的系统化评分，可在测试集上离线进行，也可在生产样本上在线进行。
+- [LLM 作为评判者](../glossary.md#llm-as-judge) — 使用一个语言模型按照评分细则为另一个模型的输出打分。
+- [黄金数据集](../glossary.md#golden-set) — 经过精选、带版本的测试集，包含输入及参考答案。
+- [护栏](../glossary.md#guardrails) — 拦截不安全、泄漏或违反策略的 LLM 行为的输入和输出检查。
+- [AI 网关](../glossary.md#ai-gateway) — 位于模型提供商之前的代理，用于路由、密钥、限流、缓存和支出控制。
+- [Unity Catalog](../glossary.md#unity-catalog) — Databricks 用于表、特征、模型和函数的治理目录。
+
+## 资料来源
+
+[^mlflow3]: Databricks, "MLflow 3.0: Unified AI Experimentation, Observability, and Governance," https://www.databricks.com/blog/mlflow-30-unified-ai-experimentation-observability-and-governance，发布 2025-06（Data + AI Summit 2025）；检索 2026-11-01。月下载量数字为公司披露；二手资料引用的 33M–60M 未予采用。
+[^mlflow-docs]: MLflow project, "MLflow 3" documentation (LoggedModel, GenAI tracing and evaluation), https://mlflow.org/docs/3.0.1/mlflow-3，发布 2025-06；检索 2026-11-01。Databricks, "Install MLflow 3," https://docs.databricks.com/aws/mlflow/mlflow-3-install，持续更新文档；检索 2026-11-01。
+[^mlflow-launch]: Databricks, "Introducing MLflow: an Open Source Machine Learning Platform," https://www.databricks.com/blog/2018/06/05/introducing-mlflow-an-open-source-machine-learning-platform.html，发布 2018-06-05；检索 2026-11-01（2025 年前的资料，本次未重新打开）。MLflow 于 2020 年加入 Linux Foundation（2025 年前的已有知识）。
+[^sculley]: D. Sculley et al., "Hidden Technical Debt in Machine Learning Systems," NeurIPS 2015, https://papers.nips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems，发布 2015-12；检索 2026-11-01（2025 年前的资料）。
+[^michelangelo]: Uber Engineering, "Meet Michelangelo: Uber's Machine Learning Platform," https://www.uber.com/blog/michelangelo-machine-learning-platform/，发布 2017-09-05；检索 2026-11-01（2025 年前的资料）。
+[^feast-pit]: Feast, "Point-in-time joins" (concepts documentation), https://docs.feast.dev/getting-started/concepts/point-in-time-joins，持续更新文档；检索 2026-11-01。Feast 博客（2026 年的文章，包括 2026-06-01 的原生 MLflow 集成），https://feast.dev/blog；检索 2026-11-01。
+[^rh-feast]: Red Hat, "Feast: the open source feature store for AI" (OpenShift AI 2.20 technology preview), https://www.redhat.com/de/blog/feast-open-source-feature-store-ai，发布 2025；检索 2026-11-01。Red Hat Developer, "Improve RAG retrieval training with Feast and Kubeflow Trainer," https://developers.redhat.com/articles/2025/12/16/improve-rag-retrieval-training-feast-kubeflow-trainer，发布 2025-12-16；检索 2026-11-01。
+[^tecton-dbx]: Databricks, "Tecton is joining Databricks to power real-time data for personalized AI agents," https://databricks.com/blog/tecton-joining-databricks-power-real-time-data-personalized-ai-agents，发布 2025-08-22；Fenwick, "Fenwick Represents Databricks in Acquisition of the Assets of Tecton," https://www.fenwick.com/insights/experience/fenwick-represents-databricks-in-acquisition-of-the-assets-of-tecton，发布 2025-08/09；均检索 2026-11-01。交易条款未披露；部分标题中的"$900M"是 Tecton 此前的估值，而非交易价格。Fennel（2025 年 4 月）依据 `data/ma_deals.csv` 及第 25 章。
+[^dbx-fs]: Databricks, "Feature engineering and serving" (feature tables in Unity Catalog, online feature serving), https://docs.databricks.com/aws/en/machine-learning/feature-store/，持续更新文档；检索 2026-11-01。
+[^sf-ml]: Snowflake, "Snowflake ML: End-to-End Machine Learning" (Feature Store, Model Registry, ML Observability), https://docs.snowflake.com/en/developer-guide/snowpark-ml，持续更新文档；Snowflake blog, "Build and Manage ML Features for Production-Grade Pipelines with Snowflake Feature Store," https://snowflake.com/en/blog/build-manage-production-ml-snowflake-feature-store，发布 2024；均检索 2026-11-01。
+[^sf-summit]: Flexera, "Snowflake Summit 2026 recap," https://www.flexera.com/blog/perspectives/snowflake-summit-2026/，发布 2026-06；SELECT, https://select.dev/posts/snowflake-summit-2026-product-announcement-recap，发布 2026-06；均检索 2026-11-01（二手资料；经由 `meta/research-briefing.md`）。
+[^unity-gw]: SiliconANGLE, "Key takeaways from day two of Databricks Data + AI Summit," https://siliconangle.com/2026/06/17/key-takeaways-day-two-databricks-data-ai-summit/，发布 2026-06-17；Databricks, "What's new with Unity Catalog at Data + AI Summit 2026," https://www.databricks.com/blog/whats-new-unity-catalog-data-ai-summit-2026，发布 2026-06；均检索 2026-11-01。
+[^geap]: HPCwire/AIwire, "Google Unveils Gemini Enterprise Agent Platform," https://www.hpcwire.com/aiwire/2026/04/23/google-unveils-gemini-enterprise-agent-platform/，发布 2026-04-23；检索 2026-11-01。在 Google Cloud Next '26（2026-04-22）上作为 Vertex AI 的继任者发布；据报道现有 API 保持不变（二手资料）。
+[^foundry]: Directions on Microsoft, "Microsoft Ignite 2025: Ten Things You Need to Know," https://www.directionsonmicrosoft.com/microsoft-ignite-2025-ten-things-you-need-to-know/，发布 2025-11-18；检索 2026-11-01。
+[^wandb]: CoreWeave, "CoreWeave Completes Acquisition of Weights & Biases," https://investors.coreweave.com/news/news-details/2025/CoreWeave-Completes-Acquisition-of-Weights--Biases/default.aspx，发布 2025-05-05；检索 2026-11-01。约 $1.7B 的价格为媒体报道（The Information，经由 Maginative），记录于 `data/ma_deals.csv`。
+[^wandb-round]: `data/private_funding.csv`，Weights & Biases C-2 轮（2023-08-09），投后估值 $1.25B，媒体报道（来源：multiples.vc，聚合网站）；检索 2026-11-01。
+[^neptune]: OpenAI, "OpenAI to acquire Neptune," https://openai.com/index/openai-to-acquire-neptune/，发布 2025-12；VKTR, "OpenAI buys Neptune for under $400M," https://www.vktr.com/ai-news/openai-buys-neptune-for-under-400m-in-ai-governance-push/，发布 2025-12；Notes from Poland, https://notesfrompoland.com/2025/12/04/openai-to-acquire-polish-founded-startup/，发布 2025-12-04；均检索 2026-11-01。价格（<$400M，股票支付）为媒体报道，源自 The Information；据报道对外服务于 2026-03-04 前终止。
+[^langfuse]: ClickHouse, "ClickHouse acquires Langfuse," https://clickhouse.com/blog/clickhouse-acquires-langfuse-open-source-llm-observability，发布 2026-01-16；检索 2026-11-01（与 `data/ma_deals.csv` 一致）。
+[^truera]: btw.media, "Snowflake acquires TruEra," https://btw.media/en/snowflake-acquires-truera，发布 2024-05；检索 2026-11-01（与 `data/ma_deals.csv` 一致）。
+[^galileo]: Network World, "Cisco to acquire Galileo for AI observability," https://www.networkworld.com/article/4156855/cisco-to-acquire-galileo-for-ai-observability.html，发布 2026-04；Futurum Group, "Cisco to Acquire Galileo," https://futurumgroup.com/insights/cisco-to-acquire-galileo-ai-agent-observability-cant-run-at-human-speed/，发布 2026-04；均检索 2026-11-01。2026-04-09 宣布，条款未披露；2026-05-22 完成交割一说仅见于二手资料。
+[^portkey]: Palo Alto Networks, "Palo Alto Networks to Acquire Portkey to Secure the Rise of AI Agents," https://investors.paloaltonetworks.com/news-releases/news-release-details/palo-alto-networks-acquire-portkey-secure-rise-ai-agents，发布 2026-04-30；检索 2026-11-01。条款未披露；预计于 PANW 2026 财年第四季度（2026 年 5–7 月）完成交割。
+[^protectai]: Palo Alto Networks, Form 10-K for fiscal year ended 2025-07-31, https://www.sec.gov/Archives/edgar/data/1327567/000132756725000027/panw-20250731.htm，发布 2025-08/09；以及 "Palo Alto Networks Completes Acquisition of Protect AI," https://investors.paloaltonetworks.com/news-releases/news-release-details/palo-alto-networks-completes-acquisition-protect-ai/，发布 2025-07-22；均检索 2026-11-01。
+[^lakera]: SecurityWeek, "Check Point to Acquire AI Security Firm Lakera," https://www.securityweek.com/check-point-to-acquire-ai-security-firm-lakera/，发布 2025-09；Globes, https://en.globes.co.il/en/article-1001521951，发布 2025-09；均检索 2026-11-01。约 $300M 为媒体报道；Check Point 未披露。
+[^nscale]: TechCrunch, "Nscale buys Anyscale as it seeks to own more of the AI compute stack," https://techcrunch.com/2026/07/30/nscale-buys-anyscale-as-it-seeks-to-own-more-of-the-ai-compute-stack/，发布 2026-07-30；The Star (wire), https://www.thestar.com.my/tech/tech-news/2026/07/30/ai-cloud-provider-nscale-to-buy-software-startup-anyscale，发布 2026-07-30；均检索 2026-11-01。约 $1.65B 源自一位 Bloomberg 消息源（媒体报道）；双方未披露条款；预计于 2026 年下半年完成交割。Runtime Wire 报道此前估值为 $1.38B（2022 年）；另一篇报道称">$1B"。
+[^ray-pt]: Anyscale, "Ray by Anyscale joins PyTorch Foundation," https://www.anyscale.com/blog/ray-by-anyscale-joins-pytorch-foundation，发布 2025-10-22；HPCwire/AIwire, "PyTorch Foundation Welcomes Ray," https://www.hpcwire.com/aiwire/2025/10/23/pytorch-foundation-welcomes-ray-to-deliver-a-unified-open-source-ai-compute-stack/，发布 2025-10-23；均检索 2026-11-01。报道指出该基金会同时托管 vLLM。
+[^inferact]: TechCrunch, "Inference startup Inferact lands $150M to commercialize vLLM," https://techcrunch.com/2026/01/22/inference-startup-inferact-lands-150m-to-commercialize-vllm/，发布 2026-01-22；Bloomberg, https://www.bloomberg.com/news/articles/2026-01-22/andreessen-backed-inferact-raises-150-million-in-seed-round，发布 2026-01-22；均检索 2026-11-01。投后估值 $800M 为媒体报道；由 a16z 和 Lightspeed 领投。
+[^tgi]: Hugging Face, "Text Generation Inference" documentation (maintenance-mode notice recommending vLLM, SGLang and local engines), https://huggingface.co/docs/text-generation-inference/index，持续更新文档；检索 2026-11-01。
+[^langchain]: SiliconANGLE, "AI agent tooling provider LangChain raises $125M at $1.25B valuation," https://siliconangle.com/2025/10/20/ai-agent-tooling-provider-langchain-raises-125m-1-25b-valuation，发布 2025-10-20；Fortune, https://fortune.com/2025/10/20/exclusive-early-ai-darling-langchain-is-now-a-unicorn-with-a-fresh-125-million-in-funding/，发布 2025-10-20；均检索 2026-11-01。由 IVP 领投。
+[^braintrust]: Axios Pro, "AI observability startup Braintrust raises $80M at $800M valuation," https://www.axios.com/pro/enterprise-software-deals/2026/02/17/ai-observability-braintrust-80-million-800-million，发布 2026-02-17；检索 2026-11-01。由 Iconiq 领投；估值出自 CEO 之口，未见于公司自身的新闻稿。
+[^arize]: Arize AI, "Arize AI raises $70M Series C," https://arize.com/blog/arize-ai-raises-70m-series-c/，发布 2025-02-20；TechCrunch, https://techcrunch.com/2025/02/20/arize-ai-hopes-it-has-first-mover-advantage-in-ai-observability，发布 2025-02-20；均检索 2026-11-01。由 Adams Street Partners 领投；估值未披露。
+[^vllm-paper]: W. Kwon et al., "Efficient Memory Management for Large Language Model Serving with PagedAttention," SOSP 2023, https://arxiv.org/abs/2309.06180，发布 2023-09-12；检索 2026-11-01（2025 年前的资料）。
+[^zero]: S. Rajbhandari et al., "ZeRO: Memory Optimizations Toward Training Trillion Parameter Models," https://arxiv.org/abs/1910.02054，发布 2019-10-04；检索 2026-11-01。该论文按混合精度 Adam 每参数 16 字节计算（2 字节 fp16 权重、2 字节 fp16 梯度、12 字节 fp32 权重和动量）；不含梯度的检查点约为每参数 14 字节，因此 70B × 14 B ≈ 0.98 TB（估算）。
+[^tool-docs]: 产品与项目文档，均为持续更新文档，检索 2026-11-01：NVIDIA NeMo Guardrails, https://github.com/NVIDIA/NeMo-Guardrails；Guardrails AI, https://github.com/guardrails-ai/guardrails；LiteLLM, https://github.com/BerriAI/litellm；Amazon SageMaker Feature Store, https://docs.aws.amazon.com/sagemaker/latest/dg/feature-store.html；Amazon Bedrock, https://aws.amazon.com/bedrock/；Vertex AI Feature Store, https://cloud.google.com/vertex-ai/docs/featurestore/latest/overview；NVIDIA NIM, https://docs.nvidia.com/nim/；Datadog LLM Observability, https://docs.datadoghq.com/llm_observability/；Comet Opik, https://github.com/comet-ml/opik。
+[^history]: 2025 年前的产品发布公告，本次未重新打开；检索 2026-11-01：Google Cloud, "Introducing Feast: an open source feature store for machine learning," https://cloud.google.com/blog/products/ai-machine-learning/introducing-feast-an-open-source-feature-store-for-machine-learning，发布 2019-01；AWS, "Introducing Amazon SageMaker Feature Store," https://aws.amazon.com/about-aws/whats-new/2020/12/introducing-amazon-sagemaker-feature-store/，发布 2020-12；Google Cloud, "Google Cloud launches Vertex AI, unified platform for MLOps," https://cloud.google.com/blog/products/ai-machine-learning/google-cloud-launches-vertex-ai-unified-platform-for-mlops，发布 2021-05-18。Databricks Feature Store（2021 年）和 Snowflake Feature Store 预览版（Summit 2024）依据 [^dbx-fs] 和 [^sf-ml] 中所引的厂商文档。
