@@ -119,3 +119,127 @@ Llama 3 论文是少数公开描述底层存储的资料之一。Meta 在其分�
 
 评估决定一个检查点能否发布。它有三层。公开**基准测试**是有已知答案的固定题集，当测试题泄露进训练数据时就会受到污染。私有**评估集**（eval）是为匹配实验室或客户真实用途而构建的任务套件，通常由 [LLM 评审](../glossary.md#llm-judge)（LLM judge）打分。**[红队测试](../glossary.md#red-teaming)**（red-teaming）是指由人工和自动化手段尝试让模型出现不当行为。评估集规模小、高度敏感。它们必须做版本管理、与训练数据隔离（去污染），并像源代码一样受到保护，因为泄露的评估集将失去任何衡量意义。对企业而言，这是它们最常跳过、也最需要的阶段。例如，Databricks 的 Agent Bricks 就在售卖自动生成的任务评估和 LLM 评审。[^dbx-dais25]
 
+### 阶段 6：部署上下文，企业的主战场
+
+企业很少修改模型权重，它们修改的是模型看到的内容。RAG（Lewis 等，2020 年）把生成器与一个覆盖 2,100 万个维基百科段落的检索器配对，从而可以通过替换索引而非重新训练来更新知识。[^rag] 企业版本遵循同样的模式（[第 19 章](ch19-retrieval-architectures.md)）：
+
+1. 从 SharePoint、工单系统、合同和湖仓表中拉取文档。
+2. 解析并分块（[第 17 章](ch17-unstructured-data-processing.md)）。
+3. 为每个分块生成嵌入（embedding，[第 18 章](ch18-embeddings-and-vector-search.md)）。
+4. 为向量建立索引，并同时提供关键词检索。
+5. 在查询时，检索排名靠前的分块，检查权限，并把它们放入提示词。
+
+Menlo Ventures 2024 年的调查发现，51% 的企业生成式 AI 部署采用了 RAG，相比之下只有 9% 主要依赖微调（调查，媒体报道）。[^menlo24] 2025 年，从业者开始把这一更广泛的学科称为[上下文工程](../glossary.md#context-engineering)（context engineering）。Anthropic 将其描述为：在每次调用模型时，决定纳入哪些指令、检索数据、工具结果和历史记录。[^context-eng]
+
+微调并没有消失，它已成为各平台都提供的托管功能。Snowflake 的 Cortex Fine-tuning（2025 年 2 月 GA）在账户内部训练参数高效的适配器。[^sf-ft] Snowflake 在 Summit 2026 上新增了 Cortex Training，用于对开放权重模型进行托管式 GPU 微调。[^sf-summit26] AWS 的 Bedrock Knowledge Bases 可以把 S3 Vectors 用作托管的 RAG 存储。[^s3v-bedrock]
+
+### 阶段 7–8：智能体与反馈环路
+
+智能体增加了两条数据流。第一条是**工具**。模型通过[模型上下文协议](../glossary.md#model-context-protocol)等接口调用 SQL、API 和搜索；Anthropic 已于 2025 年 12 月将该协议捐赠给 Linux Foundation 旗下的 Agentic AI Foundation。[^mcp] 第二条是**记忆**：会话笔记和长期用户事实，它们需要被存储、检索、过期和治理（[第 22 章](ch22-agents-and-data.md)）。每次智能体运行还会产生一条**追踪**（trace），记录提示词、检索到的分块、工具调用和结果。追踪是飞轮的原材料。
+
+```mermaid
+flowchart LR
+    U["用户与智能体<br/>执行真实任务"] --> L["日志与追踪<br/>提示词、分块、工具调用"]
+    L --> J["为结果打分<br/>评分、LLM 评审、验证器"]
+    J --> CU["整理<br/>清除 PII、去重、挑出失败案例"]
+    CU --> V["版本化数据集<br/>评估集、SFT、偏好对"]
+    V --> TR["改进<br/>微调、修复检索、修改提示词"]
+    TR --> EV["回归评估<br/>把关发布"]
+    EV --> U
+    CU -.->|"同意、保留期、投毒检查"| G["目录与策略"]
+```
+
+*图 16.2 — 数据飞轮。使用产生追踪，打分把追踪变成带标签的样本，版本化数据集既用于改进，也用于防止退步的回归评估。数据治理位于整理环节，因为用户数据正是在这里变成训练数据的。*
+
+[数据飞轮](../glossary.md#data-flywheel)是 AI 领域最有力的护城河论点，也常常被夸大。当结果可以被廉价地打分时它就有效，比如能编译通过的代码或得到解决的工单。它还需要拥有复用数据的权利。当反馈稀疏（很少有用户点"踩"）、充满噪声或在合同上不可使用时，飞轮就会停转。大多数企业合同禁止模型供应商使用客户数据进行训练，因此飞轮主要在客户自己的边界内转动。这对已经持有日志的数据平台而言是一种结构性优势。
+
+> **类比：半导体。** 现场退货为良率学习提供养料。拥有批次谱系（阶段 3）并对退回部件做失效分析的晶圆厂，每一代都在进步；没有这些的晶圆厂则会重复同样的缺陷。追踪就是 AI 系统的现场退货。
+
+### 各阶段的治理风险
+
+- **版权**问题主要集中在阶段 1–2。在 *Bartz v. Anthropic* 案中，Alsup 法官于 2025 年裁定，用图书进行训练属于合理使用，但保留盗版副本则不属于。该案随后以 $1.5B 和解，约每部作品 $3,000，和解协议于 2026 年 7 月获得最终批准。[^bartz] 对数据团队的启示是：来源记录与训练本身同样重要。FineWeb 的数据集卡片同样记录了在收到停止侵权通知后被移除的域名。[^fineweb-card]
+- **PII** 在每个阶段都会出现，在阶段 8 最为严重，因为用户对话会在这里成为训练候选数据。
+- **[数据投毒](../glossary.md#data-poisoning)**（data poisoning）比直觉上更便宜。Anthropic、英国 AI Security Institute 和 Alan Turing Institute 发现，约 250 份恶意文档就能给参数量从 600M 到 13B 的模型植入后门，且与模型大小无关。对最大的模型而言，这只占其训练 token 的 0.00016%（研究结果，针对狭窄的触发行为）。[^poison] 在 RAG 中门槛可能更低：针对检索的研究攻击中，每个目标问题只需植入少量文档，因为攻击者只需让它们进入索引并获得排名。
+
+## 设计选择与权衡
+
+| 维度 | 前沿实验室生命周期 | 企业生命周期 |
+|---|---|---|
+| 目标 | 产出通用模型权重 | 让购买来的模型在专有数据上发挥作用 |
+| 主导阶段 | 1–5（爬取、整理、预训练、后训练、评估） | 6–8（上下文、智能体、反馈），加上轻量微调 |
+| 数据量 | 原始数据数十 PB，整理后 15–36T token | GB 级到低 PB 级的文档和表，数百万个分块（估算） |
+| 数据形态 | 网页文本、代码、授权语料、合成轨迹 | PDF、工单、邮件、合同、数据仓库表、日志 |
+| 谁来构建 | 自建团队（OpenAI、Anthropic、Google、Meta、xAI、Qwen、DeepSeek） | 使用 Databricks、Snowflake、AWS、Google、Microsoft 及初创公司产品的平台团队 |
+| 支出模式 | 类资本支出的训练运行，之后是人工数据与 RL 环境 | 按用量计费：token、向量查询、计算积分 |
+| 存储 I/O | 顺序吞吐、shuffle 读取、检查点突发 | 低延迟随机读取（向量）、大量小文件、日志 |
+| 主要治理风险 | 版权、投毒、基准污染 | 访问控制（谁可以检索什么）、PII、保留期 |
+| 可复现性工具 | 分片清单、检查点谱系、lakeFS | Iceberg/Delta 时间旅行、索引版本、评估集 |
+
+*图 16.3 — 两条生命周期共享一套词汇，除此之外几乎没有共同点。数据平台在右侧一栏竞争。存储厂商则以不同的 I/O 画像同时服务两者。*
+
+"企业将训练自己的模型"这一观点的最强版本论证（steelman）确实存在，但适用面窄。制药、金融和芯片设计等领域知识密集型企业会在专有语料上进行继续预训练或深度微调，而 Cortex Training 和 Mosaic AI 等托管服务降低了成本。但对大多数公司而言，一个配有良好检索和评估的前沿模型，在单位质量成本上胜过定制模型。上文的采用率数据（RAG 领先于微调）反映了这一点。
+
+相反观点的最强版本论证，"长上下文让 RAG 过时"，也部分成立。百万 token 的上下文窗口让小型语料无需分块。但长上下文无法在企业规模上处理权限、时效性和成本问题，因此检索仍是默认方案（[第 19 章](ch19-retrieval-architectures.md)）。
+
+## 主要参与者
+
+| 阶段 | 代表性工具 / 供应商 | 数据形态 | 存储 I/O 画像 |
+|---|---|---|---|
+| 1. 原始数据 | Common Crawl、自有爬虫、出版商授权协议、合成数据生成器 | WARC/HTML、PDF、代码仓库 | 批量顺序摄取；冷对象存储 |
+| 2. 数据整理 | datatrove、NVIDIA NeMo Curator、Spark、Ray、Databricks、Lilac（Databricks） | Parquet 文本分片、MinHash 签名 | 高吞吐扫描；重度 shuffle 的去重 |
+| 3. 预训练 | PyTorch、Megatron、自建技术栈；Tectonic 级文件系统 | 分词后的二进制分片；Safetensors 检查点 | 顺序读取加随机 shuffle；检查点突发写入 |
+| 4. 后训练 | Scale AI、Surge AI、Mercor、Snorkel；RL 环境初创公司 | 提示词/回答对、排序、环境规格 | 小数据集；沙箱虚拟机；追踪日志 |
+| 5. 评估 | 开放基准套件、Weights & Biases、MLflow、Braintrust、Agent Bricks 评估 | 题集、评审评分标准、分数 | 小规模、版本化、访问受限 |
+| 6. 部署上下文 | Databricks Vector Search（其文档中现称"AI Search"）、Snowflake Cortex Search、Bedrock Knowledge Bases + S3 Vectors、Gemini Enterprise Agent Platform、Pinecone、Elasticsearch、pgvector | 分块、嵌入、元数据 | 低延迟随机读取；频繁的索引刷新 |
+| 7. 智能体 | MCP 服务器、Agent Bricks、Snowflake CoWork 与 Cortex Agents、Bedrock agents、LangGraph | 工具调用、记忆记录 | 小型事务性读写（通常为 Postgres） |
+| 8. 反馈 | LangSmith、Arize、W&B Weave、湖仓表、lakeFS | 追踪、评分、偏好对 | 以追加为主的日志；长期保留 |
+
+*图 16.4 — 各阶段工具。前沿实验室在第 1–4 行的大部分内容上自建。企业市场是第 5–8 行加上非结构化数据的整理，这正是数据平台、向量厂商和存储厂商重叠之处。供应商列表仅为示例，并非详尽；产品状态见脚注。*[^dbx-dais25][^sf-summit26][^s3v-bedrock][^gemini-ap]
+
+**数据平台适合在哪里，不适合在哪里。** Databricks（Mosaic AI、Agent Bricks、Vector Search、Unity Catalog）、Snowflake（Cortex AI、Cortex Search、CoWork）、AWS（SageMaker Unified Studio、Bedrock）和 Google（Vertex AI，已于 2026 年 4 月更名为 Gemini Enterprise Agent Platform）[^gemini-ap] 都覆盖了阶段 5–8 以及企业规模的阶段 2。它们的卖点是：数据治理、数据血缘和访问控制已经存在于平台中，因此上下文和反馈也应该放在平台上（[第 21 章](ch21-ml-platforms-feature-stores-llmops.md)；[第 25 章](../04-company-deep-dives/ch25-databricks.md)）。它们在前沿预训练中基本缺席。实验室不会从数据仓库中运行 16,000 块 GPU 的作业，其整理技术栈也是量身定制的。Databricks 以 $1.3B 收购 MosaicML（2023 年），是押注中等规模的定制预训练会成为一个企业市场。后来这项业务被并入 Agent Bricks，表明市场转而选择了 RAG 和智能体。[^mosaic]
+
+**版本管理**是横向贯穿的一层。lakeFS 在对象存储之上增加了 Git 风格的分支、提交与合并，使训练运行可以锁定某个精确的数据集提交。lakeFS 于 2025 年 11 月接管了 DVC 开源项目的维护工作。[^lakefs] Iceberg 和 Delta 的时间旅行为表提供同样的锁定能力（[第 7 章](../01-data-systems-foundations/ch07-open-table-formats.md)）。向量索引是薄弱环节：很少有团队能说清某个答案是由哪个索引版本产生的。
+
+## 历史与发展轨迹
+
+```mermaid
+timeline
+    title AI 数据生命周期里程碑
+    2020 : RAG 论文将检索器与生成器配对 : GPT-3 仅保留约百分之一的爬取字节
+    2022 : InstructGPT 确立 RLHF 范式 : Constitutional AI 引入 AI 反馈
+    2023 : DPO 去掉奖励模型 : Databricks 收购 MosaicML
+    2024 : Llama 3 在 15T token 上训练 : FineWeb 开放 15T token 语料 : RAG 在企业采用中领先
+    2025 : DeepSeek-R1 推广可验证奖励 : Llama 4 与 Qwen3 超过 30T token : RL 环境支出激增 : 上下文工程得名 : MCP 捐赠给 Linux Foundation
+    2026 : Bartz 案 1.5B 美元和解获批 : Vertex AI 更名为 Gemini Enterprise Agent Platform : 推出 Cortex Training
+```
+
+*图 16.5 — 重心从预训练规模（2020–2024 年）转向后训练和上下文（2025–2026 年）。每一次转移都把价值推向更稀缺、治理更完善的数据。*
+
+共有三个阶段。**规模阶段（2020–2023 年）：** 更好的模型来自更多的 token 和参数，数据工作意味着过滤爬取结果。**质量阶段（2023–2024 年）：** FineWeb-Edu 和 Llama 3 的数据配比表明，经分类器筛选的数据和精心的配比胜过原始数据量。[^fineweb][^llama3-paper] **经验阶段（2025 年起）：** 可用的网络文本已接近枯竭，因此实验室通过合成生成、RL 环境和验证器来制造新数据，而企业则在上下文上展开竞争。下一个可能的约束是权利。授权协议和法院和解正在把数据来源变成一条成本线，而企业飞轮依赖于客户合同中的同意条款。两者都有利于保留数据血缘的平台。预计"AI 就绪数据"类产品（分类、PII 标记、版本化的非结构化语料）将继续向数据平台和存储平台整合。
+
+## 关键数字
+
+| 指标 | 数值 | 口径 | 来源 / 日期 |
+|---|---|---|---|
+| Common Crawl 月度快照（2026 年 8 月） | 约 2.14B 个网页，未压缩约 360 TiB | 发布方披露 | Common Crawl，2026-08[^cc-aug26] |
+| Common Crawl 存档 | >300B 个网页 | 发布方披露 | Common Crawl 网站，2026[^cc-home] |
+| GPT-3 的 Common Crawl 过滤 | 输入 45 TB 压缩文本，保留 570 GB | 论文披露 | Brown 等，2020-05-28[^gpt3] |
+| FineWeb | 来自 96 个快照的 15T token，约 44 TB；数据集卡片现为 >18.5T | 项目披露 | Penedo 等，2024-06；HF 卡片[^fineweb][^fineweb-card] |
+| FineWeb-Edu | 1.3T token | 项目披露 | Penedo 等，2024-06[^fineweb] |
+| Llama 3 预训练 | >15T token（约为 Llama 2 的 7 倍） | 公司披露 | Meta，2024-04-18[^llama3-blog] |
+| Llama 4 预训练 | >30T token | 公司披露 | Meta，2025-04-05[^llama4] |
+| Qwen3 预训练 | 约 36T token，119 种语言 | 公司披露 | Qwen 技术报告，2025-05[^qwen3] |
+| Llama 3 训练存储 | 240 PB，持续 2 TB/s，峰值 7 TB/s | 论文披露 | Llama 3 论文，2024-07[^llama3-paper] |
+| Llama 3 作业中断 | 54 天内 466 次 | 论文披露 | Llama 3 论文，2024-07[^llama3-paper] |
+| 完整检查点，405B 参数 | 约 5.7 TB（含梯度约 6.5 TB） | 估算（约 14 字节/参数；含梯度为 16） | 本章 |
+| InstructGPT 数据集 | 约 13k SFT、约 33k RM、约 31k RL 提示词 | 论文披露 | Ouyang 等，2022-03[^instructgpt] |
+| Llama 3 后训练人工标注样本 | >10M | 公司披露 | Meta，2024-04-18[^llama3-blog] |
+| 投毒门槛 | 约 250 份文档（13B 模型训练 token 的 0.00016%） | 研究结果 | Anthropic 等，2025-10[^poison] |
+| 组织数据中非结构化数据占比 | 2022 年产生数据的约 90% | 分析师估算，厂商赞助 | IDC，经由 StorageNewsletter，2023-09-07[^idc] |
+| 使用 RAG 与微调的企业部署比例 | 51% 对 9%（2024 年） | 调查，媒体报道 | Menlo Ventures，2024-11[^menlo24] |
+| 企业生成式 AI 支出 | 约 $37B（2025 年），增长约 3.2 倍 | 基于调查的估算 | Menlo Ventures，2025-12-09[^menlo25] |
+| 因缺乏 AI 就绪数据而被放弃的 AI 项目 | 到 2026 年为 60% | 分析师预测 | Gartner，2025-02-26[^gartner] |
+| Bartz v. Anthropic 和解 | $1.5B，约每部作品 $3,000 | 法院批准的和解 | Jurist，2026-07[^bartz] |
+
+*图 16.6 — 整理后的预训练语料只有数十 TB，但为其提供服务的基础设施却达到数百 PB 和每秒数 TB。企业层面的数字关乎采用率和就绪度，而非字节数。*
+

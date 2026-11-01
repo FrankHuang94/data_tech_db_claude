@@ -230,3 +230,86 @@ xychart-beta
 *图 18.7 — 没有哪种算法占绝对优势。内存负担得起时，HNSW 在延迟上胜出。在十亿规模下，IVF-PQ 和 DiskANN 在成本上胜出。对于大规模、多为冷数据、多租户的数据，"聚类放在对象存储上"的设计在成本上胜出。资料来源：本章引用的算法论文和产品文档。*
 
 更深层的权衡在于**内存成本与漏检成本**之间。一个把前 20 个分块送往重排序器的消费级聊天机器人，可以容忍廉价索引带来的 0.90 召回率。法律或医疗检索系统则可能愿意为 0.99 付费。脱离嵌入模型、分块方式和过滤条件，这两个数字都没有多大意义。从强嵌入模型换到弱嵌入模型的团队，损失的质量往往比任何索引设置所能弥补的还要多。
+
+## 主要参与者
+
+| 产品 | 类型 | 索引算法 | 主要数据层级 | 部署方式 | 2025–26 年要点 |
+|---|---|---|---|---|---|
+| Pinecone | 专用，闭源 | 专有（无服务器） | 对象存储 + 缓存 | 托管 SaaS | 自 2024 年 1 月起无服务器；自 2025 年 9 月起 CEO 为 Ash Ashutosh[^pinecone-sls][^pinecone-ceo] |
+| Weaviate | 专用，开源（BSD） | HNSW、flat、dynamic；PQ/BQ/SQ | RAM + 磁盘 | 开源、云 | 最近一次定价轮为 2023 年 $50M B 轮（CSV）[^funding] |
+| Qdrant | 专用，开源（Apache 2.0，Rust） | 载荷感知 HNSW；标量、二值、PQ | RAM 或 mmap 磁盘 | 开源、云、混合 | 2026 年 3 月 $50M B 轮（CSV）[^funding] |
+| Milvus / Zilliz | 专用，开源（LF AI） | HNSW、IVF、DiskANN、GPU CAGRA、RaBitQ | 分层：RAM、SSD、对象存储 | 开源、Zilliz Cloud | Milvus 2.6（2025 年 6 月）分层存储，无需 Kafka 的 WAL[^milvus26] |
+| Chroma | 专用，开源（Apache 2.0） | 本地 HNSW；云端 SPANN + SPFresh | 对象存储 | 开源、Chroma Cloud | Chroma Cloud 于 2025 年 8 月发布[^chroma] |
+| LanceDB | 嵌入式 / 湖仓格式 | IVF-PQ、HNSW 变体 | 对象存储上的 Lance 文件 | 开源、云 | 2025 年 6 月 $30M A 轮（CSV）[^funding] |
+| turbopuffer | 专用，闭源 | SPFresh 质心、BM25 | 对象存储 + NVMe 缓存 | 托管 SaaS | 2025 年 12 月获 Thrive Capital 种子轮（媒体报道）[^tpuf-funding] |
+| Vespa | 搜索与排序引擎 | HNSW 加张量排序 | RAM + 磁盘 | 开源、Vespa Cloud | 2023 年 10 月从 Yahoo 分拆（2025 年前的知识，未重新抓取）[VERIFY: Vespa.ai 分拆以来的融资情况] |
+| pgvector / pgvectorscale | Postgres 扩展 | HNSW、IVFFlat；StreamingDiskANN | Postgres 页面 | 各大云的 Postgres | 0.8.0 迭代扫描（2024 年 11 月）；0.8.1 支持 PG18[^pgvector] |
+| Elasticsearch / OpenSearch | 搜索引擎功能 | HNSW（Lucene）、BBQ；OpenSearch 中的 FAISS | RAM + 磁盘 | 开源、云 | BBQ 二值量化；通过 cuVS 进行 GPU 构建[^elastic][^cuvs] |
+| MongoDB Atlas Vector Search | 文档数据库功能 | HNSW、量化 | 搜索节点 | Atlas；社区版于 2026 年 6 月 GA | 2025 年 2 月收购 Voyage AI；2026 年 1 月推出 Voyage 4[^mdb-voyage][^voyage4] |
+| Oracle AI Vector Search（26ai） | 关系型数据库功能 | HNSW（内存内）、IVF（分区） | SGA 内存 + 表空间 | 本地部署、OCI、多云 | 26ai 经 2025 年 10 月版本更新取代 23ai；不额外收费[^oracle] |
+| SQL Server 2025 / Azure SQL | 关系型数据库功能 | DiskANN | SSD 上的数据库页面 | 本地部署、Azure | VECTOR 类型于 2025 年 11 月 GA；本地部署的索引为预览版[^sqlserver] |
+| Azure Cosmos DB | NoSQL 功能 | DiskANN、量化 flat | SSD | Azure | DiskANN 于 2024 年 11 月 GA（NoSQL）[^cosmos] |
+| Redis | 内存内功能 | HNSW、FLAT、SVS-Vamana；向量集合 | RAM | 开源、云 | 带 int8/二值量化的向量集合（Redis 8）[^redis] |
+| Databricks Vector Search（文档中现称"AI Search"） | 湖仓功能 | 托管 ANN | Delta 表 + 端点 | Databricks | 存储优化型端点：10 亿+ 向量，约 250–500 ms（公司披露）[^dbx-vs] |
+| Snowflake（VECTOR 类型、Cortex Search） | 数据仓库功能 | 托管混合检索 | Snowflake 存储 | Snowflake | 向量 + 关键词混合检索服务[^snow-cortex] |
+| Amazon S3 Vectors | 存储服务功能 | 托管（未披露） | S3 | AWS | 2025 年 12 月 GA；每个索引 20 亿向量[^s3v] |
+| AlloyDB AI（ScaNN） | Postgres 兼容功能 | ScaNN | RAM + 磁盘 | Google Cloud、AlloyDB Omni | ScaNN 索引于 2024 年 10 月 GA[^alloydb] |
+
+*图 18.8 — 十九款产品，两种商业模式。专用厂商在规模、延迟和调优深度上竞争；功能型厂商以"无需新系统"竞争。对象存储型设计（turbopuffer、Chroma Cloud、S3 Vectors、Pinecone 无服务器）正是价格压缩的来源。*
+
+![数据集中向量数据库融资轮次的柱状图：Zilliz $60M（2022）、Weaviate $50M（2023）、Pinecone $100M（2023）、Qdrant $28M（2024）、LanceDB $30M（2025）和 Qdrant $50M（2026），显示自 2023 年以来没有超过 $100M 的轮次](../assets/charts/vector_db_funding.png)
+
+*图 18.9 — 自 2023 年以来，纯向量数据库公司的融资轮次规模都不大，Pinecone 2023 年的 B 轮仍是数据集中的最高点。资本反而流向了吸收这一功能的平台。资料来源：`data/private_funding.csv`；Chroma 2023 年的种子轮因金额未经确认而未计入。*[^funding]
+
+### 独立向量数据库能否存活？
+
+**看空逻辑：功能被吸收加上价格压缩。** 我们判断，大多数企业语料库的规模以百万向量计，而非十亿。在这种规模下，在客户已经运行的数据库中使用 pgvector 或 MongoDB 就足够了。这还解决了独立系统带来的问题：让嵌入向量与源数据行保持同步、执行同样的访问控制，以及与关系型过滤条件进行连接。超大规模云厂商已把这类产品变成按 GB 定价的存储功能，例如 S3 Vectors。[^s3v] 融资情况也反映了这一点。Pinecone 自 2023 年以来未进行任何定价轮融资，据报道曾与银行家就出售事宜进行初步接触。Calcalist 援引 The Information 的报道称，Oracle、IBM、MongoDB 和 Snowflake 是潜在买家（媒体报道；尚未宣布交易）。[^pinecone-sale] Weaviate 最近一次定价轮可追溯到 2023 年。[^funding] 当一个类别中的头部公司不再融资时，市场就是在把它当作一项功能来定价。
+
+**看多逻辑：规模、延迟和专门化工作负载。** 困难场景在增加，而不是减少。代码搜索和智能体记忆产品要跨越海量租户，为数十亿个小型、频繁更新的向量建立索引。推荐和广告系统需要在极高 QPS 下实现低毫秒级延迟。多模态语料库（视频帧、图像）会使向量数量成倍增长。通用数据库难以应对这些场景：Postgres 缓冲池中的 HNSW 会与 OLTP 争夺内存；索引构建会争夺 CPU；在海量命名空间之间实现多租户隔离，也不是关系型引擎的设计初衷。较新的纯向量数据库公司并未试图在功能上击败老牌厂商，而是把平台迁移到对象存储上，以每向量成本取胜。Qdrant 于 2026 年 3 月完成的 $50M B 轮表明，投资者仍然支持有市场牵引力的专注型厂商。[^funding]
+
+**我们的观点。** 市场的中间地带属于"作为功能的向量"，而这个市场大体上已经尘埃落定。独立厂商会在两端存活：超大规模、多租户、成本敏感的一端（对象存储原生设计），以及对延迟要求严苛、高 QPS 的一端（专用引擎和 GPU）。对许多厂商而言，可能的退出方式是被数据库、云或搜索厂商收购，这符合 IBM–DataStax 和 MongoDB–Voyage 的模式（[第 32 章](../04-company-deep-dives/ch32-ai-native-data-companies.md)）。最有力的反驳是：RAG 质量更多取决于混合检索、重排序和数据新鲜度，而不是原始的 ANN 速度。一家掌握完整检索管道的厂商，有可能成为一个持久的平台，而不只是一项功能。
+
+## 历史与发展轨迹
+
+```mermaid
+timeline
+    title 嵌入与向量检索，2011 至 2026 年
+    2011 : Jegou、Douze 和 Schmid 发表乘积量化论文
+    2016 : HNSW 论文发布于 arXiv
+    2017 : FAISS 十亿级 GPU 检索论文
+    2019 : NeurIPS 上的 DiskANN 将十亿向量放在单个 SSD 节点上
+    2020 : Google ScaNN
+    2021 : SPANN 将倒排列表放在磁盘上
+    2022 : MTEB 基准测试与 Matryoshka 嵌入
+    2023 : Pinecone 融资 1 亿美元 : pgvector 增加 HNSW : MongoDB Atlas Vector Search GA
+    2024 : OpenAI text-embedding-3 : Pinecone 无服务器 : AlloyDB ScaNN 与 Cosmos DB DiskANN GA
+    2025 : MongoDB 收购 Voyage AI : Oracle AI Database 26ai : SQL Server 2025 : S3 Vectors GA
+    2026 : Voyage 4 模型 : Qdrant B 轮 : MongoDB 社区版向量检索 GA
+```
+
+*图 18.10 — 算法在 2021 年前已基本成型。2023–2026 年的故事是商业层面的：ChatGPT 之后的一轮融资热潮，随后这一功能迅速被数据库和存储吸收。*
+
+这些算法源自 2011 年至 2021 年间 INRIA、Meta、Microsoft 和 Google 在网络规模图像搜索和广告搜索方面的工作。[^pq][^hnsw][^faiss][^diskann][^scann][^spann] ChatGPT 几乎在一夜之间把它们变成了一个产品类别。2023 年，Pinecone 完成 $100M B 轮融资，[^pinecone-b] pgvector 在 0.5.0 版本中加入 HNSW，[^pgvector-cl] MongoDB 使 Atlas Vector Search 正式 GA。[^mdb-vs] 2024–2025 年的阶段带来了吸收和平台迁移。Pinecone 转向以对象存储为后端的无服务器设计。[^pinecone-sls] Microsoft 将 DiskANN 置入 Cosmos DB 和 SQL Server。[^cosmos][^sqlserver] Oracle 推出了不额外收费的 AI Vector Search。[^oracle] AWS 使向量成为 S3 的基本能力。[^s3v] 嵌入模型被整合进数据库（MongoDB–Voyage），并默认采用 Matryoshka 截断和量化输出。[^mdb-voyage][^gemini-emb][^cohere-emb]
+
+让厂商保持诚实的基准测试是 MTEB，即大规模文本嵌入基准（Massive Text Embedding Benchmark，2022），如今已扩展为覆盖 250 多种语言、500 多项任务的 MMTEB（ICLR 2025）。[^mteb] 其排行榜每隔几个月就会洗牌一次，开放权重模型（BGE、E5、Nomic、Jina、Qwen 系列嵌入模型）经常与商业模型不相上下。在 MMTEB 论文中，总体表现最好的公开模型是相对较小的 multilingual-e5-large-instruct。[^mteb] 对买方而言，这意味着嵌入质量正在快速趋同。持久的成本在于每次模型变更时对语料库的重新嵌入，以及承载结果的索引。
+
+展望 2027 年，可以看到三个方向。第一，更多的分层：对于约 1 亿向量以上的场景，闪存原生和对象存储原生索引将成为默认选项。第二，更多 GPU 辅助的索引构建，因为随着模型改进，重新嵌入的周期会变短。[^cuvs] 第三，检索引擎与 Lance、Iceberg 等湖仓格式融合，使向量成为受治理表中的又一列（[第 7 章](../01-data-systems-foundations/ch07-open-table-formats.md)、[第 24 章](ch24-data-meets-compute-and-storage.md)）。
+
+## 关键数字
+
+| 指标 | 数值 | 依据 | 来源 / 日期 |
+|---|---|---|---|
+| 嵌入大小，OpenAI text-embedding-3-large | 3,072 维（float32 下 12 KB） | 供应商规格；字节数 = 算术 | OpenAI，2024-01-25[^openai-emb] |
+| Gemini Embedding 默认大小 | 3,072 维；推荐截断为 1,536 维和 768 维 | 供应商规格 | Google，2025-07-14[^gemini-emb] |
+| 10 亿 × 768 维 float32 | 原始约 3.07 TB | 算术 | 本章 |
+| 同一语料库使用 PQ（每向量 64 B） | 约 64 GB | 算术 | Jégou 等的方法[^pq] |
+| DiskANN 在 SIFT1B 上，单节点 | >5,000 QPS，平均 <3 ms，95%+ 1-recall@1，64 GB RAM | 作者的基准测试 | NeurIPS 2019[^diskann] |
+| S3 Vectors 规模 | 每个索引 20 亿向量；每个存储桶 20 万亿；查询约 100 ms | 公司披露 | AWS，2025-12-02[^s3v] |
+| Databricks 存储优化型端点 | 10 亿+ 向量；延迟约 250–500 ms | 公司披露（文档） | Databricks 文档，无日期[^dbx-vs] |
+| AlloyDB ScaNN | >10 亿向量；p95 < 25 ms | 公司披露 | Google Cloud，2024-10-03[^alloydb] |
+| MongoDB–Voyage AI 价格 | $220M | 媒体报道（现金 + 股票） | 2025-02-24[^mdb-voyage] |
+| Pinecone B 轮 | $100M，投后估值 $750M | 媒体报道 | 2023-04-27[^pinecone-b] |
+| Qdrant B 轮 | $50M | 媒体报道 | 2026-03-12[^funding] |
+| 二值量化的内存缩减 | 相对 float32 约 32 倍 | 厂商披露 | Elastic、Redis 文档[^elastic][^redis] |
+
+*图 18.11 — 带进会议的关键数字。各厂商的延迟数字彼此不可比，因为召回率目标、维度和过滤条件各不相同。*

@@ -191,8 +191,8 @@ timeline
   1990s : Microsoft、Hyperion 等推出 OLAP cube 和 MDX
         : BusinessObjects universe 将业务术语映射到 SQL
   2012 to 2019 : Looker 与 LookML 带来基于 Git 的建模
-              : 2019 年 Google 宣布以 26 亿美元收购 Looker
-              : Salesforce 以 157 亿美元收购 Tableau
+              : 2019 年 Google 宣布以 2.6B 美元收购 Looker
+              : Salesforce 以 15.7B 美元收购 Tableau
   2021 to 2023 : Cube、Transform、Malloy 掀起无头 BI 浪潮
               : dbt Labs 收购 Transform 与 MetricFlow
               : ThoughtSpot 收购 Mode
@@ -233,3 +233,90 @@ timeline
 | Fabric 付费客户 | 19,000+ | 公司在 FabCon 2025 上披露，经二手回顾转引 | Theobald Software, 2025[^fabric-cust] |
 
 *图 14.7 — 基准测试显示，原始文本转 SQL 与受治理语义之间存在巨大的准确率差距；而即便定价模式正向按用量计费转变，席位价格仍在上涨。*
+
+## 存储桥接
+
+本章无需存储桥接：语义层编译 SQL，并不改变字节的存储方式。与 Everpure 的关联在于元数据路径，它从数据分类（[第 15 章](ch15-governance-security-privacy.md)）延伸到语义上下文，再到智能体。见[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)。
+
+## 对话手册
+
+**向产品经理提的问题**
+
+1. "你们的指标定义目前放在哪里：在各个 BI 工具中、在 dbt 中，还是在平台中？财务部门由谁来签批对'净收入'的变更？"
+2. "当你们的 AI 助手遇到一个没有受治理指标可依据的问题时，它会怎么做：拒绝回答、退回到原始 SQL，还是发出警告？"
+3. "如果客户在 Snowflake semantic views *和* Power BI 中都有定义，你们如何保持同步？是否通过 OSI 导入或导出？"
+
+**向工程师提的问题**
+
+1. "你们的语义层如何防止跨一对多关联时出现扇出和深坑陷阱（chasm trap）导致的重复计数？"
+2. "行级和列级策略是在语义层执行、在数据仓库执行，还是两者兼有？智能体的查询以哪个身份运行？"
+3. "你们的聚合感知或缓存策略是什么？当上游 dbt 模型重建时，如何使缓存失效？"
+
+**好的回答是什么样的。** 定义以版本控制的代码形式存在，并有具名负责人；针对智能体有明确的拒答行为；安全策略在数据仓库层面以最终用户的身份执行，而不是使用共享服务账号；对 OSI 导入和导出有清晰的答复；基准测试结论注明问题集和范围。
+
+**不要这样说**
+
+- "LLM 很快就会好到可以跳过语义层。"更好的模型能修正 SQL 语法，但无法推断你的财务日历，也无法推断你的公司所说的"区域"指什么。
+- "语义层是一个数据库。"它编译查询并缓存结果，执行查询的仍是数据仓库。
+- "OSI 意味着定义现在已完全可移植。"v1.0 涵盖核心指标、维度和关系，厂商特有的功能仍无法转换。
+- "dbt 被收购了，所以无头 BI 已死。"这些理念已进入平台和标准，淡出的只是独立初创公司的模式。
+
+## 深入阅读
+
+> **深入（L3）。** 阅读 MetricFlow 源代码（Apache 2.0），了解一个指标请求如何变成数据流计划，再变成特定方言的 SQL。将其与 Snowflake 的 `SEMANTIC_VIEW()` 查询语法以及 Databricks 在 metric views 上使用的 `MEASURE()` 函数进行比较。研究 GitHub 上 OSI v1.0 的 YAML 模式。关于准确率评估方法，阅读 data.world 的论文（arXiv:2311.07509）和开放的 `dbt-llm-sl-bench` 代码库，并留意各自如何判定"正确"。
+
+## 关键术语
+
+- [语义层（Semantic layer）](../glossary.md#semantic-layer) — 受治理的业务定义（指标、维度、关联、策略），可将请求编译为 SQL。
+- [指标层（Metrics layer）](../glossary.md#metrics-layer) — 专注于指标定义的语义层；常与语义层互换使用。
+- [度量（Measure）](../glossary.md#measure) — 带有业务规则的聚合，例如净收入。
+- [维度（Dimension）](../glossary.md#dimension) — 用于对度量进行分组或过滤的属性，例如区域或财季。
+- [OLAP cube（OLAP 立方体）](../glossary.md#olap-cube) — 以 MDX 查询的预聚合多维存储。
+- [MDX](../glossary.md#mdx) — Multidimensional Expressions（多维表达式），OLAP cube 的查询语言。
+- [LookML](../glossary.md#lookml) — Looker 基于代码的语义建模语言。
+- [无头 BI（Headless BI）](../glossary.md#headless-bi) — 与任何单一可视化工具解耦的语义层。
+- [MetricFlow](../glossary.md#metricflow) — dbt Semantic Layer 背后 dbt 的开源指标编译器。
+- [语义视图（Semantic view）](../glossary.md#semantic-view) — Snowflake 的模式级语义模型对象。
+- [指标视图（Metric view）](../glossary.md#metric-view) — Databricks Unity Catalog 中定义受治理指标的对象。
+- [开放语义交换（Open Semantic Interchange）](../glossary.md#open-semantic-interchange) — 旨在实现语义模型可移植的跨厂商倡议及规范。
+- [聚合感知（Aggregate awareness）](../glossary.md#aggregate-awareness) — 在预构建汇总表能够回答查询时，将查询路由到该汇总表。
+- [扇出（Fan-out）](../glossary.md#fan-out) — 一对多关联导致行数倍增，从而虚增求和结果。
+- [文本转 SQL（Text-to-SQL）](../glossary.md#text-to-sql) — 由 LLM 根据自然语言问题生成 SQL。
+- [对话式分析（Conversational analytics）](../glossary.md#conversational-analytics) — 在 BI 或数据平台中，基于受治理数据进行的自然语言问答。
+- [模型上下文协议（Model Context Protocol）](../glossary.md#model-context-protocol) — 向 LLM 智能体暴露工具和数据的开放标准。
+
+## 资料来源
+
+[^dw-bench]: Juan Sequeda, Dean Allemang, Bryon Jacob (data.world), "A Benchmark to Understand the Role of Knowledge Graphs on Large Language Model's Accuracy for Question Answering on Enterprise SQL Databases," arXiv:2311.07509, https://arxiv.org/abs/2311.07509，2023-11-13 发布；完整报告 https://data.world/mstatic/assets/pdf/kg_llm_accuracy_benchmark_11132023_public.pdf；2026-11-01 检索。
+[^atscale-bench]: BigDATAwire, "AtScale Claims Text-to-SQL Breakthrough with Semantic Layer," https://bigdatawire.com/2024/08/15/atscale-claims-text-to-sql-breakthrough-with-semantic-layer，2024-08-15 发布；2026-11-01 检索。厂商主导的测试（Gemini 1.5 Pro，40 个 TPC-DS 问题）。
+[^dbt-bench]: dbt Labs, "Semantic Layer vs. Text-to-SQL: 2026 benchmark update," https://docs.getdbt.com/blog/semantic-layer-vs-text-to-sql-2026，2026-04 发布；2026-11-01 检索。厂商主导；ACME Insurance 数据集，11 个问题，每个模型运行 20 次。
+[^looker-twothirds]: Google Cloud blog, "How Looker's semantic layer enhances gen AI trustworthiness," https://cloud.google.com/blog/products/business-intelligence/how-lookers-semantic-layer-enhances-gen-ai-trustworthiness，2025 年发布；2026-11-01 检索。公司披露，内部测试。
+[^osi-launch]: Snowflake press release, "Snowflake, Salesforce, dbt Labs, and More, Revolutionize Data Readiness for AI with Open Semantic Interchange Initiative," https://snowflake.com/en/news/press-releases/snowflake-salesforce-dbt-labs-and-more-revolutionize-data-readiness-for-ai-with-open-semantic-interchange-initiative，2025-09-23 发布；2026-11-01 检索。
+[^osi-v1]: Snowflake blog, "Open Semantic Interchange's specs finalized," https://www.snowflake.com/en/blog/open-semantic-interchanges-specs-finalized/，2026-01-27 发布；dbt Labs, "The OSI spec updates," https://www.getdbt.com/blog/the-osi-spec-updates，2026-01-29 发布；2026-11-01 检索。
+[^metricflow-oss]: dbt Labs, "dbt Labs Affirms Commitment to Open Semantic Interchange by Open Sourcing MetricFlow," https://www.getdbt.com/blog/dbt-labs-affirms-commitment-to-open-semantic-interchange-by-open-sourcing-metricflow，2025-10-14 发布；2026-11-01 检索。
+[^1touch]: World Wide Technology（转载 Pure Storage 新闻稿），"Pure Storage rebrands to Everpure and announces intent to acquire 1touch," https://www.wwt.com/news/pure-storage-rebrands-to-everpure-and-announces-intent-to-acquire-1touch，2026-02-23 发布；Computer Weekly, "Everpure aims to bridge AI data gap with Universal Data Intelligence," https://www.computerweekly.com/news/366644438/Everpure-aims-to-bridge-AI-data-gap-with-Universal-Data-Intelligence，2026-06 发布；2026-11-01 检索。
+[^ts-semantics]: IT Brief, "ThoughtSpot unveils Spotter Semantics AI-native layer," https://itbrief.com.au/story/thoughtspot-unveils-spotter-semantics-ai-native-layer，2026-03-13 发布；2026-11-01 检索。
+[^dbx-uc26]: Databricks blog（韩文版），"What's new in Unity Catalog at Data + AI Summit 2026," https://www.databricks.com/kr/blog/whats-new-unity-catalog-data-ai-summit-2026，2026-06 发布；Atlan, "What is Unity Catalog Metrics?," https://atlan.com/know/ai-agent/databricks/unity-catalog-metrics/，2026 年发布；2026-11-01 检索。功能状态部分来自二手来源。
+[^dbx-mv]: Databricks 文档，"Unity Catalog metric views," https://docs.databricks.com/aws/en/metric-views，2026-11-01 检索；Databricks 平台发布说明，2025 年 5 月（metric views 公开预览，2025-05-29），https://docs.databricks.com/aws/release-notes/product/2025/may，2026-11-01 检索。
+[^sf-sv]: Snowflake 文档，"Summit announcements: June 02–05, 2025"（semantic views 定义功能正式可用，查询功能处于预览），https://docs.snowflake.com/en/release-notes/2025/june-summit，2025-06 发布；"Oct 02, 2025: Using the database object explorer in Snowsight to create and manage semantic views (GA)," https://docs.snowflake.com/release-notes/2025/other/2025-10-02-semantic-views-in-snowsight；2026-11-01 检索。
+[^sf-cowork]: IT Brief Australia, "Snowflake renames AI tools amid broader platform push," https://itbrief.com.au/story/snowflake-renames-ai-tools-amid-broader-platform-push，2026-06 发布；Snowflake 文档，"Getting started with Snowflake CoWork," https://docs.snowflake.com/en/user-guide/snowflake-cortex/snowflake-cowork/getting-started；2026-11-01 检索。
+[^looker-ca]: Google Cloud blog, "Conversational Analytics in Looker is now GA," https://cloud.google.com/blog/products/business-intelligence/looker-conversational-analytics-now-ga，2026 年发布 [VERIFY: 确切的正式可用日期]；2026-11-01 检索。
+[^looker-acq]: Alphabet Investor Relations, "Google to Acquire Looker," https://abc.xyz/investor/news/news-details/2019/Google-to-Acquire-Looker-06-06-2019/default.aspx，2019-06-06 发布；TechCrunch, "Google closes $2.6B Looker acquisition," https://techcrunch.com/2020/02/13/google-closes-2-6b-looker-acquisition/，2020-02-13 发布；2026-11-01 检索。
+[^ma-csv]: AI Data Atlas，`data/ma_deals.csv` 中关于 Google–Looker（TechCrunch 2020-02-13）、Salesforce–Tableau（Cooley, https://www.cooley.com/news/coverage/2019/2019-06-10-tableau-enters-agreement-to-sell-to-salesforce-for-15-billion，2019-06-10）以及 Fivetran–dbt Labs（Fivetran 新闻稿；2026-06-01 完成）的记录行；2026-11-01 检索。
+[^transform]: Technical.ly, "dbt Labs acquiring Transform," https://technical.ly/startups/dbt-labs-acquiring-transform/，2023-02-08 发布；2026-11-01 检索。金额未披露。
+[^mode]: TechCrunch, "ThoughtSpot acquires Mode Analytics, a BI platform, for $200M in cash and stock," https://techcrunch.com/2023/06/26/thoughtspot-acquires-mode-analytics-a-bi-platform-for-200m-in-cash-and-stock，2023-06-26 发布；ThoughtSpot 新闻稿，https://www.thoughtspot.com/press-releases/thoughtspot-acquires-mode-analytics-for-200m；2026-11-01 检索。
+[^malloy]: BigDATAwire, "Looker Founder Helps Create New Data Exploration Language, Malloy," https://www.bigdatawire.com/2022/05/03/looker-founder-helps-create-new-data-exploration-language-malloy，2022-05-03 发布；2026-11-01 检索。
+[^cube-25m]: DBTA, "Cube Raises $25M to Supercharge the Universal Semantic Layer, Backed by Databricks," https://www.dbta.com/Editorial/News-Flashes/Cube-Raises-25M-to-Supercharge-the-Universal-Semantic-Layer-Backed-by-Databricks-164448.aspx，2024-06 发布；2026-11-01 检索。媒体报道。
+[^cube-d3]: SiliconANGLE, "Semantic data layer startup Cube automates analytics with AI agents," https://siliconangle.com/2025/06/02/semantic-data-layer-startup-cube-automates-analytics-ai-agents/，2025-06-02 发布；Cube 文档，https://cube.dev/docs；2026-11-01 检索。
+[^pbi-prep]: Microsoft Learn, "Prepare your data for AI"（AI 数据模式、已验证答案、AI 指令），https://learn.microsoft.com/en-us/power-bi/create-reports/copilot-prepare-data-ai，2026-11-01 检索。
+[^pbi-price]: Microsoft Power BI blog, "Important update to Microsoft Power BI pricing," https://community.fabric.microsoft.com/t5/Power-BI-Updates-Blog/Important-update-to-Microsoft-Power-BI-pricing/ba-p/5174341，2024-11 发布；The Register, "Microsoft's new Power BI prices," https://www.theregister.com/2025/04/02/microsoft_power_bi_hikes/，2025-04-02 发布；2026-11-01 检索。标价。
+[^pbi-copilot]: Microsoft Learn, "Enable Copilot in Microsoft Fabric," https://learn.microsoft.com/en-us/training/modules/manage-copilot-fabric/enable-copilot；Microsoft Fabric blog, "Copilot and AI capabilities will be accessible to all paid SKUs," https://community.fabric.microsoft.com/t5/Fabric-Updates-Blog/Copilot-and-AI-Capabilities-will-be-accessible-to-all-paid-SKUs/ba-p/5172881，2025 年发布；2026-11-01 检索。
+[^tableau-price]: Tableau, "Pricing," https://www.tableau.com/pricing，2026-11-01 检索。标价，Standard 版，按年计费。
+[^tableau-next]: IT Brief UK, "Salesforce launches Tableau Next to automate data analysis," https://itbrief.co.uk/story/salesforce-launches-tableau-next-to-automate-data-analysis，2025-04 发布；Tableau, "Tableau Next," https://tableau.com/products/tableau-next；2026-11-01 检索。根据 `meta/verified-facts.md` 第 11 项，Salesforce 在 Dreamforce 2025（约 2025-10-14）上将 Data Cloud 更名为 Data 360。
+[^genie-ga]: Databricks blog, "AI/BI Genie is now Generally Available," https://www.databricks.com/blog/aibi-genie-now-generally-available，2025-06-12 发布；2026-11-01 检索。Genie One 依据 AI Data Atlas `meta/research-briefing.md`（DAIS 2026 报道）。
+[^sigma-e]: Sigma, "Series E announcement," https://sigmacomputing.com/resources/announcements/series-e，2026-05-18 发布；SiliconANGLE, "Sigma Computing seals $80M funding round, pivots toward agentic analytics," https://siliconangle.com/2026/05/18/sigma-computing-seals-80m-funding-round-pivots-toward-agentic-analytics/，2026-05-18 发布；2026-11-01 检索。ARR 为公司披露；估值为媒体报道。
+[^omni-c]: Omni, "Omni Raises Series C at $1.5B Valuation," https://omni.co/blog/press-release-omni-series-c-funding，2026-04-23 发布；SiliconANGLE, https://siliconangle.com/2026/04/23/omni-raises-120m-round-backed-gv-ai-analytics-platform/，2026-04-23 发布；2026-11-01 检索。
+[^hex-c]: Fortune via Yahoo Finance, "Exclusive: Hex raises a $70 million Series C," https://finance.yahoo.com/news/exclusive-hex-raises-70-million-110500797.html，2025-05 发布；2026-11-01 检索。
+[^gartner-2025]: CX Today, "Gartner Magic Quadrant for Analytics and Business Intelligence (ABI) Platforms 2025: The Rundown," https://www.cxtoday.com/customer-data-platform/gartner-magic-quadrant-for-analytics-and-business-intelligence-abi-platforms-2025-the-rundown/，2025-06 发布；Oracle 新闻稿，https://www.oracle.com/news/announcement/oracle-named-leader-in-2025-gartner-magic-quadrant-for-analytics-and-business-intelligence-platforms-2025-06-23/，2025-06-23 发布；2026-11-01 检索。付费报告的公开摘要。
+[^gartner-2026]: Tableau, "2026 Gartner Magic Quadrant for Analytics and Business Intelligence Platforms," https://www.tableau.com/asset/gartner-magic-quadrant；Qlik, https://www.qlik.com/us/gartner-magic-quadrant-business-intelligence；Google Cloud blog, "Looker in 2026 Gartner Analytics and BI Platforms MQ," https://cloud.google.com/blog/products/business-intelligence/looker-in-2026-gartner-analytics-and-bi-platforms-mq；报告日期 2026-06-29；2026-11-01 检索。
+[^fabric-cust]: Theobald Software, "SAP Meets Microsoft Fabric: Key Takeaways from FabCon 2025," https://theobald-software.com/en/blog/fabcon-2025，2025-04 发布；2026-11-01 检索。公司披露的数字，经二手回顾转引。

@@ -345,3 +345,95 @@ Microsoft 在 FabCon 2025 上表示，Fabric 已有超过 **19,000 家付费客�
 - “Fabric 以专有格式存储数据。” *OneLake 存储的是 Delta/Parquet，并暴露兼容 Iceberg 的元数据。*
 - “超大规模云厂商想干掉 Databricks 和 Snowflake。” *它们通过基础设施、云市场费用和承诺额度消耗从两家身上赚钱。*
 - 把“Dataplex”或“Agentspace”当作现行名称。*它们现在分别叫 Knowledge Catalog 和 Gemini Enterprise。*
+
+## 关键术语
+
+- [超大规模云厂商（Hyperscaler）](../glossary.md#hyperscaler) — 以全球数据中心规模运营的云服务商（AWS、Microsoft Azure、Google Cloud；通常也包括 Oracle OCI）。
+- [承诺消费额度（Committed spend）](../glossary.md#committed-spend) — 承诺在某朵云上消费最低金额以换取折扣的多年期合同。
+- [MACC](../glossary.md#macc) — Microsoft Azure Consumption Commitment，Microsoft 的承诺消费合同。
+- [EDP](../glossary.md#edp) — AWS Enterprise Discount Program，AWS 历史上的承诺消费合同。
+- [云市场（Cloud marketplace）](../glossary.md#cloud-marketplace) — 超大规模云厂商的线上商店，第三方软件可在其中购买并计入云账单。
+- [云市场消耗（Marketplace drawdown）](../glossary.md#marketplace-drawdown) — 把云市场购买计入客户的云承诺额度。
+- [第一方服务（First-party service）](../glossary.md#first-party-service) — 由云厂商自己销售、计费和支持的合作伙伴产品，例如 Azure Databricks。
+- [竞合（Coopetition）](../glossary.md#coopetition) — 与同一家公司同时竞争与合作。
+- [S3 Tables](../glossary.md#s3-tables) — AWS 存放在 S3 表存储桶中的托管 Apache Iceberg 表。
+- [S3 Vectors](../glossary.md#s3-vectors) — AWS 内置于 S3 的向量存储与查询能力。
+- [OneLake](../glossary.md#onelake) — Microsoft Fabric 的单一租户级逻辑数据湖。
+- [OneLake 快捷方式（OneLake shortcut）](../glossary.md#onelake-shortcut) — 无需复制即可把外部数据挂载到 OneLake 的指针。
+- [Microsoft Fabric](../glossary.md#microsoft-fabric) — Microsoft 基于 OneLake 和 Power BI 容量构建的 SaaS 分析套件。
+- [BigQuery](../glossary.md#bigquery) — Google 源自 Dremel 的无服务器数据仓库。
+- [Slot](../glossary.md#slot) — BigQuery 的查询计算容量单位。
+- [Knowledge Catalog](../glossary.md#knowledge-catalog) — Google Cloud 的数据治理与元数据目录，原名 Dataplex Universal Catalog。
+- [Exadata](../glossary.md#exadata) — Oracle 的工程化数据库硬件，把 SQL 过滤下推到存储服务器。
+- [超大规模云上的数据库（Database at hyperscaler）](../glossary.md#database-at-hyperscaler) — Oracle 在 Azure、Google Cloud 和 AWS 数据中心内运行基于 Exadata 的 Oracle Database 的模式。
+- [剩余履约义务（Remaining performance obligations）](../glossary.md#remaining-performance-obligations) — 已签约但尚未确认的收入（积压订单）。
+- [照付不议（Take-or-pay）](../glossary.md#take-or-pay) — 无论是否实际使用，买方都需为承诺量付费的合同。
+- [零 ETL（Zero-ETL）](../glossary.md#zero-etl) — 托管复制服务，无需客户自建数据管道即可让操作型数据在分析中可查询。
+- [数据镜像（Data mirroring）](../glossary.md#data-mirroring) — 把源数据库持续复制到另一平台的存储中。
+- [Iceberg REST 目录（Iceberg REST catalog）](../glossary.md#iceberg-rest-catalog) — 引擎读取和提交 Iceberg 表所用的开放 HTTP 协议。
+- [基于容量的定价（Capacity-based pricing）](../glossary.md#capacity-based-pricing) — 为预留的计算资源池付费，而非按查询付费。
+- [存算分离（Separation of storage and compute）](../glossary.md#separation-of-storage-and-compute) — 存储与查询计算独立扩展。
+- [湖仓一体（Lakehouse）](../glossary.md#lakehouse) — 在对象存储中的开放文件之上实现数据仓库级的管理与性能。
+- [数据主权（Data sovereignty）](../glossary.md#data-sovereignty) — 要求数据受特定司法辖区的法律与控制约束。
+- [整合元件制造商（Integrated device manufacturer）](../glossary.md#integrated-device-manufacturer) — 既设计又制造芯片的芯片公司；本章用作超大规模云厂商的类比。
+- [无晶圆厂（Fabless）](../glossary.md#fabless) — 只设计芯片、租用制造产能的芯片公司；本章用作 Databricks/Snowflake 的类比。
+
+## 资料来源
+
+[^gartner-dbms]: Gartner, "Market Share: Database Management Systems, Worldwide"（摘要），https://www.gartner.com/en/documents/6494271 与 https://www.gartner.com/en/documents/5441963，2025 年发布；The Register, "Gartner DBMS chart," https://www.theregister.com/2026/04/21/gartner_bamboozling_dbms_chart_shows/，2026-04-21 发布；经由 AI Data Atlas `data/market_sizes.csv`（2024 = $119.7B，+13.4%）；2026-11-01 检索。分析师估算；厂商排名未重新核实 [VERIFY]。
+[^goog-q3]: Alphabet Inc., Form 8-K Exhibit 99.1, "Alphabet Announces Third Quarter 2026 Results," https://www.sec.gov/Archives/edgar/data/0001652044/000165204426000080/googexhibit991q32026.htm，2026-10-28 发布；经由 `data/public_comps.csv`；2026-11-01 检索。GAAP。
+[^msft-q1]: Runtime Wire, "Microsoft revenue hits $92.3 billion as Azure growth accelerates to 48%," https://runtimewire.com/article/microsoft-revenue-hits-92-3-billion-as-azure-growth-accelerates-to-48，2026-10 发布；24/7 Wall St. 对同一公告的报道；经由 `data/public_comps.csv` 与 `meta/verified-facts.md` 第 3 项（收入 $92.3B +19%，Azure +48%，Microsoft Cloud $63.9B +30%，商业 RPO $677B +73%，资本开支 $39.4B）；2026-11-01 检索。对公司 2026-10-28/29 公告的媒体报道摘要；FY2027 Q1 = 2026 年 7–9 月（Microsoft 财年截至 6 月 30 日）。Azure 金额（~$33.2B）仅见于二手报道 [VERIFY: 需与 Microsoft 投资者关系资料核对]。
+[^amzn-q3]: Amazon.com, Inc., Form 8-K Exhibit 99.1, Q3 2026 results（截至 2026-09-30 的季度），https://www.sec.gov/Archives/edgar/data/0001018724/000101872426000038/amzn-20260930xex991.htm，2026-10-29 发布；经由 `meta/verified-facts.md` 第 2 项；2026-11-01 检索。AWS 分部净销售额 $46.0B（+39%；Q2 2026 为 +37%），GAAP；$184B 年化运行率为公司披露；Amazon 合并净销售额 $201.9B（+12%）。
+[^orcl-q1]: StorageNewsletter, "Oracle fiscal 1Q27 financial results," https://storagenewsletter.com/2026/09/23/oracle-fiscal-1q27-financial-results，2026-09-23 发布；经由 `data/public_comps.csv`；2026-11-01 检索。对 Oracle 公告的媒体报道摘要；FY2027 Q1 = 2026 年 6–8 月。
+[^orcl-fcf]: AI Data Atlas `data/company_financials.csv`，Oracle TTM 经营现金流 $46,940M，资本开支 –$75,660M，FCF –$28,720M（stockanalysis.com，https://stockanalysis.com/stocks/orcl/statistics/），截至 2026-10-20；2026-11-01 检索。输入项为 GAAP；FCF 为非 GAAP。
+[^comps]: AI Data Atlas `data/public_comps.csv`，Amazon、Alphabet、Microsoft 和 Oracle 各行（stockanalysis.com 市值与统计页面，https://stockanalysis.com/stocks/amzn/market-cap/ 等），截至 2026-10-23 至 2026-10-30；2026-11-01 检索。
+[^segments]: AI Data Atlas `data/ch28_cloud_segments.csv`（Amazon、Alphabet、Microsoft 和 Oracle 季度公告；2024–2025 年各行由起草者根据公司公告汇编，本次会话未重新抓取 [VERIFY]）；2026-11-01 检索。
+[^history]: 起草者汇编的公司公告，本次会话未重新抓取 [VERIFY: URL]：AWS, "Announcing Amazon S3," https://aws.amazon.com/about-aws/whats-new/2006/03/13/announcing-amazon-s3---simple-storage-service/，2006-03-14；W. Vogels, "Amazon DynamoDB," https://www.allthingsdistributed.com/2012/01/amazon-dynamodb.html，2012-01-18；Microsoft Azure 博客（Cosmos DB，Build 2017），2017-05；Oracle（Exadata，2008；Autonomous Database，OpenWorld 2017；Database@Google Cloud，2024-06；Database@AWS，2024-09）；2026-11-01 检索。
+[^dynamo]: G. DeCandia et al., "Dynamo: Amazon's Highly Available Key-value Store," SOSP 2007, https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf，2007-10 发布；2026-11-01 检索。
+[^redshift-2012]: Computerworld, "Amazon introduces data warehouse service," https://www.computerworld.com/article/1401411/amazon-introduces-data-warehouse-service.html，2012-11-28 发布；2026-11-01 检索。AWS 的定价说法。
+[^aurora]: A. Verbitski et al., "Amazon Aurora: Design Considerations for High Throughput Cloud-Native Relational Databases," SIGMOD 2017, https://pdos.csail.mit.edu/6.824/papers/aurora.pdf，2017-05 发布；W. Vogels, "Amazon Aurora ascendant," https://www.allthingsdistributed.com/2019/03/amazon-aurora-design-cloud-native-relational-database.html，2019-03 发布；2026-11-01 检索。
+[^glue-ga]: AWS What's New, "Amazon Athena now integrates with AWS Glue," https://aws.amazon.com/about-aws/whats-new/2017/08/amazon-athena-now-integrates-with-aws-glue，2017-08-14 发布；2026-11-01 检索。
+[^ra3-launch]: AWS What's New, "Amazon Redshift introduces RA3 nodes with managed storage enabling independent compute and storage scaling," https://aws.amazon.com/about-aws/whats-new/2019/12/amazon-redshift-announces-ra3-nodes-managed-storage/，2019-12 发布；2026-11-01 检索。
+[^zetl-2022]: Amazon, "AWS Announces Two New Capabilities to Move Toward a Zero-ETL Future on AWS," https://press.aboutamazon.com/2022/11/aws-announces-two-new-capabilities-to-move-toward-a-zero-etl-future-on-aws，2022-11-29 发布；2026-11-01 检索。
+[^zetl-ga]: AWS What's New, "AWS announces general availability of Amazon Aurora MySQL zero-ETL integration with Amazon Redshift," https://aws.amazon.com/about-aws/whats-new/2023/11/aws-general-availability-amazon-aurora-mysql-zero-etl-integration-redshift/，2023-11-07 发布；2026-11-01 检索。
+[^s3tables]: AWS News Blog, "New Amazon S3 Tables: Storage optimized for analytics workloads," https://aws.amazon.com/blogs/aws/new-amazon-s3-tables-storage-optimized-for-analytics-workloads/，2024-12-03 发布；2026-11-01 检索。性能数据为厂商说法。
+[^reinvent25]: AWS News Blog, "Top announcements of AWS re:Invent 2025," https://aws.amazon.com/blogs/aws/top-announcements-of-aws-reinvent-2025，2025-12 发布；Blocks & Files, "AWS piles on S3 upgrades from vector search to 50 TB objects," https://www.blocksandfiles.com/ai-ml/2025/12/03/aws-piles-on-s3-upgrades-from-vector-search-to-50-tb-objects/1704690，2025-12-03 发布；2026-11-01 检索。
+[^aws-analytics25]: AWS Big Data Blog, "AWS analytics at re:Invent 2025: unifying data, AI and governance at scale," https://aws.amazon.com/blogs/big-data/aws-analytics-at-reinvent-2025-unifying-data-ai-and-governance-at-scale，2025-12 发布；2026-11-01 检索。
+[^sm-lakehouse]: AWS News Blog, "Amazon S3 Tables integration with Amazon SageMaker Lakehouse is now generally available," https://aws.amazon.com/blogs/aws/amazon-s3-tables-integration-with-amazon-sagemaker-lakehouse-is-now-generally-available，2025-03-13 发布；2026-11-01 检索。
+[^glue-pricing]: AWS, "AWS Glue pricing"（Data Catalog 存储与请求费用、免费额度），https://aws.amazon.com/glue/pricing/，持续更新文档；2026-11-01 检索。
+[^glue-irc]: AWS Storage Blog, "Access data in Amazon S3 Tables using PyIceberg through the AWS Glue Iceberg REST endpoint," https://aws.amazon.com/blogs/storage/access-data-in-amazon-s3-tables-using-pyiceberg-through-the-aws-glue-iceberg-rest-endpoint/，无日期；2026-11-01 检索。
+[^dsql-ga]: AWS What's New, "Amazon Aurora DSQL is now generally available," https://aws.amazon.com/about-aws/whats-new/2025/05/amazon-aurora-dsql-generally-available，2025-05-27 发布；Business Wire, https://www.businesswire.com/news/home/20250527678337/en，2025-05-27；2026-11-01 检索。公司披露的设计目标。
+[^bedrock-kb]: AWS, "Retrieve data and generate AI responses with Amazon Bedrock Knowledge Bases," Amazon Bedrock User Guide, https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html，持续更新文档；2026-11-01 检索 [VERIFY: 页面未重新抓取；产品名称以 2026 年为准]。
+[^ducklabs]: Amazon, "AWS to acquire DuckLabs," https://www.aboutamazon.com/news/company-news/aws-ducklabs，约 2026-08-25/26 发布；The Register, "AWS buys DuckLabs, the people behind the popular in-process OLAP database," https://www.theregister.com/databases/2026/08/26/aws-buys-ducklabs-the-people-behind-the-popular-in-process-olap-database/5292590，2026-08-26 发布；经由 `data/ma_deals.csv` 与整合者备注；2026-11-01 检索。交易条款未披露。
+[^bigtable]: F. Chang et al., "Bigtable: A Distributed Storage System for Structured Data," OSDI 2006, https://research.google/pubs/bigtable-a-distributed-storage-system-for-structured-data/，2006-11 发布；2026-11-01 检索。
+[^dremel]: S. Melnik et al., "Dremel: Interactive Analysis of Web-Scale Datasets," PVLDB 3(1), https://research.google/pubs/pub36632/，2010 年发布；2026-11-01 检索。
+[^dremel20]: S. Melnik et al., "Dremel: A Decade of Interactive SQL Analysis at Web Scale," PVLDB 13(12), https://www.vldb.org/pvldb/vol13/p3461-melnik.pdf，2020 年发布；2026-11-01 检索。
+[^spanner]: J. C. Corbett et al., "Spanner: Google's Globally-Distributed Database," OSDI 2012, https://www.usenix.org/conference/osdi12/technical-sessions/presentation/corbett，2012-10 发布；2026-11-01 检索。
+[^looker-acq]: Alphabet Investor Relations, "Google to Acquire Looker," https://abc.xyz/investor/news/news-details/2019/Google-to-Acquire-Looker-06-06-2019/default.aspx，2019-06-06 发布；TechCrunch, "Google closes $2.6B Looker acquisition," https://techcrunch.com/2020/02/13/google-closes-2-6b-looker-acquisition/，2020-02-13 发布；2026-11-01 检索。
+[^dataform]: Google Cloud blog, "Welcoming Dataform to BigQuery," https://cloud.google.com/blog/products/data-analytics/welcoming-dataform-to-bigquery，2020-12-08 发布；2026-11-01 检索。
+[^gemini-ent]: Atlan, "Gemini Enterprise (Formerly Agentspace)," https://atlan.com/know/ai-agent/ai-agent-applications/google-agentspace/，2026 年发布；2026-11-01 检索。二手来源；更名日期为 2025-10-09。
+[^gcp-kc]: Google Cloud documentation, "Knowledge Catalog (formerly Dataplex) overview," https://docs.cloud.google.com/dataplex/docs/overview，2026-11-01 访问；Atlan, "Google Knowledge Catalog," https://atlan.com/know/ai-agent/gcp/google-knowledge-catalog/，2026 年发布；2026-11-01 检索。
+[^vertex-rename]: HPCwire，关于 Google Cloud Next '26 将 Vertex AI 更名为 Gemini Enterprise Agent Platform 的报道，2026-04-23 发布（经由整合者备注；URL 未记录 [VERIFY: URL]）；2026-11-01 检索。
+[^next26]: G-gen, "Next '26: What's new in BigQuery," https://blog.g-gen.co.jp/entry/next-26-whats-new-in-bigquery，2026-04 发布；2026-11-01 检索。二手来源（Google Cloud 合作伙伴）。
+[^biglake-irc]: Google Cloud blog, "BigLake metastore now supports Iceberg REST Catalog," https://cloud.google.com/blog/products/data-analytics/biglake-metastore-now-supports-iceberg-rest-catalog/，2025-11-19 发布；2026-11-01 检索。
+[^alloydb]: Google Cloud documentation, "AlloyDB for PostgreSQL overview"（列式引擎；ScaNN 向量索引），https://cloud.google.com/alloydb/docs/overview，持续更新文档；2026-11-01 检索 [VERIFY: 本次会话未重新抓取该页面]。
+[^adb-ga]: Microsoft Azure blog, "Azure Databricks, industry-leading analytics platform powered by Apache Spark, now generally available," https://azure.microsoft.com/en-us/blog/azure-databricks-industry-leading-analytics-platform-powered-by-apache-spark/，2018-03-22 发布；2026-11-01 检索 [VERIFY: URL 未重新抓取]。
+[^fabric-launch]: Microsoft Azure blog, "Introducing Microsoft Fabric: Data analytics for the era of AI," https://azure.microsoft.com/en-us/blog/introducing-microsoft-fabric-data-analytics-for-the-era-of-ai/，2023-05-23 发布；于 Ignite 宣布正式可用，2023-11-15；2026-11-01 检索 [VERIFY: URL 未重新抓取]。
+[^ignite25]: Microsoft Azure blog, "Azure at Microsoft Ignite 2025: all the intelligent cloud news explained," https://azure.microsoft.com/en-us/blog/azure-at-microsoft-ignite-2025-all-the-intelligent-cloud-news-explained/，2025-11 发布；Redmond Magazine, https://redmondmag.com/articles/2025/11/18/big-data-platform-changes-emerge-at-ignite-as-microsoft-broadens-its-azure-focus.aspx，2025-11-18 发布；2026-11-01 检索。
+[^onelake-irc]: Microsoft Learn, "OneLake table APIs for Iceberg," https://learn.microsoft.com/en-us/fabric/onelake/table-apis/onelake-iceberg-table-apis，无日期；2026-11-01 检索。
+[^fabric-mirror]: Microsoft Learn, "Open mirroring in Microsoft Fabric" 与 "Cost of mirroring," https://learn.microsoft.com/en-ie/fabric/database/mirrored-database/open-mirroring，持续更新文档；2026-11-01 检索。
+[^purview]: Microsoft Learn, "Data lineage in classic Data Catalog"（Microsoft Purview），https://learn.microsoft.com/en-us/purview/concept-data-lineage，2026-11-01 访问；2026-11-01 检索。
+[^fabric-cust]: Theobald Software, "SAP Meets Microsoft Fabric: Key Takeaways from FabCon 2025," https://theobald-software.com/en/blog/fabcon-2025，2025-04 发布；2026-11-01 检索。公司披露数据，经二手回顾转述。
+[^oracle-aiworld]: Oracle, "Oracle Database@Google Cloud adds new Oracle AI Database services…," https://www.oracle.com/news/announcement/ai-world-oracle-database-at-google-cloud-adds-new-oracle-ai-database-services-2025-10-14/，2025-10-14 发布；2026-11-01 检索。
+[^oracle-dbazure]: Oracle, "Oracle Database@Azure powers cloud migrations for organizations across the world," https://www.oracle.com/news/announcement/ai-world-oracle-database-at-azure-powers-cloud-migrations-for-organizations-across-the-world-2025-10-14/，2025-10-14 发布；2026-11-01 检索。
+[^openai-oracle]: The Wall Street Journal, "OpenAI, Oracle Sign $300 Billion Computing Deal, Among Biggest in History," 2025-09-10 发布（付费墙；本次会话未重新抓取 URL [VERIFY: URL 与条款]）；2026-11-01 检索。媒体报道。
+[^macc]: Microsoft Learn, "Azure consumption commitment benefit"（Microsoft commercial marketplace），https://learn.microsoft.com/en-us/marketplace/azure-consumption-commitment-benefit，持续更新文档；2026-11-01 检索 [VERIFY: 本次会话未重新抓取该页面]。
+[^funding]: AI Data Atlas `data/private_funding.csv`，Databricks 各行（2019-02-05 的 E 轮列有 Microsoft；2021-02-01 的 G 轮列有 AWS 和 CapitalG [VERIFY: 参与方名单]），截至 2026-11-01。
+[^sf-q2]: Snowflake via Business Wire, "Snowflake Reports Financial Results for the Second Quarter of Fiscal 2027," https://secure.businesswire.com/news/home/20260902386235/en/Snowflake-Reports-Financial-Results-for-the-Second-Quarter-of-Fiscal-2027，2026-09-02 发布；2026-11-01 检索。GAAP 收入；非 GAAP 产品毛利率；FY2027 = 2026 年 2 月至 2027 年 1 月。
+[^db-7b]: Databricks, "Databricks Grows >80% YoY, Surpasses $7B Revenue Run-Rate…," https://www.databricks.com/company/newsroom/press-releases/databricks-grows-80-yoy-surpasses-7b-revenue-run-rate-scales，2026-08-13 发布；2026-11-01 检索。公司披露的年化运行率，未经审计。
+[^ma]: AI Data Atlas `data/ma_deals.csv` 中 Google–Firebase（Bloomberg，2014-10-21）、Microsoft–Citus Data（Microsoft 博客，2019-01-24）和 Google–Alooma（TechCrunch，2019-02-19）各行，截至 2026-11-01。
+[^goldengate]: Visual Studio Magazine, "Oracle Acquires GoldenGate Software," https://visualstudiomagazine.com/Articles/2009/07/23/Oracle-Acquires-GoldenGate-Software.aspx，2009-07-23 发布；2026-11-01 检索。
+[^ep-acc26]: TechTarget, "7 highlights from Pure Accelerate 2026," https://www.techtarget.com/it-infrastructure/opinion/7-highlights-from-Pure-Accelerate-2026，2026-06 发布；2026-11-01 检索。
+[^ep-di]: Techzine, "Stop vectorizing garbage: inside Everpure's smart AI data pipeline," https://www.techzine.eu/blogs/infrastructure/144105/stop-vectorizing-garbage-inside-everpures-smart-ai-data-pipeline/，2026-06 发布；2026-11-01 检索。连接器清单以报道为准；属于集成，而非已宣布的合作伙伴关系。
+[^storage-eco]: Databricks blog, "Announcing the Databricks Storage Ecosystem: Governing the Enterprise Data Estate Wherever It Lives," https://www.databricks.com/blog/announcing-databricks-storage-ecosystem-governing-enterprise-data-estate-wherever-it-lives，2026-06-10 发布；2026-11-01 检索。
+[^everpure-os]: Everpure blog, "Everpure OpenSharing Connector," https://blog.everpuredata.com/products/everpure-opensharing-connector/，2026-06 发布；2026-11-01 检索。厂商说法；自 2026-06-09 起私有预览。

@@ -167,3 +167,77 @@ Atlas 的毛利率（gross margin）低于 EA，因为 MongoDB 需要为底层�
 
 由于引擎是免费的，Postgres 厂商赚的是运维、开发者体验和周边能力的钱。Supabase 将 Postgres 与身份认证、文件存储、实时订阅和边缘函数打包，按项目加用量收费。Neon（现为 Lakebase）按计算小时和存储收费，而缩容至零意味着闲置数据库几乎不产生费用。正是这一点让智能体成千上万地创建数据库变得足够便宜。EDB 向正在离开 Oracle 的企业销售企业级 Postgres 订阅和 Oracle 兼容工具。从 Postgres 中赚钱最多的是超大规模云厂商，它们通过 RDS、Aurora、Azure 和 Cloud SQL 的实例小时获利，却并不拥有该项目。
 
+## 财务数据
+
+### Oracle（仅作背景）
+
+Oracle 的合并数据如今由 AI 基础设施驱动，而非数据库。Q1 FY2027（2026 年 6–8 月）总收入约为 $19.35B（GAAP），OCI 收入增长 121%，剩余履约义务（RPO）达到 $664B。Oracle 给出的 FY2027 收入指引为至少 $90B。由于资本开支超过经营现金流，过去 12 个月的自由现金流（FCF）约为 −$28.7B。[^comps-orcl] 按 5.7x 的 EV/未来 12 个月收入（截至 2026-10-23，未来 12 个月收入取指引下限）计算，市场估值的是一项底层带有数据库年金、高杠杆的 AI 算力建设，而不是一家数据库公司。[^comps-orcl]
+
+### MongoDB
+
+![MongoDB 各财年 GAAP 总收入柱状图，从 FY2021 的 $0.59B 增至 FY2026 的约 $2.46B，增速从约 48% 放缓至约 20%，随后重新加速至 23%](../assets/charts/mongodb_revenue.png)
+
+*图 29.5 — MongoDB 年度收入（GAAP）。FY2021 至 FY2026 收入大约翻了两番，但增速从约 48% 放缓至约 19%（FY2025），随后在 FY2026（2025 年 2 月–2026 年 1 月）重新加速至约 23%。资料来源：`data/company_financials.csv`。*
+
+![MongoDB 季度 GAAP 收入双面板图，从 Q1 FY2024 的 $368M 增至 Q2 FY2027 的 $772M，同比增速在 Q2 FY2025 降至约 13%、Q3 FY2026 为 19%，随后在 Q4 FY2026 回升至 27%、Q2 FY2027 约 30%](../assets/charts/ch29_mongodb_atlas.png)
+
+*图 29.6 — 季度视角。增速在 Q2 FY2025 触及 13% 的低点、Q3 FY2026 为 19%，随后重新加速至 27% 和约 30%。Q1 FY2027 尚未纳入数据集。资料来源：`data/ch29_mongodb_quarterly.csv`；Q4 FY2026 之前的季度未经实时核实，但与 10-K 年度合计数一致。*[^mdb-qtr]
+
+| 指标 | 数值 | 期间 | 口径 | 来源 |
+|---|---|---|---|---|
+| 总收入 | $771.8M，同比 +30% | Q2 FY2027（2026 年 5–7 月） | GAAP | [^mdb-q2] |
+| 订阅 / 服务收入 | $747.1M / $24.6M | Q2 FY2027 | GAAP | [^mdb-q2] |
+| Atlas 收入增速 | 同比 +29% | Q2 FY2027 | 公司披露 | [^mdb-q2] |
+| Atlas 收入占比 | Q2 FY2027 约 73%（约 $565.9M，第三方拆分）；FY2026 为 73%；FY2025 为 70% | 如所述 | 公司披露（Q2 金额拆分来自第三方） | [^mdb-ars][^mdb-q2] |
+| Enterprise Advanced 及其他 | 同比 +36% | Q2 FY2027 | 公司披露 | [^mdb-q2] |
+| 毛利率 | GAAP 74% / 非 GAAP 76% | Q2 FY2027 | GAAP / 非 GAAP | [^mdb-q2] |
+| 营业利润率 | 24%（一年前为 15%） | Q2 FY2027 | 非 GAAP | [^mdb-q2] |
+| 净利润 | $40.9M | Q2 FY2027 | GAAP | [^mdb-q2] |
+| 客户数 | 总计 >65,200（FY2026 年末）；据新闻稿的搜索摘要，Q2 FY2027 Atlas 客户 >69,300 [VERIFY: Atlas 客户数与总客户数的区别] | 如所述 | 公司披露的 KPI | [^mdb-q4][^mdb-q2] |
+| FY2027 收入指引 | $2.99–3.03B（中值 $3.01B），Atlas 增速约 27%；Q3 FY2027 指引 $756–761M | FY2027（2026 年 2 月–2027 年 1 月） | 公司指引 | [^mdb-q2] |
+| EV / 未来 12 个月收入 | 9.0x（EV $27.14B ÷ 指引中值 $3.01B） | 2026-10-20 | 市场数据；未来 12 个月收入为替代值 | [^comps-mdb] |
+
+*图 29.7 — MongoDB 关键数字。Q2 FY2027 的 Atlas 占比、营业利润率、净利润和 EA 增速依据整合者对新闻稿的实时核查（`meta/verified-facts.md` 第 7 项）。注意 Q3 指引（$756–761M）低于 Q2 的 $771.8M：Q2 包含了波动较大的一次性确认的 Enterprise Advanced 许可证收入（EA +36%），因此环比下降是收入确认效应，未必意味着需求放缓。*
+
+**增速为何重新加速。** 三股力量共同作用，按重要性大致排序如下：
+
+1. **Atlas 用量恢复。** 在 FY2024–25，客户优化云支出、新工作负载爬坡缓慢，Atlas 增速逐步滑落至 20% 区间中段 [VERIFY: FY2025–FY2026 各季度 Atlas 增速]。到 Q2 FY2027，Atlas 在大得多的基数上增长 29%，管理层给出的全年指引约为 27%。[^mdb-q2] 按 Atlas 约占四分之三的收入结构计算，仅 Atlas 就贡献了约 21 个百分点的总增速（0.73 × 29%，本书计算）。
+2. **Enterprise Advanced 不再拖累。** FY2025 面临前一年一次性确认的异常大额多年期 EA 交易带来的高基数，管理层曾将此列为不利因素 [VERIFY: FY2025 多年期许可证不利因素的规模]。这在图 29.6 中 Q2 FY2025 13% 的增速上清晰可见。高基数消化后，业务中非 Atlas 的那四分之一不再拉低增速，Q4 FY2026（+27%）显示 EA 重新作出贡献。
+3. **AI 时代的新工作负载。** MongoDB 认为，AI 应用需要灵活的模式以及紧邻运营数据的向量检索，而 Voyage 的模型能提升检索质量。[^voyage][^mdb-vs] 更干净的证据是 Atlas 的加速。公司未披露任何 AI 专项收入数字，因此应将增长归因于 AI 视为管理层叙事加相关性。
+
+**管理层。** 自 2014 年起担任 CEO 的 Dev Ittycheria 将职位交给了 **Chirantan "CJ" Desai**，后者此前任 Cloudflare 产品与工程总裁。MongoDB 于 2025-11-03 宣布此次变更，2025-11-10 生效。Desai 的任期很短：**2026 年 9 月，他卸任并加入 Meta**，董事会在物色正式继任者期间**任命 Ittycheria 为临时总裁兼 CEO**。[^mdb-ceo] 重新加速始于第一次交接前后的几个季度，因此主要建立在 Ittycheria 任内推行的市场进入（GTM）调整之上，而他如今又重新掌舵。对分析师而言，问题在于执行风险和继任者搜寻的时长，而非战略转向：临时 CEO 正是当前 Atlas 优先模式的缔造者。不过，CEO 在任十个月便离职，仍是值得追问的公司治理黄灯信号。
+
+**估值。** 按 9.0x 的 EV/未来 12 个月收入（2026-10-20；未来 12 个月收入以 FY2027 指引中值替代）计算，MongoDB 的估值约为 Snowflake 16.9x（2026-10-30，采用相同的指引替代法）的一半，尽管两者增速相近，均约 30%。毛利率解释不了这一差距：MongoDB 76% 的非 GAAP 毛利率与 Snowflake 约 75% 的非 GAAP 产品毛利率相当。折价反映的是另外几点。市场怀疑在经历数年 15%–25% 左右的增长之后，约 30% 的增速能否持续（FY2027 指引中值意味着全年增速约 22%）；市场在为 2026 年 9 月 CEO 离职后的管理层不确定性定价；并且市场认为运营型数据库比分析型平台更容易受到免费的、由超大规模云厂商运营的 Postgres 冲击。非 GAAP 数字所剔除的股权激励费用（SBC）对两家公司都构成压力。[^comps-mdb][^comps-sf]
+
+### 非上市的 Postgres 与 NoSQL 公司
+
+本章中没有任何非上市厂商公布经审计的收入。估值定价反而说明了问题。Supabase 的估值从 $2B（2025 年 4 月）升至 $5B（2025 年 10 月），再升至 $10.5B（2026 年 6 月），投资者明确表示买的是"智能体式基础设施"。[^supabase-e][^supabase-f] Cockroach Labs 的 $5B 估值来自 2021 年 12 月，此后未发现新的定价轮次。[^crdb-f] Couchbase、SingleStore 和 DataStax 通过私募股权或战略买家退出，按多数说法，成交价格低于其 2021 年的峰值 [VERIFY: DataStax 与 SingleStore 2021–22 年的估值]。
+
+## 客户与市场进入
+
+**Oracle** 通过企业许可协议和审计自上而下地向 CIO 销售。许可证合规审查是一个众所周知的杠杆，用于把审计风险敞口转化为云承诺。其客户是全球 2000 强企业的记录系统，在这些场景中，数据库是需要压缩的成本，而不是用来构建的平台。
+
+**MongoDB** 采用双速模式。自助式开发者漏斗（Community Edition、Atlas 免费层、高校项目）为企业现场销售团队输送线索，后者销售 Atlas 承诺合同和 EA。截至 FY2026 年末，MongoDB 拥有超过 65,200 名客户。[^mdb-q4] 超大规模云厂商的云市场（marketplace）也是合作伙伴：Atlas 通过 AWS、Azure 和 Google 的云市场销售，客户因此可以用它来抵扣云承诺消费额度（committed spend）。
+
+**Postgres 挑战者**由开发者主导，并越来越多地由智能体主导。Supabase 是 Lovable 和 Bolt 等 AI 应用构建工具的默认后端（公司及媒体表述 [VERIFY]）。Neon 在被 Databricks 收购时表示，其平台上创建的数据库中超过 80% 是由 AI 智能体自动配置的（公司披露，媒体报道）。[^neon-deal] 这一个统计数字就解释了 2025–26 年的大部分交易。如果由智能体创建数据库，那么智能体默认选用的平台无需一通销售电话就能拿下新工作负载。
+
+## 并购与投资
+
+| 日期 | 收购方 | 标的 | 金额 | 交易逻辑 | 结果 |
+|---|---|---|---|---|---|
+| 2018 年 10 月 | MongoDB | mLab | $68M（已披露） | 收购最大的第三方 MongoDB 托管商 | 用户迁至 Atlas；mLab 停运[^mlab] |
+| 2019 年 1 月 | Microsoft | Citus Data | 未披露 | 为 Azure 提供分布式 Postgres | 成为 Azure Cosmos DB for PostgreSQL；扩展保持开源[^citus] |
+| 2025 年 2 月 | MongoDB | Voyage AI | $220M（已披露；现金加股票） | 嵌入与重排序模型 | 整合进 Atlas Vector Search[^voyage] |
+| 2025 年 2–5 月 | IBM | DataStax | 未披露 | 为 watsonx 引入 Astra DB 向量/NoSQL 和 Langflow | 2025-05-28 完成[^datastax] |
+| 2025 年 5 月 | Databricks | Neon | 约 $1B（媒体报道） | 面向智能体的无服务器 Postgres | Lakebase；至 2026 年 7 月年化运行率 >$100M[^neon-deal][^db-7b] |
+| 2025 年 6 月 | Snowflake | Crunchy Data | $164.5M（10-Q；媒体报道约 $250M） | 企业级 Postgres | Snowflake Postgres 于 2026 年 6 月正式发布；镜像至 Snowflake[^crunchy][^sf-pg] |
+| 2025 年 6–9 月 | Haveli Investments | Couchbase | 约 $1.5B（每股 $24.50 现金） | 私募股权对一家增长较慢的 NoSQL 厂商进行私有化 | 2025-09-24 完成；退市[^couchbase] |
+| 2025 年 9 月 | Vector Capital | SingleStore | 股权价值约 $500M（Bloomberg 援引知情人士） | 控股收购 | 交割未获确认 [VERIFY][^singlestore] |
+| 2025 年 10 月 | Databricks | Mooncake Labs | 未披露 | Postgres 到列式存储的镜像 | 并入 Lakebase[^mooncake] |
+| 2026 年 8 月 | Databricks | Electric（PGlite） | 未披露 | 面向智能体沙箱的嵌入式/本地 Postgres | 已宣布；交割未见报道[^electric] |
+| 2026 年 10 月 | Supabase | Turso | 未披露 | 基于 SQLite 的智能体数据库 | 与 $150M 融资一同宣布[^supabase-turso] |
+
+*图 29.8 — 交易。有两个模式尤为突出。分析型平台在收购 Postgres（Neon、Crunchy、Mooncake、Electric），而私募股权或战略买家在吸收那些缺乏自有云的 NoSQL 厂商（Couchbase、SingleStore、DataStax）。资料来源：`data/ma_deals.csv`、`data/private_funding.csv`。*
+
+**迄今为止的整合结果。** Neon 是最明确的成功案例。Lakebase 在交易宣布约 14 个月后突破了公司披露的 $100M 年化运行率。[^db-7b] Crunchy 的价格是解读媒体报道的一课：10-Q 显示现金对价为 $164.5M，而宣布时的报道约为 $250M。[^crunchy] MongoDB"收购托管商"的模式（mLab，2018 年）在业内被反复复制，而 Voyage 是一种更新的"收购模型"变体。IBM 收购 DataStax 是押注 Langflow 和向量检索能把 watsonx 带入 AI 应用构建。其成效尚未在 IBM 的披露中体现。
+
