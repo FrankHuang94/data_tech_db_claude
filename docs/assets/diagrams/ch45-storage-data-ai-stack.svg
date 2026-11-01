@@ -99,7 +99,7 @@
   <text x="145" y="632" text-anchor="middle" font-size="12" fill="#000000">flash, NVMe, S3-compatible</text>
   <rect x="260" y="582" width="440" height="72" rx="6" fill="#FFFFFF" stroke="#0072B2" stroke-width="1"/>
   <text x="272" y="610" font-size="13" fill="#000000">Hyperscaler object storage (S3, Blob, GCS); VAST, NetApp,</text>
-  <text x="272" y="630" font-size="13" fill="#000000">Dell, DDN, WEKA, Hammerspace; NAND and HDD suppliers</text>
+  <text x="272" y="630" font-size="13" fill="#000000">Dell, DDN, WEKA; NAND and HDD suppliers</text>
   <rect x="710" y="582" width="250" height="72" rx="6" fill="#D55E00" fill-opacity="0.16" stroke="#D55E00" stroke-width="2.5"/>
   <text x="722" y="608" font-size="12" font-weight="bold" fill="#000000">FlashArray, FlashBlade (//EXA),</text>
   <text x="722" y="626" font-size="12" font-weight="bold" fill="#000000">Evergreen//One subscriptions,</text>

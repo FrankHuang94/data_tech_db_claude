@@ -230,10 +230,10 @@ A hybrid is the likely outcome: a platform subscription per source or per TB as 
 | Everpure Subscription ARR, FY2026 year-end / Q2 FY2027 | $1.924B (+16%) / ~$2.1B | Company-stated KPI | Everpure 10-K; Q2 FY2027 release[^ep-10k][^ep-q2] |
 | Everpure RPO, Q2 FY2027 | ~$4.1B | GAAP | Everpure, 2026-08-26[^ep-q2] |
 | Everpure gross margin, Q2 FY2027 | 68.4% GAAP; 69.9% non-GAAP | GAAP / non-GAAP | Everpure, 2026-08-26[^ep-q2] |
-| EV/NTM revenue: Snowflake vs MongoDB vs Elastic vs Everpure | 16.9x / 9.0x / 4.6x / 8.5x | Guidance-derived NTM proxies, Oct 2026 | `data/public_comps.csv`[^comps] |
+| EV/NTM revenue: Snowflake vs MongoDB vs Elastic vs Everpure | 16.9x / 9.0x / 4.6x / 8.5x | EV ÷ current-fiscal-year revenue guidance (NTM proxy, an estimate); market data as of 2026-10-30 / 10-20 / 10-12 / 10-01 | `data/public_comps.csv`[^comps] |
 | Arm royalty revenue growth, FY2026 (Apr 2025–Mar 2026) | +21%; total revenue $4.92B (+23%) | GAAP | Arm 20-F[^arm-20f] |
 
-*Figure 35.9 — Consumption leaders trade at the highest multiples despite lower gross margins and lower visibility, because NRR above 120% compounds. The market pays for elasticity, as long as it points up.*
+*Figure 35.9 — Consumption leaders trade at the highest multiples despite lower gross margins and lower visibility, partly because NRR above 120% compounds. Retention alone does not earn the premium: MongoDB reports an ARR-based expansion rate of ~121–122% (not comparable with Snowflake's revenue-based NRR) and trades at 9.0x. The market pays for elasticity, as long as it points up.*
 
 ## Storage bridge
 

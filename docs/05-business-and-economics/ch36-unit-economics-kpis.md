@@ -7,7 +7,7 @@
 - **In a consumption model, NRR is the dominant term in the growth equation.** Snowflake's NRR fell from 178% (FY2022) to 126% (FY2025), and product revenue growth fell with it. NRR then held at 125–126% while Q2 FY2027 (May–Jul 2026) product growth re-accelerated to 37% (GAAP).[^sf-q2][^fin-csv]
 - **Remaining performance obligations (RPO) is contracted backlog, not a revenue forecast.** Snowflake's RPO *fell* from $9.77B to ~$9.0B in the two quarters to July 2026 while revenue accelerated. Customers were burning down prepaid capacity faster than they signed new commitments.[^fin-csv][^sf-10q]
 - **The GAAP-to-non-GAAP gap is the real story for most software companies.** In Q2 FY2027 Snowflake's GAAP operating margin was −17.0% and its non-GAAP operating margin +15.3%. The 32-point gap is mostly stock-based compensation (SBC) of ~$424M, or ~27% of revenue (press-reported). MongoDB's gap is ~20 points and Everpure's ~14.[^sf-q2][^secapi][^mdb-q2][^ep-q2]
-- **The Rule of 40 is a family of formulas, not a single number.** For Snowflake the score ranges from ~18 to ~58 depending on which margin you use (our arithmetic). An SBC-adjusted version is the conservative CFA reading. On that basis few high-growth data companies clear 40.
+- **The Rule of 40 is a family of formulas, not a single number.** For Snowflake the score ranges from ~18 (Q2 FY2027 growth plus GAAP operating margin) through ~20 (FY2026, FCF burdened with SBC) and ~41 (quarterly adjusted FCF) to ~58 (FY2027 adjusted-FCF guide), depending on which margin and period you use (our arithmetic). An SBC-adjusted version is the conservative CFA reading. On that basis few high-growth data companies clear 40.
 
 ## Why this matters (business + Everpure lens)
 
@@ -91,7 +91,7 @@ RPO can grow faster than revenue for a plain reason: multi-year capacity deals a
 
 *Figure 36.3 — Snowflake RPO (GAAP disclosure). Backlog rose roughly sevenfold in five years but is lumpy. A single large multi-year deal can move it by more than a quarter's revenue, so read the trend over four quarters, not the quarter-on-quarter change. Source: `data/company_financials.csv`.*
 
-> **Bridge: semiconductor backlog and book-to-bill.** RPO is a chipmaker's backlog with stricter rules: ASC 606 counts only enforceable contracts, while semis backlog often includes cancellable orders. cRPO ÷ next-twelve-month revenue works like book-to-bill coverage. Snowflake's cRPO (~$4.9B) covers roughly 80% of guided FY2027 product revenue ($6.07B; our estimate), and the rest must come from on-demand use and new commitments. A falling RPO with rising revenue is a book-to-bill below 1 while shipments boom. That is fine for a quarter or two, and a warning sign if it persists.
+> **Bridge: semiconductor backlog and book-to-bill.** RPO is a chipmaker's backlog with stricter rules: ASC 606 counts only enforceable contracts, while semis backlog often includes cancellable orders. cRPO ÷ next-twelve-month revenue works like book-to-bill coverage. Snowflake's cRPO (~$4.9B) covers roughly 80% of guided FY2027 product revenue ($6.07B; our estimate), and less of true next-twelve-month revenue, because half of FY2027 had already been recognized by July 31, 2026; the rest must come from on-demand use and new commitments. A falling RPO with rising revenue is a book-to-bill below 1 while shipments boom. That is fine for a quarter or two, and a warning sign if it persists.
 
 ### Billings, and why consumption companies play it down
 
@@ -170,7 +170,7 @@ The read-through: Snowflake is buying growth more efficiently than a year ago. S
 | Non-GAAP operating margin | 15.3% | 24% ($185.9M) | 19.4% |
 | GAAP-to-non-GAAP gap | ~32 pts | ~20 pts | ~14 pts |
 | FCF in quarter (non-GAAP) | $92.3M adjusted (6.0%) | $137.6M (17.8%) | −$238M (FY2027 guide $600–800M) |
-| Retention / recurring KPI | NRR 126% | net ARR expansion ~121% (Jan 31, 2026) | subscription ARR $2.1B, +20% |
+| Retention / recurring KPI | NRR 126% | net ARR expansion ~121% (Jan 31, 2026, 10-K; ~122% in Q2 FY2027, press-reported) | subscription ARR $2.1B, +20% |
 | Backlog | RPO ~$9.0B, +30% | not used as a headline KPI | RPO $4.1B, +44% |
 | Large-customer KPI | 828 customers >$1M TTM; 829 G2000 | 2,999 customers ≥$100K ARR | not disclosed as a headline KPI |
 | Rule of 40 (our arithmetic) | 41 (quarter) / 58 (guide) | ~48 (quarter) | ~52 (guide-based estimate) |
@@ -270,7 +270,7 @@ The consumption era stress-tested the vocabulary. Snowflake's FY2021 10-K showed
 | Snowflake magic number, Q2 FY2027 | ~1.06 raw / ~0.72 day-adjusted | estimate | Our arithmetic from 10-Q |
 | Snowflake $1M+ customers / G2000 | 828 / 829 | company-stated KPI | Release[^sf-q2][^pulse] |
 | MongoDB revenue / non-GAAP op margin | $771.8M (+30%) / 24% | GAAP / non-GAAP | Release, 2026-09-01[^mdb-q2] |
-| MongoDB net ARR expansion | ~121% (Jan 31, 2026) | company-stated KPI | FY2026 10-K[^mdb-10k] |
+| MongoDB net ARR expansion | ~121% (Jan 31, 2026); ~122% Q2 FY2027 (press-reported, Zacks) | company-stated KPI / press-reported | FY2026 10-K[^mdb-10k]; `data/public_comps.csv`[^comps] |
 | Everpure non-GAAP gross / operating margin | 69.9% / 19.4% | non-GAAP | Release, 2026-08-26[^ep-q2] |
 | Everpure subscription ARR / RPO | $2.1B (+20%) / $4.1B (+44%) | company-stated KPI / GAAP | Release[^ep-q2] |
 
@@ -344,9 +344,9 @@ The consumption era stress-tested the vocabulary. Snowflake's FY2021 10-K showed
 [^mdb-10k]: MongoDB, Inc., "Form 10-K for the fiscal year ended January 31, 2026," https://www.sec.gov/Archives/edgar/data/1441816/000162828026016799/mdb-20260131.htm, filed 2026-03 [VERIFY exact filing date]; retrieved 2026-11-01 (net ARR expansion rate ~121% and its definition).
 [^ep-q2]: Everpure, Inc., "Everpure Announces Second Quarter Fiscal 2027 Financial Results," https://investor.everpuredata.com/news-and-events/press-releases/press-release-details/2026/Everpure-Announces-Second-Quarter-Fiscal-2027-Financial-Results/default.aspx, published 2026-08-26; retrieved 2026-11-01 (product $687M; subscription services $499M; GAAP GM 68.4%; non-GAAP GM 69.9%; GAAP operating income $63M; non-GAAP operating margin 19.4%; FCF −$238M; FY2027 FCF guide $600–800M; subscription ARR $2.1B; RPO $4.1B; ~$69M buybacks). Quarter ended 2026-08-02.
 [^ep-seg]: Pure Storage (now Everpure), "Q3 FY26 Earnings Slide Deck," https://s21.q4cdn.com/687136699/files/doc_financials/2026/q3/Q3FY26-Earnings-Slide-Deck-FINAL.pdf, published 2025-12 [VERIFY date]; retrieved 2026-11-01. Segment margins (non-GAAP product ~68% and subscription services ~76.5% in Q2 FY2026; product 72.9% and subscription 75.5% in Q3 FY2026) come from third-party summaries of company materials. Press-reported [VERIFY against 10-Q].
-[^comps]: AI Data Atlas dataset `data/public_comps.csv` (Oracle RPO $664B and FY2027 guide; Workday 12-month subscription backlog $9.034B), sources per row (stockanalysis.com and company releases), as of 2026-10-16 to 2026-10-30; retrieved 2026-11-01.
+[^comps]: AI Data Atlas dataset `data/public_comps.csv` (Oracle RPO $664B and FY2027 guide; Workday 12-month subscription backlog $9.034B; MongoDB net ARR expansion rate 122% in Q2 FY2027, press-reported via Zacks/Nasdaq), sources per row (stockanalysis.com and company releases), as of 2026-10-16 to 2026-10-30; retrieved 2026-11-01.
 [^r40]: AI Data Atlas dataset `data/ch36_rule_of_40.csv`, compiled from: Datadog Q2 2026 release (SEC 8-K Ex. 99.1), https://www.sec.gov/Archives/edgar/data/0001561550/000162828026053829/ex-991x20260630x8k.htm, 2026-08-06; Workday, Elastic, GitLab, Rubrik, Nutanix and Everpure releases listed in the CSV; retrieved 2026-11-01.
-[^pltr]: Palantir Technologies Inc., "Q2 2026 results," Form 8-K Ex. 99.1, https://www.sec.gov/Archives/edgar/data/0001321655/000132165526000039/a2026q2ex991pressrelease.htm, published 2026-08 [VERIFY day]; retrieved 2026-11-01 (revenue $1.935B, +93%; adjusted FCF $1.220B, 63%; Rule of 40 score 155%).
+[^pltr]: Palantir Technologies Inc., "Q2 2026 results," Form 8-K Ex. 99.1, https://www.sec.gov/Archives/edgar/data/0001321655/000132165526000039/a2026q2ex991pressrelease.htm, published 2026-08-03 (date as cited in Ch 37); retrieved 2026-11-01 (revenue $1.935B, +93%; adjusted FCF $1.220B, 63%; Rule of 40 score 155%).
 [^now]: ServiceNow, Inc., "ServiceNow Reports Third Quarter 2026 Financial Results," Form 8-K, https://www.sec.gov/Archives/edgar/data/0001373715/000137371526000092/erq3fy26.htm, published 2026-10 [VERIFY day]; retrieved 2026-11-01 (total revenue $4,106M, +20.5%; cRPO $13.65B; FY2026 FCF margin guide raised to 36%).
 [^ntap]: NetApp, Inc., "NetApp Reports First Quarter of Fiscal Year 2027 Results," https://netapp.com/newsroom/press-releases/news-rel-20260902-results-607632, published 2026-09-02; retrieved 2026-11-01 (revenue $2,025M, +30%; billings $2.06B, +36%; FCF $401M; quarter included an extra week, press-reported). NetApp FY ends last Friday of April.
 [^feld]: Brad Feld, "The Rule of 40% For a Healthy SaaS Company," https://feld.com/archives/2015/02/rule-40-healthy-saas-company.html, published 2015-02-02; retrieved 2026-11-01 (via secondary summaries, e.g., Tomasz Tunguz, https://tomtunguz.com/rule-of-40/).

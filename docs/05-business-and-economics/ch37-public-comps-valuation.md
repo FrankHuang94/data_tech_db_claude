@@ -160,8 +160,8 @@ Why do private marks sit two to four times above public multiples for similar gr
 | 2025-06-20 | Haveli → Couchbase | $1.5B (disclosed) | ~7.2x | FY2025 revenue ~$209M (equity value; our arithmetic) [VERIFY revenue vs 10-K] | ~16% |
 | 2025-10-21 | Veeam → Securiti AI | $1.725B (disclosed; completed 2025-12-11) | n/d | Revenue not disclosed | n/d |
 | 2025-12-08 | IBM → Confluent | ~$11B EV (disclosed) | ~9.4x | FY2025 (calendar) GAAP revenue $1,166.7M; nearly complete at announcement, reported 2026-02 | 21% |
-| 2026-07-22 | Progress → Domo platform assets | $400M plus liabilities (press-reported) | ~1.3x | FY2026 revenue ~$318M | ~1% |
 | 2026-02-23 | Everpure → 1touch | $125M cash (disclosed) | n/d | Capability deal; revenue not disclosed | n/d |
+| 2026-07-22 | Progress → Domo platform assets | $400M plus liabilities (press-reported) | ~1.3x | FY2026 (Feb 2025–Jan 2026) revenue ~$318M; asset deal | ~1% |
 | 2026-10-15 | Proofpoint (Thoma Bravo) → Varonis | ~$6.3B transaction value (equity value ~$5.71B) | ~8.5x (~7.7x on equity value) | FY2026 (calendar 2026, i.e., current-year) revenue guide midpoint $737M; our arithmetic | 18% (Q2 2026) |
 
 *Figure 37.9 — Precedent transactions. Control deals for scaled data assets cluster at 5–9.5x revenue, on mixed bases. Even the "AI-relevant" ones (Confluent, Varonis) cleared below the public multiples of growth leaders. Sources: `data/ma_deals.csv`, `data/public_comps.csv`, deal releases and press.[^newr][^splk][^infa][^base][^cflt][^vrns][^comps]*

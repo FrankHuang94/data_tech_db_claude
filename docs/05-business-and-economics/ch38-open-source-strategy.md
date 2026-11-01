@@ -7,7 +7,7 @@
 - The licence sets how much of that value leaks to others. Permissive licences (Apache 2.0, MIT, BSD) let anyone, including AWS, sell the software as a service. Copyleft (GPL, [AGPL](../glossary.md#agpl)) forces modified code to be shared. [Source-available licences](../glossary.md#source-available-license) ([SSPL](../glossary.md#sspl), [BSL](../glossary.md#business-source-license), Elastic License 2.0, RSAL) block competing hosted services outright, and for that reason fail the OSI's definition of open source.
 - From 2018 to 2024, MongoDB, Confluent, Elastic, HashiCorp, Redis and Cockroach Labs each relicensed to stop cloud providers reselling their work. Wherever a hyperscaler had a lot of revenue at stake, it funded a fork: OpenSearch (2021), OpenTofu (2023), Valkey (2024). Elastic (August 2024) and Redis (May 2025) then added AGPL back as an option.[^elastic-agpl][^redis8]
 - Governance now matters as much as the licence. A project held by a neutral foundation cannot be relicensed by one vendor. Apache Iceberg's spread of committers across many companies, against Delta Lake's concentration at Databricks, helped settle the table-format war ([Ch 7](../01-data-systems-foundations/ch07-open-table-formats.md)). The 2024 open-sourcing of Unity Catalog and Polaris moved the same contest up to the catalog ([Ch 8](../01-data-systems-foundations/ch08-catalogs-and-metastores.md)).
-- The economics are less special than the debate suggests. An open-source origin earns no visible valuation premium. MongoDB, Elastic and GitLab trade at 4.6–9.0x EV/NTM revenue, against 16.9–21.5x for proprietary Snowflake and Datadog (estimates, as of October 2026), and growth explains most of the gap.[^comps] Gross margin is set by how the software is delivered, not by how it is licensed.
+- The economics are less special than the debate suggests. An open-source origin earns no visible valuation premium. MongoDB, Elastic and GitLab trade at 4.6–9.0x EV/NTM revenue, against 16.9–21.5x for proprietary Snowflake and Datadog (EV ÷ current-year guidance, estimates, as of 2026-10-02 to 2026-10-30). Growth explains only part of the gap: on the [Ch 37](ch37-public-comps-valuation.md) regression it accounts for about one turn of the ~8-turn Snowflake–MongoDB spread. Retention, consumption visibility and AI-workload exposure explain the rest; the licence does not.[^comps] Gross margin is set by how the software is delivered, not by how it is licensed.
 
 ## Why this matters (business + Everpure lens)
 
@@ -54,7 +54,7 @@ The [Open Source Definition](../glossary.md#open-source-definition) maintained b
 | Apache 2.0 | Yes | None ([permissive](../glossary.md#permissive-license)); includes an explicit patent grant | None | Iceberg, Spark, Kafka, Arrow, Parquet, Polaris, Unity Catalog OSS | Maximizes adoption and enterprise comfort. Anyone can sell a managed service. |
 | MIT / BSD-3 | Yes | None | None | DuckDB (MIT), Valkey (BSD-3), pre-2024 Redis (BSD-3) | Same as Apache, with no explicit patent grant. |
 | MPL 2.0 | Yes | File-level: modified files must stay open | None | Pre-2023 Terraform, OpenTofu | Weak copyleft. Easy to embed in proprietary products. |
-| GPLv3 | Yes | Whole derivative work, triggered by distribution | None in practice. Running a service is not distribution. | Linux kernel (GPLv2), MySQL Community | Protects against proprietary forks but not against SaaS. |
+| GPL (v2 and v3) | Yes | Whole derivative work, triggered by distribution | None in practice. Running a service is not distribution. | Linux kernel (GPLv2), MySQL Community (GPLv2) | Protects against proprietary forks but not against SaaS. |
 | AGPLv3 | Yes | Whole derivative work, also triggered by offering it over a network | Indirect. A host must publish its modifications. | Redis 8 (option), Elasticsearch and Kibana (option since 2024), Grafana | The strongest OSI-approved deterrent. Many enterprises ban it by policy. |
 | SSPL v1 | No (withdrawn from OSI review, 2019) | Extends to the entire stack used to offer the service | Effective prohibition: publish all service code or license commercially | MongoDB (2018), Elastic (2021), Redis (2024 option) | Stops hyperscaler resale. Linux distributions drop the software. |
 | BSL 1.1 | No | None; restricts production use until a change date (up to 4 years), then converts to an open licence | Usually bars competing hosted offerings until the change date | HashiCorp (2023), CockroachDB (2019), MariaDB MaxScale | A time-delayed open licence. Old versions keep becoming open. |
@@ -150,12 +150,12 @@ The economics comparison follows. Managed-service businesses converge on gross m
 ```mermaid
 xychart-beta
     title "EV/NTM revenue, open-source-origin vs proprietary, Oct 2026 (estimates)"
-    x-axis ["Datadog", "Snowflake", "Confluent deal", "MongoDB", "GitLab", "Elastic"]
+    x-axis ["Datadog", "Snowflake", "Confluent deal (trailing)", "MongoDB", "GitLab", "Elastic"]
     y-axis "EV / NTM revenue (x)" 0 --> 25
     bar [21.5, 16.9, 9.4, 9.0, 7.2, 4.6]
 ```
 
-*Figure 38.7 — The two proprietary names (Datadog, Snowflake) trade at about twice the open-source-origin names. Most of the gap reflects growth (36% and 35% against 15–30%), but the chart gives no support to the idea that open source earns a premium. Confluent's figure is IBM's deal multiple of EV to trailing revenue (March 2026). Values from `data/public_comps.csv`.*[^comps]
+*Figure 38.7 — The two proprietary names (Datadog, Snowflake) trade at about twice the open-source-origin names. Growth differences (36% and 35% against 15–30%) explain only a small part of that gap on the Ch 37 regression; NRR, consumption visibility and AI exposure do more. Either way, the chart gives no support to the idea that open source earns a premium. Confluent's bar is not an EV/NTM: it is IBM's control-deal multiple, ~$11B EV ÷ FY2025 GAAP revenue of $1,166.7M (announced 2025-12-08, closed 2026-03-17). Values from `data/public_comps.csv`, market data as of 2026-10-02 to 2026-10-30.*[^comps]
 
 ## Who's who
 
@@ -174,8 +174,8 @@ The first era (1998–2010) established the vocabulary. The OSI was founded in 1
 | Metric | Value | Basis | Source / date |
 |---|---|---|---|
 | MongoDB Atlas share of revenue | 73% of FY2026 (Feb 2025–Jan 2026) | Company-stated | MongoDB annual report, 2026[^mdb-atlas] |
-| IBM–HashiCorp | $6.4B EV, $35/share cash | Company-stated | IBM, 2025-02-27[^ibm-hashi] |
-| IBM–Confluent | ~$11B EV, ~9.4x trailing revenue | Company-stated / derived | IBM 10-Q; `data/public_comps.csv`, 2026-03-17[^comps] |
+| IBM–HashiCorp | $6.4B EV, $35/share cash | Company-stated | Announced 2024-04-24; closed 2025-02-27 (IBM)[^ibm-hashi] |
+| IBM–Confluent | ~$11B EV, ~9.4x FY2025 GAAP revenue ($1,166.7M) | Company-stated / our arithmetic | Announced 2025-12-08, closed 2026-03-17; IBM 10-Q; `data/public_comps.csv`[^comps] |
 | OpenSearch downloads at foundation launch | 700M+ | Foundation-stated | Linux Foundation, 2024-09-16[^osf] |
 | Valkey active contributors, 2025 | 346 | Project-stated (LFX analytics) | Valkey blog, 2025-12[^valkey-ye] |
 | Valkey contributors and pull requests since fork | 225+ contributors, 1,500+ PRs; 100M+ Docker pulls | AWS-stated | AWS Database Blog, 2026[^valkey-two] |
