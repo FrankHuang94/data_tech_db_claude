@@ -13,6 +13,7 @@ from __future__ import annotations
 import re
 import sys
 import unicodedata
+from urllib.parse import unquote
 from functools import lru_cache
 from pathlib import Path
 
@@ -88,6 +89,7 @@ def main() -> int:
                 continue
             checked += 1
             target_path, _, anchor = target.partition("#")
+            target_path = unquote(target_path)
             dest = f if not target_path else (f.parent / target_path).resolve()
             if not dest.exists():
                 print(f"BROKEN {f.relative_to(ROOT)}:{line} → {target} (missing file)")
