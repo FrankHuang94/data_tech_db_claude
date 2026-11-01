@@ -1,0 +1,7 @@
+- **Data room** — the controlled repository, usually virtual, where an acquisition target shares diligence documents with a prospective buyer. (ch47)
+- **Contributor concentration** — the share of an open-source project's commits or maintainers that come from one company or a few individuals. (ch47)
+- **Customer concentration** — the share of a company's revenue that comes from its largest customers, a measure of how much one renewal can move the business. (ch47)
+- **Logo churn** — the share of customers lost in a period, counted by account rather than by dollars. (ch47)
+- **Key-person risk** — the value a company loses if a few individuals, such as founders or core engineers, leave. (ch47)
+- **Multi-tenancy** — serving many customers from shared infrastructure while keeping their data and workloads isolated from one another. (ch47)
+- **Vendor lock-in** — the cost and difficulty a customer faces in leaving a vendor's data format, catalog or contract. (ch47)

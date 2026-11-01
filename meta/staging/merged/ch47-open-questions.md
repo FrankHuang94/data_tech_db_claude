@@ -1,0 +1,1 @@
+- ch47: `[VERIFY date]` in the [^scale] footnote (Scale Venture Partners, "A History of the Magic Number" publication date), inherited from Ch 36.

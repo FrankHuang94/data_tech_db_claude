@@ -1,0 +1,3 @@
+- ch47: Web search was exhausted for this chapter, so every number is reused from finished chapters (Ch 15, 32, 35, 36, 38, 39, 40) with their original footnotes; no new facts were introduced.
+- ch47: The scoring-matrix weights (unit economics 20%; architecture, absorption and integration fit 15% each; licensing, GTM and team 10% each; legal 5%) and the quadrantChart positions are labelled author judgment. No numeric "pass marks" (e.g., GRR thresholds) were given, to avoid unsourced benchmarks; the KPI table uses sourced reference points instead.
+- ch47: Did not link to ch46/ch48 because those files do not exist yet; the integrator may add cross-links later.

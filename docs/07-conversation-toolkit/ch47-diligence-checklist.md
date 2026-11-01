@@ -4,7 +4,7 @@
 ## TL;DR
 
 - **Data-infrastructure diligence fails in predictable places.** Most failures trace to one of four gaps: a revenue metric nobody reconciled to GAAP, a licence or community the buyer could not control, a feature that Databricks, Snowflake or a hyperscaler was about to ship for free, or a pricing model that clashed with the acquirer's own. This chapter is a checklist for all four, organized into eight workstreams.
-- **Each workstream follows the same pattern: what to ask, what to request, what good looks like, and the red flags.** A red-flag table (Figure 47.4) lists 18 tests. A weighted scoring matrix (Figure 47.5) turns the findings into a number the investment committee (IC) can compare across targets, and it includes gating criteria that override the total.
+- **Each workstream follows the same pattern: what to ask, what to request, what good looks like, and the red flags.** A red-flag table (Figure 47.5) lists 18 tests. A weighted scoring matrix (Figure 47.6) turns the findings into a number the investment committee (IC) can compare across targets, and it includes gating criteria that override the total.
 - **Unit economics carries the most weight because the definitions are the least standard.** [Revenue run-rate](../glossary.md#revenue-run-rate), [ARR](../glossary.md#annual-recurring-revenue) and GAAP revenue are three different numbers. Databricks reports a company-stated run-rate above $7B, while Fivetran and dbt Labs report combined ARR "approaching $600M". Neither is audited revenue.[^db-7b][^fivetran-dbt]
 - **Platform-absorption risk is the defining product question.** Vector search, document parsing, Postgres, lakehouse engines and MCP gateways all became platform features or platform acquisitions between 2024 and 2026.[^s3-vectors][^datavolo][^dremio][^ducklabs][^natoma] Screen targets on differentiation against absorption risk (Figure 47.2) before spending diligence money.
 - **For a storage acquirer, integration fit is a workstream of its own.** The questions are channel conflict with data-platform partners, keeping an open-source community after the deal, and reconciling per-TB and consumption pricing. The 1touch deal ($125.0M cash, closed May 7, 2026) is the template for a small, metadata-layer purchase that avoided most of these traps.[^1touch]
@@ -156,6 +156,15 @@ This workstream is specific to the buyer. For a storage company it decides wheth
 - **What good looks like.** A target that makes the storage more valuable to the data platforms rather than replacing them. A public commitment to keep the licence and governance unchanged, or a foundation donation. A pricing bridge the sales team can explain. Everpure's own Evergreen//One model already combines a reserve commitment with on-demand charges, and both feed its Subscription ARR KPI, so a consumption-priced target is not foreign to it.[^ep-10k]
 - **Red flags.** [Channel conflict](../glossary.md#channel-conflict) with a platform partner that sources joint pipeline. A community that signals it will fork. Sales compensation plans that cannot pay on both per-TB and consumption revenue.
 
+| Integration path | What it means | Public precedent | Channel-conflict risk | Pricing fit with per-TB or reserve commitment |
+|---|---|---|---|---|
+| Absorb into an existing data-intelligence layer | Target becomes a feature of the acquirer's console | 1touch relaunched as Everpure Data Intelligence[^1touch] | Low: adds metadata, not a competing engine | Good: bundled into existing contracts |
+| Keep the brand for a new buyer | Separate product line sold to a different persona | Pure–Portworx, sold to platform engineers ([Ch 39](../05-business-and-economics/ch39-ma-history.md)) | Low to moderate | Separate price book needed |
+| Publish into partner catalogs | Tags and policies flow into Unity Catalog or Horizon | Databricks Storage Ecosystem; Everpure OpenSharing connector in private preview[^storage-eco][^everpure-os] | Low: makes the partner's platform better | Neutral |
+| Co-packaged lakehouse or query engine | Acquirer ships an engine on its own storage | 2010s engine buys (EMC–Greenplum, Hitachi–Pentaho) ([Ch 39](../05-business-and-economics/ch39-ma-history.md)) | High: competes with Databricks, Snowflake and Starburst | Poor: consumption engine on a capacity contract |
+
+*Figure 47.4 — Integration paths for a storage acquirer. The further a path moves from metadata toward the query engine, the higher the channel conflict and the worse the pricing fit.*
+
 > **Storage bridge.** The storage acquirer's advantage is location: it already holds the enterprise's unstructured and on-premises bytes, and often the backup copies too. Targets that turn that location into metadata (discovery, classification, semantic context) inherit the advantage. Targets that compete with the customer's query engine do not. See the companion *Everpure Tech Atlas* for how the array exposes that data.
 
 ## Red-flag table
@@ -181,7 +190,7 @@ This workstream is specific to the buyer. For a storage company it decides wheth
 | 17 | Copyleft code inside proprietary components | Forced disclosure or rewrite after close | Independent SCA scan, not the target's own |
 | 18 | Price anchors taken from press reports | Press figures often exceed filed prices | Use filed figures: Snowflake–Crunchy Data was $164.5M filed against ~$250M press-reported[^crunchy] |
 
-*Figure 47.4 — Eighteen red flags with a test for each. Rows 1–6 sit with the financial team, 7–13 with the technical and product team, and 14–18 with HR, legal and corporate development. Rows 7, 16 and 17 are usually gating.*
+*Figure 47.5 — Eighteen red flags with a test for each. Rows 1–6 sit with the financial team, 7–13 with the technical and product team, and 14–18 with HR, legal and corporate development. Rows 7, 16 and 17 are usually gating.*
 
 ## Scoring matrix
 
@@ -198,7 +207,7 @@ The matrix converts the workstreams into a weighted score from 1 to 5. Weights r
 | Legal, IP and privacy | 5% | Copyleft contamination; no DPAs | Minor remediation needed | Clean SCA; standard DPAs; residency | Yes, for copyleft or privacy breaches |
 | Integration fit | 15% | Direct conflict with key platform partners; pricing clash | Manageable conflict; pricing bridge exists | Makes partners' platforms better on our storage; community retained | No |
 
-*Figure 47.5 — Weighted scoring matrix, author judgment. Weighted total = Σ (weight × score). A gating "1" stops the deal regardless of the total, which keeps a strong technology score from outvoting a licensing or revenue-quality failure.*
+*Figure 47.6 — Weighted scoring matrix, author judgment. Weighted total = Σ (weight × score). A gating "1" stops the deal regardless of the total, which keeps a strong technology score from outvoting a licensing or revenue-quality failure.*
 
 As an illustrative example (not a real target), a catalog company that scores 4 on architecture, 4 on licensing, 2 on absorption risk, 3 on unit economics, 3 on GTM, 4 on team, 4 on legal and 4 on integration fit has a weighted total of 3.4. The low absorption score is the item to escalate. The IC should ask whether the price assumes the platform catalogs stay behind, because Unity Catalog and Horizon are moving into the same space ([Ch 33](../04-company-deep-dives/ch33-governance-catalog-security-companies.md)).
 
@@ -306,5 +315,6 @@ Ask for documents 1–4 before the management meeting if possible. A target that
 [^omnibus]: Council of the EU, "Artificial intelligence: Council and Parliament agree to simplify and streamline rules," https://www.consilium.europa.eu/en/press/press-releases/2026/05/07/artificial-intelligence-council-and-parliament-agree-to-simplify-and-streamline-rules/, published 2026-05-07; Future of Privacy Forum, "The AI Act implementation timeline: What changes under the AI Omnibus?," https://fpf.org/blog/the-ai-act-implementation-timeline-what-changes-under-the-ai-omnibus/, 2026 (Regulation (EU) 2026/1744; Annex III to 2027-12-02, Annex I to 2028-08-02); retrieved 2026-11-01.
 [^dataact]: Regulation (EU) 2023/2854 (Data Act), EUR-Lex, https://eur-lex.europa.eu/eli/reg/2023/2854/oj, published 2023-12-22 (applies from 2025-09-12); Society for Computers and Law, "EU Data Act in force from 12 September 2025," https://www.scl.org/eu-data-act-in-force-from-12-september-2025/, 2025-09; retrieved 2026-11-01.
 [^starburst-ep]: Everpure partner page, "Starburst" (Scalable Lakehouse Analytics reference architecture), https://www.everpuredata.com/la/partners/technology-alliance-partners/starburst.html, n.d.; retrieved 2026-11-01 (via `meta/research-briefing.md`).
+[^everpure-os]: Everpure blog, "Everpure OpenSharing Connector," https://blog.everpuredata.com/products/everpure-opensharing-connector/, published 2026-06; retrieved 2026-11-01. Vendor-stated; private preview from 2026-06-09.
 [^ep-10k]: Everpure, Inc. (formerly Pure Storage), Form 10-K for the fiscal year ended February 1, 2026 (Subscription ARR definition incl. on-demand billings × 4; Evergreen//One reserve commitment and on-demand structure), https://www.sec.gov/Archives/edgar/data/1474432/000147443226000027/pstg-20260201.htm, published 2026-03; retrieved 2026-11-01.
 [^crunchy]: Snowflake Inc., Form 10-Q for the quarter ended 2025-10-31, https://www.sec.gov/Archives/edgar/data/1640147/000164014725000211/snow-20251031.htm, published 2025-12; TechCrunch, "Snowflake to acquire database startup Crunchy Data," https://www.techcrunch.com/2025/06/02/snowflake-to-acquire-database-startup-crunchy-data/, published 2025-06-02; retrieved 2026-11-01. $164.5M filed vs ~$250M press-reported, as summarized in Ch 39.
