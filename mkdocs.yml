@@ -1,0 +1,117 @@
+site_name: AI Data Atlas
+site_description: Databases, data pipelines, data platforms and the AI-data stack — technology and business, for strategy and corporate development.
+repo_url: https://github.com/FrankHuang94/data_tech_db_claude
+edit_uri: edit/main/docs/
+docs_dir: docs
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - toc.follow
+  palette:
+    - scheme: default
+      primary: blue grey
+      accent: deep orange
+      toggle:
+        icon: material/brightness-7
+        name: Dark mode
+    - scheme: slate
+      primary: blue grey
+      accent: deep orange
+      toggle:
+        icon: material/brightness-4
+        name: Light mode
+plugins:
+  - search
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+nav:
+  - Home: index.md
+  - "Part 0 · Start Here":
+      - "0.1": 00-start-here/ch00-1-how-to-use.md
+      - "0.2": 00-start-here/ch00-2-market-map.md
+  - "Part 1 · Data Systems Foundations":
+      - "Ch 1": 01-data-systems-foundations/ch01-data-stack-map.md
+      - "Ch 2": 01-data-systems-foundations/ch02-data-models.md
+      - "Ch 3": 01-data-systems-foundations/ch03-database-internals.md
+      - "Ch 4": 01-data-systems-foundations/ch04-distributed-databases.md
+      - "Ch 5": 01-data-systems-foundations/ch05-analytical-engines.md
+      - "Ch 6": 01-data-systems-foundations/ch06-file-formats.md
+      - "Ch 7": 01-data-systems-foundations/ch07-open-table-formats.md
+      - "Ch 8": 01-data-systems-foundations/ch08-catalogs-and-metastores.md
+  - "Part 2 · Pipelines & Governance":
+      - "Ch 9": 02-pipelines-and-governance/ch09-pipeline-patterns.md
+      - "Ch 10": 02-pipelines-and-governance/ch10-ingestion-and-integration.md
+      - "Ch 11": 02-pipelines-and-governance/ch11-streaming-and-event-platforms.md
+      - "Ch 12": 02-pipelines-and-governance/ch12-transformation-and-orchestration.md
+      - "Ch 13": 02-pipelines-and-governance/ch13-data-quality-observability-lineage.md
+      - "Ch 14": 02-pipelines-and-governance/ch14-semantic-layers-and-bi.md
+      - "Ch 15": 02-pipelines-and-governance/ch15-governance-security-privacy.md
+  - "Part 3 · The AI Data Stack":
+      - "Ch 16": 03-ai-data-stack/ch16-ai-data-lifecycle.md
+      - "Ch 17": 03-ai-data-stack/ch17-unstructured-data-processing.md
+      - "Ch 18": 03-ai-data-stack/ch18-embeddings-and-vector-search.md
+      - "Ch 19": 03-ai-data-stack/ch19-retrieval-architectures.md
+      - "Ch 20": 03-ai-data-stack/ch20-training-data-supply-chain.md
+      - "Ch 21": 03-ai-data-stack/ch21-ml-platforms-feature-stores-llmops.md
+      - "Ch 22": 03-ai-data-stack/ch22-agents-and-data.md
+      - "Ch 23": 03-ai-data-stack/ch23-real-time-analytics-htap.md
+      - "Ch 24": 03-ai-data-stack/ch24-data-meets-compute-and-storage.md
+  - "Part 4 · Company Deep Dives":
+      - "Ch 25": 04-company-deep-dives/ch25-databricks.md
+      - "Ch 26": 04-company-deep-dives/ch26-snowflake.md
+      - "Ch 27": 04-company-deep-dives/ch27-databricks-vs-snowflake.md
+      - "Ch 28": 04-company-deep-dives/ch28-hyperscaler-data-platforms.md
+      - "Ch 29": 04-company-deep-dives/ch29-operational-database-vendors.md
+      - "Ch 30": 04-company-deep-dives/ch30-data-movement-streaming-companies.md
+      - "Ch 31": 04-company-deep-dives/ch31-analytical-engine-challengers-legacy.md
+      - "Ch 32": 04-company-deep-dives/ch32-ai-native-data-companies.md
+      - "Ch 33": 04-company-deep-dives/ch33-governance-catalog-security-companies.md
+      - "Ch 34": 04-company-deep-dives/ch34-application-giants-data-platforms.md
+  - "Part 5 · Business & Economics":
+      - "Ch 35": 05-business-and-economics/ch35-business-models.md
+      - "Ch 36": 05-business-and-economics/ch36-unit-economics-kpis.md
+      - "Ch 37": 05-business-and-economics/ch37-public-comps-valuation.md
+      - "Ch 38": 05-business-and-economics/ch38-open-source-strategy.md
+      - "Ch 39": 05-business-and-economics/ch39-ma-history.md
+      - "Ch 40": 05-business-and-economics/ch40-gtm-partnerships.md
+      - "Ch 41": 05-business-and-economics/ch41-market-sizing.md
+  - "Part 6 · History & Future":
+      - "Ch 42": 06-history-and-future/ch42-history-of-databases.md
+      - "Ch 43": 06-history-and-future/ch43-modern-data-stack.md
+      - "Ch 44": 06-history-and-future/ch44-future-trends.md
+      - "Ch 45": 06-history-and-future/ch45-storage-moving-up-the-stack.md
+  - "Part 7 · Conversation Toolkit":
+      - "Ch 46": 07-conversation-toolkit/ch46-talking-with-data-people.md
+      - "Ch 47": 07-conversation-toolkit/ch47-diligence-checklist.md
+      - "Ch 48": 07-conversation-toolkit/ch48-question-bank.md
+      - "Ch 49": 07-conversation-toolkit/ch49-explain-in-30-seconds.md
+      - "Ch 50": 07-conversation-toolkit/ch50-self-test-cheat-sheets.md
+  - Glossary: glossary.md
