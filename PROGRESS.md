@@ -12,7 +12,7 @@
 - [x] Phase 0.1 skeleton, CLAUDE.md, style guide, templates, outline, scripts, mkdocs.yml, Pages workflow; mmdc + Python deps installed
 - [x] Phase 0.2 research sweep (comps/financials, funding 79 rounds, M&A 119 deals, briefing, market sizes) — WebSearch-only (see decision 9)
 - [x] Phase 0.3 outline finalized
-- [ ] Phase 0.4 quality-bar chapters Ch 7 and Ch 25
+- [~] Phase 0.4 quality-bar chapters: Ch 7 done (QA OK); Ch 25 in progress
 - [ ] Phase 1 batches (Part 1 → 2 → 3 → 4 → 5 → 6 → 7 → 0)
 - [ ] Phase 2 independent reviews (all Parts)
 - [ ] Phase 3 synthesis: glossary, flashcards, cheat sheets, README, final QA, deploy
