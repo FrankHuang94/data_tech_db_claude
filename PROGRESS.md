@@ -22,7 +22,7 @@
 
 Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + comparison tables (`scripts/qa_report.py`).
 
-**Totals:** 45/52 chapters drafted · 169,727 prose words · 421 visuals · 482 [VERIFY] markers.
+**Totals:** 45/52 chapters drafted · 170,122 prose words · 421 visuals · 470 [VERIFY] markers.
 
 | Ch | File | Status | Words | Budget | Visuals | VERIFY | Reviewed |
 |---|---|---|---|---|---|---|---|
@@ -61,7 +61,7 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 31 | ch31-analytical-engine-challengers-legacy.md | QA pass | 4,460 | 3000 | 8 | 21 | no |
 | 32 | ch32-ai-native-data-companies.md | QA pass | 4,760 | 3500 | 11 | 24 | no |
 | 33 | ch33-governance-catalog-security-companies.md | QA pass | 3,647 | 2500 | 9 | 15 | no |
-| 34 | ch34-application-giants-data-platforms.md | QA pass | 3,419 | 2000 | 12 | 50 | no |
+| 34 | ch34-application-giants-data-platforms.md | QA pass | 3,814 | 2000 | 12 | 38 | no |
 | 35 | ch35-business-models.md | QA pass | 3,881 | 2500 | 9 | 1 | no |
 | 36 | ch36-unit-economics-kpis.md | QA pass | 4,083 | 2500 | 11 | 10 | no |
 | 37 | ch37-public-comps-valuation.md | QA pass | 3,199 | 2500 | 15 | 6 | no |

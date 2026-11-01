@@ -7,7 +7,7 @@
 ## Summary
 
 - **Chapters reviewed:** 7 (ch09, ch10, ch11, ch12, ch13, ch14, ch15).
-- **Fixes made:** 46 text edits across the seven chapters, plus 2 staged CSV correction rows.
+- **Fixes made:** 49 text edits addressing the 38 issues in the change log, plus 2 staged CSV correction rows.
 - **Post-edit QA:** `scripts/qa_report.py` OK on all seven; `scripts/lint_mermaid.sh` 0 failures (29 blocks). No Mermaid was edited. Word counts all rose slightly and stay well above budget (ch09 3,503 / 2,000; ch10 2,758 / 1,900; ch11 3,681 / 2,200; ch12 3,319 / 1,900; ch13 3,448 / 1,800; ch14 2,900 / 2,000; ch15 4,434 / 2,200).
 - **Overall:** Part 2 is in good shape. The worked arithmetic I re-checked line by line is all correct: Fivetran MAR tiers including the 1B-MAR figure of ~$5,619/month, the Airbyte self-host cost, the 1 GB/s cross-AZ bill ($172,800 / $138,240 / $34,560), the S3 request math (~$579) and the IBM–Confluent ~9.4x EV/FY2025 revenue. Deal statuses mostly match the CSVs. The main problems were: wording on deal status and ARR that ran ahead of the sources (Census, Prefect–Dagster, "~$600M"), some stale product names (Data Cloud, Delta Live Tables), multiples with no basis label (Varonis), and a few Kafka-semantics points that were oversimplified.
 
