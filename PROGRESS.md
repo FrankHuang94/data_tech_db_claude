@@ -4,15 +4,16 @@
 
 ## Current status
 
-- **Phase:** 0.4 / 1 — quality-bar chapters (Ch 7, Ch 25) and Part 1 batch drafting in parallel
-- **Next step:** integrate Ch 7, Ch 25 and Part 1 (Ch 1–6, 8) as they land; QA; then launch Part 2 batch.
+- **Phase:** 1 — Parts 1–3 drafted and integrated (QA OK); Ch 25 done; Part 4 (Ch 26–34) drafting; Part 5 launching next.
+- **Next step:** integrate Part 4 as agents report; launch Part 5 (Ch 35–41), then Part 6 (42–45), then Part 7 + Part 0; then Phase 2 reviewers per Part; then Phase 3 (glossary ≥350 via scripts/build_glossary.py, README, final QA, deploy).
+- **Integration routine:** `scripts/integrate.sh <chapter.md> "docs(chNN): …"` (QA + Mermaid lint + merge staging + charts + PROGRESS + commit), then `git push -u origin claude/loving-brahmagupta-stqbpn`. Briefing corrections go to the bottom of `meta/research-briefing.md`.
 
 ## Phase checklist
 
 - [x] Phase 0.1 skeleton, CLAUDE.md, style guide, templates, outline, scripts, mkdocs.yml, Pages workflow; mmdc + Python deps installed
 - [x] Phase 0.2 research sweep (comps/financials, funding 79 rounds, M&A 119 deals, briefing, market sizes) — WebSearch-only (see decision 9)
 - [x] Phase 0.3 outline finalized
-- [~] Phase 0.4 quality-bar chapters: Ch 7 done (QA OK); Ch 25 in progress
+- [x] Phase 0.4 quality-bar chapters Ch 7 and Ch 25 (QA OK)
 - [ ] Phase 1 batches (Part 1 → 2 → 3 → 4 → 5 → 6 → 7 → 0)
 - [ ] Phase 2 independent reviews (all Parts)
 - [ ] Phase 3 synthesis: glossary, flashcards, cheat sheets, README, final QA, deploy
