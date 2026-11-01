@@ -4,7 +4,7 @@
 
 ## Current status
 
-- **Phase:** 1 — Parts 1–3 drafted and integrated (QA OK); Ch 25 done; Part 4 (Ch 26–34) drafting; Part 5 launching next.
+- **Phase:** 1–2 overlap — Parts 1–4 drafted; Part 5 (35–41) and Part 6 (42–45) drafting; Phase 2 reviewers running for Parts 1, 2, 3, 4a, 4b (see meta/reviewer-brief.md, logs in meta/reviews/). Subagent web search exhausted; integrator verifies key facts live into meta/verified-facts.md.
 - **Next step:** integrate Part 4 as agents report; launch Part 5 (Ch 35–41), then Part 6 (42–45), then Part 7 + Part 0; then Phase 2 reviewers per Part; then Phase 3 (glossary ≥350 via scripts/build_glossary.py, README, final QA, deploy).
 - **Integration routine:** `scripts/integrate.sh <chapter.md> "docs(chNN): …"` (QA + Mermaid lint + merge staging + charts + PROGRESS + commit), then `git push -u origin claude/loving-brahmagupta-stqbpn`. Briefing corrections go to the bottom of `meta/research-briefing.md`.
 
