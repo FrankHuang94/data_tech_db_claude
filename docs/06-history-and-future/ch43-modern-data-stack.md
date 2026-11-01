@@ -6,7 +6,7 @@
 - **The cloud warehouse created the modern data stack.** Redshift (announced November 2012), BigQuery and Snowflake (generally available June 2015) made compute elastic and cheap enough to load raw data first and transform it later.[^redshift-2012][^dremel20][^snowflake16] That one change, from ETL to [ELT](../glossary.md#elt), opened room for a dozen specialist "point tools" around the warehouse.
 - **The label arrived at the top.** Andreessen Horowitz's "Emerging Architectures for Modern Data Infrastructure" (October 2020) gave the pattern a reference diagram.[^a16z] Fivetran raised at $5.6B (September 2021) and dbt Labs at $4.2B (February 2022), both company-stated.[^funding-csv] In our curated dataset, disclosed rounds in the six core [modern data stack](../glossary.md#modern-data-stack) categories fell from about $1.2B in 2021 to $50M in 2023.
 - **The critique was about the buyer's bill, not the technology.** Practitioners led by Benn Stancil argued the "stack" had become a marketing category. Customers paid an [integration tax](../glossary.md#integration-tax): many contracts, many failure points and no owner for the end-to-end result.[^stancil]
-- **2025–26 was the rebundling.** Fivetran bought Census and Tobiko and closed an all-stock merger with dbt Labs (combined ARR "approaching $600M", company-stated).[^merger-close] Datadog bought Metaplane, Snowflake bought Observe ($596.2M preliminary consideration per its 10-K), Prefect agreed to buy Dagster, and FICO and Boomi bought data-quality tools.[^dd-metaplane][^sf-observe][^prefect-dagster][^gx-2026][^elementary]
+- **2025–26 was the rebundling.** Fivetran agreed to buy Census, bought Tobiko and closed an all-stock merger with dbt Labs (combined ARR "approaching $600M", company-stated).[^merger-close] Datadog bought Metaplane, Snowflake bought Observe ($596.2M preliminary consideration per its 10-K), Prefect agreed to buy Dagster, and FICO and Boomi bought data-quality tools.[^dd-metaplane][^sf-observe][^prefect-dagster][^gx-2026][^elementary]
 - **Value pooled at the platform and the metadata control point.** Survivors either became the platform (Snowflake, Databricks), became a consolidator (Fivetran), or own a control point such as the [data catalog](../glossary.md#data-catalog) or [semantic layer](../glossary.md#semantic-layer). The post-MDS stack is a [lakehouse](../glossary.md#lakehouse) on [open table formats](../glossary.md#open-table-format), a governing catalog, a few platforms and agents on top.
 
 ## Why this matters (business + Everpure lens)
@@ -76,7 +76,7 @@ No core MDS company in the dataset re-priced up from its 2021–22 mark before 2
 
 Rebundling ran in three directions at once:
 
-1. **Independents merged into suites.** Fivetran bought Census for reverse ETL (May 2025) and Tobiko Data for SQLMesh (September 2025), then merged with dbt Labs (announced October 2025, closed 1 June 2026).[^census][^tobiko][^merger-close] Prefect agreed to buy Dagster in July 2026.[^prefect-dagster] Fivetran also took over stewardship of the Great Expectations open-source project when FICO bought GX Cloud.[^gx-2026]
+1. **Independents merged into suites.** Fivetran agreed to buy Census for reverse ETL (announced May 2025; closing not separately confirmed) and bought Tobiko Data for SQLMesh (September 2025), then merged with dbt Labs (announced October 2025, closed 1 June 2026).[^census][^tobiko][^merger-close] Prefect agreed to buy Dagster in July 2026.[^prefect-dagster] Fivetran also took over stewardship of the Great Expectations open-source project when FICO bought GX Cloud.[^gx-2026]
 2. **Platforms absorbed adjacent layers.** Snowflake bought Datavolo (integration, now Openflow), Crunchy Data (Postgres), Select Star (catalog) and Observe (observability).[^datavolo][^crunchy][^selectstar][^sf-observe] Databricks bought Tabular (Iceberg), Neon (Postgres) and Tecton's assets (features).[^tabular][^neon][^tecton] Snowflake also runs dbt projects natively, generally available since November 2025.[^dbt-sf]
 3. **Adjacent giants bought their way down.** Salesforce closed Informatica (~$8B, November 2025). IBM closed Confluent (~$11B enterprise value, March 2026). Datadog bought Metaplane, and Boomi bought Rivery and then Elementary.[^infa-close][^ibm-close][^dd-metaplane][^rivery][^elementary]
 
@@ -94,11 +94,11 @@ timeline
   2022 : dbt Labs valued at 4.2B : Monte Carlo valued at 1.6B : Rates rise and budgets tighten
   2023 : ThoughtSpot buys Mode : dbt Labs buys Transform : Qlik closes Talend
   2024 : Databricks buys Tabular : Snowflake buys Datavolo : Boomi buys Rivery
-  2025 : Fivetran buys Census and Tobiko : Datadog buys Metaplane : Salesforce closes Informatica
+  2025 : Fivetran agrees to buy Census : Fivetran buys Tobiko : Datadog buys Metaplane : Salesforce closes Informatica
   2026 : IBM closes Confluent : Fivetran and dbt Labs merge : Prefect agrees to buy Dagster : Boomi buys Elementary
 ```
 
-*Figure 43.2 — About a decade passed between the warehouse inflection and the merger wave, and the funding peak fell almost exactly halfway.*
+*Figure 43.2 — About 13 years passed between the warehouse inflection (2012) and the merger wave (2025–26). The funding peak (2021) came about two-thirds of the way through, after almost a decade of unbundling.*
 
 ### Why the rebundling happened
 
@@ -135,14 +135,14 @@ The survivor table below covers the main MDS companies, and the chart shows the 
 
 | Company | Category | Status (Nov 2026) | Acquirer, date and value (basis) | Why it survived or not |
 |---|---|---|---|---|
-| Fivetran | Ingestion (ELT) | Independent; consolidator | Bought Census, Tobiko and dbt Labs; last mark $5.6B (company-stated, 2021)[^funding-csv] | Broadest managed connector library; MAR pricing; became the suite |
+| Fivetran | Ingestion (ELT) | Independent; consolidator | Bought Tobiko and dbt Labs; agreed to buy Census; last mark $5.6B (company-stated, 2021)[^funding-csv] | Broadest managed connector library; MAR pricing; became the suite |
 | dbt Labs | Transformation | Merged into Fivetran | Closed 2026-06-01; all-stock, undisclosed[^merger-close] | Open-source standard, but >$100M ARR (Feb 2025) could not support a $4.2B mark alone[^dbt-100m] |
 | Stitch | Ingestion | Acquired (twice) | Talend, 2018, $60M (disclosed); Qlik bought Talend 2023[^stitch][^qlik-talend] | Early exit before the boom; became a feature of a suite |
 | Looker | BI, semantic modeling | Acquired | Google, announced 2019-06-06, closed Feb 2020, $2.6B (disclosed)[^looker-acq] | LookML semantic layer was worth more inside a cloud |
 | Dataform | Transformation | Acquired | Google, 2020-12, undisclosed[^dataform] | Became BigQuery's free built-in dbt alternative |
 | Mode | BI and notebooks | Acquired | ThoughtSpot, 2023-06, $200M cash and stock (disclosed)[^mode] | Squeezed between BI suites and notebooks |
 | Transform | Metrics layer | Acquired | dbt Labs, 2023-02, undisclosed[^transform] | A metrics layer was a feature, not a company |
-| Census | Reverse ETL | Acquired | Fivetran, announced 2025-05-01, undisclosed[^census] | Activation is the last step of a pipeline |
+| Census | Reverse ETL | Acquired (agreed; close not separately confirmed) | Fivetran, announced 2025-05-01, undisclosed[^census] | Activation is the last step of a pipeline |
 | Hightouch | Reverse ETL, activation | Independent | $2.75B valuation (press-reported, April 2026)[^hightouch] | Moved into the marketing budget (AI marketing) |
 | Monte Carlo | Data observability | Independent | Last mark $1.6B (company-stated, May 2022)[^mc-d] | Category creator; pushing into agent observability |
 | Metaplane | Data observability | Acquired | Datadog, 2025-04-23, undisclosed[^dd-metaplane] | Fit inside an observability platform |
@@ -198,7 +198,7 @@ The open question is whether the catalog itself rebundles into the platforms or 
 | Databricks revenue run-rate | >$7B | Company-stated run-rate | 2026-08-13[^dbx-rr] |
 | Databricks post-money valuation | $190B | Company-stated | 2026-08-13[^funding-csv] |
 
-*Figure 43.6 — The platforms are now one to two orders of magnitude larger than the largest merged point-tool vendor. That gap in scale is the rebundling in one line.*
+*Figure 43.6 — The platforms are now roughly an order of magnitude larger than the largest merged point-tool vendor: Snowflake's FY2026 GAAP revenue is about 8x, and Databricks' company-stated run-rate about 12x, the merged Fivetran–dbt's "approaching $600M" ARR (author arithmetic across different bases). That gap in scale is the rebundling in one line.*
 
 ## Conversation playbook
 
@@ -221,7 +221,7 @@ The open question is whether the catalog itself rebundles into the platforms or 
 - "The modern data stack is dead." The tools still run in production. What ended is the venture model of one company per box.
 - "dbt Labs was worth $4.2B." That was a 2022 private mark, never re-tested; the merger was all-stock with no price.
 - "Platforms will bundle everything." Cross-platform neutrality and the catalog remain contested. Independents with control points (Atlan, Fivetran–dbt) still exist.
-- "Reverse ETL failed." It became a standard feature (Census) and, at Hightouch, a marketing product.
+- "Reverse ETL failed." It became a suite feature (Census, inside Fivetran) and, at Hightouch, a marketing product.
 
 ## Going deeper
 

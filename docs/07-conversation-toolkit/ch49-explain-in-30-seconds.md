@@ -1,5 +1,5 @@
 # 49. Explain It in 30 Seconds
-> **Depth:** L1–L2 · **Reading time:** ~17 min · **Last verified:** 2026-11-01 · **Prerequisites:** none; each one-liner links to the chapter that explains it ([Ch 1 — The data stack map](../01-data-systems-foundations/ch01-data-stack-map.md) is the best single starting point)
+> **Depth:** L1–L2 · **Reading time:** ~20 min · **Last verified:** 2026-11-01 · **Prerequisites:** none; each one-liner links to the chapter that explains it ([Ch 1 — The data stack map](../01-data-systems-foundations/ch01-data-stack-map.md) is the best single starting point)
 
 ## TL;DR
 
@@ -40,7 +40,7 @@ flowchart LR
 
 ```mermaid
 mindmap
-  root((60-plus concepts))
+  root((71 concepts))
     Foundations
       OLTP vs OLAP
       B-tree vs LSM-tree

@@ -22,7 +22,7 @@
 
 Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + comparison tables (`scripts/qa_report.py`).
 
-**Totals:** 49/52 chapters drafted · 190,625 prose words · 456 visuals · 450 [VERIFY] markers.
+**Totals:** 49/52 chapters drafted · 191,000 prose words · 456 visuals · 448 [VERIFY] markers.
 
 | Ch | File | Status | Words | Budget | Visuals | VERIFY | Reviewed |
 |---|---|---|---|---|---|---|---|
@@ -64,14 +64,14 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 34 | ch34-application-giants-data-platforms.md | reviewed | 3,817 | 2000 | 12 | 38 | yes |
 | 35 | ch35-business-models.md | QA pass | 3,881 | 2500 | 9 | 1 | no |
 | 36 | ch36-unit-economics-kpis.md | QA pass | 4,083 | 2500 | 11 | 10 | no |
-| 37 | ch37-public-comps-valuation.md | QA pass | 3,199 | 2500 | 15 | 6 | no |
+| 37 | ch37-public-comps-valuation.md | QA pass | 3,412 | 2500 | 15 | 6 | no |
 | 38 | ch38-open-source-strategy.md | QA pass | 3,283 | 2000 | 8 | 6 | no |
-| 39 | ch39-ma-history.md | QA pass | 4,745 | 3500 | 11 | 2 | no |
+| 39 | ch39-ma-history.md | QA pass | 4,774 | 3500 | 11 | 1 | no |
 | 40 | ch40-gtm-partnerships.md | QA pass | 2,915 | 2000 | 9 | 6 | no |
 | 41 | ch41-market-sizing.md | QA pass | 1,762 | 1000 | 7 | 6 | no |
 | 42 | ch42-history-of-databases.md | QA pass | 4,723 | 3000 | 7 | 10 | no |
-| 43 | ch43-modern-data-stack.md | QA pass | 2,284 | 2000 | 6 | 5 | no |
-| 44 | ch44-future-trends.md | QA pass | 4,204 | 3000 | 9 | 12 | no |
+| 43 | ch43-modern-data-stack.md | QA pass | 2,296 | 2000 | 6 | 5 | no |
+| 44 | ch44-future-trends.md | QA pass | 4,325 | 3000 | 9 | 11 | no |
 | 45 | ch45-storage-moving-up-the-stack.md | QA pass | 2,707 | 2000 | 8 | 17 | no |
 | 46 | ch46-talking-with-data-people.md | QA pass | 3,846 | 2200 | 7 | 0 | no |
 | 47 | ch47-diligence-checklist.md | QA pass | 3,616 | 2000 | 6 | 1 | no |

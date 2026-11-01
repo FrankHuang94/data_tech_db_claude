@@ -1,0 +1,4 @@
+- **Apache Hudi** — an open table format created at Uber, built around a timeline of table actions and tuned for upserts and streaming ingestion. (ch49)
+- **Apache Kafka** — an open-source distributed, partitioned log in which producers append events to topics and many consumers read them independently; the default event-streaming backbone. (ch49)
+- **Apache Flink** — an open-source stream-processing engine that runs continuous joins, aggregations and windows over events with managed state and exactly-once guarantees. (ch49)
+- **EU AI Act** — Regulation (EU) 2024/1689, the EU's risk-tiered AI law, whose high-risk duties include training-data governance (Article 10), now applying from December 2027 and August 2028 after the 2026 AI Omnibus. (ch49)

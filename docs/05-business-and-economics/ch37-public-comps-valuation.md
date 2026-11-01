@@ -3,11 +3,11 @@
 
 ## TL;DR
 
-- **Growth is the main thing priced, but it explains well under half the spread.** Across 24 public data and infrastructure comps (Palantir excluded), a straight line of [EV/NTM revenue](../glossary.md#ntm-revenue-multiple) against latest revenue growth has a slope of about **0.19x per point of growth** and an **R² of 0.38** (our regression on `data/public_comps.csv`, market data as of June–November 2026). Durability, [net revenue retention](../glossary.md#net-revenue-retention), margin structure and the AI narrative account for most of the rest.
+- **Growth is the main thing priced, but it explains well under half the spread.** Across 24 listed data and infrastructure comps (Palantir and the acquired Confluent excluded; Domo, whose multiple reflects a pending asset sale, included), a straight line of [EV/NTM revenue](../glossary.md#ntm-revenue-multiple) against latest revenue growth has a slope of about **0.19x per point of growth** and an **R² of 0.38** (our regression on `data/public_comps.csv`, market data as of June–November 2026). Durability, [net revenue retention](../glossary.md#net-revenue-retention), margin structure and the AI narrative account for most of the rest.
 - **The market pays for software-like quality, not just speed.** Datadog (21.5x at 36% growth) and Snowflake (16.9x at 35%) sit well above the line. Everpure (8.5x at 38%), NetApp (5.1x at 30%) and Oracle (5.7x at 30%) sit below it. Their growth comes with hardware mix, capex or price tailwinds that investors expect to fade.[^comps]
-- **Palantir is a different regime.** It trades at **70.3x EV/TTM revenue** with 79% TTM growth, a 63% adjusted FCF margin in Q2 2026 and a company-defined [Rule of 40](../glossary.md#rule-of-40) score of 155. The line predicts about 19x for its growth.[^pltr]
+- **Palantir is a different regime.** On the same basis as the rest of the table it trades at **~53x EV/NTM revenue** (EV ÷ FY2026 revenue-guide midpoint, as of 2026-10-30) with **93%** latest-quarter growth; on trailing revenue the figure is **70.3x EV/TTM** against 79% TTM growth. It adds a 63% adjusted FCF margin in Q2 2026 and a company-defined [Rule of 40](../glossary.md#rule-of-40) score of 155. The line predicts about 22x for 93% growth. Per point of growth (~0.57 turns) Palantir is priced like Datadog; what is extraordinary is the growth level and the bet that it lasts.[^pltr]
 - **Private marks run 2–4x hotter than public multiples and are not like-for-like.** Databricks is valued at $190B on a >$7B run-rate (company-stated), about **27x run-rate**. ClickHouse, Supabase and VAST Data are marked at roughly 60x revenue or ARR. Preferred-stock terms, primary-versus-secondary mix, strategic money and run-rate denominators all inflate these figures relative to a public EV/NTM.[^db][^ch][^supa][^vast]
-- **Control transactions clear at roughly 5–9x revenue.** Informatica went at ~5x NTM, Splunk at ~7x trailing, Varonis at ~8.5x FY-guide revenue and Confluent at ~9.4x trailing. Strategic buyers have not paid public-growth-leader multiples for data assets since the 2021 peak.[^infa][^splk][^vrns][^cflt]
+- **Control transactions clear at roughly 5–9x revenue.** Informatica went at ~5x NTM (equity value), Splunk at ~7x trailing, Varonis at ~8.5x its calendar-2026 revenue guide on the $6.3B transaction value (~7.7x on the ~$5.71B equity value) and Confluent at ~9.4x FY2025 revenue on ~$11B EV. Strategic buyers have not paid public-growth-leader multiples for data assets since the 2021 peak.[^infa][^splk][^vrns][^cflt]
 
 ## Why this matters (business + Everpure lens)
 
@@ -19,12 +19,12 @@ For Everpure the question is also inward-looking. The company trades at **8.5x E
 
 ### The comps table
 
-The table groups 25 listed companies (Domo excluded; see note) into seven peer sets. Every number comes from `data/public_comps.csv`, except where a footnote marks a figure we added and staged. Read the **basis** columns before comparing rows. For most companies, "NTM revenue" is the current fiscal-year guidance midpoint used as a proxy (code **G**). For companies that do not guide total revenue it is trailing-twelve-month revenue (code **T**), which flatters the multiple of a fast grower. Growth is the latest reported quarter's GAAP year-on-year rate (code **Q**) unless marked TTM or FY.
+The table groups 24 listed companies (Domo and Confluent excluded; see note) into seven peer sets. Every number comes from `data/public_comps.csv`, except where a footnote marks a figure we added and staged. Read the **basis** columns before comparing rows. For most companies, "NTM revenue" is the current fiscal-year guidance midpoint used as a proxy (code **G**). For companies that do not guide total revenue it is trailing-twelve-month revenue (code **T**), which flatters the multiple of a fast grower. Growth is the latest reported quarter's GAAP year-on-year rate (code **Q**) unless marked TTM or FY.
 
 | Group | Company (ticker) | As of | EV ($B) | NTM rev ($B, basis) | EV/NTM | Growth % (basis) | Gross margin % (basis) | FCF margin % (basis) | Rule of 40 |
 |---|---|---|---|---|---|---|---|---|---|
 | Cloud data & analytics | Snowflake (SNOW) | 2026-10-30 | 106.31 | 6.30 (G) | 16.9x | 35 (Q) | 75 (non-GAAP product) | 25.5 (FY2026 non-GAAP adj.) | 61 |
-| Cloud data & analytics | Palantir (PLTR) | 2026-10-30 | 433.23 | 6.16 (T) | 70.3x | 79 (TTM) | 84.8 (GAAP, TTM) | 63 (Q2 2026 adj.)[^pltr] | 142 |
+| Cloud data & analytics | Palantir (PLTR) | 2026-10-30 | 433.23 | 8.15 (G) | 53.1x (70.3x on TTM $6.16B) | 93 (Q) | 84.8 (GAAP, TTM) | 63 (Q2 2026 adj.)[^pltr] | 156 |
 | Cloud data & analytics | Teradata (TDC) | 2026-10-28 | 2.88 | 1.69 (T) | 1.7x | 1 (TTM) | n/d | n/d | n/d |
 | Cloud data & analytics | C3.ai (AI) | 2026-06-05 (stale) | 0.975 | 0.225 (G) | 4.3x | −35.7 (FY2026) | n/d | n/d | n/d |
 | Operational database | MongoDB (MDB) | 2026-10-20 | 27.14 | 3.01 (G) | 9.0x | 30 (Q) | 74 (GAAP) | 17.8 (Q2 FY2027)[^mdb] | 48 |
@@ -48,25 +48,25 @@ The table groups 25 listed companies (Domo excluded; see note) into seven peer s
 | Data security & protection | Varonis (VRNS) | 2026-11-01 | 5.26 | 0.74 (G) | 7.1x | 18 (Q) | 77.7 (non-GAAP) | n/d | n/d |
 | Data security & protection | Commvault (CVLT) | 2026-10-09 | 6.51 | 1.22 (T) | 5.3x | 13 (Q) | n/d | n/d | n/d |
 
-*Figure 37.1 — The comps table, grouped. EV/NTM is mostly EV divided by current-fiscal-year guidance (an estimate that understates true NTM for fast growers). Palantir's figure is EV/TTM. Rule of 40 = growth % + FCF margin % on the bases shown, which are deliberately mixed and therefore indicative only. "n/d" = not in the dataset. Varonis trades on a pending-deal spread. Domo (0.9x; asset sale to Progress pending) and Confluent (acquired by IBM) are excluded. Sources: `data/public_comps.csv` and company releases.[^comps][^sf][^ep-q2]*
+*Figure 37.1 — The comps table, grouped. EV/NTM is mostly EV divided by current-fiscal-year guidance (an estimate that understates true NTM for fast growers); "T" rows (ServiceNow, Salesforce, Microsoft, Alphabet, Amazon, SAP, Teradata, Commvault) are really EV/TTM. Palantir is shown on its FY2026 guide (G), as in `data/public_comps.csv` and the chart below; its EV/TTM is 70.3x. ServiceNow's 24% is Q2 2026; its Q3 2026 growth was 20.5% ([Ch 36](ch36-unit-economics-kpis.md)). Rule of 40 = growth % + FCF margin % on the bases shown, which are deliberately mixed and therefore indicative only; [Ch 36](ch36-unit-economics-kpis.md) uses FY2027 FCF guides instead for Snowflake (58) and Everpure (52). "n/d" = not in the dataset. Varonis trades on a pending-deal spread. Domo (0.9x; asset sale to Progress pending) and Confluent (acquired by IBM) are excluded. Sources: `data/public_comps.csv` and company releases.[^comps][^sf][^ep-q2]*
 
 A note on the Rule of 40 column. It adds revenue growth to free-cash-flow margin, so a company growing 35% with a 25% FCF margin scores 60. [Ch 36](ch36-unit-economics-kpis.md) covers the metric. Here it serves as a quality screen. Every company in the table that we could score above 50 (Palantir, Datadog, Snowflake, Everpure, Rubrik) trades above the growth regression line below, except Everpure. That is the first clue that the market is discounting the *source* of Everpure's growth and cash flow, not their level.
 
 ### EV/NTM against growth: the regression
 
-![Scatter plot of EV/NTM revenue against latest revenue growth for 25 public data and infrastructure companies, with Palantir far above the cluster at 70x and 79% growth, Datadog, Snowflake and Rubrik above a dashed regression line, and Everpure, NetApp and Oracle below it near 30–38% growth](../assets/charts/comps_ev_ntm_vs_growth.png)
+![Scatter plot of EV/NTM revenue against latest revenue growth for 25 public data and infrastructure companies, with Palantir far above the cluster at 53x and 93% growth, Datadog, Snowflake and Rubrik above a dashed regression line, and Everpure, NetApp and Oracle below it near 30–38% growth](../assets/charts/comps_ev_ntm_vs_growth.png)
 
-*Figure 37.2 — Growth buys multiple, but not reliably. Excluding Palantir, the fitted line is EV/NTM ≈ 4.1 + 0.19 × growth %, with R² = 0.38. Everpure (P) sits about 2.8 turns below the line. Source: `data/public_comps.csv`, chart SV-14.*
+*Figure 37.2 — Growth buys multiple, but not reliably. Excluding Palantir (and the acquired Confluent; Domo is included), the fitted line is EV/NTM ≈ 4.1 + 0.19 × growth %, with R² = 0.38 (n = 24). Everpure (P) sits about 2.8 turns below the line. Source: `data/public_comps.csv`, chart SV-14.*
 
 The fitted line says a company with zero growth trades at about **4.1x** revenue and each extra point of growth adds about **0.19x** (n = 24, ordinary least squares, our calculation). At 30% growth the line implies **9.8x**. Two cautions matter more than the coefficients.
 
 First, the line is held down by one high-leverage point. C3.ai has a revenue *decline* of 35.7% but still trades at 4.3x, because the market values its cash balance and optionality. Drop it and the fit becomes EV/NTM ≈ 1.1 + 0.33 × growth, with **R² = 0.57** (n = 23). At 30% growth that line implies **10.9x**. A more defensible reading is "roughly 2–3 turns of multiple per 10 points of growth" than any single slope.
 
-Second, the residuals carry information. The biggest positive residuals are Datadog (+10.6x), Snowflake (+6.2x), Rubrik (+4.7x) and Microsoft (+3.7x). These businesses have high gross margins, consumption or subscription revenue with visible expansion, and a credible AI-workload story. The biggest negative residuals are NetApp (−4.7x), Oracle (−4.1x), Amazon (−3.5x) and Everpure (−2.8x). Each pairs strong current growth with something investors expect to fade or to absorb capital: hardware mix, AI datacenter capex funded by debt, or component-price tailwinds.
+Second, the residuals carry information. Leaving aside C3.ai (+6.9x, the leverage point above), the biggest positive residuals are Datadog (+10.6x), Snowflake (+6.2x), Rubrik (+4.7x) and Microsoft (+3.7x, on a TTM denominator). These businesses have high gross margins, consumption or subscription revenue with visible expansion, and a credible AI-workload story. The biggest negative residuals are NetApp (−4.7x), Oracle (−4.1x), Amazon (−3.5x, TTM denominator) and Everpure (−2.8x); Domo (−3.3x) is a distressed asset-sale case, not a signal. Each pairs strong current growth with something investors expect to fade or to absorb capital: hardware mix, AI datacenter capex funded by debt, or component-price tailwinds.
 
 > **Bridge: fitting a process curve.** Treat the regression like a yield-versus-defect-density model fitted across fabs. Defect density predicts yield, but two lines at the same D0 can yield differently because their die size and design sensitivity differ, and that is what the residual measures. Here growth plays the part of D0, and margin structure, NRR and revenue durability play the part of die size and critical area. An R² of 0.38 means growth is a first-order variable, not the model. A point far off the curve (Palantir) is not noise to average away. It is a different process node, and should be modelled separately.
 
-**Why Palantir is an outlier.** Four things compound. (1) Growth is *accelerating*: Q2 2026 revenue rose 93% and US commercial revenue 149%. The CSV's 79% figure is trailing, so it understates the current rate. (2) Profitability is extreme for that growth: a 63% adjusted FCF margin. (3) The AI-platform narrative and heavy retail ownership add a sentiment premium that no fundamental variable captures. (4) The denominator is trailing revenue. On the FY2026 revenue guide of $8.150–8.158B, the multiple is about **53x** (our arithmetic: $433.23B ÷ $8.154B), still about 2.5x the line.[^pltr] Even growth-adjusted, Palantir costs 0.89x per point of growth against Snowflake's 0.48x. Whether that premium proves durable is the bull/bear debate, not something the regression can settle. For the two names that anchor the data-platform group, [Ch 26](../04-company-deep-dives/ch26-snowflake.md) covers Snowflake's consumption model and [Ch 27](../04-company-deep-dives/ch27-databricks-vs-snowflake.md) compares its public multiple with Databricks' private one.
+**Why Palantir is an outlier.** Four things compound. (1) Growth is *accelerating*: Q2 2026 revenue rose 93% and US commercial revenue 149%; trailing-twelve-month growth (79%) understates the current rate. (2) Profitability is extreme for that growth: a 63% adjusted FCF margin. (3) The AI-platform narrative and heavy retail ownership add a sentiment premium that no fundamental variable captures. (4) The basis matters. On the FY2026 revenue guide of $8.150–8.158B the multiple is about **53x** (our arithmetic: $433.23B ÷ $8.154B), about 2.4x the ~22x the line predicts at 93% growth; quoted on trailing revenue ($6.16B) it is **70.3x EV/TTM**, a figure other chapters cite with that label.[^pltr] Growth-adjusted on a like-for-like basis (guide multiple ÷ latest-quarter growth), Palantir costs ~0.57x per point, close to Datadog's 0.60x and above Snowflake's 0.48x; the 0.89x often quoted mixes a TTM multiple with TTM growth. Whether that premium proves durable is the bull/bear debate, not something the regression can settle. For the two names that anchor the data-platform group, [Ch 26](../04-company-deep-dives/ch26-snowflake.md) covers Snowflake's consumption model and [Ch 27](../04-company-deep-dives/ch27-databricks-vs-snowflake.md) compares its public multiple with Databricks' private one.
 
 ### Group medians and growth-adjusted multiples
 
@@ -78,14 +78,14 @@ Dividing the multiple by growth gives a crude **[growth-adjusted multiple](../gl
 
 | Company | EV/NTM (or stated basis) | Growth % (basis) | Turns per point of growth | Read-across |
 |---|---|---|---|---|
-| Palantir | 70.3x (EV/TTM) | 79 (TTM) | 0.89 | Narrative plus profitability premium |
+| Palantir | 53.1x (G; 70.3x EV/TTM) | 93 (Q; 79 TTM) | 0.57 (0.89 on TTM/TTM) | Priced per point like Datadog; the premium is the growth level and its assumed duration |
 | Datadog | 21.5x | 36 (Q) | 0.60 | Platform breadth, high NRR (low-120s)[^ddog] |
 | Microsoft | 11.4x (EV/TTM) | 19 (Q) | 0.60 | Azure +48% inside a 19% total |
 | Snowflake | 16.9x | 35 (Q) | 0.48 | Consumption re-acceleration, 126% NRR |
 | Rubrik | 16.0x | 38 (Q) | 0.42 | Cloud ARR 89% of subscription ARR |
 | ServiceNow | 9.8x (EV/TTM) | 24 (Q) | 0.41 | Durable seat-plus-platform franchise |
-| Databricks (private) | ~27x run-rate | >80 (company-stated) | ~0.34 | Cheaper per point than Snowflake, before structure adjustments |
-| MongoDB | 9.0x | 30 (Q) | 0.30 | Atlas +29%; NRR 122%[^mdb] |
+| Databricks (private) | ~27x run-rate (post-money equity ÷ company-stated run-rate; not EV/NTM) | >80 (company-stated) | ~0.34 | Cheaper per point than Snowflake, before structure adjustments |
+| MongoDB | 9.0x | 30 (Q) | 0.30 | Atlas +29%; net ARR expansion ~122% (press-reported; not comparable with Snowflake's NRR)[^mdb] |
 | Everpure | 8.5x | 38 (Q) | 0.22 | Product-led growth, partly price-driven |
 | Oracle | 5.7x | 30 (Q) | 0.19 | Net debt ~$132B; negative FCF |
 | NetApp | 5.1x | 30 (Q) | 0.17 | All-flash surge; GM guided down |
@@ -110,7 +110,7 @@ flowchart LR
 
 *Figure 37.5 — Valuation drivers. Fundamentals set the multiple. Structure and liquidity then separate the observed number (public quote, private mark, deal price) from the fundamental one. The regression captures only the first arrow.*
 
-Growth matters because a revenue multiple is a compressed DCF. At a fixed terminal margin, a business growing 35% for five more years has about 4.5x today's revenue by year five (1.35⁵ ≈ 4.5), while one growing 15% has about 2x. **Durability** decides how many of those years investors believe in. That is why net revenue retention, which is cohort analysis by another name, is the most watched KPI after growth itself. Snowflake's 126% and MongoDB's 122% tell investors that the installed base alone grows the business by about a fifth to a quarter a year.[^sf][^mdb]
+Growth matters because a revenue multiple is a compressed DCF. At a fixed terminal margin, a business growing 35% for five more years has about 4.5x today's revenue by year five (1.35⁵ ≈ 4.5), while one growing 15% has about 2x. **Durability** decides how many of those years investors believe in. That is why net revenue retention, which is cohort analysis by another name, is the most watched KPI after growth itself. Snowflake's 126% NRR (trailing two-year cohort of product revenue) and MongoDB's net ARR expansion rate (an ARR snapshot, ~121% at FY2026 year-end per its 10-K and ~122% in Q2 FY2027 per press reports) both say the installed base alone grows each business by roughly a fifth to a quarter a year, but the two definitions differ, so the 4-point gap between them means little ([Ch 36](ch36-unit-economics-kpis.md)).[^sf][^mdb]
 
 **Margin structure** sets the terminal FCF per dollar of revenue. A dollar of 80%-gross-margin software revenue can become 25–35 cents of FCF at maturity. A dollar of 68% revenue that includes hardware usually cannot, so investors pay fewer turns. **Visibility** works the same way. Subscription revenue with a large remaining-performance-obligation backlog is a bond-like stream. Consumption revenue (Snowflake, Datadog, MongoDB Atlas) grows faster in good times but can swing quarter to quarter. Datadog's shares fell about 19% on 2026-08-06 despite a guidance raise, because the guide embedded reduced usage from its largest customer.[^comps] **Platform breadth** lowers churn and raises attach, which is why Datadog and ServiceNow carry positive residuals. The **AI premium** is real but selective. It has gone to companies whose revenue visibly rises with AI workloads, not to software as a category.
 
@@ -120,7 +120,7 @@ Growth matters because a revenue multiple is a compressed DCF. At a fixed termin
 |---|---|---|---|---|---|
 | Databricks | $190B post-money | 2026-08-13 | company-stated | >$7B run-rate, >80% growth (company-stated) | ~27x run-rate; ~22x NTM (estimate, see [Ch 25](../04-company-deep-dives/ch25-databricks.md)) |
 | VAST Data | $30B | 2026-04-21 | company-stated | >$500M committed ARR exiting FY2026 (company-stated) | ≤~60x committed ARR |
-| ClickHouse | $15B | 2026-01-16 | press-reported | ~$250M annualized revenue, May 2026 (press-reported) | ~60x |
+| ClickHouse | $15B | 2026-01-16 | press-reported | ~$250M annualized revenue, May 2026 (press-reported; four months after the round, so the multiple at pricing was higher) | ~60x |
 | Temporal | $12.55B | 2026-09-14 | company-stated | >$250M annualized revenue (reported) | ~50x |
 | Cyera | $12B | 2026-06-10 | press-reported | "~80x ARR" (press-reported) | ~80x ARR |
 | Supabase | $10.5B (extension at $10.65B, Oct 2026 [VERIFY]) | 2026-06-04 | press-reported | ~$170M ARR, May 2026 (Sacra estimate) | ~62x |
@@ -136,7 +136,7 @@ Growth matters because a revenue multiple is a compressed DCF. At a fixed termin
 
 ![Line chart of Databricks post-money valuation by round, flat around $38–43B from 2021 to 2023 and then rising to $62B in late 2024, $134B in December 2025 and $190B in August 2026](../assets/charts/databricks_valuation_timeline.png)
 
-*Figure 37.8 — Databricks' mark tripled in 20 months while its run-rate rose from about $4B to more than $7B (company-stated). Roughly half of the re-rating came from revenue, the rest from multiple. Source: `data/private_funding.csv`; see [Ch 25](../04-company-deep-dives/ch25-databricks.md).*
+*Figure 37.8 — Databricks' mark tripled in 20 months ($62B in December 2024 to $190B in August 2026) while its run-rate rose from about $3B (the company's projection for the quarter to January 2025, given with the $62B round) to more than $7B (company-stated). The run-rate multiple moved from ~21x to ~27x, so roughly three-quarters of the re-rating came from revenue and a quarter from multiple (our log decomposition). Source: `data/private_funding.csv`; see [Ch 25](../04-company-deep-dives/ch25-databricks.md).*
 
 Why do private marks sit two to four times above public multiples for similar growth? Five reasons, roughly in order of importance.
 
@@ -156,13 +156,13 @@ Why do private marks sit two to four times above public multiples for similar gr
 |---|---|---|---|---|---|
 | 2023-07-31 | Francisco Partners / TPG → New Relic | $6.5B (disclosed) | ~6.7x | Annualized run-rate revenue $970.4M (press-reported); our arithmetic | ~12% |
 | 2023-09-21 | Cisco → Splunk | $28B (disclosed) | ~7.1x / ~5.7x | LTM revenue ~$3.9B / forward revenue (analyst estimates) | low teens [VERIFY] |
-| 2025-05-27 | Salesforce → Informatica | ~$8B net of existing stake (disclosed) | ~5x | NTM revenue (Breakingviews / LSEG); ~4.9x FY2024 revenue $1.64B | ~3% |
+| 2025-05-27 | Salesforce → Informatica | ~$8B equity value, net of existing stake (disclosed) | ~5x | NTM revenue (Breakingviews / LSEG); ~4.9x FY2024 revenue $1.64B (equity value basis; EV would add Informatica's net debt) | ~3% |
 | 2025-06-20 | Haveli → Couchbase | $1.5B (disclosed) | ~7.2x | FY2025 revenue ~$209M (equity value; our arithmetic) [VERIFY revenue vs 10-K] | ~16% |
-| 2025-12-08 | IBM → Confluent | ~$11B EV (disclosed) | ~9.4x | FY2025 revenue $1,167M (trailing) | 21% |
-| 2025-12-11 (completion) | Veeam → Securiti AI | $1.725B (disclosed) | n/d | Revenue not disclosed | n/d |
+| 2025-10-21 | Veeam → Securiti AI | $1.725B (disclosed; completed 2025-12-11) | n/d | Revenue not disclosed | n/d |
+| 2025-12-08 | IBM → Confluent | ~$11B EV (disclosed) | ~9.4x | FY2025 (calendar) GAAP revenue $1,166.7M; nearly complete at announcement, reported 2026-02 | 21% |
 | 2026-07-22 | Progress → Domo platform assets | $400M plus liabilities (press-reported) | ~1.3x | FY2026 revenue ~$318M | ~1% |
-| 2026-10-15 | Proofpoint (Thoma Bravo) → Varonis | ~$6.3B (equity ~$5.71B) | ~8.5x | FY2026 revenue guide midpoint $737M | 18% |
 | 2026-02-23 | Everpure → 1touch | $125M cash (disclosed) | n/d | Capability deal; revenue not disclosed | n/d |
+| 2026-10-15 | Proofpoint (Thoma Bravo) → Varonis | ~$6.3B transaction value (equity value ~$5.71B) | ~8.5x (~7.7x on equity value) | FY2026 (calendar 2026, i.e., current-year) revenue guide midpoint $737M; our arithmetic | 18% (Q2 2026) |
 
 *Figure 37.9 — Precedent transactions. Control deals for scaled data assets cluster at 5–9.5x revenue, on mixed bases. Even the "AI-relevant" ones (Confluent, Varonis) cleared below the public multiples of growth leaders. Sources: `data/ma_deals.csv`, `data/public_comps.csv`, deal releases and press.[^newr][^splk][^infa][^base][^cflt][^vrns][^comps]*
 
@@ -229,7 +229,7 @@ Take an illustrative target with $1.0B of trailing revenue, 30% growth and an 80
 | Regression ex-C3.ai (n = 23): 1.07 + 0.327 × 30 | 10.9x | ~$14.2B | Better fit (R² 0.57) |
 | Data-security interpolation: Varonis 7.1x at 18% → Rubrik 16.0x at 38% | 12.4x | ~$16.1B | Peer-specific; Rubrik's cloud mix lifts the slope |
 | Growth-adjusted at 0.42–0.48 turns per point (Rubrik–Snowflake) | 12.6–14.4x | ~$16–19B | Requires software-leader durability |
-| Control precedent: Varonis 8.5x at 18%, Confluent 9.4x at 21% | ~9–11x | ~$12–14B | What a buyer has actually paid |
+| Control precedent: Varonis 8.5x (transaction value ÷ CY2026 guide) at 18%, Confluent 9.4x (EV ÷ FY2025 revenue) at 21% | ~9–11x | ~$12–14B | What a buyer has actually paid; mixed bases |
 
 *Figure 37.13 — Worked example (illustrative; our arithmetic on `data/public_comps.csv`). A reasonable public range is 10–12x NTM, about $13–16B of EV. The top end requires 120%+ NRR and a positive FCF margin.*
 
@@ -259,13 +259,13 @@ The arithmetic is unforgiving on one point. Data-management software acquired at
 | Same, ex-Palantir and C3.ai | 0.33x per point; intercept 1.1x; R² 0.57 (n = 23) | Our calculation | same |
 | Snowflake EV/NTM | 16.9x at 35% growth | NTM = FY2027 guide proxy | 2026-10-30[^sf] |
 | Datadog EV/NTM | 21.5x at 36% growth | FY2026 guide proxy | 2026-10-02[^comps] |
-| Palantir EV/revenue | 70.3x TTM; ~53x FY2026 guide | Market data; our arithmetic | 2026-10-30[^pltr] |
+| Palantir EV/revenue | ~53x FY2026 guide (NTM proxy, as in the CSV); 70.3x TTM | Market data; our arithmetic | 2026-10-30[^pltr] |
 | Everpure EV/NTM | 8.5x (EV $43.01B; NTM $5.05B) at 38% growth | FY2027 guide midpoint | 2026-10-01[^ep-stock] |
 | Everpure gap to regression line | ~2.8x ≈ $14B EV | Our arithmetic | — |
 | Databricks private mark | $190B on >$7B run-rate ≈ 27x | Company-stated | 2026-08-13[^db] |
 | ClickHouse / Supabase / VAST marks | $15B / $10.5B / $30B ≈ 60x revenue or ARR | Press-reported or company-stated; our arithmetic | 2026[^ch][^supa][^vast] |
-| Confluent → IBM | ~$11B ≈ 9.4x FY2025 revenue | Disclosed | 2025-12-08[^cflt] |
-| Varonis → Proofpoint | ~$6.3B ≈ 8.5x FY2026 guide | Disclosed | 2026-10-15[^vrns] |
+| Confluent → IBM | ~$11B EV ≈ 9.4x FY2025 GAAP revenue ($1,166.7M) | Disclosed value; our multiple | Announced 2025-12-08; closed 2026-03-17[^cflt] |
+| Varonis → Proofpoint | ~$6.3B transaction value ≈ 8.5x CY2026 guide midpoint; ~$5.71B equity value ≈ 7.7x | Disclosed values; our multiples | Announced 2026-10-15[^vrns] |
 | Informatica → Salesforce | ~$8B ≈ 5x NTM | Disclosed value; LSEG multiple | 2025-05-27[^infa] |
 | Cloud-software median EV/NTM | 16.5x (Jul 2021) → 5.0x (Oct 2022) → 4.1x (Jan 2026) | Clouded Judgement (Altimeter data) | [^cj21][^cj22][^cj26] |
 | Venture terms: 1x preference / non-participating | 98.2% / 96.4% of deals | Cooley Q1 2026 | 2026-04-29[^cooley] |
@@ -297,7 +297,7 @@ Storage vendors face a structural multiple ceiling. Their gross margin includes 
 - "Databricks is at 27x, so Snowflake is cheap at 17x." Different bases: post-money preferred on a run-rate versus public EV on NTM guidance.
 - "Software multiples re-rated on AI." The median fell to 4.1x in January 2026. A narrow set of AI-exposed names re-rated.
 - "We'll get a software multiple once we own a software company." Multiples follow the revenue mix investors can model, not the org chart.
-- "Palantir proves the market pays 70x for 80% growth." Palantir is an outlier even after growth-adjusting. Build a model on the line, not the outlier.
+- "Palantir proves the market pays 70x for 80% growth." 70x is EV/TTM; on guidance it is ~53x for 93% growth, about what Datadog pays per point. The outlier is the growth level and the duration the price assumes. Build a model on the line, not the outlier.
 - "The private round sets the price." It sets the price of one class of preferred stock with downside protection.
 
 ## Going deeper
@@ -329,7 +329,7 @@ Storage vendors face a structural multiple ceiling. Their gross margin includes 
 [^sf]: Snowflake Inc., "Snowflake Reports Financial Results for the Second Quarter of Fiscal 2027," https://www.nasdaq.com/press-release/snowflake-reports-financial-results-second-quarter-fiscal-2027-2026-09-02, published 2026-09-02; Stock Analysis, SNOW statistics, https://stockanalysis.com/stocks/snow/statistics/, data as of 2026-10-30; retrieved 2026-11-01. FY2027 = Feb 2026–Jan 2027.
 [^mdb]: MongoDB, Inc., "MongoDB, Inc. Announces Second Quarter Fiscal 2027 Financial Results," https://investors.mongodb.com/news-releases/news-release-details/mongodb-inc-announces-second-quarter-fiscal-2027-financial, published 2026-09-01 (FCF $137.6M on revenue $771.8M; FCF margin 17.8% is our arithmetic); Zacks via Nasdaq, "Why Is MongoDB (MDB) Down 7.1% Since Last Earnings Report?", https://www.nasdaq.com/articles/why-mongodb-mdb-down-71-last-earnings-report, published 2026-10 (net ARR expansion rate 122%); retrieved 2026-11-01.
 [^ddog]: Datadog, Inc., Form 8-K Ex. 99.1, Q2 2026 results, https://www.sec.gov/Archives/edgar/data/0001561550/000162828026053829/ex-991x20260630x8k.htm, published 2026-08-06 (FCF $279M on revenue ~$1.12B); Zacks, "Datadog Q2 Earnings and Revenues Surpass Estimates," https://www.zacks.com/stock/news/2971162/datadog-q2-earnings-and-revenues-surpass-estimates-rise-yy, published 2026-08 (non-GAAP gross margin 79.6%; trailing NRR low-120s, press-reported); retrieved 2026-11-01.
-[^pltr]: Palantir Technologies Inc., Form 8-K Ex. 99.1, Q2 2026 results, https://www.sec.gov/Archives/edgar/data/0001321655/000132165526000039/a2026q2ex991pressrelease.htm, published 2026-08-03 (revenue +93%, US commercial +149%, adjusted FCF margin 63%, Rule of 40 score 155 company-defined, FY2026 guide $8.150–8.158B); Stock Analysis, PLTR market cap, https://stockanalysis.com/stocks/pltr/market-cap/, data as of 2026-10-30; retrieved 2026-11-01.
+[^pltr]: Palantir Technologies Inc., Form 8-K Ex. 99.1, Q2 2026 results, https://www.sec.gov/Archives/edgar/data/0001321655/000132165526000039/a2026q2ex991pressrelease.htm, published 2026-08-03 (revenue +93%, US commercial +149%, adjusted FCF margin 63%, Rule of 40 score 155 company-defined, FY2026 guide $8.150–8.158B); Stock Analysis, PLTR market cap, https://stockanalysis.com/stocks/pltr/market-cap/, data as of 2026-10-30; retrieved 2026-11-01. EV/NTM 53.1x = EV $433.23B ÷ FY2026 guide midpoint $8.154B (company guidance, used as the NTM proxy in `data/public_comps.csv`); EV/TTM 70.3x = EV ÷ TTM revenue $6.16B to Q2 2026 (GAAP, via Stock Analysis; `data/company_financials.csv`). Both are our arithmetic.
 [^rbrk]: Rubrik, Inc., "Rubrik Reports Second Quarter Fiscal Year 2027 Financial Results," https://www.rubrik.com/company/newsroom/press-releases/26/rubrik-reports-second-quarter-fiscal-year-2027-financial-results, published 2026-08 (non-GAAP gross margin 81.0%; FCF $65.7M on revenue $427.3M ≈ 15%); StorageNewsletter, https://www.storagenewsletter.com/2026/08/28/rubrik-fiscal-2q27-financial-results/, published 2026-08-28; retrieved 2026-11-01.
 [^ep-q2]: Everpure, Inc., "Everpure Announces Second Quarter Fiscal 2027 Financial Results," https://investor.everpuredata.com/news-and-events/press-releases/press-release-details/2026/Everpure-Announces-Second-Quarter-Fiscal-2027-Financial-Results/default.aspx, published 2026-08-26; Pulse 2.0, "Everpure: Revenue Jumps 38% As Product Sales Rise 54%…," https://pulse2.com/everpure-revenue-jumps-38-as-product-sales-rise-54-but-free-cash-flow-swings-to-negative-238-million/, published 2026-08; Nasdaq, "Everpure Q2 Earnings Call Highlights," https://www.nasdaq.com/articles/everpure-q2-earnings-call-highlights, published 2026-08 (price increases, second hyperscaler design win); retrieved 2026-11-01. FY2027 = Feb 2026–early Feb 2027.
 [^ep-10k]: Everpure, Inc., Form 10-K for fiscal year ended 2026-02-01, https://www.sec.gov/Archives/edgar/data/1474432/000147443226000027/pstg-20260201.htm (total revenue $3,662.8M, GAAP), and Form 8-K Ex. 99.1, Q4 FY2026 results, https://www.sec.gov/Archives/edgar/data/1474432/000147443226000015/pstg-ex991q4fy2026.htm (FCF $616M, non-GAAP), published 2026-02-25 / 2026-03; retrieved 2026-11-01. FCF margin 16.8% is our arithmetic.
@@ -348,7 +348,7 @@ Storage vendors face a structural multiple ceiling. Their gross margin includes 
 [^infa]: Reuters Breakingviews via LSEG, "Salesforce's return to M&A fits its sedate remodel," https://lipperalpha.refinitiv.com/2025/05/breakingviews-salesforces-return-to-ma-fits-its-sedate-remodel, published 2025-05-27 (~5x NTM revenue, LSEG data); Briefing.com, https://briefing.com/story-stocks/archive/2025/5/27/salesforce-climbs-higher-as-informatica-acquisition-sets-clear-path-for-more-scalable-ai-(crm), published 2025-05-27 (FY2024 revenue $1.64B); retrieved 2026-11-01.
 [^base]: Couchbase, "Haveli Investments Completes Acquisition of Couchbase," https://www.couchbase.com/press-releases/haveli-investments-completes-acquisition-of-couchbase/, published 2025-09-24; The Register, "Private equity types to snap up NoSQL biz Couchbase," https://www.theregister.com/2025/06/23/private_equity_snaps_up_nosql/, published 2025-06-23; FY2025 revenue ~$209M via ROIC.ai aggregator, https://www.roic.ai/quote/BASE [VERIFY vs 10-K]; retrieved 2026-11-01.
 [^cflt]: IBM, Form 10-Q for quarter ended 2026-03-31, https://www.sec.gov/Archives/edgar/data/0000051143/000005114326000038/ibm-20260331.htm; Confluent, Form 10-K FY2025, https://www.sec.gov/Archives/edgar/data/1699838/000169983826000006/cflt-20251231.htm, published 2026-02; retrieved 2026-11-01.
-[^vrns]: Varonis Systems / Proofpoint, Form 8-K Ex. 99.1 (merger announcement), https://www.sec.gov/Archives/edgar/data/0001361113/000121390026109901/ea030861001ex99-1.htm, published 2026-10-15; SiliconANGLE, https://siliconangle.com/2026/10/15/proofpoint-agrees-to-buy-data-security-company-varonis-for-6-3b-in-cash/, published 2026-10-15; retrieved 2026-11-01.
+[^vrns]: Varonis Systems / Proofpoint, Form 8-K Ex. 99.1 (merger announcement), https://www.sec.gov/Archives/edgar/data/0001361113/000121390026109901/ea030861001ex99-1.htm, published 2026-10-15; SiliconANGLE, https://siliconangle.com/2026/10/15/proofpoint-agrees-to-buy-data-security-company-varonis-for-6-3b-in-cash/, published 2026-10-15; retrieved 2026-11-01. The $6.3B headline is the transaction value; equity value is ~$5.71B (8-K). Multiples (8.5x / 7.7x) are our arithmetic on the CY2026 revenue guide midpoint of $737M (`data/public_comps.csv`).
 [^cj21]: Jamin Ball, "Clouded Judgement 7.9.21," https://cloudedjudgement.substack.com/p/clouded-judgement-7921, published 2021-07-09; and "Clouded Judgement 2.5.21," https://cloudedjudgement.substack.com/p/clouded-judgement-2521, published 2021-02-05; retrieved 2026-11-01. Analyst-reported (Altimeter data).
 [^cj22]: Jamin Ball, "Clouded Judgement 10.21.22," https://cloudedjudgement.substack.com/p/clouded-judgement-102122, published 2022-10-21; retrieved 2026-11-01.
 [^cj25]: Jamin Ball, "Clouded Judgement 3.7.25," https://cloudedjudgement.substack.com/p/clouded-judgement-3725, published 2025-03-07; retrieved 2026-11-01.

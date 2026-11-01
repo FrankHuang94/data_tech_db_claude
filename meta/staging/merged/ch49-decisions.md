@@ -1,0 +1,5 @@
+- ch49: Wrote 71 one-liners (assignment minimum 60) to cover every requested concept plus write-ahead log, compaction, permission-aware retrieval and hybrid search, which recur across chapters.
+- ch49: One-liners are 2–3 sentences of ~40–60 words (slightly above the 30–45-word guide) so that each one carries a definition, a business consequence, an analogy and a chapter link; prose total ~4,600 words vs 1,500 budget, with 7 visuals to keep density ≤700 words/visual.
+- ch49: Numbers reused only from data/*.csv, meta/verified-facts.md and existing chapter footnotes (no web search); a "Numbers worth carrying" table lists all 12 figures with labels.
+- ch49: The Snowflake credit list price (~$2/$3/$4, tagged [VERIFY] in Ch 26) was deliberately omitted; entry 52 says only that price depends on edition and region.
+- ch49: Fivetran–Census described as "agreed to buy" (2025) because data/ma_deals.csv lists closing as not separately verified.
