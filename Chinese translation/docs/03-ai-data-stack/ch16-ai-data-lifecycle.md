@@ -243,3 +243,106 @@ timeline
 
 *图 16.6 — 整理后的预训练语料只有数十 TB，但为其提供服务的基础设施却达到数百 PB 和每秒数 TB。企业层面的数字关乎采用率和就绪度，而非字节数。*
 
+## 存储桥接
+
+> **存储桥接。** 每个阶段对存储的需求都不同。整理阶段需要在对象存储上进行高吞吐的顺序扫描并具备 shuffle 带宽。训练阶段需要带随机采样的持续读取，以及足够的写入带宽来吸收检查点突发，避免 GPU 停顿。RAG 需要对向量索引进行低延迟随机读取以及频繁的小规模更新。反馈阶段需要廉价、持久、以追加为主并具备保留期控制的容量。Everpure 的 FlashBlade、Data Stream 和 Data Intelligence 面向的是企业阶段（分类、向量化、受治理的数据服务）。是否更进一步，例如对非结构化语料进行版本管理或提供检查点层级服务，属于基于公开信息、战略团队可能评估的选项之一。检查点、GPUDirect 和 AI 存储基准测试请参见配套的 *Everpure Tech Atlas*；[第 24 章](ch24-data-meets-compute-and-storage.md)讨论计算与存储之间的相互作用。
+
+## 对话手册
+
+**向产品经理提问**
+
+1. "如今客户为哪些生命周期阶段向你们付费，哪些阶段仍然自己构建？自 2024 年以来这有什么变化？"
+2. "你们如何知道某个客户的 RAG 或智能体系统在上个季度变得更好了？评估集由谁负责？"
+3. "你们的合同赋予你们或客户什么样的权利，来复用追踪和反馈数据进行调优？"
+
+**向工程师提问**
+
+1. "你们能复现六个月前某个模型或智能体给出的答案吗：数据集提交、检查点、索引版本和提示词？"
+2. "训练期间你们的读取模式是怎样的？写入和恢复一个完整检查点需要多长时间？"
+3. "PII 清除和权限检查发生在哪里：摄取时、建索引时，还是检索时？"
+
+**好的回答听起来是什么样的。** 它们会区分前沿与企业的需求。它们会引用具体数字（"我们每 30 分钟异步写一次检查点，每次约 6 TB"；"评估集有 400 个已打分任务，每次发布都要过这道关"）。它们把数据版本管理和访问控制视为一等需求，并承认飞轮需要可打分的结果和复用权利。
+
+**不要这样说**
+
+- "企业都会预训练自己的模型。"大多数企业是在前沿模型或开放权重模型上使用 RAG、轻量微调和智能体。
+- "数据越多越好。"如今整理质量和后训练数据比原始数据量更重要。
+- "RAG 消除了幻觉。"在检索正确且权限得到执行时，它能减少幻觉，但也增加了一个新的投毒攻击面。
+- "训练数据是一个存储容量问题。"一个 15T token 的语料约为 60 TB。真正的挑战在于吞吐、shuffle 和检查点突发。
+- "每个 AI 应用都有数据飞轮。"只有当结果可以被廉价打分、且数据可以合法复用时才有。
+
+## 深入阅读
+
+- Penedo 等，*The FineWeb Datasets*（2024 年），关于大规模去重和分类器过滤。[^fineweb]
+- *The Llama 3 Herd of Models*（2024 年），其中关于数据配比、基础设施、存储和可靠性的章节。[^llama3-paper]
+- Ouyang 等，*InstructGPT*（2022 年），以及 Rafailov 等，*DPO*（2023 年），了解后训练的数据配方。[^instructgpt][^dpo]
+- Lewis 等，*Retrieval-Augmented Generation*（2020 年）。[^rag]
+- Anthropic，"Effective context engineering for AI agents"（2025 年）。[^context-eng]
+- lakeFS 关于分支和可复现性的文档。[^lakefs]
+
+## 关键术语
+
+- [Token](../glossary.md#token) — 语言模型读取和预测的子词单元；英文平均约每个 token 四个字符。
+- [分词（Tokenization）](../glossary.md#tokenization) — 在训练或推理之前，用固定词表把文本转换为 token ID。
+- [预训练](../glossary.md#pretraining) — 在非常大的通用语料上训练模型预测下一个 token。
+- [后训练](../glossary.md#post-training) — 预训练之后的各阶段（SFT、偏好调优、RL），把基础模型变成助手。
+- [数据整理](../glossary.md#data-curation) — 对原始数据进行抽取、过滤、去重、评分和清洗，使之成为可用于训练的形式。
+- [MinHash](../glossary.md#minhash) — 一种以低成本估计文档相似度的哈希技术，用于去除近似重复。
+- [质量分类器](../glossary.md#quality-classifier) — 为文档的训练价值打分的小模型。
+- [PII](../glossary.md#pii) — 个人身份信息，如姓名、电子邮件和证件号，必须被移除或管控。
+- [合成数据](../glossary.md#synthetic-data) — 由模型生成、而非从人或网络收集的训练数据。
+- [监督微调](../glossary.md#supervised-fine-tuning) — 在配有理想回答的示例提示词上进行训练（SFT）。
+- [奖励模型](../glossary.md#reward-model) — 基于人类排序训练、在 RL 期间为输出打分的模型。
+- [人类反馈强化学习](../glossary.md#reinforcement-learning-from-human-feedback) — 用 RL 针对从人类偏好中学到的奖励来调优模型（RLHF）。
+- [AI 反馈强化学习](../glossary.md#reinforcement-learning-from-ai-feedback) — 偏好标签由模型在书面原则指导下生成的 RLHF（RLAIF）。
+- [直接偏好优化](../glossary.md#direct-preference-optimization) — 直接在被选中/被拒绝的回答对上训练，无需单独的奖励模型（DPO）。
+- [偏好数据](../glossary.md#preference-data) — 按优劣标注的模型输出对或排序。
+- [RL 环境](../glossary.md#rl-environment) — 任务或软件系统的沙箱化复制品，智能体在其中行动并被打分。
+- [可验证奖励](../glossary.md#verifiable-reward) — 由自动检查计算的 RL 奖励，例如测试通过或答案一致。
+- [LLM 评审](../glossary.md#llm-judge) — 依据评分标准为其他模型的输出打分的语言模型。
+- [红队测试](../glossary.md#red-teaming) — 为发现不安全或非预期的模型行为而进行的对抗性测试。
+- [检索增强生成](../glossary.md#retrieval-augmented-generation) — 在查询时获取相关内容并将其加入提示词（RAG）。
+- [上下文工程](../glossary.md#context-engineering) — 在每次调用模型时，选择纳入哪些指令、数据、工具结果和历史记录。
+- [AI 智能体](../glossary.md#ai-agent) — 由模型驱动、通过规划和调用工具来完成任务的程序。
+- [模型上下文协议](../glossary.md#model-context-protocol) — 向 AI 智能体开放工具和数据的开放标准（MCP）。
+- [数据飞轮](../glossary.md#data-flywheel) — 产品使用产生数据、数据又改进产品的循环。
+- [数据投毒](../glossary.md#data-poisoning) — 向训练或检索数据中插入恶意样本，以植入不期望的行为。
+- [模型检查点](../glossary.md#model-checkpoint) — 保存的模型权重与优化器状态快照，用于恢复或回滚训练。
+- [数据版本管理](../glossary.md#data-versioning) — 记录数据集不可变、可寻址的版本，以便复现运行。
+- [时间旅行](../glossary.md#time-travel) — 按某个较早的快照或版本查询表。
+- [Parquet](../glossary.md#parquet) — 占主导地位的开放列式文件格式，也用于存放整理后的文本分片。
+
+## 资料来源
+
+[^cc-aug26]: Common Crawl Foundation，"August 2026 Crawl Archive Now Available," https://commoncrawl.org/blog/august-2026-crawl-archive-now-available，发布 2026-08；检索 2026-11-01。2026 年其他快照：2 月 2.1B 网页 / 363 TiB；4 月 2.19B / 379 TiB；5 月 2.16B / 366 TiB（同一博客系列）。
+[^cc-home]: Common Crawl Foundation，首页及概览页面（"over 300 billion pages"），https://commoncrawl.org/，持续更新页面；检索 2026-11-01。
+[^fineweb]: Guilherme Penedo et al. (Hugging Face)，"The FineWeb Datasets: Decanting the Web for the Finest Text Data at Scale," arXiv:2406.17557，https://huggingface.co/papers/2406.17557，发布 2024-06-25；配套博客 https://huggingfacefw-blogpost-fineweb-v1.static.hf.space/（44 TB 数字出处）；检索 2026-11-01。
+[^fineweb-card]: Hugging Face，"HuggingFaceFW/fineweb" 数据集卡片（>18.5T token；收到停止侵权通知后移除的域名），https://huggingface.co/datasets/HuggingFaceFW/fineweb，持续更新文档；检索 2026-11-01。
+[^gpt3]: Tom Brown et al. (OpenAI)，"Language Models are Few-Shot Learners," arXiv:2005.14165，https://arxiv.org/abs/2005.14165，发布 2020-05-28；检索 2026-11-01。
+[^llama3-blog]: Meta AI，"Introducing Meta Llama 3: The most capable openly available LLM to date," https://ai.meta.com/blog/meta-llama-3/，发布 2024-04-18；检索 2026-11-01。公司披露；经 The Register（2024-04-19）和 IEEE Spectrum（Llama 2 为 2T token）佐证。
+[^llama3-paper]: Llama Team, AI @ Meta，"The Llama 3 Herd of Models," arXiv:2407.21783，https://arxiv.org/abs/2407.21783，发布 2024-07-31；检索 2026-11-01。数据配比（第 3.1 节）、存储（Tectonic：240 PB，7,500 台 SSD 服务器，持续 2 TB/s，峰值 7 TB/s；检查点突发）和可靠性（54 天内 466 次中断）。
+[^llama4]: Meta AI，"The Llama 4 herd: The beginning of a new era of natively multimodal AI innovation," https://ai.meta.com/blog/llama-4-multimodal-intelligence/，发布 2025-04-05；检索 2026-11-01。公司披露">30 trillion tokens"；本轮核查中仅通过二手汇总确认。
+[^qwen3]: Qwen Team，"Qwen3 Technical Report," arXiv:2505.09388，https://arxiv.org/abs/2505.09388，发布 2025-05-14；检索 2026-11-01。
+[^instructgpt]: Long Ouyang et al. (OpenAI)，"Training language models to follow instructions with human feedback," arXiv:2203.02155，https://arxiv.org/abs/2203.02155，发布 2022-03-04；检索 2026-11-01。
+[^cai]: Yuntao Bai et al. (Anthropic)，"Constitutional AI: Harmlessness from AI Feedback," arXiv:2212.08073，https://arxiv.org/abs/2212.08073，发布 2022-12-15；检索 2026-11-01。
+[^dpo]: Rafael Rafailov et al.，"Direct Preference Optimization: Your Language Model is Secretly a Reward Model," arXiv:2305.18290，https://arxiv.org/abs/2305.18290，发布 2023-05-29；检索 2026-11-01。
+[^r1]: DeepSeek-AI，"DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning," arXiv:2501.12948，https://arxiv.org/abs/2501.12948，发布 2025-01-22；检索 2026-11-01。
+[^rl-env]: TechCrunch，"Silicon Valley bets big on 'environments' to train AI agents," https://techcrunch.com/2025/09/16/silicon-valley-bets-big-on-environments-to-train-ai-agents/，发布 2025-09-16；Epoch AI，"The state of RL environments," https://epoch.ai/gradient-updates/state-of-rl-envs，2026；检索 2026-11-01。Anthropic 超过 $1B 的数字源自 The Information（媒体报道，单一来源）。
+[^rag]: Patrick Lewis et al.，"Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks," NeurIPS 2020，arXiv:2005.11401，https://arxiv.org/abs/2005.11401，发布 2020-05-22；检索 2026-11-01。
+[^context-eng]: Anthropic Engineering，"Effective context engineering for AI agents," https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents，发布 2025-09-29；检索 2026-11-01。
+[^mcp]: Anthropic，"Donating the Model Context Protocol and establishing the Agentic AI Foundation," https://anthropic.com/news/donating-the-model-context-protocol-and-establishing-of-the-agentic-ai-foundation，发布 2025-12-09；检索 2026-11-01。
+[^poison]: Anthropic（与 UK AI Security Institute 和 Alan Turing Institute 合作），"A small number of samples can poison LLMs of any size," https://www.anthropic.com/research/small-samples-poison，发布 2025-10；Dark Reading 报道，https://www.darkreading.com/application-security/only-250-documents-poison-any-ai-model，2025-10；检索 2026-11-01。
+[^bartz]: JURIST，"Judge approves record $1.5 billion AI copyright settlement involving Anthropic," https://www.jurist.org/news/2026/07/judge-approves-record-1-5-billion-settlement-involving-anthropic/，发布 2026-07；初步批准：ChatGPT Is Eating the World，https://chatgptiseatingtheworld.com/2025/09/25/judge-alsup-grants-preliminary-approval-of-1-5-billion-settlement-largest-in-copyright-history-in-class-action-filed-by-bartz-v-anthropic/，2025-09-25；检索 2026-11-01。报道的作品数量约为 465,000–500,000 部；应视为近似值。
+[^idc]: StorageNewsletter，"What Every Executive Needs to Know About Unstructured Data"（IDC 白皮书 *Untapped Value* 的摘要，由 Box 赞助），https://www.storagenewsletter.com/2023/09/07/what-every-executive-needs-to-know-about-unstructured-data/，发布 2023-09-07；检索 2026-11-01。分析师估算；厂商赞助。
+[^gartner]: Gartner，"Lack of AI-Ready Data Puts AI Projects at Risk," https://www.gartner.com/en/newsroom/press-releases/2025-02-26-lack-of-ai-ready-data-puts-ai-projects-at-risk，发布 2025-02-26；检索 2026-11-01。
+[^menlo24]: Menlo Ventures，"2024: The State of Generative AI in the Enterprise," https://menlovc.com/2024-the-state-of-generative-ai-in-the-enterprise/，发布 2024-11；检索 2026-11-01，经由二手汇总（51% RAG，9% 微调）。调查；媒体报道。
+[^menlo25]: Menlo Ventures 经 GlobeNewswire/FinancialContent 发布，"Menlo Ventures' 2025 State of Generative AI Report: Enterprise Investment Hit $37B in 2025, Tripling in One Year," https://www.financialcontent.com/article/gnwcq-2025-12-9-menlo-ventures-2025-state-of-generative-ai-report-enterprise-investment-hit-37b-in-2025-tripling-in-one-year，发布 2025-12-09；检索 2026-11-01。对约 500 名美国企业决策者的调查。
+[^sf-ft]: Snowflake，"Feb 07, 2025: Snowflake Cortex Fine-tuning (General availability)," https://docs.snowflake.com/en/release-notes/2025/other/2025-02-07-cortex-finetuning，发布 2025-02-07；以及 "Fine-tuning (Snowflake Cortex)," https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-finetuning，持续更新文档；检索 2026-11-01。
+[^sf-summit26]: Flexera，"Snowflake Summit 2026 recap: rebrands, acquisition and 25+ announcements," https://www.flexera.com/blog/perspectives/snowflake-summit-2026/，发布 2026-06；Atlan，"What is Snowflake Cortex Training?," https://atlan.com/know/snowflake/snowflake-cortex-training/，2026；检索 2026-11-01。二手来源；据报道 Cortex Training 处于公开预览阶段。
+[^s3v-bedrock]: AWS，"Using S3 Vectors with Amazon Bedrock Knowledge Bases," https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-vectors-bedrock-kb.html，持续更新文档；AWS News Blog，"Top announcements of AWS re:Invent 2025"（S3 Vectors GA），https://aws.amazon.com/blogs/aws/top-announcements-of-aws-reinvent-2025，2025-12；检索 2026-11-01。
+[^gemini-ap]: HPCwire/AIwire，"Google Unveils Gemini Enterprise Agent Platform," https://www.hpcwire.com/aiwire/2026/04/23/google-unveils-gemini-enterprise-agent-platform/，发布 2026-04-23；Virtualization Review，https://virtualizationreview.com/articles/2026/04/24/google-cloud-next-26-gemini-enterprise-agent-platform-leads-ai-centric-news.aspx，2026-04-24；检索 2026-11-01。
+[^dbx-dais25]: Databricks，"Data + AI Summit 2025 announcements," https://www.databricks.com/kr/events/dataaisummit-2025-announcements，发布 2025-06；Flexera，"Databricks Data + AI Summit 2026 recap," https://www.flexera.com/blog/perspectives/databricks-data-ai-summit-2026-recap-genie-one-ltap-lakehouse-rt-and-every-major-launche/，2026-06；检索 2026-11-01。
+[^mosaic]: Databricks，"Databricks Completes Acquisition of MosaicML," https://www.databricks.com/company/newsroom/press-releases/databricks-completes-acquisition-mosaicml，发布 2023-07-19；检索 2026-11-01。品牌并入 Agent Bricks 依据 `meta/research-briefing.md` [VERIFY: Mosaic AI 品牌的当前状态]。
+[^lakefs]: lakeFS (Treeverse)，"lakeFS Acquires DVC," https://lakefs.io/blog/lakefs-acquires-dvc/，发布 2025-11-18；lakeFS 文档，https://docs.lakefs.io/，持续更新文档；检索 2026-11-01。
+[^scale]: TechCrunch，"Scale AI confirms 'significant' investment from Meta, says CEO Alexandr Wang is leaving," https://techcrunch.com/2025/06/13/scale-ai-confirms-significant-investment-from-meta-says-ceo-alexandr-wang-is-leaving/，发布 2025-06-13；检索 2026-11-01。以 $14.3B 购入 49%（媒体报道），与 `data/private_funding.csv` 一致。
+[^everpure-ds]: Everpure 经 PR Newswire 发布，"Everpure Unveils Data-Primacy Architecture for the AI Era," https://www.prnewswire.com/news-releases/everpure-unveils-data-primacy-architecture-for-the-ai-era-302803097.html，发布 2026-06-17；Computer Weekly，"Everpure aims to bridge AI data gap with Universal Data Intelligence," https://www.computerweekly.com/news/366644438/Everpure-aims-to-bridge-AI-data-gap-with-Universal-Data-Intelligence，2026-06；检索 2026-11-01。

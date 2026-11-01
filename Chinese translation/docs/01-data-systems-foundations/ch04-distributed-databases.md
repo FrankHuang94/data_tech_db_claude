@@ -238,3 +238,170 @@ flowchart LR
 *图 4.6 — 在三个区域中保证正确性，每次提交至少要付出一次跨区域往返。唯一的问题是由哪些用户来承担，以及故障模式是"慢"还是"错"。*
 
 给高管的结论：**每一个能让账本保持正确的方案，都会为部分用户在提交路径上加入 60–140 ms 的物理延迟。** 更便宜的方案并不是同一件事的更快版本，它们放弃了不变量。工程上的功力在于放置。把每个账户的领导者放在其所有者附近，让大部分支付在区域内完成，并把那个收取全部入账 10% 的商户当作一个建模问题（把它的余额拆分为许多子账户），而不是数据库问题。在任何协议下，热点账户都是热点。
+
+## 设计选择与权衡
+
+| 选择 | 方案 A | 方案 B | 为"较弱"方案构建的最强版本论证 |
+|---|---|---|---|
+| 分区 | 哈希：负载均匀，范围扫描差 | 范围：扫描本地化，顺序键导致尾部热点 | 结合一致性哈希的哈希分区让再平衡几乎零成本，适合键值类工作负载 |
+| 复制时机 | 同步：不丢写入，较慢 | 异步：快速，故障切换有损 | 大多数企业可以为罕见的区域故障容忍几秒钟的数据丢失，以换取每天更低的延迟和成本 |
+| 写入拓扑 | 每个分片单一领导者 | 多领导者或无领导者 | 协作型或仅追加型数据（购物车、点赞、CRDT 文档）可以无冲突合并，并获得本地写入 |
+| 时钟 | TrueTime（硬件支撑） | HLC 或中心化授时器 | HLC 可在任何云上运行，无需专用硬件；授时器在单一区域内简单且快速 |
+| 并发 | 悲观锁 | 乐观（DSQL） | 乐观方式避免了锁的往返，在冲突罕见时胜出 |
+| 架构 | 无共享（shared-nothing）分布式 SQL | 单一写入者 + 解耦式存储（Aurora、Neon） | 单一写入者覆盖了绝大多数应用；解耦式架构带来快速故障切换、分支和缩容到零，而没有分布式事务的复杂性 |
+
+*图 4.7 — 分布式设计是一份关于往返次数的菜单。每一个"更强"的选项，都是用延迟、成本或运维复杂度来换取正确性或全球规模。*
+
+## 主要参与者
+
+| 系统（所有者） | 共识 | 时钟方法 | SQL 方言 | 许可证 | 部署方式 | 知名用户（公开） |
+|---|---|---|---|---|---|---|
+| Google Spanner | 每个 split 一个 Paxos 组 | TrueTime（GPS + 原子钟） | GoogleSQL；PostgreSQL 接口 `[VERIFY: 当前 PG 方言功能覆盖范围]` | 专有 | Google Cloud 托管 | Google 的 F1 广告后端[^spanner] |
+| CockroachDB（Cockroach Labs） | 每个 range 一个 Raft 组 | HLC，最大偏移界限 | 兼容 PostgreSQL 线协议 | CockroachDB Enterprise（源码可得）；自 2024 年 11 月起对收入低于 $10M 的公司提供免费层[^crdb-license] | 自托管；CockroachDB Cloud | Netflix（380+ 个集群，厂商披露）、Hard Rock Digital[^crdb-netflix] |
+| YugabyteDB（Yugabyte） | 每个 tablet 一个 Raft 组 | HLC | 兼容 PostgreSQL（YSQL），另有类 Cassandra 的 YCQL | 数据库自 2019 年起采用 Apache 2.0；管理工具采用 Polyform[^yb-license] | 自托管；托管云 | Kroger、Paramount+（厂商案例研究）[^yb-customers] |
+| TiDB（PingCAP） | 每个 region 一个 Raft 组（TiKV） | PD 中的中心化时间戳授时器（Percolator 模型） | 兼容 MySQL | Apache 2.0[^tikv-tso] | 自托管；TiDB Cloud | Pinterest（HBase 迁移，厂商案例研究）[^tidb-pinterest] |
+| Aurora DSQL（AWS） | 复制日志；乐观裁决 `[VERIFY: AWS 文档所述的复制协议]` | AWS Time Sync Service（微秒级） | 兼容 PostgreSQL 的子集 | 专有 | AWS 无服务器；2025 年 5 月 GA[^dsql-ga] | 未找到旗舰级公开参考客户 `[VERIFY]` |
+| Vitess / PlanetScale | 无全局共识；每个分片使用 MySQL 复制 | 无全局时钟（每分片 MySQL） | MySQL | Vitess 采用 Apache 2.0，已从 CNCF 毕业；PlanetScale 是商业服务[^vitess] | 自托管 Vitess；PlanetScale 云（自 2025 年起也支持 Postgres）[^planetscale] | YouTube（Vitess 的发源地）[^vitess] |
+
+*图 4.8 — NewSQL 领域沿两条轴线分化：用谁的时钟，上谁的云。Spanner 和 DSQL 只在超大规模云厂商上提供，而 CockroachDB、YugabyteDB 和 TiDB 可以在任何地方运行；与 Postgres 或 MySQL 的兼容性决定了大多数迁移。*
+
+各家的定位如下：
+
+- **Spanner** 是参考设计，也是最早建立在硬件支撑的全球时间之上的数据库（Aurora DSQL 所依赖的 AWS Time Sync Service 是第二个超大规模云厂商的例子）。在 Google Cloud 内部它是自然之选，同时也把客户绑定在 Google Cloud 上。
+- **CockroachDB** 是最成熟的云中立、Postgres 风格的分布式 SQL 数据库，具备强大的多区域放置功能。2024 年的许可证变更意味着大型自托管用户现在必须付费，公司认为这为研发提供了资金。[^crdb-license]
+- **YugabyteDB** 以更深的 Postgres 兼容性（它复用了 Postgres 的查询层）和宽松的许可证参与竞争。
+- **TiDB** 带来了 MySQL 生态，并增加了 TiFlash 列式副本，以支持混合事务分析处理（HTAP）查询（见[第 5 章](ch05-analytical-engines.md)）。它在亚洲和大型互联网公司中最为强势。
+- **Aurora DSQL** 是 AWS 的无服务器产品：无需规划服务器规模，采用乐观并发，具备多区域强一致性。AWS 将其宣传为"最快的分布式 SQL 数据库"；这是公司自己的说法。[^dsql-ga] AWS 还给出了单区域 99.99%、跨区域 99.999% 的可用性设计目标。[^dsql-ga] 它的隔离级别是快照隔离（AWS 称之为强快照隔离，相当于 PostgreSQL 的可重复读），而非可串行化，[^dsql-arch]因此对于跨行的不变量，写偏斜（[第 3 章](ch03-database-internals.md)）仍然可能发生。它的 Postgres 兼容性只是一个子集，因此在规划迁移之前要先核查功能差距。
+- **Vitess 和 PlanetScale** 是对 MySQL 做分片，而非取代它。PlanetScale 此后又推出了运行在本地 NVMe"Metal"节点上的 Postgres 服务，押注许多团队更想要一个快速的单写入者 Postgres，而不是分布式事务。[^planetscale]
+- **Neon 和 Aurora** 代表着解耦式单写入者这一替代路线。Neon 被 Databricks 以约 $1B 收购（媒体报道，2025 年 5 月宣布），现以 Lakebase 的名义提供。[^neon-deal] [Postgres 复兴](../03-ai-data-stack/ch22-agents-and-data.md)主要沿着这一分支展开，而不是通过分布式 SQL。
+
+**采用现实。** 开发者压倒性地选择普通的 Postgres。对 2025 年 Stack Overflow 开发者调查的二手解读显示，约 55.6% 的受访者使用 PostgreSQL，在所有数据库中最高。[^so2025] 分布式 SQL 在单一写入者确实无法应付、或区域性宕机不可接受的场景中胜出：支付、游戏、电信、超大型 SaaS。在其他场景中，团队会纵向扩展、增加只读副本，并尽量推迟分片。融资记录显示了这种压力。Cockroach Labs 最后一次确认定价的融资是以 $5B 估值融资 $278M（媒体报道，2021 年 12 月），此后未发现新的融资轮次。[^crdb-series-f] Fauna 的管理层表示，全球数据库服务的资本密集度太高，难以继续独立融资（媒体报道）。[^fauna]
+
+## 历史与发展轨迹
+
+```mermaid
+timeline
+    title 分布式数据库的关键时刻
+    2000s : 2000 Brewer 提出 CAP 猜想 : 2002 Gilbert 与 Lynch 给出证明 : 2007 Amazon Dynamo 论文
+    2010 到 2012 : 2010 Percolator : 2012 Spanner 与 TrueTime : 2012 Calvin 与 PACELC
+    2014 到 2019 : 2014 Raft 论文 : 2017 Aurora SIGMOD 论文 : 2019 YugabyteDB 改用 Apache 2.0，Vitess 从 CNCF 毕业
+    2024 : CockroachDB 停止免费 Core 版 : Aurora DSQL 在 reInvent 发布预览版
+    2025 : Aurora DSQL 于 5 月 GA : Fauna 关闭 : Databricks 收购 Neon : PlanetScale 增加 Postgres
+```
+
+*图 4.9 — 理论在 2014 年前已经尘埃落定。此后的故事是商业性的：超大规模云厂商把这些思想产品化，而独立厂商则收紧许可证或退出市场。*
+
+思想演进的轨迹从不可能性结论走向工程实践。CAP（2000–2002）[^gilbert-lynch]首先为 Dynamo、Cassandra 和 Riak 这一波 NoSQL 浪潮提供了为可用性而放弃一致性的理由。[^dynamo] 随后 Spanner（2012）表明，有了好的时钟，全球一致性是负担得起的。[^spanner] Raft（2014）让普通团队也能实现共识，从而催生了 CockroachDB、TiDB 和 YugabyteDB。[^raft] Aurora（2017）则展示了一条平行路径：保留一个写入者，把存储分布出去。[^aurora]
+
+商业上的演进则没那么整齐。Cockroach Labs 在 2019 年从 Apache 2.0 转向 Business Source License。2024 年 8 月，它宣布将终止免费的自托管 Core 版。从 24.3 版（2024 年 11 月）起只有单一的 Enterprise 许可证，对个人、学生以及年收入低于 $10M 的企业免费，但免费用户必须开启遥测。[^crdb-license] YugabyteDB 在 2019 年走了相反的方向，把数据库完全改为 Apache 2.0。[^yb-license] AWS 让 Aurora DSQL 从 re:Invent 2024 上的预览版，到 2025 年 5 月 27 日正式 GA，发布时覆盖八个区域。[^dsql-ga] 值得关注的趋势是整合。超大规模云厂商把分布式 SQL 捆绑进自己的云，数据平台收购 Postgres 公司（Neon、Crunchy Data；见[第 29 章](../04-company-deep-dives/ch29-operational-database-vendors.md)），而独立厂商必须证明自己的价格相对于"Postgres 加一套好的故障切换方案"是合理的。
+
+## 关键数字
+
+| 指标 | 数值 | 依据 | 来源 / 日期 |
+|---|---|---|---|
+| 承受 *f* 次崩溃故障所需副本数 | 2f + 1（1 次需 3 个，2 次需 5 个） | 协议属性 | Raft，2014[^raft] |
+| TrueTime 不确定度 ε | 约 1–7 ms 锯齿，典型值约 4 ms | 论文报告（2012） | Spanner OSDI 2012[^spanner] |
+| Aurora 存储仲裁 | 6 个副本 / 3 个可用区；写入 6 中取 4，读取 6 中取 3 | 论文报告 | Aurora SIGMOD 2017[^aurora] |
+| CockroachDB 默认最大时钟偏移 | 500 ms | 厂商文档 / 博客 | Cockroach Labs[^crdb-clock] |
+| 光纤传播 | 约每 ms 200 km（≈ 每 100 km 1 ms RTT） | 估算（物理） | [^physics] |
+| Aurora DSQL GA | 2025 年 5 月 27 日；发布时 8 个区域 | 公司披露 | AWS[^dsql-ga] |
+| Aurora DSQL 可用性设计目标 | 单区域 99.99%；多区域 99.999% | 公司披露 | AWS[^dsql-ga] |
+| CockroachDB Enterprise Free 资格 | 年收入低于 $10M | 公司披露 | Cockroach Labs，2024[^crdb-license] |
+| Cockroach Labs 最后一次确认的融资 | $278M F 轮，投后估值 $5B（2021 年 12 月） | 媒体报道 | CNBC 2021-12-16[^crdb-series-f] |
+| Databricks–Neon | 约 $1B（2025 年 5 月宣布） | 媒体报道 | TechRepublic[^neon-deal] |
+| Netflix 的 CockroachDB 规模 | 380+ 个集群 | 厂商披露 | Cockroach Labs，RoachFest 2024[^crdb-netflix] |
+| PostgreSQL 使用率，Stack Overflow 2025 调查 | 约 55.6% 的受访者 | 媒体报道（二手解读） `[VERIFY: 对照官方调查页面]` | [^so2025] |
+
+*图 4.10 — 决定系统行为的数字是往返次数、仲裁规模和时钟界限，而不是节点数量。*
+
+## 存储桥接
+
+> **存储桥接。** "日志即数据库"类设计（Aurora、Neon/Lakebase，以及在一定程度上 Aurora DSQL 的 journal）让*存储服务*负责持久性、仲裁复制、页的物化、快照和备份。这些原本是企业级阵列在数据库之下承担的工作。如今这一层归数据库厂商所有，它能感知日志，并运行在云对象存储之上。对于一家存储公司，基于公开信息，战略团队可能评估的选项包括：面向自管 Postgres 解耦的日志结构化、仲裁复制的块或对象服务；与 Postgres 系数据库的快照和分支集成；以及把本地部署的对象存储定位为 Neon 式 pageserver 所期望的"冷数据层"目标。复制与快照机制参见配套的 *Everpure Tech Atlas*。
+
+## 对话手册
+
+**向产品经理提出的问题**
+
+1. "在三区域部署中，领导者默认位于哪里？从最远的区域发起一次写入，需要几次往返、多少毫秒？"
+2. "你们的客户中，实际在生产环境运行多区域双活的比例是多少？与之相对，单区域加灾备的又有多少？"
+3. "对于大规模自托管的客户，你们的许可证或定价如何处理？过去两年发生了哪些变化？"
+
+**向工程师提出的问题**
+
+1. "默认隔离级别是什么？是严格可串行化，还是仅仅可串行化？我仍可能看到哪种异常？"
+2. "你们如何在时间上为事务排序（TrueTime、HLC、授时器还是乐观方式）？当某个节点的时钟漂移超出界限时会发生什么？"
+3. "当协调者所在节点宕机时，一个进行中的跨分片事务会怎样？是否有 Jepsen 式测试覆盖过这种情况？"[^jepsen-tidb]
+
+**好的回答是什么样的。** 它们会给出数字（"一次多数派往返，我们美国各区域之间约 65 ms；分片不同时 2PC 再加一次"）。它们会承认权衡（"在我们的乐观模型下，热点键会中止并重试，因此我们建议拆分高争用账户"）。它们会援引独立测试，以及附带拓扑结构的具名生产参考案例。
+
+**不要这样说**
+
+- "CAP 意味着三选二。"分区不是可选项。真正的选择是分区*期间*会发生什么，而在其余时间则适用 PACELC 的延迟与一致性权衡。
+- "多区域双活意味着零延迟代价。"对于强一致写入，物理学不允许这样。总有人要付出跨区域往返。
+- "Spanner 需要原子钟，所以其他系统都做不到一致。"HLC 和授时器系统同样是一致的。它们的区别在于对不相关事务的边缘情况保证，以及付出代价的方式（重试还是提交等待）。
+- "分布式 SQL 正在取代 Postgres。"Postgres 在开发者中的份额仍在增长。今天大多数"大规模 Postgres"指的是解耦式存储上的单一写入者，而不是分布式事务。
+- "CockroachDB 是开源的。"自 2024 年 11 月起，它是在带免费层的企业许可证下源码可得的软件。[^crdb-license]
+
+## 深入阅读
+
+> **深入（L3）。** 把 Spanner 论文的 §4（TrueTime 与提交等待）与 Raft 论文的 §5（安全性论证）对照阅读。[^spanner][^raft] 然后阅读 Aurora 2018 年的后续论文，了解如何在 I/O 和成员变更中避免共识。要了解故障模式的真实情况，Jepsen 的分析（例如 TiDB 2.1.7）展示了真实系统如何违反其宣称的保证，以及厂商如何修复。[^jepsen-tidb] 关于 HLC 和不确定性重启机制，参见 Kulkarni 等人的论文以及 Cockroach Labs 关于时钟管理的文章。[^hlc][^crdb-clock] AWS 的"Everything you don't need to know about Aurora DSQL"系列解释了裁决器、journal 和时间同步之间的分工。[^dsql-arch]
+
+## 关键术语
+
+- [分片（Sharding）](../glossary.md#sharding) — 把数据集拆分为存放在不同节点上的分区，使容量能够横向扩展。
+- [一致性哈希（Consistent hashing）](../glossary.md#consistent-hashing) — 把节点和键放在哈希环上，使增删节点只移动一小部分键。
+- [热点（Hot spot）](../glossary.md#hot-spot) — 承受不成比例流量、进而限制整个集群的分片或键。
+- [复制（Replication）](../glossary.md#replication) — 在多个节点上保存数据副本，以实现持久性和可用性。
+- [复制延迟（Replication lag）](../glossary.md#replication-lag) — 从领导者上发生写入到其出现在副本上的延迟。
+- [多领导者复制（Multi-leader replication）](../glossary.md#multi-leader-replication) — 多个副本接受写入并相互交换，因此必须解决冲突。
+- [无领导者复制（Leaderless replication）](../glossary.md#leaderless-replication) — 客户端直接对副本仲裁组进行读写（Dynamo 风格）。
+- [仲裁（Quorum）](../glossary.md#quorum) — 必须确认某个操作的最少副本数，通常为多数。
+- [共识（Consensus）](../glossary.md#consensus) — 副本在存在故障的情况下就一份有序日志达成一致的协议。
+- [Paxos](../glossary.md#paxos) — Lamport 的共识协议；Spanner 和许多 Google 系统的基础。
+- [Raft](../glossary.md#raft) — 一种易于理解的共识协议，包含领导者选举、日志复制和多数提交。
+- [两阶段提交（Two-phase commit）](../glossary.md#two-phase-commit) — 一种原子提交协议（先准备，后提交），协调者失效时会阻塞。
+- [TrueTime](../glossary.md#truetime) — Google 的时钟 API，返回由 GPS 和原子钟支撑的有界时间区间。
+- [外部一致性（External consistency）](../glossary.md#external-consistency) — 事务顺序在全球范围内与真实时间顺序一致；Spanner 的保证。
+- [混合逻辑时钟（Hybrid logical clock）](../glossary.md#hybrid-logical-clock) — 结合物理时间与逻辑计数器的时间戳，由 CockroachDB 和 YugabyteDB 使用。
+- [时间戳授时器（Timestamp oracle）](../glossary.md#timestamp-oracle) — 发放严格递增事务时间戳的中心化服务（Percolator、TiDB）。
+- [乐观并发控制（Optimistic concurrency control）](../glossary.md#optimistic-concurrency-control) — 事务无锁运行，在提交时检查冲突。
+- [CAP 定理（CAP theorem）](../glossary.md#cap-theorem) — 在网络分区下，复制系统必须在一致性与可用性之间做出选择。
+- [PACELC](../glossary.md#pacelc) — 对 CAP 的扩展：否则（无分区时），在延迟与一致性之间选择。
+- [线性一致性（Linearizability）](../glossary.md#linearizability) — 每个操作看起来都在与真实时间一致的某一瞬间发生。
+- [最终一致性（Eventual consistency）](../glossary.md#eventual-consistency) — 写入停止后副本会收敛，期间不作任何保证。
+- [NewSQL](../glossary.md#newsql) — 在横向扩展的同时提供 SQL 和 ACID 事务的分布式数据库（也称"分布式 SQL"）。
+- [解耦式存储（Disaggregated storage）](../glossary.md#disaggregated-storage) — 把无状态计算与共享存储服务分离；在 Aurora 和 Neon 中，由存储消费日志。
+- [数据主权（Data sovereignty）](../glossary.md#data-sovereignty) — 要求某些数据留在特定司法管辖区内的法律要求。
+- [预写日志（Write-ahead log）](../glossary.md#write-ahead-log) — 在数据页之前写入的仅追加变更记录；见第 3 章。
+
+## 资料来源
+
+[^physics]: 基于物理学的估算：光在石英光纤中的传播速度约为 c 的三分之二（≈200,000 km/s，即单程约每 ms 200 km，往返约每 100 km 1 ms）；实际线路还会增加路径长度和交换延迟。实例演算中的区域间 RTT 为估算值，并非实测值。作者估算；2026-11-01 检索。
+[^dynamo]: G. DeCandia et al., "Dynamo: Amazon's Highly Available Key-value Store," SOSP 2007, https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf, 2007-10 发布；2026-11-01 检索。
+[^vitess]: Cloud Native Computing Foundation, "CNCF announces Vitess graduation," https://www.cncf.io/announcements/2019/11/05/cloud-native-computing-foundation-announces-vitess-graduation/, 2019-11-05 发布；2026-11-01 检索。（Vitess 起源于 YouTube；Apache 2.0。）
+[^paxos]: L. Lamport, "Paxos Made Simple," ACM SIGACT News 32(4), https://lamport.azurewebsites.net/pubs/paxos-simple.pdf, 2001-12 发布；2026-11-01 检索。
+[^spanner]: J. C. Corbett et al., "Spanner: Google's Globally-Distributed Database," OSDI 2012, https://www.usenix.org/conference/osdi12/technical-sessions/presentation/corbett (论文副本: https://courses.cs.duke.edu/spring15/cps210/readings/spanner-osdi2012.pdf ), 2012-10 发布；2026-11-01 检索。
+[^raft]: D. Ongaro and J. Ousterhout, "In Search of an Understandable Consensus Algorithm," USENIX ATC 2014, https://www.usenix.org/conference/atc14/technical-sessions/presentation/ongaro, 2014-06 发布；2026-11-01 检索。
+[^hlc]: S. Kulkarni et al., "Logical Physical Clocks and Consistent Snapshots in Globally Distributed Databases," University at Buffalo tech report / OPODIS 2014, https://cse.buffalo.edu/tech-reports/2014-04.pdf, 2014 年发布；2026-11-01 检索。
+[^crdb-clock]: Cockroach Labs, "Clock management in CockroachDB" (blog), https://www.cockroachlabs.com/blog/clock-management-cockroachdb/, 发布日期不详；以及 CockroachDB v20.1 docs, "Common errors," https://www.cockroachlabs.com/docs/v20.1/common-errors, 日期不详；2026-11-01 检索。
+[^percolator]: D. Peng and F. Dabek, "Large-scale Incremental Processing Using Distributed Transactions and Notifications," OSDI 2010, https://www.usenix.org/conference/osdi10/large-scale-incremental-processing-using-distributed-transactions-and-notifications, 2010-10 发布；2026-11-01 检索。
+[^tikv-tso]: TiKV project, "Timestamp Oracle" (deep dive), https://tikv.org/deep-dive/distributed-transaction/timestamp-oracle/, 日期不详；PingCAP docs, "TimeStamp Oracle (TSO) in TiDB," https://docs.pingcap.com/tidb/dev/tso/, 日期不详；许可证信息依据 dbdb.io, https://dbdb.io/db/tidb/revisions/9 ；2026-11-01 检索。
+[^calvin]: A. Thomson et al., "Calvin: Fast Distributed Transactions for Partitioned Database Systems," SIGMOD 2012, https://cs.yale.edu/homes/thomson/publications/calvin-sigmod12.pdf, 2012-05 发布；2026-11-01 检索。
+[^fauna]: InfoWorld, "Fauna to shut down FaunaDB service in May," https://www.infoworld.com/article/3853569/fauna-to-shut-down-faunadb-service-in-may.html, 2025-03 发布；Fauna, "Fauna Service End of Life FAQ," https://docs.fauna.com/fauna/current/eol-faq, 2025 年发布；2026-11-01 检索。
+[^dsql-arch]: AWS Database Blog, "Everything you don't need to know about Amazon Aurora DSQL: Part 2 – Shallow view," https://aws.amazon.com/blogs/database/everything-you-dont-need-to-know-about-amazon-aurora-dsql-part-2-shallow-view, 2025 年发布；2026-11-01 检索。
+[^dsql-ga]: AWS, "Amazon Aurora DSQL is now generally available" (What's New), https://aws.amazon.com/about-aws/whats-new/2025/05/amazon-aurora-dsql-generally-available, 2025-05-27 发布；AWS press release via Business Wire, https://www.businesswire.com/news/home/20250527678337/en, 2025-05-27 发布；2026-11-01 检索。
+[^gilbert-lynch]: S. Gilbert and N. Lynch, "Brewer's Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services," ACM SIGACT News 33(2), https://dl.acm.org/doi/10.1145/564585.564601, 2002-06 发布；2026-11-01 检索。
+[^brewer12]: E. Brewer, "CAP Twelve Years Later: How the 'Rules' Have Changed," IEEE Computer (republished by InfoQ), https://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed/, 2012-05 发布；2026-11-01 检索。
+[^abadi]: D. Abadi, "Consistency Tradeoffs in Modern Distributed Database System Design," IEEE Computer 45(2), https://www.cs.umd.edu/~abadi/papers/abadi-pacelc.pdf, 2012-02 发布；2026-11-01 检索。
+[^aurora]: A. Verbitski et al., "Amazon Aurora: Design Considerations for High Throughput Cloud-Native Relational Databases," SIGMOD 2017, https://pdos.csail.mit.edu/6.824/papers/aurora.pdf, 2017-05 发布；2026-11-01 检索。另见 W. Vogels, "Amazon Aurora ascendant," https://www.allthingsdistributed.com/2019/03/amazon-aurora-design-cloud-native-relational-database.html, 2019-03 发布。
+[^neon]: Neon, "Neon architecture" (docs), https://neon.tech/docs/introduction/architecture-overview, 日期不详；Neon blog, "Get page at LSN," https://neon.com/blog/get-page-at-lsn, 日期不详；2026-11-01 检索。
+[^crdb-license]: Cockroach Labs, "Enterprise license update," https://cockroachlabs.com/enterprise-license-update, 2024-08-15 发布；SiliconANGLE, "Cockroach Labs changes self-hosting license to single enterprise model," https://siliconangle.com/2024/08/15/cockroach-labs-changes-self-hosting-license-single-enterprise-model/, 2024-08-15 发布；The Register, https://www.theregister.com/2024/08/19/cockroachdb_abandons_open_core/, 2024-08-19 发布；It's FOSS（许可证历史、遥测）, https://itsfoss.com/news/cockcroachdb-no-open-source/, 2024-08 发布；2026-11-01 检索。
+[^crdb-netflix]: Cockroach Labs, "Netflix DBaaS: RoachFest24 recap," https://www.cockroachlabs.com/blog/netflix-dbaas-roachfest24-recap/, 2024 年发布；Cockroach Labs, "Hard Rock Digital" case study, https://cockroachlabs.com/customers/hard-rock-digital, 日期不详；2026-11-01 检索。厂商披露。
+[^yb-license]: Yugabyte, "Why We Changed YugabyteDB Licensing to 100% Open Source," https://www.yugabyte.com/blog/why-we-changed-yugabyte-db-licensing-to-100-open-source/, 2019-07 发布；TDWI, https://tdwi.org/Articles/2019/07/16/YugaByte-Open-Source.aspx, 2019-07-16 发布；2026-11-01 检索。
+[^yb-customers]: Yugabyte, "Success stories," https://www.yugabyte.com/success-stories, 日期不详；Yugabyte, "Kroger Customer Success Story," https://www.yugabyte.com/wp-content/uploads/2022/08/Kroger-Customer-Success-Story.pdf, 2022-08 发布；2026-11-01 检索。厂商披露。
+[^tidb-pinterest]: PingCAP, "Pinterest lowers infrastructure costs 80% with TiDB" (case study), https://www.pingcap.com/case-study/pinterest-lowers-infrastructure-costs-80-with-tidb/, 日期不详；PingCAP event page, https://www.pingcap.com/event/how-pinterest-used-tidb-to-modernize-their-hbase-workloads/, 日期不详；2026-11-01 检索。厂商披露。
+[^planetscale]: PlanetScale, "PlanetScale for Postgres is now GA," https://planetscale.com/blog/planetscale-for-postgres-is-generally-available, 2025 年发布；InfoQ, "PlanetScale Metal Postgres," https://infoq.com/news/2025/10/planetscale-metal-postgres, 2025-10 发布；2026-11-01 检索。
+[^neon-deal]: TechRepublic, "Databricks to Acquire Neon in $1 Billion Deal," https://www.techrepublic.com/article/news-databricks-neon-acquisition/, 2025-05-15 发布；2026-11-01 检索（与 `data/ma_deals.csv` 一致）。
+[^so2025]: Stack Overflow 2025 开发者调查的二手解读：data-bene.io, "Most Desired Database Three Years Running," https://www.data-bene.io/en/blog/most-desired-database-three-years-running-postgresqls-developer-appeal/, 2025 年发布；Vonng, "PostgreSQL in the 2025 SO survey," https://blog.vonng.com/en/pg/so2025-pg/, 2025 年发布；2026-11-01 检索。未检索官方调查页面；各来源对 55.6% 指的是全部受访者还是专业开发者说法不一。
+[^crdb-series-f]: CNBC, "Software start-up Cockroach Labs doubles valuation in latest funding," https://www.cnbc.com/2021/12/16/software-start-up-cockroach-labs-doubles-valuation-in-latest-funding.html, 2021-12-16 发布；2026-11-01 检索（与 `data/private_funding.csv` 一致）。
+[^jepsen-tidb]: Jepsen (K. Kingsbury), "TiDB 2.1.7," https://jepsen.io/analyses/tidb-2.1.7, 2019 年发布；2026-11-01 检索。

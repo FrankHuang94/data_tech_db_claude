@@ -261,16 +261,16 @@ timeline
   2024 : ClickHouse 收购 PeerDB 以获取 Postgres CDC
        : Prisma Postgres 进入抢先体验
        : Anthropic 推出 MCP
-  2025 : Databricks 同意收购 Neon，媒体报道约 10 亿美元
+  2025 : Databricks 同意收购 Neon，媒体报道约 1B 美元
        : AWS Aurora DSQL 正式可用
        : Snowflake 收购 Crunchy Data
        : PlanetScale Postgres 正式可用
        : Databricks 收购 Mooncake Labs
        : Microsoft 预览 Azure HorizonDB
   2026 : Databricks Lakebase 先后在 AWS 和 Azure 上正式可用
-       : Snowflake Postgres 正式可用，Supabase 估值达 105 亿美元
-       : Databricks 宣布收购 Electric，Lakebase 年化运行率突破 1 亿美元
-       : Supabase 融资 1.5 亿美元并同意收购 Turso
+       : Snowflake Postgres 正式可用，Supabase 估值达 10.5B 美元
+       : Databricks 宣布收购 Electric，Lakebase 年化运行率突破 100M 美元
+       : Supabase 融资 150M 美元并同意收购 Turso
 ```
 
 *图 22.9 — 在 24 个月内，每一家主要数据平台都收购或自建了 Postgres 服务，其定价依据是这样一种论断：如今创建大多数新数据库的是智能体，而不是人。资料来源：data/ma_deals.csv 及本章脚注；交易背景见[第 39 章](../05-business-and-economics/ch39-ma-history.md)。*
@@ -359,3 +359,41 @@ MCP 的发展轨迹是：2024 年 11 月发布，2025 年春季被 OpenAI、Goog
 - [数据库分支](../glossary.md#database-branching) — 为测试或智能体工作即时创建数据库的写时复制分叉。
 - [缩容至零](../glossary.md#scale-to-zero) — 释放空闲数据库的全部计算资源，使其在下一次请求之前只产生存储成本。
 - [写时复制](../glossary.md#copy-on-write) — 在版本之间共享未修改的数据，只写入被修改的块或文件。
+
+## 资料来源
+
+[^spider2]: Fangyu Lei et al., "Spider 2.0: Evaluating Language Models on Real-World Enterprise Text-to-SQL Workflows," ICLR 2025 (oral), arXiv:2411.07763v2, https://arxiv.org/abs/2411.07763v2，发布 2025-03-17（v1 2024-11）；检索 2026-11-01。
+[^spider2-repo]: xlang-ai, "Spider2" GitHub repository (Spider 2.0-Snow, -Lite, -DBT), https://github.com/xlang-ai/Spider2，无日期（持续更新）；检索 2026-11-01。2026 年 Spider 2.0-Lite 快照：Interfaze leaderboard, https://interfaze.ai/leaderboards/spider-2-lite，以及 BenchLM, https://benchlm.ai/benchmarks/spider2lite，2026（第三方，厂商报告）；检索 2026-11-01。
+[^bird-gemini]: The Decoder, "Google Research's Gemini-SQL2 tops text-to-SQL benchmarks by a wide margin," https://the-decoder.com/google-researchs-gemini-sql2-tops-text-to-sql-benchmarks-by-a-wide-margin/，发布 2026-06；检索 2026-11-01（媒体报道；公司声称）。
+[^bird-huawei]: Technology Magazine, "Huawei DataGallery Tops Benchmark for Enterprise Text2SQL AI," https://technologymagazine.com/news/huawei-datagallery-tops-benchmark-for-enterprise-text2sql-ai，发布 2026-09；检索 2026-11-01。人类基线依据 BIRD 排行榜，https://bird-bench.github.io/，无日期；检索 2026-11-01。
+[^dw-bench]: Juan Sequeda, Dean Allemang, Bryon Jacob (data.world), "A Benchmark to Understand the Role of Knowledge Graphs on Large Language Model's Accuracy for Question Answering on Enterprise SQL Databases," arXiv:2311.07509, https://arxiv.org/abs/2311.07509，发布 2023-11-13；检索 2026-11-01。
+[^dbt-bench]: dbt Labs, "Semantic Layer vs. Text-to-SQL: 2026 benchmark update," https://docs.getdbt.com/blog/semantic-layer-vs-text-to-sql-2026，发布 2026-04；检索 2026-11-01。由厂商开展；11 个问题，每个模型运行 20 次。
+[^mcp-launch]: Anthropic, "Introducing the Model Context Protocol," https://www.anthropic.com/news/model-context-protocol，发布 2024-11-25；检索 2026-11-01（2025 年前的已有知识；未重新抓取）。
+[^mcp-adopt]: The New Stack, "Google embraces MCP," https://thenewstack.io/google-embraces-mcp，发布 2025-05；Gizmodo Japan, "MCP officially implemented on Windows," https://www.gizmodo.jp/2025/05/mcp-officially-implemented-on-windows.html，发布 2025-05；TimeWell, "OpenAI and MCP," https://timewell.jp/en/columns/openai-to-mcp，2025（二手资料；将 OpenAI 的支持日期定为 2025-03-26）；检索 2026-11-01。
+[^mcp-donate]: Anthropic, "Donating the Model Context Protocol and establishing the Agentic AI Foundation," https://anthropic.com/news/donating-the-model-context-protocol-and-establishing-of-the-agentic-ai-foundation，发布 2025-12-09；检索 2026-11-01。下载量和服务器数量经 API Evangelist 佐证，https://blogs.apievangelist.com/blogs/mcp-2025-12-09-mcp-joins-the-agentic-ai-foundation/，2025-12-09。
+[^mcp-auth]: Model Context Protocol, "Specification 2025-06-18: Authorization," https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization，发布 2025-06-18；以及 "Specification 2025-11-25," https://modelcontextprotocol.io/specification/2025-11-25，发布 2025-11-25；检索 2026-11-01（根据搜索结果摘要；未重新抓取）。
+[^keycloak]: Keycloak, "Integrating with Model Context Protocol (MCP)," https://www.keycloak.org/securing-apps/mcp-authz-server，无日期；检索 2026-11-01。
+[^sf-mcp]: Snowflake documentation, "Nov 04, 2025: Snowflake-managed MCP server (General availability)," https://docs.snowflake.com/release-notes/2025/other/2025-11-04-cortex-agents-mcp，发布 2025-11-04；Snowflake blog, "Introducing Snowflake Managed MCP Servers for Secure, Governed Data Agents," https://www.snowflake.com/en/blog/managed-mcp-servers-secure-data-agents/，发布 2025-10；检索 2026-11-01。
+[^dbx-mcp]: Databricks blog, "Announcing managed MCP servers with Unity Catalog and Mosaic AI integration," https://www.databricks.com/en/blog/announcing-managed-mcp-servers-unity-catalog-and-mosaic-ai-integration，发布 2025-06；Databricks docs, "Managed MCP servers," https://docs.databricks.com/aws/en/generative-ai/mcp/managed-mcp.html，无日期（标注为 Public Preview）；检索 2026-11-01。
+[^bq-mcp]: G-gen (Google Cloud partner), "Next '26 What's new in BigQuery," https://blog.g-gen.co.jp/entry/next-26-whats-new-in-bigquery，发布 2026-04（日文；二手资料）；检索 2026-11-01。经由 `meta/research-briefing.md`。
+[^dsql]: AWS via Business Wire, "AWS Announces the General Availability of Amazon Aurora DSQL, the Fastest Distributed SQL Database," https://www.businesswire.com/news/home/20250527678337/en/，发布 2025-05-27；检索 2026-11-01。
+[^a2a]: SD Times, "Google's Agent2Agent protocol finds new home at the Linux Foundation," https://sdtimes.com/ai/googles-agent2agent-protocol-finds-new-home-at-the-linux-foundation/，发布 2025-06；检索 2026-11-01。
+[^willison]: Simon Willison, "Supabase MCP can leak your entire SQL database," https://simonwillison.net/2025/Jul/6/supabase-mcp-lethal-trifecta/，发布 2025-07-06；检索 2026-11-01。
+[^entra]: Microsoft Learn (Azure China mirror), "What is Microsoft Entra Agent ID?," https://docs.azure.cn/en-us/entra/agent-id/what-is-microsoft-entra-agent-id，无日期；检索 2026-11-01。Build 2025 发布日期依据二手报道；各来源对 GA 日期说法不一 [VERIFY: Entra Agent ID 的 GA 日期]。
+[^natoma]: `meta/research-briefing.md`，Snowflake 部分（Natoma 收购由一家可信度较低的聚合网站于 2026-05-28 前后报道；Investor Day 2026 摘要），检索 2026-11-01 [VERIFY: Snowflake 关于 Natoma 的新闻稿]。
+[^mem0]: TechCrunch, "Mem0 raises $24M from YC, Peak XV and Basis Set to build the memory layer for AI apps," https://techcrunch.com/2025/10/28/mem0-raises-24m-from-yc-peak-xv-and-basis-set-to-build-the-memory-layer-for-ai-apps，发布 2025-10-28；检索 2026-11-01。
+[^zep]: Preston Rasmussen et al. (Zep), "Zep: A Temporal Knowledge Graph Architecture for Agent Memory," arXiv:2501.13956, https://arxiv.org/abs/2501.13956，发布 2025-01；检索 2026-11-01（作者报告的基准测试结果）。
+[^neon-dbx]: TechRepublic, "Databricks to Acquire Neon in $1 Billion Deal to Boost AI-Driven Databases," https://www.techrepublic.com/article/news-databricks-neon-acquisition/，发布 2025-05；Constellation Research, "Databricks acquires Neon, sees Postgres scaling key to agentic AI," https://www.constellationr.com/insights/news/databricks-acquires-neon-sees-postgres-scaling-key-agentic-ai，发布 2025-05；检索 2026-11-01。>80% 这一数字为 Databricks/Neon 公司披露的遥测数据。
+[^neon-arch]: Neon documentation, "Architecture overview," https://neon.tech/docs/introduction/architecture-overview，无日期；检索 2026-11-01（2025 年前的已有知识；未重新抓取）。
+[^lakebase-ga]: Databricks blog, "Databricks Lakebase is generally available," https://databricks.com/blog/databricks-lakebase-generally-available，发布 2026-02；Databricks blog, "Azure Databricks Lakebase is generally available," https://www.databricks.com/blog/azure-databricks-lakebase-generally-available，发布 2026-03；Microsoft Azure Updates AZ557991, https://mc.merill.net/message/AZ557991，2026-03；检索 2026-11-01。
+[^dbx-q2]: Databricks press release, "Databricks Grows >80% YoY, Surpasses $7B Revenue Run-Rate…," https://www.databricks.com/company/newsroom/press-releases/databricks-grows-80-yoy-surpasses-7b-revenue-run-rate-scales，发布 2026-08-13；检索 2026-11-01（公司披露，未经审计）。产品名称（Genie One、Unity AI Gateway、LTAP、CoWork）依据 `meta/research-briefing.md`。
+[^ma-csv]: 本书数据集 `data/ma_deals.csv`（相关行：Databricks–Neon；Snowflake–Crunchy Data，引用 Snowflake 截至 2025-10-31 季度的 10-Q，https://www.sec.gov/Archives/edgar/data/1640147/000164014725000211/snow-20251031.htm；Databricks–Mooncake Labs；Databricks–Electric，InfoWorld 2026-08-11；ClickHouse–PeerDB，TechCrunch 2024-07-30），检索 2026-11-01。
+[^sf-postgres]: Flexera, "Snowflake Summit 2026 recap," https://www.flexera.com/blog/perspectives/snowflake-summit-2026/，发布 2026-06；检索 2026-11-01（二手资料；经由 `meta/research-briefing.md`）。
+[^supabase-f]: Orrick, "Supabase Raises $500 Million at $10.5 Billion Valuation to Accelerate Lead in Agentic Infrastructure," https://www.orrick.com/en/News/2026/06/Supabase-Raises-500-Million-at-10-5-Billion-Valuation-to-Accelerate-Lead-in-Agentic-Infrastructure，发布 2026-06；检索 2026-11-01。本书数据集 `data/private_funding.csv`。
+[^turso]: SiliconANGLE, "Database startup Supabase raises $150M, acquires Turso," https://siliconangle.com/2026/10/02/database-startup-supabase-raises-150m-acquires-turso/，发布 2026-10-02；检索 2026-11-01。
+[^alloydb]: Google Cloud documentation, "AlloyDB for PostgreSQL overview," https://cloud.google.com/alloydb/docs/overview，无日期；检索 2026-11-01（2025 年前的已有知识；未重新抓取）。向 BigQuery 的复制于 Next '26 上 GA，依据 G-gen，https://blog.g-gen.co.jp/entry/next-26-whats-new-in-bigquery，2026-04。
+[^horizondb]: Microsoft Tech Community, Azure Database for PostgreSQL blog, "Announcing Azure HorizonDB," https://techcommunity.microsoft.com/blog/adforpostgresql/-/4469710，发布 2025-11；The New Stack, "Microsoft's Azure HorizonDB takes on Aurora, AlloyDB," https://thenewstack.io/microsofts-azure-horizondb-takes-on-aurora-alloydb/，发布 2025-11；检索 2026-11-01。
+[^planetscale]: PlanetScale blog, "PlanetScale for Postgres is now GA," https://planetscale.com/blog/planetscale-for-postgres-is-generally-available，发布 2025；PlanetScale blog, "$50 PlanetScale Metal is GA for Postgres," https://planetscale.com/blog/50-dollar-planetscale-metal-is-ga-for-postgres，2025–2026；InfoQ, https://infoq.com/news/2025/10/planetscale-metal-postgres，发布 2025-10；检索 2026-11-01。
+[^xata]: Xata documentation, "Branching," https://xata.io/docs/core-concepts/branching，无日期；Xata blog, "Introducing Xata OSS: Postgres platform with branching, now Apache 2.0," https://xata.io/blog/open-source-postgres-branching-copy-on-write，无日期；检索 2026-11-01。
+[^prisma]: Prisma blog, "Prisma Postgres: Building a Modern PostgreSQL Service Using Unikernels & MicroVMs," https://prisma.io/blog/announcing-prisma-postgres-early-access，发布 2024-10-29；检索 2026-11-01。
+[^1touch]: World Wide Technology（转载 Pure Storage 新闻稿），"Pure Storage rebrands to Everpure and announces intent to acquire 1touch," https://www.wwt.com/news/pure-storage-rebrands-to-everpure-and-announces-intent-to-acquire-1touch，发布 2026-02-23；Cleary Gottlieb, "Everpure Completes Acquisition of 1touch," https://www.clearygottlieb.com/news-and-insights/news-listing/everpure-completes-acquisition-of-1touch，发布 2026-05-11；检索 2026-11-01。

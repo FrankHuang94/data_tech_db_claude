@@ -193,3 +193,109 @@ flowchart LR
 *图 31.5 — 最新估值或市值，口径不一。非上市挑战者 ClickHouse 的估值约为 Teradata 市值的 5 倍，而收入约只有后者的七分之一（ClickHouse 为公司披露的 ARR，Teradata 为 GAAP 过去 12 个月收入，口径不同）。Starburst（约 $3.35B）和 Firebolt（约 $1.4B）只有媒体报道的 2022 年估值，尚未纳入图表数据文件；StarTree 没有披露估值。来源：`scripts/charts/ch31_valuations.py`，数据取自 `data/private_funding.csv` 和 `data/public_comps.csv`。*
 
 **为什么 Palantir 是异类：一个算例。** 在 70 倍 EV/过去 12 个月收入的水平上，假设 Palantir 的 EV 维持在 $433B，而市场最终给出仍然慷慨的 15 倍收入倍数，那么收入需要达到约 $28.9B，即过去 12 个月 $6.16B 基数的 4.7 倍。按 50% 的年增速需要约 3.8 年，按 30% 则需要约 5.9 年（我们的计算；仅作说明，并非预测）。相比之下，Snowflake 的估值约为 16.9 倍 EV/未来 12 个月收入（2026-10-30；见[第 26 章](ch26-snowflake.md)）。市场是在为 Palantir 多年保持高增长以及经营杠杆买单，而不是在为一个数据库买单。注意，`data/public_comps.csv` 中的 70 倍是 EV/过去 12 个月收入的代理指标，而非 EV/未来 12 个月收入；按远期收入计算，倍数会更低。
+
+## 客户与市场进入
+
+**自下而上与自上而下。** 开放引擎先赢得开发者。ClickHouse 由构建可观测性或面向客户分析的平台工程师选用。DuckDB 通过笔记本里的一条 `pip install` 进入企业，其网站在 2026 年年中的月独立访客超过 800 万（公司披露）。[^duck-40k] Trino 则通过需要同时查询多个系统的数据平台团队进入。商业化动作紧随采用之后，这使获客成本保持在低位，但转化率不确定。
+
+**传统厂商向 CIO 销售。** Teradata、IBM、SAP 和 Cloudera 向受监管行业的中央 IT 部门销售多年期合同。它们的客户更看重工作负载管理、安全认证和支持服务，而不是单次查询的标价。SAP 的市场进入（GTM）优势独一无二：它拥有人人都想要其数据的那套应用，因此 Business Data Cloud 和 Dremio 可以作为"用 AI 使用 SAP 数据的原生方式"来销售。[^sap-dremio]
+
+**Palantir 向业务运营者销售。** Palantir 的销售对象是 COO、工厂经理或国防项目办公室，通常带着一个具体用例和截止日期。它的合作伙伴生态如今包括了它曾经绕开的那些数据平台。它既是数据仓库数据的使用者，也是竞争者。
+
+**OEM 与嵌入。** Starburst 与 Dell 的合作、Aurora 中的 DuckDB 以及 Postgres 中的 pg_duckdb 表明，开放引擎正通过其他厂商的产品扩散。[^aurora-duck] 对存储厂商而言，OEM 是重要的路径：嵌入一体机或存储平台中的引擎，无需单独的销售周期即可触达客户。
+
+## 并购与投资
+
+| 日期 | 收购方 | 标的 | 金额 | 买到了什么 | 结果 |
+|---|---|---|---|---|---|
+| 2010-05 | SAP | Sybase | $5.8B（已披露） | ASE 和 IQ 数据库 | IQ 与 HANA 并存延续[^ma-sybase] |
+| 2010-09 | IBM | Netezza | $1.7B（已披露） | 数据仓库一体机 | 更名，后以 Netezza Performance Server 复活[^ma-netezza] |
+| 2011-02 | HP | Vertica | 未披露 | 列式存储 | 转入 Micro Focus（2017 年），后归 OpenText（2023 年）[^ma-vertica] |
+| 2011-03 | Teradata | Aster Data（剩余 89%） | $263M（已披露） | MapReduce 式分析 | 并入 Vantage[^ma-aster] |
+| 2014 | Teradata | Hadapt 资产；Think Big | 未披露 | SQL-on-Hadoop 团队；Hadoop 服务 | Hadoop 转型未能成功[^ma-hadapt][^ma-thinkbig] |
+| 2018-10 | Cloudera | Hortonworks | 合并股权价值 $5.2B（全股票） | 结束 Hadoop 价格战 | 增长停滞；被私有化[^ma-hortonworks] |
+| 2021-06 | KKR 与 CD&R | Cloudera | 约 $5.3B（每股 $16） | 私有化（take-private） | 自 2021 年 10 月起非上市[^ma-cloudera] |
+| 2024-07 | ClickHouse | PeerDB | 未披露 | Postgres CDC | 已在 ClickPipes 中上线[^ch-peerdb] |
+| 2025-03 | ClickHouse | HyperDX | 未披露 | 可观测性界面 | 成为 ClickStack 的界面[^ch-hyperdx] |
+| 2026-01 | ClickHouse | Langfuse | 未披露 | LLM 可观测性 | 与 $400M 融资同时宣布[^ch-langfuse] |
+| 2026-05 | SAP | Dremio | 未披露 | Iceberg 湖仓引擎 | 约 2026 年 7 月完成；并入 Business Data Cloud[^sap-dremio] |
+| 2026-08 | AWS | DuckLabs | 未披露 | DuckDB 核心团队 | 项目在 Foundation 名下保持 MIT 许可；完成情况 [VERIFY][^aws-duck] |
+
+*图 31.6 — 交易表。买家类型反复出现：应用和系统厂商收购引擎（2010–11 年，以及 2026 年再次出现），私募股权收购增长放缓的平台，而唯一资金充裕的挑战者（ClickHouse）收购相邻工具以成为平台。一些聚合网站还列出了 ClickHouse 对 LibreChat（2025 年）和 RunReveal（2026 年）的收购 [VERIFY]。*
+
+**SAP 为什么收购 Dremio。** SAP 的客户希望为 AI 智能体把 SAP 数据与其他所有数据结合起来。与 Databricks、BigQuery 和 Snowflake 的合作为 SAP 带来了湖仓覆盖面，但也让强大的合作伙伴横亘在 SAP 与客户的非 SAP 数据之间。[^sap-snow] 拥有一个 Iceberg 引擎和一个与 Polaris 对齐的目录，让 SAP 对这些"其他所有数据"有了自己的控制点（control point）。Forrester 将此举描述为 SAP 瞄准 AI 数据控制平面。[^sap-dremio] 整合风险在于文化。Dremio 的价值来自中立、可部署于任何地方，而 SAP 旗下的 Dremio 将以其能否保持这一点来接受评判。
+
+**AWS 为什么收购 DuckLabs。** DuckDB 已经成为数据科学家默认的本地引擎，也越来越多地成为需要快速分析文件的 AI 智能体的默认引擎。AWS 获得了核心团队、一种把快速分析能力植入每一项触及 S3 的服务的方式，以及对蚕食 Redshift 和 EMR 的"小数据"论点的回应。它付出的代价是一项治理承诺：代码在独立的 Foundation 名下保持 MIT 许可。[^duck-aws-blog]
+
+## 竞争地位
+
+```mermaid
+quadrantChart
+    title 开放程度与增长势头（作者判断，非实测数据）
+    x-axis 专有并依赖存量客户 --> 开源且云原生
+    y-axis 增长势头弱 --> 增长势头强
+    quadrant-1 有势头的开放挑战者
+    quadrant-2 专有增长者
+    quadrant-3 收割与防守
+    quadrant-4 开放但停滞
+    ClickHouse: [0.85, 0.88]
+    DuckDB MotherDuck: [0.92, 0.72]
+    Starburst Trino: [0.72, 0.45]
+    SAP 旗下 Dremio: [0.62, 0.50]
+    Firebolt: [0.55, 0.22]
+    Imply Druid: [0.70, 0.30]
+    StarTree Pinot: [0.74, 0.36]
+    Palantir: [0.15, 0.92]
+    SAP BDC: [0.30, 0.58]
+    Cloudera: [0.45, 0.28]
+    Teradata: [0.12, 0.12]
+    IBM 数据业务: [0.28, 0.48]
+    Vertica: [0.18, 0.15]
+```
+
+*图 31.7 — 定位（作者判断）。开放本身并不会带来增长势头：ClickHouse 和 DuckDB 有势头，Druid 和 Pinot 的厂商则大多没有。Palantir 是专有阵营中的例外。非上市公司的势头根据披露的 ARR、融资和交易活动推断；上市公司则依据报告的增长。*
+
+**ClickHouse 对比 Databricks 和 Snowflake。** ClickHouse 凭借成本优势赢得对延迟敏感、高并发的事件分析。Databricks 正在构建实时引擎并收购安全分析公司，Snowflake 则收购了 Observe，二者都瞄准 ClickHouse 在可观测性领域的滩头阵地（[第 25 章](ch25-databricks.md)、[第 26 章](ch26-snowflake.md)）。ClickHouse 的防线是性价比，以及平台厂商无法复制的开源用户基础。
+
+**Starburst 对比 Dremio 对比平台厂商。** 二者都主打"在数据所在之处查询数据湖，包括本地部署"。Dremio 卖给 SAP 后，Starburst 成为面向混合环境的主要独立联邦查询和 Iceberg 引擎厂商。交易宣布后不久，Starburst 就发表了相关评论。[^starburst-dremio] 二者面临的结构性威胁是：Databricks、Snowflake 和各大云厂商如今都能读取 Iceberg，而目录联邦（[第 8 章](../01-data-systems-foundations/ch08-catalogs-and-metastores.md)）正在侵蚀联邦查询这一细分市场。
+
+**Teradata 和 Cloudera 对比迁移工具。** Teradata 的主要竞争对手是迁移项目。Databricks 在 2025 年收购了 BladeBridge，并将其代码转换工具免费用于迁移，明确包括从 Teradata 迁移。[^bladebridge] 迁移成本每降低一分，Teradata 的流失风险就上升一分。
+
+**Palantir 对比所有人，又不与任何人竞争。** Palantir 与 Databricks 和 Snowflake 的智能体产品争夺"企业数据上的 AI"这一叙事，但它往往又运行在它们的数据之上。它的护城河是本体加上前置部署工程（forward-deployed engineering），而不是存储或计算。
+
+## 制胜原因 / 看多逻辑
+
+1. **ClickHouse 拥有一个被平台厂商低估的增长引擎。** 可观测性数据的增长快于业务数据，AI 智能体又带来了追踪和评估数据。ARR 增长两倍多、超过 $250M（公司披露），说明需求拉动是真实的。[^ch-arr]
+2. **开放引擎正在成为基础设施。** AWS 中的 DuckDB、Dell 一体机和 IBM watsonx.data 中的 Trino，以及无处不在的 Arrow，意味着无论最终哪些公司攫取利润，这些引擎都将存续数十年。[^aurora-duck]
+3. **本地部署和主权需求有利于混合部署厂商。** 一项由 Cloudera 委托的调查显示，66% 的受访者在过去 12 个月内把 AI 工作负载从公有云迁回；AWS 自己也在 2026 年 1 月推出了欧洲主权云。[^cloudera-survey][^aws-esc] Cloudera、Teradata、Starburst 和 SAP-Dremio 销售的软件都能在数据必须留驻的地方运行。
+4. **传统厂商的现金流很便宜。** Teradata 以约 1.7 倍 EV/过去 12 个月收入的估值且持有净现金，其定价已反映衰退预期。只要总 ARR 企稳，它就是典型的价值股或私有化候选标的。我们没有发现已确认的私有化进程 [VERIFY]。[^comps-tdc]
+5. **Palantir 证明语义层可以比引擎更值钱。** 本体通过回写把数据转化为决策，而这正是智能体创造价值的地方。在 $6B 基数上接近 79% 的收入增速支持这一论点。[^fin-pltr]
+
+## 风险 / 看空逻辑与待解问题
+
+1. **挑战者估值跑在收入前面。** ClickHouse 约 60 倍过往 ARR 的估值需要多年极高的增长来支撑。数个 2021–22 年的估值（Starburst、Firebolt、StarTree）尚未重新定价，很可能高于这些公司如今能卖出的价格。[^ch-seriesd]
+2. **平台厂商吞并细分市场。** 每一项重要的引擎功能（Iceberg 读取、向量化执行、联邦查询、实时摄取）如今都在 Databricks 和 Snowflake 的路线图上。挑战者需要找到一个自己便宜数倍、而不仅仅是更快的工作负载。
+3. **超大规模云厂商的引力。** AWS 拥有 DuckDB 的核心团队，可能挤压 MotherDuck 和其他基于 DuckDB 的初创公司，正如 AWS 服务过去挤压过其他开源厂商那样。
+4. **传统厂商的衰退是结构性的。** Teradata 的收入多年来大致持平甚至下滑，免费的迁移工具又加速了客户流失。[^bladebridge] Cloudera 的非上市状态掩盖了其发展轨迹，而私募股权持有意味着几年内会出售或重新上市。
+5. **Palantir 的估值倍数没有安全边际。** 在约 70 倍 EV/过去 12 个月收入的水平上，增长一旦放缓，倍数就会急剧压缩。上面的算例显示了仍需实现多少收入。
+6. **待解问题。** AWS–DuckLabs 交易能否顺利完成？MotherDuck 的工程合同能否延续？SAP 会让 Dremio 继续可部署于非 SAP 的本地环境吗？Teradata 的 Q3 2026 云 ARR 和总 ARR 是多少？Starburst 下一步是融资、出售还是合作？
+
+## 与 Everpure 的相关性
+
+> **存储桥接。** 除 Palantir 外，本章的每个引擎都能从兼容 S3 的对象存储中读取 Iceberg 或 Parquet。Trino、Dremio 和 Cloudera 把对象存储作为记录系统，并依赖 SSD 缓存。ClickHouse 将本地 NVMe 用于热数据片段，将对象存储用于大部分数据。这些引擎对本地存储的要求是：范围 GET 的高聚合吞吐量、快速的元数据操作和强一致性。FlashBlade 的对象存储性能请参阅姊妹篇 *Everpure Tech Atlas*。
+
+公开记录显示，Everpure（前身为 Pure Storage；NYSE: P）拥有一份面向混合 Iceberg 湖仓的 FlashBlade–Dremio 联合解决方案简介（2024 年），其合作伙伴页面上还有一份 Starburst 参考架构。[^dremio-pure][^starburst-ep] 记录还显示，Everpure 正通过收购 1touch 向技术栈上层移动，1touch 的数据发现与数据分类技术已成为 Everpure Data Intelligence。[^everpure-1touch] 本地湖仓引擎是让本地 S3 存储在分析和 AI 中发挥作用的软件。在实践中，它们是企业为分析而采购大型对象存储的主要原因。
+
+**基于公开信息，战略团队可能评估的选项：**
+
+| 选项 | 含义 | 为何可能重要 | 注意事项 |
+|---|---|---|---|
+| 与 SAP 重新签订 Dremio 合作 | 把 SAP Business Data Cloud 作为合作伙伴，将 FlashBlade 定位为 SAP 与非 SAP Iceberg 数据的本地落地区 | SAP 的存量客户规模庞大且受监管；本地 SAP 环境需要数据湖 | SAP 可能偏向超大规模云存储；Dremio 的本地部署在 SAP 内部的优先级未知 |
+| 深化与 Starburst 的关系 | 推出联合的 FlashBlade 上 Icehouse 方案，可能像 Dell 那样采用 OEM 形式 | Starburst 如今是主要的独立混合引擎；相对 Databricks 和 Snowflake 保持中立 | Starburst 的资金状况不透明；Dell 是直接的存储竞争对手，且已在嵌入 Starburst |
+| 在 Everpure 上认证自管 ClickHouse | 经验证的方案，将 ClickHouse 冷数据片段分层至本地 S3，面向可观测性和 AI 遥测 | ClickHouse 是增长最快的挑战者；遥测数据量大且对主权敏感 | ClickHouse 的增长主要来自其自有云服务 |
+| 与 Cloudera 和 Teradata 合作推进混合 AI | 为 Cloudera 的 Iceberg 湖仓和基于对象存储的 Teradata 提供参考设计 | 二者都向希望数据留在本地的受监管行业销售；一项厂商调查报告了回迁趋势[^cloudera-survey] | 二者的增长或在萎缩、或不透明；合作价值取决于它们的销售管道 |
+| 将 Data Intelligence 与引擎目录打通 | 把源自 1touch 的分类标签推送到 Polaris、Iceberg REST 目录或 Trino 策略中 | 把存储侧元数据转化为查询引擎中的强制执行 | 目录厂商正在构建自己的分类功能（[第 8 章](../01-data-systems-foundations/ch08-catalogs-and-metastores.md)） |
+
+*图 31.8 — 合作选项（仅基于公开信息）。SAP 拥有 Dremio 是最大的变化：一个中立的引擎合作伙伴，已经成为一家拥有自有云和超大规模云联盟的应用厂商的一部分。*
+
+关于存储厂商向技术栈上层移动的更广泛规律，请参阅[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)。关于本地湖仓的经济性，请参阅[第 24 章](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)。

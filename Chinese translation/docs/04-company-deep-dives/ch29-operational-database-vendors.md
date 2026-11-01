@@ -317,3 +317,73 @@ quadrantChart
 5. **Oracle 的资产负债表如今承载着 AI 建设。** EV 约 $515B，而市值约 $382B，且过去 12 个月 FCF 为负，数据库年金正在为一场 AI 算力豪赌提供资金，同时也暴露于其风险之中。[^comps-orcl]
 6. **待解问题。** MongoDB 的 Atlas 增长中有多大比例来自 AI 工作负载？Supabase 会在 IPO 之前披露收入吗？Snowflake Postgres 能否在与 Lakebase 的竞争中获得牵引力？在 Desai 于 2026 年 9 月离职后，谁将成为 MongoDB 的正式 CEO？继任者搜寻会改变优先事项或延误决策吗？
 
+## 与 Everpure 的相关性
+
+> **存储桥接。** OLTP 数据库是典型的块存储工作负载：小块随机 I/O、对延迟敏感的提交（每次提交都要等待预写日志刷盘），以及用于备份和测试/开发的快照（snapshot）与克隆。这正是 FlashArray 的核心业务。Aurora 和 Neon 等解耦式设计把持久性、复制和数据页物化移入数据库厂商自己的日志与页面服务中，后端通常是对象存储。PlanetScale Metal 等本地 NVMe 设计则完全绕开了共享存储。块存储协议和快照机制参见配套的 *Everpure Tech Atlas*。
+
+**变化在哪里。** 有三项转变会随时间推移缩小经典的"数据库跑在 SAN 阵列上"的规模。第一，新应用默认使用云托管 Postgres，由超大规模云厂商提供存储。第二，Oracle 的多云模式把自带存储服务器的 Exadata 放进 Azure、Google 和 AWS，因此即便是离开客户数据中心的 Oracle 工作负载，也不会落在客户自有的阵列上。[^orcl-azure] 第三，无服务器 Postgres 把数据库存储变成了 WAL 服务加对象存储。[^neon-arch] 反向的力量在于，企业数据中心里 Oracle、SQL Server 和自管理 Postgres 的装机基础极其庞大且迁移缓慢，而受监管行业会把记录系统保留在本地。
+
+**基于公开信息，战略团队可能评估的选项：**
+
+| 选项 | 含义 | 为何可能重要 | 注意事项 |
+|---|---|---|---|
+| 让 FlashArray 克隆成为"数据库分支"的本地方案 | 将面向 Oracle、SQL Server 和 Postgres 的即时、节省空间的数据库克隆，打包为开发者和智能体可自助使用的功能 | 分支是 Neon/Lakebase 的主打功能；阵列快照已在存储层实现了这一点 | 需要具备数据库感知能力、可供智能体调用的工具和 API，而不仅仅是阵列快照 |
+| 用 Portworx 支持 Kubernetes 上的 Postgres | 将 Portworx（2020 年收购，约 $370M）定位为自管理 Postgres operator 和 Data Services 的数据层 | 许多企业在 Kubernetes 上运行 Postgres 以避免被超大规模云厂商锁定[^portworx] | 对大多数团队而言，超大规模云厂商的托管 Postgres 更简单 |
+| 在 FlashBlade 上支持以对象存储为后端的数据库存储 | 在 FlashBlade 的 S3 接口上验证 Neon 式（开源）页面服务器和湖仓镜像目标 | 如果无服务器 Postgres 走向混合部署或主权部署，就需要高速的本地对象存储 | 目前没有公开的本地 Lakebase 计划；属于推测 |
+| 与独立数据库厂商开展本地合作 | 与 EDB、MongoDB EA、Couchbase 或 Redis Enterprise 软件联合制定参考架构 | 这些厂商的自管理客户恰恰就是本地部署的买家 | 每家厂商的增长都以云为先 |
+| 将 Data Intelligence 扩展到运营型数据库 | 在数据库资产上使用基于 1touch 的数据发现与数据分类，包括 Oracle 和 SQL Server 连接器 | Everpure 的 Data Intelligence 已列出 SQL Server 和 Oracle 连接器[^everpure-di] | 数据库厂商和目录产品（Unity Catalog、Horizon）也在添加各自的分类功能 |
+
+*图 29.11 — 选项（仅基于公开信息）。竞争风险是渐进的：每一个诞生于云托管 Postgres 的新应用，都是一个永远不会落到本地阵列上的应用。*
+
+数据引力（data gravity）参见[第 24 章](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)，存储厂商向技术栈上层移动参见[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)。
+
+## 对话手册
+
+**向厂商产品经理或高管提出的三个问题**
+
+1. （MongoDB）"Atlas 的重新加速中，有多少来自新工作负载、多少来自现有工作负载的用量增长？你们如何在遥测数据中识别 AI 工作负载？" *好的回答*会区分新工作负载与现有工作负载的增长，给出"AI 工作负载"的定义（例如向量索引的使用情况），并承认归因只是近似。
+2. （Postgres 平台）"你们平台上创建的数据库中，由智能体创建的占多少？有多少能存活 30 天？每个存活数据库的收入是多少？" *好的回答*会给出队列存活率和转化率，而不只是创建数量。
+3. （Oracle）"在 Database@Azure 交易中，许可证、支持和基础设施收入在 Oracle 与 Microsoft 之间如何划分？BYOL 支持是否继续？" *好的回答*会解释自带许可证与含许可证两种模式的区别，以及哪一方确认哪部分收入。
+
+**向工程师或合作伙伴架构师提出的三个问题**
+
+1. "你们的 Postgres 服务中，持久性放在哪里：网络块存储、带复制的本地 NVMe，还是基于对象存储的 WAL 服务？p99 提交延迟是多少？" *好的回答：*具体的架构和实测数字，以及故障模式下的表现。
+2. "你们如何为测试分支一个 5 TB 的生产数据库？需要多长时间？" *好的回答：*在某个日志位置进行写时复制或使用存储快照，耗时以秒计，并对敏感数据脱敏（masking）有清晰的方案。
+3. "你们支持哪些向量索引类型（HNSW、IVF、DiskANN）？向量查询是否遵循与其他数据相同的事务和访问控制？" *好的回答：*列出具体索引类型，坦诚说明召回率与延迟的权衡，并确认具备事务一致性。
+
+**好的回答听起来是什么样。** 它们区分引擎与服务，把按用量收入与期限许可证收入分开，标注年化运行率与 GAAP 的区别，并把向量检索视为入场门槛而非护城河。
+
+**不要这样说**
+
+- "MongoDB 不支持事务。" *自 4.0 版（2018 年）起就已支持多文档 ACID 事务。*
+- "Redis 现在是闭源的。" *Redis 8 在 RSALv2 和 SSPLv1 之外增加了经 OSI 批准的 AGPLv3 许可证；Valkey 仍采用 BSD。*
+- "Postgres 归 [某厂商] 所有。" *没有任何公司拥有 PostgreSQL；厂商拥有的是服务、扩展和分叉。*
+- "Oracle 是一家传统数据库公司。" *其估值如今由 OCI 和 AI 基础设施驱动（RPO $664B）；数据库是底层的年金。*
+- "CJ Desai 是 MongoDB 的 CEO。" *Desai 已于 2026 年 9 月离职加入 Meta；在物色正式继任者期间，Dev Ittycheria 担任临时总裁兼 CEO。*
+- "Snowflake 花了 $250M 收购 Crunchy。" *那是媒体报道；10-Q 显示现金对价为 $164.5M。*
+- "Supabase 的收入是 $X。" *Supabase 不披露收入；公开的只有估值。*
+
+## 关键术语
+
+- [OLTP](../glossary.md#oltp) — 联机事务处理：大量小型、快速且正确的读写操作。
+- [文档数据库（Document database）](../glossary.md#document-database) — 存储自包含的类 JSON 记录，例如 MongoDB。
+- [键值存储（Key-value store）](../glossary.md#key-value-store) — 按键检索不透明的值，例如 Redis 或 Valkey。
+- [Valkey](../glossary.md#valkey) — Linux Foundation 以 BSD 许可证发布的 Redis 7.2.4 分叉（2024 年）。
+- [NewSQL](../glossary.md#newsql) — 在横向扩展下提供 ACID 事务的分布式 SQL 数据库。
+- [HTAP](../glossary.md#htap) — 在新鲜数据上同时服务事务型和分析型工作负载的单一系统。
+- [MVCC](../glossary.md#mvcc) — 保留多个行版本，使读写互不阻塞。
+- [预写日志（Write-ahead log）](../glossary.md#write-ahead-log) — 事务提交前写入的持久化变更日志。
+- [数据镜像（Data mirroring）](../glossary.md#data-mirroring) — 由厂商管理、将运营型数据库持续复制到分析平台的机制。
+- [SSPL](../glossary.md#sspl) — MongoDB 的 Server Side Public License，要求以服务形式提供该软件的提供商开源其整个服务栈。
+- [AGPL](../glossary.md#agpl) — GNU Affero General Public License，一种经 OSI 批准的 copyleft 许可证，将源码共享义务延伸到网络使用。
+- [Business Source License](../glossary.md#business-source-license) — 一种源码可用许可证，在一段时间内限制生产使用，之后转为开源。
+- [源码可用许可证（Source-available license）](../glossary.md#source-available-license) — 公开源代码但限制使用（通常禁止提供竞争性托管服务）的许可证。
+- [Postgres 扩展（Postgres extension）](../glossary.md#postgres-extension) — 无需分叉即可为 PostgreSQL 添加类型、索引或函数的附加模块。
+- [pgvector](../glossary.md#pgvector) — 用于存储和检索嵌入向量的开源 Postgres 扩展。
+- [数据库分支（Database branching）](../glossary.md#database-branching) — 在数据库历史中的某个时间点即时创建写时复制克隆。
+- [缩容至零（Scale to zero）](../glossary.md#scale-to-zero) — 在数据库闲置时关闭其计算资源，使其几乎不产生费用。
+- [期限许可证（Term license）](../glossary.md#term-license) — 有时间期限的软件许可证，根据 ASC 606，其许可证部分一次性确认收入。
+- [智能体记忆（Agent memory）](../glossary.md#agent-memory) — AI 智能体跨会话存储和检索的持久状态。
+- [支持服务年金（Support annuity）](../glossary.md#support-annuity) — 基于永久许可证装机基础的经常性维护收入。
+- [嵌入（Embedding）](../glossary.md#embedding) — 表示语义的数值向量，使相似的条目彼此靠近。
+

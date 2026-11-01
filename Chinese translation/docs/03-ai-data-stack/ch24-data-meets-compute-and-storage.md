@@ -202,7 +202,7 @@ xychart-beta
 
 三股力量让本地分析重新焕发活力。**主权**：AWS 于 2026 年 1 月在勃兰登堡推出了由欧盟居民员工运营的 European Sovereign Cloud。这表明连超大规模云厂商如今也把本地化当作一项卖点。[^aws-esc] **AI 工厂**：在本地构建 GPU 集群的企业希望训练和检索数据位于同一网络结构上，而不是隔着广域网。**回迁**：一项由 Cloudera 委托进行的调查（2026 年 8 月）发现，66% 的受访者在过去 12 个月中把部分 AI 工作负载从公有云迁回本地或私有云。考虑到调查的出资方，应将其视为方向性信号。[^cloudera-survey]
 
-本地湖仓如今使用与云端湖仓相同的组件：Iceberg 表、Parquet 文件、一个 Iceberg REST 目录（Polaris、Nessie 或厂商目录），以及作为引擎的 Trino、Starburst、Dremio 或 Spark，全部运行在兼容 S3 的对象存储上。Cloudera 把这一模式作为混合数据平台来销售。SAP 对 Dremio 的收购（2026 年 5 月宣布，约 2026 年 7 月完成）把主要的本地 Iceberg 引擎之一纳入了一家应用软件巨头。云数据仓库在边缘处做出了调整。自 2022 年的预览版以来，Snowflake 一直支持基于兼容 S3 的本地存储的外部表，并提供一套供厂商自我认证的公开测试套件。Databricks 于 2026 年 6 月推出的 Storage Ecosystem 让工作区能够通过 OpenSharing 就地查询合作伙伴存储上的 Delta 和 Iceberg 表。[^sf-onprem][^sf-s3compat][^storage-eco]
+本地湖仓如今使用与云端湖仓相同的组件：Iceberg 表、Parquet 文件、一个 Iceberg REST 目录（Polaris、Nessie 或厂商目录），以及作为引擎的 Trino、Starburst、Dremio 或 Spark，全部运行在兼容 S3 的对象存储上。Cloudera 把这一模式作为混合数据平台来销售。SAP 对 Dremio 的收购（2026 年 5 月宣布，约 2026 年 7 月完成）把主要的本地 Iceberg 引擎之一纳入了一家应用软件巨头。[^sap-dremio] 云数据仓库在边缘处做出了调整。自 2022 年的预览版以来，Snowflake 一直支持基于兼容 S3 的本地存储的外部表，并提供一套供厂商自我认证的公开测试套件。Databricks 于 2026 年 6 月推出的 Storage Ecosystem 让工作区能够通过 OpenSharing 就地查询合作伙伴存储上的 Delta 和 Iceberg 表。[^sf-onprem][^sf-s3compat][^storage-eco]
 
 ### 湖仓对对象存储的要求
 

@@ -281,7 +281,7 @@ timeline
     2020 : Google ScaNN
     2021 : SPANN 将倒排列表放在磁盘上
     2022 : MTEB 基准测试与 Matryoshka 嵌入
-    2023 : Pinecone 融资 1 亿美元 : pgvector 增加 HNSW : MongoDB Atlas Vector Search GA
+    2023 : Pinecone 融资 100M 美元 : pgvector 增加 HNSW : MongoDB Atlas Vector Search GA
     2024 : OpenAI text-embedding-3 : Pinecone 无服务器 : AlloyDB ScaNN 与 Cosmos DB DiskANN GA
     2025 : MongoDB 收购 Voyage AI : Oracle AI Database 26ai : SQL Server 2025 : S3 Vectors GA
     2026 : Voyage 4 模型 : Qdrant B 轮 : MongoDB 社区版向量检索 GA
@@ -313,3 +313,112 @@ timeline
 | 二值量化的内存缩减 | 相对 float32 约 32 倍 | 厂商披露 | Elastic、Redis 文档[^elastic][^redis] |
 
 *图 18.11 — 带进会议的关键数字。各厂商的延迟数字彼此不可比，因为召回率目标、维度和过滤条件各不相同。*
+
+## 存储桥接
+
+> **存储桥接。** 向量检索正在变成一种闪存和对象存储工作负载。DiskANN 风格的索引会在低队列深度下发出成批的 4 KB 小型随机读取，此时尾延迟比带宽更重要。SPFresh 风格和 S3 Vectors 的设计则发出更少、更大的范围 GET 请求，此时首字节时间和每请求成本占主导。重新嵌入和索引构建是为 GPU 供数的大型顺序作业。对于 FlashBlade 这样的本地部署 S3 和 NVMe 平台，基于公开信息，战略团队可能评估的选项包括：与 Milvus（已将 Pure Storage 列为 2.6 分层存储合作伙伴）[^milvus26] 以及其他对象存储原生引擎共同推出认证参考设计；在本地部署提供与 S3 Vectors 兼容的 API；将 Data Stream 从生产嵌入向量扩展到提供嵌入向量服务。[^ep-ds] [第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)将这些选项置于存储厂商向技术栈上层移动的更广泛模式之中。闪存延迟和对象协议细节参见配套的 *Everpure Tech Atlas*。
+
+## 对话手册
+
+**向产品经理提问**
+
+1. "你们的中位数客户有多少向量？最大的客户有多少？超过 1 亿向量的客户占多大比例？"（这能表明该产品是在与 pgvector 竞争，还是在与 DiskANN 级系统竞争。）
+2. "当客户更换嵌入模型时，重新嵌入会让他们付出多少时间和金钱？你们是否提供帮助？"
+3. "你们的索引放在哪里：DRAM、NVMe 还是对象存储？自 S3 Vectors 发布以来，你们每百万向量的成本有何变化？"
+
+**向工程师提问**
+
+1. "你们报出的延迟是在多少 recall@10、何种过滤选择性下，基于哪个数据集？"
+2. "对于只匹配语料库 0.1% 的过滤条件，你们如何处理：预过滤、后过滤还是图内过滤？"
+3. "在 30% 的向量被更新或删除之后，召回率和延迟会怎样？你们多久重建或压缩一次？"
+
+**好的回答是什么样的。** 它们会同时报出延迟和召回率，并注明百分位和过滤选择性。它们清楚每个层级中每向量占用的字节数（"RAM 中为 int8，NVMe 上为 float32 用于重新打分"）。它们把嵌入模型和分块视为比索引更重要的质量杠杆。它们对删除、压缩和重新嵌入有清晰的计划。
+
+**不要这样说**
+
+- "向量数据库现在已经商品化了。"小规模向量检索确实如此。但在低成本下实现十亿级、多租户、带过滤、保持新鲜的检索，仍然是艰难的工程。
+- "维度越高越好。"Matryoshka 截断和量化往往能以很少的字节保留 95%+ 的质量。
+- "ANN 是精确的。"它在设计上就是近似的，所以一定要问召回率。
+- "RAG 只需要一个向量数据库。"生产级 RAG 需要混合关键词检索、重排序、过滤和访问控制（[第 19 章](ch19-retrieval-architectures.md)）。
+- "HNSW 是唯一重要的索引。"在十亿规模下，IVF-PQ、DiskANN 和"聚类放在对象存储上"的设计通常在成本上胜出。
+
+## 深入阅读
+
+- Malkov 和 Yashunin 的 HNSW 论文，尤其是关于启发式邻居选择的章节。[^hnsw]
+- Subramanya 等的 DiskANN 论文，关于 Vamana 图和 SSD 布局。[^diskann]
+- Jégou、Douze 和 Schmid 关于乘积量化的论文，以及概述各类索引的 Faiss 库论文。[^pq][^faiss]
+- Chen 等的 SPANN 论文，以及关于便于更新、驻留磁盘的聚类索引的 SPFresh 论文。[^spann][^spfresh]
+- turbopuffer 的架构页面，对对象存储原生索引的清晰公开描述。[^tpuf]
+- Ootomo 等的 CAGRA 论文，以及 NVIDIA 关于 GPU 构建的 cuVS 集成说明。[^cagra][^cuvs]
+
+> **深入（L3）。** HNSW 的邻居选择并不是"保留最近的 M 个"。只有当一个候选项离新节点比离任何已选邻居都更近时，它才会被保留，这样能保留指向不同方向的边，使图保持可导航。Vamana 用一个大于 1 的松弛因子 α 推广了这一规则，刻意保留一些长边，使单层图也能达到 HNSW 依靠上层才获得的跳数。这一条剪枝规则对质量的影响，比大多数已公开的调优旋钮都更大。
+
+## 关键术语
+
+- [嵌入（向量）](../glossary.md#embedding) — 一种学习得到的向量表示，相似内容在其中彼此靠近。
+- [对比学习](../glossary.md#contrastive-learning) — 将匹配样本对拉近、将不匹配样本对推远的训练方法。
+- [余弦相似度](../glossary.md#cosine-similarity) — 以两个向量夹角衡量的相似度。
+- [k 最近邻](../glossary.md#k-nearest-neighbors) — 精确查找离查询最近的 k 个向量。
+- [近似最近邻](../glossary.md#approximate-nearest-neighbor) — 以少量召回率换取大幅速度和成本收益的检索。
+- [k 召回率（Recall at k）](../glossary.md#recall-at-k) — 索引实际返回的真实 top-k 邻居所占的比例。
+- [HNSW](../glossary.md#hnsw) — 通过贪心下降进行检索的分层邻近图索引。
+- [IVF](../glossary.md#ivf) — 用 k-means 对向量聚类、只检索最近聚类的索引。
+- [乘积量化](../glossary.md#product-quantization) — 将向量切片编码为码本索引的压缩方法。
+- [码本](../glossary.md#codebook) — 乘积量化所使用的、学习得到的代表性子向量集合。
+- [IVF-PQ](../glossary.md#ivf-pq) — IVF 聚类与 PQ 压缩向量的结合。
+- [标量量化](../glossary.md#scalar-quantization) — 用更少的比特（例如 int8）存储每个坐标。
+- [二值量化](../glossary.md#binary-quantization) — 每个维度存储 1 比特，使体积缩小 32 倍。
+- [Matryoshka 嵌入](../glossary.md#matryoshka-embedding) — 其前若干维即可构成可用的较短嵌入向量的嵌入。
+- [重新打分](../glossary.md#rescoring) — 用全精度向量对压缩检索得到的候选项重新排序。
+- [DiskANN](../glossary.md#diskann) — 驻留 SSD 的图索引，压缩向量保存在 DRAM 中。
+- [Vamana](../glossary.md#vamana) — DiskANN 背后的单层图构建算法。
+- [CAGRA](../glossary.md#cagra) — NVIDIA cuVS 中为 GPU 优化的图索引。
+- [预过滤](../glossary.md#pre-filtering) — 在向量检索之前应用元数据过滤条件。
+- [后过滤](../glossary.md#post-filtering) — 在向量检索之后应用元数据过滤条件。
+- [混合检索](../glossary.md#hybrid-search) — 结合关键词（BM25）检索与向量检索，通常再加上重排序。
+- [BM25](../glossary.md#bm25) — 标准的关键词相关性打分函数。
+- [向量数据库](../glossary.md#vector-database) — 主要为存储、索引和查询嵌入向量而构建的数据库。
+
+## 资料来源
+
+[^hnsw]: Y. Malkov and D. Yashunin, "Efficient and robust approximate nearest neighbor search using Hierarchical Navigable Small World graphs," arXiv:1603.09320, https://arxiv.org/abs/1603.09320，发布 2016-03（IEEE TPAMI 42(4), 2018/2020, https://doi.org/10.1109/TPAMI.2018.2889473）；检索 2026-11-01（标准引用）。
+[^diskann]: S. Jayaram Subramanya, F. Devvrit, R. Kadekodi, R. Krishnaswamy, H. V. Simhadri, "DiskANN: Fast Accurate Billion-point Nearest Neighbor Search on a Single Node," NeurIPS 2019, https://papers.nips.cc/paper/2019/hash/09853c7fb1d3f8ee67a61b6bf4a7f8e6-Abstract.html，发布 2019-12；Microsoft Research 出版物页面，https://www.microsoft.com/en-us/research/publication/diskann/；检索 2026-11-01。基准测试由作者完成。
+[^pq]: H. Jégou, M. Douze, C. Schmid, "Product Quantization for Nearest Neighbor Search," IEEE TPAMI 33(1), https://ieeexplore.ieee.org/document/5432202（开放版本 https://inria.hal.science/inria-00514462），发布 2011-01；检索 2026-11-01（标准引用）。
+[^faiss]: J. Johnson, M. Douze, H. Jégou, "Billion-scale similarity search with GPUs," arXiv:1702.08734, https://arxiv.org/abs/1702.08734，发布 2017-02；M. Douze et al., "The Faiss library," arXiv:2401.08281, https://arxiv.org/abs/2401.08281，发布 2024-01；检索 2026-11-01（标准引用）。
+[^scann]: R. Guo et al., "Accelerating Large-Scale Inference with Anisotropic Vector Quantization," ICML 2020, arXiv:1908.10396, https://arxiv.org/abs/1908.10396，发布 2019-08/2020-07；检索 2026-11-01（标准引用）。
+[^spann]: Q. Chen et al., "SPANN: Highly-efficient Billion-scale Approximate Nearest Neighbor Search," NeurIPS 2021, arXiv:2111.08566, https://arxiv.org/abs/2111.08566，发布 2021-11；检索 2026-11-01（标准引用）。
+[^spfresh]: Y. Xu et al., "SPFresh: Incremental In-Place Update for Billion-Scale Vector Search," SOSP 2023, https://dl.acm.org/doi/10.1145/3600006.3613166，发布 2023-10；检索 2026-11-01（未实时抓取）。
+[^cagra]: H. Ootomo et al., "CAGRA: Highly Parallel Graph Construction and Approximate Nearest Neighbor Search for GPUs," arXiv:2308.15136, https://arxiv.org/abs/2308.15136，发布 2023-08（ICDE 2024）；检索 2026-11-01（标准引用）。
+[^cuvs]: NVIDIA Technical Blog, "Enhancing GPU-Accelerated Vector Search in Faiss with NVIDIA cuVS," https://developer.nvidia.com/blog/enhancing-gpu-accelerated-vector-search-in-faiss-with-nvidia-cuvs，发布 2025；NVIDIA Technical Blog, "Optimizing Vector Search for Indexing and Real-Time Retrieval with NVIDIA cuVS," https://developer.nvidia.com/blog/optimizing-vector-search-for-indexing-and-real-time-retrieval-with-nvidia-cuvs/，发布 2025；NVIDIA cuVS docs, "Integration Patterns," https://docs.nvidia.com/cuvs/user-guide/integration-patterns，无日期；检索 2026-11-01。性能声明为厂商披露。
+[^mrl]: A. Kusupati et al., "Matryoshka Representation Learning," NeurIPS 2022, arXiv:2205.13147, https://arxiv.org/abs/2205.13147，发布 2022-05；检索 2026-11-01（标准引用）。
+[^mteb]: N. Muennighoff et al., "MTEB: Massive Text Embedding Benchmark," arXiv:2210.07316, https://arxiv.org/abs/2210.07316，发布 2022-10；K. Enevoldsen et al., "MMTEB: Massive Multilingual Text Embedding Benchmark," ICLR 2025, https://proceedings.iclr.cc/paper_files/paper/2025/hash/fc0e3f908a2116ba529ad0a1530a3675-Abstract-Conference.html（arXiv:2502.13595），发布 2025；MTEB leaderboard, https://huggingface.co/spaces/mteb/leaderboard，实时更新；检索 2026-11-01。
+[^openai-emb]: OpenAI, "New embedding models and API updates," https://openai.com/index/new-embedding-models-and-api-updates/，发布 2024-01-25；检索 2026-11-01（未实时抓取）。
+[^gemini-emb]: Google Developers Blog, "Gemini Embedding now generally available in the Gemini API," https://developers.googleblog.com/en/gemini-embedding-available-gemini-api/，发布 2025-07-14；检索 2026-11-01。厂商披露。
+[^cohere-emb]: Cohere documentation, "Cohere's Embed Models"（embed-v4.0 输出维度和嵌入类型），https://docs.cohere.com/docs/cohere-embed，无日期；Microsoft Azure AI Foundry model catalog, "Cohere Embed 4," https://ai.azure.com/catalog/models/embed-v-4-0，2025-12；检索 2026-11-01。发布月份（2025 年 4 月）依据二手来源 [VERIFY: Cohere Embed v4 发布日期]。
+[^voyage4]: IT Brief UK, "MongoDB adds Voyage 4 AI models, automates vector search," https://itbrief.co.uk/story/mongodb-adds-voyage-4-ai-models-automates-vector-search，发布 2026-01；OpenRouter 模型页面，"voyage-4"（维度 2048/1024/512/256），https://openrouter.ai/voyageai/voyage-4，无日期；检索 2026-11-01。
+[^mdb-voyage]: MongoDB, Inc., "MongoDB Announces Acquisition of Voyage AI to Enable Organizations to Build Trustworthy AI Applications," 新闻稿，https://www.mongodb.com/press/mongodb-announces-acquisition-of-voyage-ai，发布 2025-02-24；价格依据 Seeking Alpha, "MongoDB acquires Voyage AI for $220M to boost AI search," https://seekingalpha.com/news/4412466-mongodb-acquires-voyage-ai-for-220m-to-boost-ai-search，发布 2025-02-24（媒体报道；MongoDB 在新闻稿中未披露价格）；检索 2026-11-01。与 `data/ma_deals.csv` 一致。
+[^mdb-vs]: Constellation Research, "MongoDB Atlas Vector Search, Atlas Search Nodes generally available," https://www.constellationr.com/insights/news/mongodb-atlas-vector-search-atlas-search-nodes-generally-available，发布 2023-12-04；MongoDB, "Now GA: MongoDB Search and Vector Search for Community Edition," https://www.mongodb.com/products/updates/now-ga-mongodb-search-and-vector-search-for-community-edition/，发布 2026-06-30；检索 2026-11-01。
+[^s3v]: AWS News Blog, "Amazon S3 Vectors now generally available with increased scale and performance," https://aws.amazon.com/blogs/aws/amazon-s3-vectors-now-generally-available-with-increased-scale-and-performance，发布 2025-12-02；AWS What's New, "Amazon S3 Vectors is now generally available with 40 times the scale of preview," https://aws.amazon.com/about-aws/whats-new/2025/12/amazon-s3-vectors-generally-available/，发布 2025-12-02；延迟和成本声明依据 AWS, "Top announcements of AWS re:Invent 2025," https://aws.amazon.com/blogs/aws/top-announcements-of-aws-reinvent-2025，发布 2025-12；检索 2026-11-01。公司披露。
+[^s3-pricing]: AWS, "Amazon S3 pricing"（S3 Standard，每月前 50 TB，美国东部），https://aws.amazon.com/s3/pricing/，持续更新文档；检索 2026-11-01。[VERIFY: S3 Standard 标价是否仍为 $0.023/GB-月]
+[^pgvector]: PostgreSQL Global Development Group, "pgvector 0.8.0 Released!," https://www.postgresql.org/about/news/pgvector-080-released-2952/，发布 2024-11；EDB, "pgvector 0.8.1 release notes," https://www.enterprisedb.com/docs/pg_extensions/pgvector/rel_notes/pgvector_0.8.1_rel_notes/，发布 2025；检索 2026-11-01。
+[^pgvector-cl]: pgvector 项目，CHANGELOG（0.5.0 增加 HNSW 索引类型，2023-08），https://github.com/pgvector/pgvector/blob/master/CHANGELOG.md，无日期；检索 2026-11-01（未实时抓取）。
+[^pgvectorscale]: Timescale (TigerData)，pgvectorscale 代码库（StreamingDiskANN 索引、统计二值量化），https://github.com/timescale/pgvectorscale，无日期；检索 2026-11-01（未实时抓取）。
+[^sqlserver]: Microsoft Azure SQL Dev Blog, "SQL Server 2025 embraces vectors: setting the foundation for empowering your data with AI," https://devblogs.microsoft.com/azure-sql/sql-server-2025-embraces-vectors-setting-the-foundation-for-empowering-your-data-with-ai，发布 2025-11-18；Microsoft Learn, "Vector search and vector indexes in the SQL Database Engine," https://learn.microsoft.com/sql/relational-databases/vectors/vectors-sql-server，持续更新文档；检索 2026-11-01。
+[^cosmos]: Microsoft Azure Updates, "Generally Available: DiskANN in Azure Cosmos DB for NoSQL," https://azure.microsoft.com/updates/public-preview-diskann-vector-indexing-and-search-in-azure-cosmos-db-nosql，2024-11；Azure Cosmos DB Blog, "Azure Cosmos DB with DiskANN Part 2: Scaling to 1 Billion Vectors with <100ms Search Latency," https://devblogs.microsoft.com/cosmosdb/azure-cosmos-db-with-diskann-part-2-scaling-to-1-billion-vectors-with，发布 2025-04-21；N. Upreti et al., PVLDB 18, https://www.vldb.org/pvldb/vol18/p5166-upreti.pdf，2025；检索 2026-11-01。
+[^alloydb]: Google Cloud Blog, "ScaNN for AlloyDB index is GA," https://cloud.google.com/blog/products/databases/scann-for-alloydb-index-is-ga，发布 2024-10-03；检索 2026-11-01。公司披露。
+[^oracle]: Oracle, "Oracle AI Database 26ai," https://www.oracle.com/database/ai-native-database-26ai/，发布 2025-10；Oracle AI Vector Search User's Guide (26)，版本更新说明，https://docs.oracle.com/en/database/oracle/oracle-database/26/vecse/july-2025-release-update-23.9.html，无日期；检索 2026-11-01。
+[^dbx-vs]: Databricks documentation, "Mosaic AI Vector Search" 及 "Vector Search performance guide," https://docs.databricks.com/aws/en/generative-ai/vector-search 及 https://docs.databricks.com/aws/generative-ai/vector-search-best-practices，持续更新文档；检索 2026-11-01。公司披露。
+[^snow-cortex]: Snowflake documentation, "Cortex Search overview," https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-search/cortex-search-overview，持续更新文档；检索 2026-11-01（未实时抓取）。
+[^elastic]: Elastic, "Elasticsearch dense_vector field type: bbq_hnsw / Better Binary Quantization," https://www.elastic.co/docs/reference/elasticsearch/mapping-reference/bbq，持续更新文档（预览版本经由 docs-v3-preview.elastic.dev 获取）；检索 2026-11-01。厂商披露。
+[^redis]: InfoQ, "Redis Introduces Vector Sets," https://www.infoq.com/news/2025/04/redis-vector-sets，发布 2025-04；S. Sanfilippo, "Vector Sets and Similarity Search," https://redis.antirez.com/fundamental/vector-sets.html，无日期；Redis blog, "Vector indexes in Redis"（8.2 中的 SVS-VAMANA），https://redis.io/blog/vector-indexes-in-redis/，无日期；检索 2026-11-01。
+[^milvus26]: Zilliz, "Milvus 2.6: Built for Scale, Designed to Reduce Costs," https://zilliz.com/news/milvus-2-6-built-for-scale-designed-to-reduce-costs，发布 2025-06-12；BigDATAwire, "Zilliz Releases Milvus 2.6 with Tiered Storage and Int8 Compression to Cut Vector Search Costs," https://www.bigdatawire.com/this-just-in/zilliz-releases-milvus-2-6-with-tiered-storage-and-int8-compression-to-cut-vector-search-costs，发布 2025-06；检索 2026-11-01。存储合作伙伴名单（Cohesity、Pure Storage、MinIO、NetApp）依据上述报道。
+[^chroma]: Chroma, "Introducing Chroma Cloud," changelog, https://www.trychroma.com/changelog/introducing-chroma-cloud，发布 2025-08；检索 2026-11-01。公司披露。
+[^tpuf]: turbopuffer, "Architecture," https://turbopuffer.com/docs/architecture，持续更新文档；检索 2026-11-01。公司披露。
+[^tpuf-funding]: CB Insights, "turbopuffer financials," https://www.cbinsights.com/company/turbopuffer/financials，无日期（聚合网站）；Let's Data Science, "Turbopuffer Secures Funding To Scale Search," https://letsdatascience.com/news/turbopuffer-secures-funding-to-scale-search-6939db58，2025-12；检索 2026-11-01。媒体报道；融资金额未披露 [VERIFY: turbopuffer 本轮金额及领投方]。
+[^pinecone-b]: TechCrunch, "Pinecone drops $100M investment on $750M valuation as vector database demand grows," https://techcrunch.com/2023/04/27/pinecone-drops-100m-investment-on-750m-valuation-as-vector-database-demand-grows/，发布 2023-04-27；检索 2026-11-01。媒体报道；与 `data/private_funding.csv` 一致。
+[^pinecone-sls]: Pinecone, "Introducing Pinecone Serverless," https://www.pinecone.io/blog/serverless/，发布 2024-01-16；检索 2026-11-01（未实时抓取）。
+[^pinecone-ceo]: Pinecone blog, "Moving Pinecone forward with Ash Ashutosh as CEO," https://pinecone.io/blog/growing-ai-ambitions，发布 2025-09-08；VentureBeat, https://venturebeat.com/data-management/pinecone-founder-edo-liberty-steps-aside-as-ceo-and-appoints-googler-ash，2025-09；检索 2026-11-01（经由 `meta/research-briefing.md`）。
+[^pinecone-sale]: Calcalist (CTech)，援引 The Information，"Pinecone exploring potential sale," https://www.calcalistech.com/ctechnews/article/rz31q82b5，2025 [VERIFY: 发布日期]；检索 2026-11-01。媒体报道；截至检索时尚未宣布交易。
+[^acorn]: L. Patel et al., "ACORN: Performant and Predicate-Agnostic Search Over Vector Embeddings and Structured Data," SIGMOD 2024, arXiv:2403.04871, https://arxiv.org/abs/2403.04871，发布 2024-03；Qdrant documentation, "Indexing"（可过滤 HNSW），https://qdrant.tech/documentation/concepts/indexing/，无日期；检索 2026-11-01（未实时抓取）。
+[^funding]: `data/private_funding.csv`（Zilliz 2022、Weaviate 2023、Pinecone 2023、Qdrant 2024 与 2026、LanceDB 2025 各行），截至 2026-11-01；Qdrant B 轮依据 TechTarget, "Qdrant raises $50M in funding to fuel vector database growth," https://techtarget.com/searchdatamanagement/news/366640132/Qdrant-raises-50M-in-funding-to-fuel-vector-database-growth，发布 2026-03；检索 2026-11-01。媒体报道。
+[^ep-ds]: Everpure via PR Newswire, "Everpure Unveils Data-Primacy Architecture for the AI Era," https://www.prnewswire.com/news-releases/everpure-unveils-data-primacy-architecture-for-the-ai-era-302803097.html，发布 2026-06-17；Techzine, "Stop vectorizing garbage: inside Everpure's smart AI data pipeline," https://www.techzine.eu/blogs/infrastructure/144105/stop-vectorizing-garbage-inside-everpures-smart-ai-data-pipeline/，2026-06；检索 2026-11-01。
