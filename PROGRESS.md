@@ -22,7 +22,7 @@
 
 Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + comparison tables (`scripts/qa_report.py`).
 
-**Totals:** 45/52 chapters drafted · 169,150 prose words · 421 visuals · 494 [VERIFY] markers.
+**Totals:** 45/52 chapters drafted · 169,389 prose words · 421 visuals · 491 [VERIFY] markers.
 
 | Ch | File | Status | Words | Budget | Visuals | VERIFY | Reviewed |
 |---|---|---|---|---|---|---|---|
@@ -33,7 +33,7 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 3 | ch03-database-internals.md | QA pass | 4,485 | 2300 | 10 | 1 | no |
 | 4 | ch04-distributed-databases.md | QA pass | 4,408 | 2000 | 10 | 5 | no |
 | 5 | ch05-analytical-engines.md | QA pass | 3,437 | 2200 | 8 | 2 | no |
-| 6 | ch06-file-formats.md | QA pass | 2,967 | 1800 | 7 | 6 | no |
+| 6 | ch06-file-formats.md | QA pass | 2,993 | 1800 | 7 | 2 | no |
 | 7 | ch07-open-table-formats.md | QA pass | 3,602 | 2000 | 9 | 2 | no |
 | 8 | ch08-catalogs-and-metastores.md | QA pass | 2,640 | 1600 | 6 | 8 | no |
 | 9 | ch09-pipeline-patterns.md | QA pass | 3,503 | 2000 | 10 | 3 | no |
@@ -42,17 +42,17 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 12 | ch12-transformation-and-orchestration.md | QA pass | 3,319 | 1900 | 7 | 3 | no |
 | 13 | ch13-data-quality-observability-lineage.md | QA pass | 3,448 | 1800 | 8 | 5 | no |
 | 14 | ch14-semantic-layers-and-bi.md | QA pass | 2,900 | 2000 | 7 | 5 | no |
-| 15 | ch15-governance-security-privacy.md | QA pass | 4,343 | 2200 | 8 | 9 | no |
+| 15 | ch15-governance-security-privacy.md | QA pass | 4,434 | 2200 | 8 | 10 | no |
 | 16 | ch16-ai-data-lifecycle.md | QA pass | 3,660 | 2200 | 6 | 1 | no |
 | 17 | ch17-unstructured-data-processing.md | QA pass | 3,160 | 2100 | 10 | 11 | no |
-| 18 | ch18-embeddings-and-vector-search.md | QA pass | 4,359 | 2600 | 11 | 5 | no |
-| 19 | ch19-retrieval-architectures.md | QA pass | 3,781 | 2200 | 11 | 7 | no |
+| 18 | ch18-embeddings-and-vector-search.md | QA pass | 4,467 | 2600 | 11 | 6 | no |
+| 19 | ch19-retrieval-architectures.md | QA pass | 3,785 | 2200 | 11 | 6 | no |
 | 20 | ch20-training-data-supply-chain.md | QA pass | 3,610 | 2200 | 8 | 20 | no |
 | 21 | ch21-ml-platforms-feature-stores-llmops.md | QA pass | 3,436 | 2100 | 9 | 0 | no |
 | 22 | ch22-agents-and-data.md | QA pass | 4,255 | 2400 | 10 | 4 | no |
 | 23 | ch23-real-time-analytics-htap.md | QA pass | 3,360 | 2000 | 9 | 13 | no |
 | 24 | ch24-data-meets-compute-and-storage.md | QA pass | 3,630 | 2200 | 11 | 5 | no |
-| 25 | ch25-databricks.md | QA pass | 5,329 | 4500 | 13 | 6 | no |
+| 25 | ch25-databricks.md | QA pass | 5,339 | 4500 | 13 | 6 | no |
 | 26 | ch26-snowflake.md | QA pass | 6,449 | 4500 | 16 | 29 | no |
 | 27 | ch27-databricks-vs-snowflake.md | QA pass | 3,918 | 2500 | 11 | 17 | no |
 | 28 | ch28-hyperscaler-data-platforms.md | QA pass | 5,371 | 3500 | 10 | 26 | no |

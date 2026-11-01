@@ -281,7 +281,7 @@ timeline
     2026 : Polaris becomes top-level project : IBM closes Confluent : Fivetran and dbt close merger : Databricks at 190 billion : AWS to buy DuckLabs : Proofpoint to buy Varonis
 ```
 
-*Figure 44.8 — The forecasts extrapolate a dated trail. Between 2024 and 2026 the industry bought formats, then Postgres, then context, while the object store gained database features underneath.*[^tabular][^s3-cond][^s3tables][^neon-dbx][^crunchy][^osi-launch][^mcp-donate][^s3-vectors][^polaris-tlp][^ibm-cflt][^fivetran-dbt][^db-7b][^aws-duck][^varonis-8k]
+*Figure 44.8 — The forecasts extrapolate a dated trail. Between 2024 and 2026 the industry bought formats, then Postgres, then context, while the object store gained database features underneath.*[^mcp-launch][^tabular][^s3-cond][^s3tables][^neon-dbx][^crunchy][^osi-launch][^mcp-donate][^s3-vectors][^polaris-tlp][^ibm-cflt][^fivetran-dbt][^db-7b][^aws-duck][^varonis-8k]
 
 The long arc in [Ch 42](ch42-history-of-databases.md) is one of separation followed by rebundling. Storage separated from compute (Snowflake, 2012–2016), formats separated from engines (Iceberg and Delta, 2017–2024), and the modern data stack unbundled into dozens of tools before consolidating ([Ch 43](ch43-modern-data-stack.md)). The 2026–2032 phase is a rebundling around control points: whoever owns the catalog and the context rebuilds the suite on top of open storage.
 
@@ -368,6 +368,7 @@ The long arc in [Ch 42](ch42-history-of-databases.md) is one of separation follo
 
 [^storage-eco]: Databricks blog, "Announcing the Databricks Storage Ecosystem: Governing the Enterprise Data Estate Wherever It Lives," https://www.databricks.com/blog/announcing-databricks-storage-ecosystem-governing-enterprise-data-estate-wherever-it-lives, published 2026-06-10; retrieved 2026-11-01 (as cited in Ch 25).
 [^everpure-os]: Everpure blog, "Everpure OpenSharing Connector," https://blog.everpuredata.com/products/everpure-opensharing-connector/, published 2026-06; retrieved 2026-11-01. Vendor-stated; private preview from 2026-06-09 (as cited in Ch 25).
+[^mcp-launch]: Anthropic, "Introducing the Model Context Protocol," https://www.anthropic.com/news/model-context-protocol, published 2024-11-25; retrieved 2026-11-01 (as cited in Ch 22; not re-fetched).
 [^mcp-donate]: Anthropic, "Donating the Model Context Protocol and establishing the Agentic AI Foundation," https://anthropic.com/news/donating-the-model-context-protocol-and-establishing-of-the-agentic-ai-foundation, published 2025-12-09; retrieved 2026-11-01. Company-stated download and server counts (as cited in Ch 22).
 [^bq-mcp]: G-gen (Google Cloud partner), "Next '26 What's new in BigQuery," https://blog.g-gen.co.jp/entry/next-26-whats-new-in-bigquery, published 2026-04; retrieved 2026-11-01. Secondary source, in Japanese (via `meta/research-briefing.md`).
 [^db-7b]: Databricks, "Databricks Grows >80% YoY, Surpasses $7B Revenue Run-Rate, Scales Lakebase, Genie and Unity AI Gateway," https://www.databricks.com/company/newsroom/press-releases/databricks-grows-80-yoy-surpasses-7b-revenue-run-rate-scales, published 2026-08-13; retrieved 2026-11-01. Company-stated run-rate, unaudited; ~27x multiple is an estimate ($190B ÷ $7B) as computed in Ch 25.

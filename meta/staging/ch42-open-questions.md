@@ -1,0 +1,15 @@
+- ch42: IDMS (Cullinane) first commercial release year (~1973).
+- ch42: IMS pricing history after IBM's 1969 unbundling; IBM Heritage IMS page URL path and 1968 first-release date.
+- ch42: Dates of the Sybase SQL Server licence to Microsoft (1988, with Ashton-Tate) and the Microsoft/Sybase code split (~1993–94).
+- ch42: Teradata DBC/1012 first customer shipment year (1984?) — confirm in Teradata 10-K history.
+- ch42: Codd, Codd & Salley 1993 OLAP white paper — exact title, Arbor Software sponsorship, stable URL.
+- ch42: 2007 BI consolidation deal values (Oracle–Hyperion ~$3.3B, SAP–Business Objects ~$6.8B, IBM–Cognos ~$5B; "roughly $15B combined") — add to data/ma_deals.csv with primary sources.
+- ch42: Redis first public release year (2009).
+- ch42: "NewSQL" coined by Matthew Aslett (451 Group), 2011.
+- ch42: Intel's 2014 investment in Cloudera (~$740M, ~18% stake) — primary source; not in data/private_funding.csv.
+- ch42: Hortonworks IPO (Dec 2014) and Cloudera IPO (Apr 2017) dates.
+- ch42: SQL standard feature years (object-relational SQL:1999, SQL/XML SQL:2003, JSON SQL:2016, SQL/PGQ SQL:2023 Part 16).
+- ch42: URL paths for Stonebraker & Hellerstein 2005 author copy, Oracle corporate history page, Gartner 2014 "data lake fallacy" release, ASF 2014 Spark TLP announcement.
+- ch42: Inmon *Building the Data Warehouse* (1992) publisher URL.
+- ch42: Cassandra open-source release month (2008); Hadoop 2006 Yahoo split-out and 2008 TLP dates; pgvector initial release year (2021).
+- ch42: Snowflake IPO price/proceeds (inherited from ch26 [VERIFY]); Cloudera take-private (inherited from data/ma_deals.csv [VERIFY]); Fivetran–dbt close date; Neon ">80% agent-created" wording; Pinecone sale-report date; MongoDB ARS date; Oracle ~22% support rate.

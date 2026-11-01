@@ -1,0 +1,5 @@
+- ch44: Likelihood bands defined as author's subjective probability by end of timing window: High ≥70%, Medium 40–70%, Low <40%. Timing = when the thesis becomes observable in public data (near 2026–27, mid 2028–29, long 2030–32). All labelled estimates.
+- ch44: Web search not used for evidence (pool exhausted; one test query on Databricks IPO returned only aggregator pages, not cited). All evidence reuses footnotes from Ch 7, 8, 14, 17, 18, 19, 22, 23, 24, 25, 26, 27, 32, 33, 34 and meta/research-briefing.md.
+- ch44: Databricks IPO scenario probabilities (25/50/25) and base-case valuation range ($120–190B) are author estimates anchored on the $190B mark and PitchBook's $68.7B operating-value estimate; not forecasts of any party.
+- ch44: Split Trend 6 into two calls: sovereignty as a requirement (High) vs on-prem share gains (Medium), because hyperscaler sovereign regions (AWS European Sovereign Cloud, Jan 2026) capture part of the demand.
+- ch44: Prose came in at ~4,200 words versus a 3,000 floor / 3,300 aim; kept because the ten-trend scope with falsifiers needed it.

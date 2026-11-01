@@ -1,0 +1,5 @@
+- ch42: Scoped the chapter as nine eras with a lesson per era rather than a product chronology; deal-level detail deferred to ch39 and MDS consolidation to ch43.
+- ch42: Spark dates stated as open-sourced 2010, donated to ASF 2013, top-level project Feb 2014 (assignment said "Apache 2013"; both reconciled in text).
+- ch42: Oracle described as "generally cited as the first commercially available SQL RDBMS" (1979), since priority claims are contested.
+- ch42: 2007 BI deals (Hyperion, Business Objects, Cognos) mentioned with [VERIFY] values rather than staged into ma_deals.csv because no primary URL could be checked (web fetch blocked; one search used for the 2024 Stonebraker–Pavlo paper).
+- ch42: Prose ran to ~4,570 words versus a 3,000 budget; kept because all nine eras plus required tables/bridges needed the space.

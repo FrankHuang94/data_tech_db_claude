@@ -42,7 +42,7 @@
 | 6 | Where compute runs | Classic VMs in customer account, or serverless in Databricks account | Always in Snowflake's account (virtual warehouses) | Converging on serverless |
 | 7 | Pricing unit | DBU, priced per SKU (Jobs, All-Purpose, SQL, serverless) | Credit, priced per edition (Standard / Enterprise / Business Critical) | Snowflake simpler to forecast |
 | 8 | SQL / BI | Databricks SQL, Photon; >$1.5B run-rate | Core franchise; Gen2 and Adaptive warehouses | Snowflake |
-| 9 | Data engineering / ingestion | Spark, Lakeflow (Connect, Declarative Pipelines, Jobs) | Snowpark, Dynamic Tables, Openflow (GA 2026) | Databricks |
+| 9 | Data engineering / ingestion | Spark, Lakeflow (Connect, Spark Declarative Pipelines, Jobs) | Snowpark, Dynamic Tables, Openflow (GA May 2025; second-generation runtimes GA Sep 2026) | Databricks |
 | 10 | ML / model training | Mosaic AI, GPUs, notebooks | Snowpark ML, Cortex Training (2026) | Databricks |
 | 11 | Business-user AI | Genie One (agentic coworker) | Snowflake CoWork (ex-Snowflake Intelligence) | Contested |
 | 12 | Developer AI / agents | Agent Bricks, Unity AI Gateway, Omnigent | Cortex Agents, CoCo (ex-Cortex Code), Natoma (MCP gateway) | Contested; Databricks deeper for builders |

@@ -1,0 +1,10 @@
+- ch44: Snowflake and Databricks managed MCP server GA status (Trend 1 signpost).
+- ch44: EU Data Act dates (application 2025-09-12; switching charges to zero 2027-01-12) not re-checked against EUR-Lex.
+- ch44: Databricks Genie Ontology status (Preview vs GA) — sources disagree.
+- ch44: Salesforce Agentforce list prices ($2/conversation 2024; Flex Credits $0.10/action 2025) — exact URLs and current prices.
+- ch44: SAP–Dremio closing date (reported ~July 2026).
+- ch44: MotherDuck "Redshift Files" blog exact publication date.
+- ch44: Reducto r-1 blog exact publication day (2026-09).
+- ch44: Primary Bloomberg TV source for Ghodsi "won't go public this year" remark; whether any Databricks confidential S-1 has been reported (one search on 2026-11-01 found only aggregator pages saying no public S-1).
+- ch44: TechCrunch URL slug for Confluent–WarpStream (2024-09-09).
+- ch44: GA date of Everpure KVA's NVIDIA Dynamo integration.

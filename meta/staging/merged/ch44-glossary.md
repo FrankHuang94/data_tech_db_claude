@@ -1,0 +1,6 @@
+- **Value migration** — The shift of profit pools from one layer of a value chain to another, for example from storage bytes to catalogs and semantic context. (ch44)
+- **Signpost** — An observable, dated event that strengthens or weakens a forecast and tells you when to update it. (ch44)
+- **Falsifier** — A stated outcome that, if observed, would show a forecast was wrong. (ch44)
+- **Consumption-based pricing** — Charging per unit of usage (credits, DBUs, tokens, agent actions) rather than per named user. (ch44)
+- **Outcome-based pricing** — Charging per completed business result, such as a resolved support case, rather than per seat or per unit of compute. (ch44)
+- **AI factory** — A dedicated GPU cluster with its storage, networking and data pipelines, built to produce AI output (training or inference) at scale. (ch44)

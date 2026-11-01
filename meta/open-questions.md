@@ -344,3 +344,13 @@ Every `[VERIFY: …]` left in the text is listed here with its chapter. Resolve 
 | ch43 | ch43: Fivetran–Census closing date not separately confirmed. [VERIFY] | open |
 | ch43 | ch43: Prefect–Dagster closing date (announced 2026-07-13). [VERIFY] | open |
 | ch43 | ch43 staging: dbt Labs Series C (June 2021, $150M) exact day, lead investor and post-money valuation (~$1.5B press-reported, not re-checked). [VERIFY] | open |
+| ch44 | ch44: Snowflake and Databricks managed MCP server GA status (Trend 1 signpost). | open |
+| ch44 | ch44: EU Data Act dates (application 2025-09-12; switching charges to zero 2027-01-12) not re-checked against EUR-Lex. | open |
+| ch44 | ch44: Databricks Genie Ontology status (Preview vs GA) — sources disagree. | open |
+| ch44 | ch44: Salesforce Agentforce list prices ($2/conversation 2024; Flex Credits $0.10/action 2025) — exact URLs and current prices. | open |
+| ch44 | ch44: SAP–Dremio closing date (reported ~July 2026). | open |
+| ch44 | ch44: MotherDuck "Redshift Files" blog exact publication date. | open |
+| ch44 | ch44: Reducto r-1 blog exact publication day (2026-09). | open |
+| ch44 | ch44: Primary Bloomberg TV source for Ghodsi "won't go public this year" remark; whether any Databricks confidential S-1 has been reported (one search on 2026-11-01 found only aggregator pages saying no public S-1). | open |
+| ch44 | ch44: TechCrunch URL slug for Confluent–WarpStream (2024-09-09). | open |
+| ch44 | ch44: GA date of Everpure KVA's NVIDIA Dynamo integration. | open |
