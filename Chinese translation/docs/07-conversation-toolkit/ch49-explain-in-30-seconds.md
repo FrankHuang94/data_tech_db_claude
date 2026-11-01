@@ -413,3 +413,47 @@ flowchart LR
 - [EV/未来 12 个月收入（EV to NTM revenue）](../glossary.md#ev-to-ntm-revenue)、[收入年化运行率（Revenue run-rate）](../glossary.md#revenue-run-rate)与[年度经常性收入（Annual recurring revenue）](../glossary.md#annual-recurring-revenue) — 估值倍数以及两个最常被混淆的收入指标。
 - [开放核心（Open core）](../glossary.md#open-core)、[SSPL](../glossary.md#sspl) 与 [Business Source License](../glossary.md#business-source-license) — 开源商业模式，以及阻止超大规模云厂商转售的许可证。
 - [Microsoft Fabric](../glossary.md#microsoft-fabric)、[OneLake](../glossary.md#onelake) 与 [BigQuery](../glossary.md#bigquery) — 超大规模云厂商的分析平台。
+
+## 资料来源
+
+[^tabular]: TechCrunch, "Databricks reportedly paid $2 billion in Tabular acquisition," https://techcrunch.com/2024/08/14/databricks-reportedly-paid-2-billion-in-tabular-acquisition, 发布 2024-08-14; 检索 2026-11-01. 交易于 2024-06-04 宣布；价格为媒体报道（WSJ 报道区间 $1–2B），Databricks 从未披露；依据 `data/ma_deals.csv` 的记录（经由第 7 章）。
+
+[^ibm-close]: IBM, "IBM Completes Acquisition of Confluent," via Stock Titan, https://www.stocktitan.net/news/IBM/ibm-completes-acquisition-of-confluent-making-real-time-data-the-lbuwdbharsqe.html, 发布 2026-03-17; ChannelWeb UK, "IBM completes $11bn Confluent acquisition," https://www.channelweb.co.uk/news-network/2026/ibm-completes-11bn-confluent-acquisition, 发布 2026-03; 检索 2026-11-01. 企业价值约 $11B，每股 $31 现金；依据 `data/ma_deals.csv` 的记录（经由第 30 章）。
+
+[^cflt]: Confluent, Inc., Form 10-K for fiscal year 2025 （日历年；截至 2025-12-31）, SEC EDGAR, https://www.sec.gov/Archives/edgar/data/1699838/000169983826000006/cflt-20251231.htm, 发布 2026-02; Business Wire, "Confluent Announces Fourth Quarter and Fiscal Year 2025 Financial Results," https://www.businesswire.com/news/home/20260210008002/en/Confluent-Announces-Fourth-Quarter-and-Fiscal-Year-2025-Financial-Results, 发布 2026-02-10; 检索 2026-11-01. GAAP 总收入 $1,166.7M（+21%）；Confluent Cloud $624M（+27%）（`meta/verified-facts.md` #1）。
+
+[^varonis]: Varonis Systems, Inc., Form 8-K Exhibit 99.1 （与 Proofpoint 的合并协议）, SEC EDGAR, https://www.sec.gov/Archives/edgar/data/0001361113/000121390026109901/ea030861001ex99-1.htm, 发布 2026-10-15; 检索 2026-11-01. 每股 $49.75 现金；约 $6.3B 为标题交易价值，约 $5.71B 为股权价值；预计 2027 年上半年完成交割（`data/ma_deals.csv`；`meta/verified-facts.md` #14）。
+
+[^aiact]: Regulation (EU) 2024/1689 (Artificial Intelligence Act), EUR-Lex, https://eur-lex.europa.eu/eli/reg/2024/1689/oj, 发布 2024-07-12 （2024-08-01 生效；第 10 条关于数据与数据治理）; 检索 2026-11-01 （经由第 15 章）.
+
+[^omnibus]: Council of the EU, "Artificial intelligence: Council and Parliament agree to simplify and streamline rules," https://www.consilium.europa.eu/en/press/press-releases/2026/05/07/artificial-intelligence-council-and-parliament-agree-to-simplify-and-streamline-rules/, 发布 2026-05-07; Future of Privacy Forum, "The AI Act implementation timeline: What changes under the AI Omnibus?," https://fpf.org/blog/the-ai-act-implementation-timeline-what-changes-under-the-ai-omnibus/, 发布 2026; 检索 2026-11-01. 高风险义务自 2027 年 12 月 2 日（附件 III）和 2028 年 8 月 2 日（附件 I）起适用，依据 Regulation (EU) 2026/1744，见第 15 章的汇总。
+
+[^mcp]: Anthropic, "Introducing the Model Context Protocol," https://www.anthropic.com/news/model-context-protocol, 发布 2024-11-25; Anthropic, "Donating the Model Context Protocol and establishing the Agentic AI Foundation," https://anthropic.com/news/donating-the-model-context-protocol-and-establishing-of-the-agentic-ai-foundation, 发布 2025-12-09; 检索 2026-11-01 （经由第 22 章）.
+
+[^dbx-pricing]: CloudForecast, "Databricks Pricing Guide (2026)," https://www.cloudforecast.io/guides/databricks-pricing-costs-guide/, 发布 2026; Espresso AI, "Databricks Pricing Explained," https://espresso.ai/guides/databricks-pricing-explained, 发布 2026; 检索 2026-11-01. 第三方整理的 AWS 美国标价；权威来源为 Databricks 定价页面（经由第 35 章）。
+
+[^sf-q2]: Snowflake via Business Wire, "Snowflake Reports Financial Results for the Second Quarter of Fiscal 2027," https://secure.businesswire.com/news/home/20260902386235/en/Snowflake-Reports-Financial-Results-for-the-Second-Quarter-of-Fiscal-2027, 发布 2026-09-02; 检索 2026-11-01. FY2027 = 2026 年 2 月–2027 年 1 月。GAAP 产品收入约 $1.49B（+37%），RPO 约 $9.0B；NRR 126% 为公司 KPI；FY2027 产品收入指引 $6.07B 为公司披露（经由第 26 章和 `meta/verified-facts.md` #6）。FY2026 年末 RPO $9.77B 依据第 26 章引用的 Snowflake FY2026 Form 10-K；根据 10-Q，Q2 FY2027 RPO 中约 54% 预计在 12 个月内确认，依据 `data/company_financials.csv` 的记录。
+
+[^sf-hist]: Snowflake Inc., Forms 10-K FY2022–FY2026 via SEC EDGAR, https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001640147&type=10-K; 数值依据 `data/company_financials.csv` 的记录（NRR 在 FY2022 = 2021 年 2 月–2022 年 1 月为 178%；在 FY2023 = 2022 年 2 月–2023 年 1 月为 158%），截至 2026-11-01； 检索 2026-11-01 （经由第 35 章）.
+
+[^r40]: AI Data Atlas 数据集 `data/ch36_rule_of_40.csv`, Snowflake 行（Q2 FY2027 GAAP 总收入增速 35% 加上 FY2027 公司非 GAAP 调整后 FCF 利润率指引 23% = 58），来源为 Snowflake Q2 FY2027 新闻稿， https://www.nasdaq.com/press-release/snowflake-reports-financial-results-second-quarter-fiscal-2027-2026-09-02, 发布 2026-09-02; 检索 2026-11-01. 得分为作者计算（估算）。
+
+[^pltr]: Palantir Technologies Inc., "Q2 2026 results," Form 8-K Exhibit 99.1, https://www.sec.gov/Archives/edgar/data/0001321655/000132165526000039/a2026q2ex991pressrelease.htm, 发布 2026-08; 检索 2026-11-01. GAAP 收入 $1.935B（+93%）；公司定义的调整后 FCF 利润率 63%；公司披露的 40 法则得分 155%（经由第 36 章和 `data/ch36_rule_of_40.csv`）。
+
+[^comps]: AI Data Atlas 数据集 `data/public_comps.csv`, Snowflake 行（EV $106.31B；未来 12 个月收入 $6.30B，为根据 FY2027 产品收入指引上推得出的估算；16.9x）和 Palantir 行（EV $433.23B；未来 12 个月收入 $8.154B，取自 FY2026 指引中值；53.1x）， stockanalysis.com, https://stockanalysis.com/stocks/snow/statistics/ 和 https://stockanalysis.com/stocks/pltr/market-cap/，截至 2026-10-30； 检索 2026-11-01.
+
+[^db-7b]: Databricks, "Databricks Grows >80% YoY, Surpasses $7B Revenue Run-Rate, Scales Lakebase, Genie and Unity AI Gateway," https://www.databricks.com/company/newsroom/press-releases/databricks-grows-80-yoy-surpasses-7b-revenue-run-rate-scales, 发布 2026-08-13; 检索 2026-11-01. 公司披露的年化运行率，未经审计；以 $190B 估值融资 $5B 为公司披露（`data/private_funding.csv`；`meta/verified-facts.md` #8）。
+
+[^goog-q3]: Alphabet Inc., Form 8-K Exhibit 99.1, "Alphabet Announces Third Quarter 2026 Results," https://www.sec.gov/Archives/edgar/data/0001652044/000165204426000080/googexhibit991q32026.htm, 发布 2026-10-28; 检索 2026-11-01. GAAP 分部收入，包括 AI 算力和 TPU 销售（经由第 28 章；`meta/verified-facts.md` #4）。
+
+[^ch-seriesd]: Bloomberg, "ClickHouse Lands $15 Billion Valuation in AI Database Race," https://bloomberg.com/news/articles/2026-01-16/clickhouse-lands-15-billion-valuation-in-ai-database-race, 发布 2026-01-16; 检索 2026-11-01. 媒体报道的估值；$400M D 轮融资由 Dragoneer 领投（`data/private_funding.csv`）。
+
+[^ch-arr]: ClickHouse via Business Wire, "ClickHouse Tops $250M ARR and 4,000 Customers…," https://www.businesswire.com/news/home/20260527813115/en/, 发布 2026-05-27; 检索 2026-11-01. 公司披露的 ARR（经由第 31 章）。
+
+[^aws-duck]: Amazon, "AWS to acquire DuckLabs, the Amsterdam-based company behind DuckDB," https://www.aboutamazon.com/news/company-news/aws-ducklabs, 发布 2026-08-26; M. Raasveldt and H. Mühleisen, "DuckLabs to Join AWS, Projects to Remain Open Source," DuckDB blog, https://duckdb.org/2026/08/26/ducklabs-to-join-aws.html, 发布 2026-08-26; 检索 2026-11-01. 条款未披露（经由第 31 章；`meta/verified-facts.md` #13）。
+
+[^ft-dbt-close]: Fivetran, "Fivetran & dbt Labs Complete Merger to Create the Data Infrastructure for Trusted AI Agents," https://www.fivetran.com/press/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents, 发布 2026-06-01; 宣布公告：Business Wire， https://www.businesswire.com/news/home/20251013172495/en, 发布 2025-10-13; 检索 2026-11-01. 合并 ARR 为公司披露（经由第 30 章）。
+
+[^ep-10q]: Everpure, Inc., Form 10-Q for the quarter ended 2026-05-03 （1touch 于 2026-05-07 完成交割；披露现金对价 $125.0M，需经调整并受托管安排约束）, SEC EDGAR, https://www.sec.gov/Archives/edgar/data/0001474432/000147443226000061/pstg-20260503.htm, 发布 2026-06; Cleary Gottlieb, "Everpure Completes Acquisition of 1touch," https://www.clearygottlieb.com/news-and-insights/news-listing/everpure-completes-acquisition-of-1touch, 发布 2026-05-11; 检索 2026-11-01. 更名和股票代码变更依据 Everpure 2026-04-07 新闻稿（`meta/verified-facts.md` #10）。
+
+[^ep-di]: Computer Weekly, "Everpure aims to bridge AI data gap with Universal Data Intelligence," https://www.computerweekly.com/news/366644438/Everpure-aims-to-bridge-AI-data-gap-with-Universal-Data-Intelligence, 发布 2026-06; Everpure via PR Newswire, "Everpure Unveils Data-Primacy Architecture for the AI Era," https://www.prnewswire.com/news-releases/everpure-unveils-data-primacy-architecture-for-the-ai-era-302803097.html, 发布 2026-06-17; 检索 2026-11-01 （经由 `meta/research-briefing.md` A 部分）.
