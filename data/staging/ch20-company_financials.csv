@@ -1,0 +1,6 @@
+company,ticker,fiscal_period,period_end,fy_definition,metric,value,unit,basis,source,as_of
+Appen,APX,FY2025,2025-12-31,FY = calendar year,total_revenue,230.8,USD_m,"company-reported (ASX statutory results; 'group operating revenue')",https://announcements.asx.com.au/asxpdf/20260225/pdf/06wq7ntr51bhgl.pdf,2026-11-01
+Appen,APX,FY2024,2024-12-31,FY = calendar year,total_revenue,234.3,USD_m,"company-reported (ASX; includes final Google revenue before Mar-2024 termination)",https://announcements.asx.com.au/asxpdf/20260225/pdf/06wq7ntr51bhgl.pdf,2026-11-01
+Appen,APX,FY2025,2025-12-31,FY = calendar year,net_income,-21.8,USD_m,company-reported statutory net loss,https://announcements.asx.com.au/asxpdf/20260225/pdf/06wq7ntr51bhgl.pdf,2026-11-01
+Snorkel AI,private,2026-09,2026-09-22,n/a (private),revenue_run_rate,375,USD_m,company-stated run-rate (Reuters: >$350M),https://techcrunch.com/2026/09/22/snorkel-ai-triples-valuation-to-3-5b-as-demand-for-ai-training-data-booms,2026-11-01
+Mercor,private,2025-09,2025-09-09,n/a (private),revenue_run_rate,450,USD_m,press-reported run-rate (gross billings),https://techcrunch.com/2025/09/09/sources-ai-training-startup-mercor-eyes-10b-valuation-on-450m-run-rate/,2026-11-01
