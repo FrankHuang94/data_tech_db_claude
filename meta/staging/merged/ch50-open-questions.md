@@ -1,0 +1,1 @@
+- ch50 Q251 / deal poster: Pure Storage–Portworx value ~$370M (2020-09-16) rests on a `data/ma_deals.csv` row sourced to "training knowledge (pre-mid-2025) [VERIFY]"; confirm against Pure Storage's 2020 press release or 10-Q. (ch50)

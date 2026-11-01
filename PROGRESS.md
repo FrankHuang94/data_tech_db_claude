@@ -22,7 +22,7 @@
 
 Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + comparison tables (`scripts/qa_report.py`).
 
-**Totals:** 52/52 chapters drafted · 207,766 prose words · 471 visuals · 446 [VERIFY] markers.
+**Totals:** 52/52 chapters drafted · 208,032 prose words · 484 visuals · 446 [VERIFY] markers.
 
 | Ch | File | Status | Words | Budget | Visuals | VERIFY | Reviewed |
 |---|---|---|---|---|---|---|---|
@@ -77,4 +77,4 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 47 | ch47-diligence-checklist.md | QA pass | 3,616 | 2000 | 6 | 1 | no |
 | 48 | ch48-question-bank.md | QA pass | 8,274 | 2000 | 15 | 0 | no |
 | 49 | ch49-explain-in-30-seconds.md | QA pass | 4,606 | 1500 | 7 | 0 | no |
-| 50 | ch50-self-test-cheat-sheets.md | QA pass | 12,879 | 1300 | 6 | 1 | no |
+| 50 | ch50-self-test-cheat-sheets.md | QA pass | 13,145 | 1300 | 19 | 1 | no |

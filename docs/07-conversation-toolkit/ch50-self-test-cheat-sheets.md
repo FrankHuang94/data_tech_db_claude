@@ -1,5 +1,5 @@
 # 50. Self-Test and Cheat Sheets
-> **Depth:** L1–L2 · **Reading time:** ~56 min · **Last verified:** 2026-11-01 · **Prerequisites:** none for the cheat sheets; the flashcards assume Parts 1–5 ([Ch 1](../01-data-systems-foundations/ch01-data-stack-map.md), [Ch 25](../04-company-deep-dives/ch25-databricks.md), [Ch 37](../05-business-and-economics/ch37-public-comps-valuation.md))
+> **Depth:** L1–L2 · **Reading time:** ~57 min · **Last verified:** 2026-11-01 · **Prerequisites:** none for the cheat sheets; the flashcards assume Parts 1–5 ([Ch 1](../01-data-systems-foundations/ch01-data-stack-map.md), [Ch 25](../04-company-deep-dives/ch25-databricks.md), [Ch 37](../05-business-and-economics/ch37-public-comps-valuation.md))
 
 ## TL;DR
 
@@ -81,6 +81,19 @@ mindmap
 The decks hold 253 cards in total: Foundations (29), Lakehouse & catalogs (25), Pipelines & governance (39), AI data stack (46), Companies (44), Business & valuation (29), M&A & history (22) and Everpure lens (19). Click a question to reveal the answer. Numbers carry their basis. Fiscal years follow each company's calendar: Snowflake, MongoDB, Databricks and Salesforce years end on January 31, and Everpure's ends on the Sunday nearest February 1. Microsoft's year ends June 30 and Oracle's May 31.
 
 ### Foundations
+
+These cards cover how databases store, find and protect data. Start with the six pairs below, because confusing either half of a pair is the fastest way to lose an engineer's attention.
+
+| Pair people confuse | The difference in one line | Chapter |
+|---|---|---|
+| OLTP vs. OLAP | Many small correct writes vs. big scans over history | [Ch 1](../01-data-systems-foundations/ch01-data-stack-map.md) |
+| B-tree vs. LSM-tree | Update pages in place (reads) vs. append and merge (writes) | [Ch 3](../01-data-systems-foundations/ch03-database-internals.md) |
+| Sharding vs. replication | Split data to scale vs. copy data to survive failures | [Ch 4](../01-data-systems-foundations/ch04-distributed-databases.md) |
+| Row store vs. column store | Fetch whole records vs. scan a few columns across many rows | [Ch 5](../01-data-systems-foundations/ch05-analytical-engines.md) |
+| Vectorized vs. compiled execution | Batches of ~1,000 values vs. per-query machine code | [Ch 5](../01-data-systems-foundations/ch05-analytical-engines.md) |
+| Parquet vs. Arrow | On-disk columnar file vs. in-memory columnar standard | [Ch 6](../01-data-systems-foundations/ch06-file-formats.md) |
+
+*Figure 50.3 — Six pairs to keep straight. Each pair is a trade-off, not a winner, and most vendor pitches pick one side of one pair.*
 
 <details markdown="1">
 <summary>Q1: What are the four workload families of enterprise data?</summary>
@@ -287,6 +300,18 @@ A: Atomicity (all or nothing), consistency (constraints hold), isolation (concur
 
 ### Lakehouse & catalogs
 
+These cards cover the lakehouse: open table formats on object storage and the catalogs that govern them. The table shows where the open standard ends and vendor control begins at each layer.
+
+| Layer | Open standard | Where vendors hold control | Chapter |
+|---|---|---|---|
+| Object storage API | S3 API (consistency, conditional writes) | S3 Tables, S3 Vectors, S3 Express One Zone | [Ch 24](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md) |
+| File format | Apache Parquet, Arrow | Little: formats are commodities | [Ch 6](../01-data-systems-foundations/ch06-file-formats.md) |
+| Table format | Iceberg, Delta Lake, Hudi | Maintenance (compaction), UniForm, managed tables | [Ch 7](../01-data-systems-foundations/ch07-open-table-formats.md) |
+| Catalog | Iceberg REST catalog API | Unity Catalog, Horizon, Glue, OneLake, Knowledge Catalog | [Ch 8](../01-data-systems-foundations/ch08-catalogs-and-metastores.md) |
+| Sharing | Delta Sharing / OpenSharing, Iceberg REST | Snowflake Secure Data Sharing and Marketplace | [Ch 9](../02-pipelines-and-governance/ch09-pipeline-patterns.md) |
+
+*Figure 50.4 — Openness by layer. Files and table formats are now open; the catalog is where commit rights, credentials and policy, and therefore lock-in, have moved.*
+
 <details markdown="1">
 <summary>Q30: Why is a folder of Parquet files on object storage not a table?</summary>
 
@@ -463,6 +488,20 @@ A: Google Cloud's governance and metadata catalog, formerly Dataplex, which bund
 </details>
 
 ### Pipelines & governance
+
+These cards cover moving, transforming, checking and governing data. Every pattern removes one cost and adds another, as the table shows.
+
+| Pattern | What it removes | What it costs | Chapter |
+|---|---|---|---|
+| ELT | A separate transform server | Warehouse compute and raw data in the warehouse | [Ch 9](../02-pipelines-and-governance/ch09-pipeline-patterns.md) |
+| Log-based CDC | Load on the source database; missed deletes | Log access, replication slots, schema-change handling | [Ch 9](../02-pipelines-and-governance/ch09-pipeline-patterns.md) |
+| Zero-ETL | Pipeline engineering | Lock-in to the vendor that runs the pipeline | [Ch 9](../02-pipelines-and-governance/ch09-pipeline-patterns.md) |
+| Zero-copy sharing | The copy itself | Dependence on the provider's platform or protocol | [Ch 9](../02-pipelines-and-governance/ch09-pipeline-patterns.md) |
+| Diskless Kafka | Cross-AZ replication traffic | Hundreds of milliseconds of extra latency | [Ch 11](../02-pipelines-and-governance/ch11-streaming-and-event-platforms.md) |
+| Semantic layer | Conflicting metric definitions | Modelling effort and a new control point | [Ch 14](../02-pipelines-and-governance/ch14-semantic-layers-and-bi.md) |
+| ABAC policies | Role explosion | Discipline in tagging data correctly | [Ch 15](../02-pipelines-and-governance/ch15-governance-security-privacy.md) |
+
+*Figure 50.5 — Pipeline and governance patterns as trades. "Zero" in a product name usually means the cost moved somewhere else, not that it disappeared.*
 
 <details markdown="1">
 <summary>Q55: ETL vs. ELT: why did ELT become the default?</summary>
@@ -738,6 +777,19 @@ A: Row-level security filters which rows a user can see; dynamic masking returns
 </details>
 
 ### AI data stack
+
+These cards cover the AI data lifecycle, unstructured processing, vector search, retrieval, training data, MLOps, agents, real-time engines and GPUs. The numbers below are the ones most often quoted in AI-data conversations, each with its basis.
+
+| Number to remember | Value | Basis | Chapter |
+|---|---|---|---|
+| Hybrid retrieval quality ladder (NDCG@10) | 0.22 → 0.49 → 0.53 → 0.59 | Vendor-reported benchmark[^sf-cortex] | [Ch 19](../03-ai-data-stack/ch19-retrieval-architectures.md) |
+| Text-to-SQL: Spider 1.0 vs. Spider 2.0 | 91.2% vs. 21.3% | Academic paper, same setup[^spider2] | [Ch 22](../03-ai-data-stack/ch22-agents-and-data.md) |
+| Cost per query: long context vs. RAG (800K tokens) | ~$1.61 uncached, ~$0.17 cached, ~$0.03 RAG | Illustrative, list prices Nov 2026[^anthropic-pricing] | [Ch 19](../03-ai-data-stack/ch19-retrieval-architectures.md) |
+| 1B × 768-dim float32 vectors | ~3.1 TB raw | Our arithmetic (estimate) | [Ch 18](../03-ai-data-stack/ch18-embeddings-and-vector-search.md) |
+| Queries scanning >10 TB in Redshift fleet data | ~0.03% | Vendor analysis of public data[^md-redshift] | [Ch 23](../03-ai-data-stack/ch23-real-time-analytics-htap.md) |
+| Neon databases created by agents | >80% | Company-stated, May 2025[^neon-dbx] | [Ch 22](../03-ai-data-stack/ch22-agents-and-data.md) |
+
+*Figure 50.6 — AI-data anchor numbers. Two of the six are vendor-produced and one is our own arithmetic. Say so when you quote them.*
 
 <details markdown="1">
 <summary>Q94: What are the eight stages of the AI data lifecycle?</summary>
@@ -1063,6 +1115,31 @@ A: Bring compute to the data: federation, zero-copy sharing, caches and engines 
 
 ### Companies
 
+These cards cover the companies in Part 4. Their headline figures sit on different bases, as the scale-marker table shows, and the chart that follows shows how fast Databricks' private marks moved.
+
+| Company | Latest scale marker | Basis | Period |
+|---|---|---|---|
+| Databricks | >$7B revenue run-rate, >80% growth | Company-stated, unaudited[^db-7b] | Q2, May–Jul 2026 |
+| Snowflake | $1.49B product revenue, +37% | GAAP[^sf-q2] | Q2 FY2027, May–Jul 2026 |
+| MongoDB | $771.8M revenue, +30% | GAAP[^mdb-q2] | Q2 FY2027, May–Jul 2026 |
+| Confluent | $1,166.7M revenue, +21% | GAAP[^cflt-fin] | FY2025 (calendar) |
+| ClickHouse | >$250M ARR | Company-stated[^ch-arr] | May 2026 |
+| AWS | $46.0B segment sales, +39% | GAAP segment[^amzn-q3] | Q3 2026 |
+| Google Cloud | $30.7B revenue, +103% | GAAP segment[^goog-q3] | Q3 2026 |
+| Salesforce Data 360 | $2.4B ARR (incl. $1.1B Informatica) | Company-stated[^crm-q2fy27] | Q2 FY2027, May–Jul 2026 |
+
+*Figure 50.7 — Scale markers on different bases. Only the GAAP rows can be added or compared directly; run-rates and ARR are company-defined.*
+
+```mermaid
+xychart-beta
+    title "Databricks post-money valuation, US$ billions (company-stated)"
+    x-axis ["Dec 2024", "Aug 2025", "Dec 2025", "Aug 2026"]
+    y-axis "US$ billions" 0 --> 200
+    bar [62, 100, 134, 190]
+```
+
+*Figure 50.8 — Databricks' marks roughly tripled in 20 months, from $62B (Series J) to $190B. These are private preferred-round prices, not market values. Source: `data/private_funding.csv`; Databricks press release.[^funding][^db-7b]*
+
 <details markdown="1">
 <summary>Q140: What run-rate and growth does Databricks state for its fiscal Q2 2026?</summary>
 
@@ -1373,6 +1450,42 @@ A: Moveworks ($2.85B disclosed, closed December 2025) and data.world (announced 
 
 ### Business & valuation
 
+These cards cover pricing models, KPIs, comps, open-source economics, go-to-market and market sizing. Before quoting any figure, run it through the label check below. The chart then shows where the main public comps trade.
+
+```mermaid
+flowchart LR
+    Q["A number is quoted"] --> A{"Audited filing?"}
+    A -->|"Yes"| G["GAAP: say the fiscal period"]
+    A -->|"No"| B{"Company-defined metric?"}
+    B -->|"Yes"| C["Company-stated: ARR, run-rate, NRR, non-GAAP"]
+    B -->|"No"| D{"Named news source?"}
+    D -->|"Yes"| E["Press-reported"]
+    D -->|"No"| F["Estimate or VERIFY: say so"]
+```
+
+*Figure 50.9 — The label check. Every numeric card in these decks has passed through this tree. Quote the label along with the number.*
+
+| Figure type | Example from the decks | The trap |
+|---|---|---|
+| GAAP revenue | Snowflake $1.49B product revenue, Q2 FY2027 | Forgetting the fiscal year ends Jan 31 |
+| Company-stated run-rate | Databricks >$7B | Treating it as revenue; method undisclosed |
+| Non-GAAP margin | Snowflake +15.3% operating margin | Ignoring ~32 points of SBC-driven gap |
+| Private post-money | Databricks $190B | Comparing it with a public EV |
+| Press-reported deal value | Tabular ~$2B; Neon ~$1B | Treating it as disclosed |
+| Analyst estimate | Gartner DBMS $119.7B (2024) | Adding it to other market sizes |
+
+*Figure 50.10 — Six kinds of number and the mistake each invites. Sources for each example are in the cards that cite them.*
+
+```mermaid
+xychart-beta
+    title "EV/NTM revenue, selected public comps (estimates, Oct 2026)"
+    x-axis ["Datadog", "Snowflake", "Rubrik", "MongoDB", "Everpure", "Oracle", "NetApp", "Teradata"]
+    y-axis "EV / NTM revenue (x)" 0 --> 25
+    bar [21.5, 16.9, 16.0, 9.0, 8.5, 5.7, 5.1, 1.7]
+```
+
+*Figure 50.11 — Where the comps trade. Everpure (8.5x) sits between hardware-heavy NetApp (5.1x) and software-like Rubrik (16.0x). Market data dated 2026-10-01 to 2026-10-30. Source: `data/public_comps.csv`.[^comps]*
+
 <details markdown="1">
 <summary>Q184: What are the four basic ways data infrastructure is sold?</summary>
 
@@ -1578,6 +1691,28 @@ A: AI infrastructure spending of $318B in 2025 (IDC) and sovereign-cloud IaaS of
 
 ### M&A & history
 
+These cards cover the deal eras, the database eras and the rise and rebundling of the modern data stack. The timeline condenses the 2024–2026 wave. The table then shows why one deal can carry two prices.
+
+```mermaid
+timeline
+    title Consolidation wave 2024 to 2026
+    2024 : Databricks buys Tabular : Snowflake announces Polaris : Confluent buys WarpStream
+    2025 : Databricks buys Neon : Snowflake buys Crunchy Data : Meta takes 49 percent of Scale AI : Salesforce closes Informatica : Veeam closes Securiti
+    2026 : IBM closes Confluent : Everpure closes 1touch : SAP buys Dremio : Fivetran and dbt Labs merge : AWS agrees DuckLabs : Proofpoint agrees Varonis
+```
+
+*Figure 50.12 — The 2024–2026 wave in one view. Buyers paid for formats and catalogs first, then for Postgres, then for context and governance. Source: `data/ma_deals.csv`.[^ma]*
+
+| Deal | Figure A | Figure B | Why they differ |
+|---|---|---|---|
+| Snowflake–Crunchy Data | $164.5M (10-Q purchase consideration) | ~$250M (press-reported) | The filing shows purchase consideration; the press figure's basis is not stated |
+| Snowflake–Observe | $596.2M (10-K, preliminary) | ~$1B (press-reported) | Preliminary purchase accounting vs. headline |
+| Proofpoint–Varonis | ~$6.3B transaction value | ~$5.71B equity value | Different bases: total transaction value vs. common-equity value |
+| Databricks–Tabular | ~$2B (press-reported) | Not disclosed | Private buyer, no filing |
+| IBM–Confluent | ~$11B enterprise value | ~9.4x FY2025 GAAP revenue | Same deal expressed as a multiple |
+
+*Figure 50.13 — One deal, two numbers. Always ask which basis is on the table. Source: `data/ma_deals.csv`; `data/public_comps.csv`.[^ma][^comps-cflt]*
+
 <details markdown="1">
 <summary>Q213: What are the five eras of data-industry M&A?</summary>
 
@@ -1733,6 +1868,28 @@ A: Informatica to Salesforce (~$8B equity value, closed November 2025), Confluen
 </details>
 
 ### Everpure lens (public info only)
+
+These cards use public information only. They frame strategy as options a strategy team might evaluate, not as statements of Everpure's plans. The timeline lists the company's public moves up the stack. The table maps them to the layers in the market map.
+
+```mermaid
+timeline
+    title Everpure public moves up the stack
+    2020 : Pure Storage buys Portworx
+    2025 : NVIDIA AI Data Platform integration : Enterprise Data Cloud at Accelerate
+    2026 : Rename to Everpure and 1touch announced : Ticker becomes P : 1touch closes : Data Intelligence and Data Stream launch : Databricks Storage Ecosystem launch partner
+```
+
+*Figure 50.14 — From storage to data management in six years, most of it in 2025–2026. Sources: `data/ma_deals.csv`; Everpure filings and releases cited in the cards.[^ma][^ep-10q][^ep-ticker][^storage-eco]*
+
+| Market-map layer | Everpure public move | Posture a strategy team might evaluate |
+|---|---|---|
+| 1. Storage and object | FlashBlade S3-compatible object; Enterprise Data Cloud | Core: compete |
+| 2. Formats and catalogs | OpenSharing connector (private preview); Iceberg reference designs | Partner with catalog owners |
+| 3. Engines and platforms | Dremio and Starburst reference architectures; Storage Ecosystem slot | Partner, not build |
+| 5. Governance and security | Data Intelligence (1touch) discovery and classification | Build or extend; small acquisitions nearby |
+| 6. AI data | Data Stream on NVIDIA; Key-Value Accelerator | Build where the array already sees the data |
+
+*Figure 50.15 — Everpure's public moves by layer. The pattern is build-and-partner, not buy-a-platform. Sources: cards in this deck; [Ch 45](../06-history-and-future/ch45-storage-moving-up-the-stack.md).*
 
 <details markdown="1">
 <summary>Q235: When did Pure Storage become Everpure, and what is the ticker?</summary>
@@ -1953,7 +2110,7 @@ The table below expands the 79 acronyms that come up most in data-platform, AI-d
 | **VLM** | Vision-language model | A model that reads images and text together; used for agentic parsing. | [Ch 17](../03-ai-data-stack/ch17-unstructured-data-processing.md) |
 | **WAL** | Write-ahead log | Sequential log flushed before commit; source of durability and CDC. | [Ch 3](../01-data-systems-foundations/ch03-database-internals.md) |
 
-*Figure 50.3 — Acronym sheet. The commercial acronyms (ARR, NRR, RPO, NTM, SBC, TAM) need the most care in conversation, because each is company-defined or estimate-based unless it is labelled GAAP.*
+*Figure 50.16 — Acronym sheet. The commercial acronyms (ARR, NRR, RPO, NTM, SBC, TAM) need the most care in conversation, because each is company-defined or estimate-based unless it is labelled GAAP.*
 
 ## Market-map poster
 
@@ -2026,7 +2183,7 @@ flowchart TB
     L7 --> L8
 ```
 
-*Figure 50.4 — Market-map poster: eight layers, 40 names. Control is moving to layer 2 (catalogs) and layer 7 (semantics), because agents in layer 8 need both. Storage (layer 1) carries every byte but is the most interchangeable layer unless it contributes metadata. Sources: Parts 1–4 of this atlas; ownership changes per `data/ma_deals.csv`.[^ma]*
+*Figure 50.17 — Market-map poster: eight layers, 40 names. Control is moving to layer 2 (catalogs) and layer 7 (semantics), because agents in layer 8 need both. Storage (layer 1) carries every byte but is the most interchangeable layer unless it contributes metadata. Sources: Parts 1–4 of this atlas; ownership changes per `data/ma_deals.csv`.[^ma]*
 
 **How to read the poster.** The arrows show the order of dependency, not the flow of money. Several 2026 ownership changes are reflected in the labels: Confluent now belongs to IBM (closed 2026-03-17), Securiti to Veeam (December 2025) and Varonis is pending to Proofpoint (expected 1H 2027).[^ibm-close][^securiti][^varonis-8k] dbt Labs and Fivetran now operate as one company, and DuckDB's company, DuckLabs, is being bought by AWS.[^ft-dbt-close][^aws-duck] Two layers are thin by design. Layer 6 is thin because vector search is being absorbed into the engines in layer 3 and into S3 itself. Layer 5 is thin because the platform catalogs in layer 2 now bundle much of what independent governance vendors sell.[^s3v]
 
@@ -2036,33 +2193,33 @@ These 25 deals, read from `data/ma_deals.csv`, are the precedents that come up m
 
 | Date | Acquirer | Target | Value (basis) | Why it matters |
 |---|---|---|---|---|
-| 2010-05-12 | SAP | Sybase | $5.8B (disclosed) | Appliance-era consolidation: an app vendor bought a database to own the data tier; HANA later replaced the thesis. |
+| 2010-05-12 | SAP | Sybase | $5.8B (disclosed) | An app vendor bought a relational and analytic database (ASE, IQ) to compete with Oracle in the data tier. |
 | 2010-07-06 | EMC | Greenplum | Undisclosed | Storage buying an MPP engine; ended in the Pivotal spinout and open-sourcing. The cautionary precedent for storage vendors. |
-| 2011-08-18 | HP | Autonomy | $10.3B (press-reported) | Unstructured-data search at a peak price; an $8.8B write-down a year later. The byword for overpaying. |
+| 2011-08-18 | HP | Autonomy | $10.3B (press-reported) | Unstructured-data search at a peak price; an $8.8B write-down in November 2012. The byword for overpaying. |
 | 2018-03-20 | Salesforce | MuleSoft | $6.5B (disclosed) | Integration bought as a control point and wired into a giant sales force; the template for app vendors buying data plumbing. |
 | 2018-10-03 | Cloudera | Hortonworks | $5.2B (disclosed) | Two Hadoop distributors merged in a declining architecture; taken private in 2021 at about the same equity value. |
 | 2019-06-06 | Google | Looker | $2.6B (disclosed) | A hyperscaler bought the semantic-modelling BI layer (LookML) to pull analytics onto its cloud. |
 | 2019-06-10 | Salesforce | Tableau | $15.7B (disclosed) | Largest data-tools deal of the 2010s; Salesforce bought the analyst front end. |
-| 2020-09-16 | Pure Storage (now Everpure) | Portworx | $370M (disclosed) | Pure Storage's first move up the stack, into Kubernetes data services. |
+| 2020-09-16 | Pure Storage (now Everpure) | Portworx | $370M (disclosed; dataset flags for re-check) | Pure Storage's first move up the stack, into Kubernetes data services. |
 | 2022-03-02 | Snowflake | Streamlit | $800M (disclosed) | Snowflake bought an app layer for Python developers; now Streamlit in Snowflake. |
 | 2023-06-26 | Databricks | MosaicML | $1.3B (disclosed) | AI training platform plus talent; now Mosaic AI inside Databricks' >$1.4B AI run-rate. |
-| 2023-09-21 | Cisco | Splunk | $28.0B (disclosed) | Machine-data platform bought at ~7x trailing revenue; sets the observability-data precedent. |
-| 2024-06-04 | Databricks | Tabular | $2.0B (press-reported) | Bought the Iceberg creators and defused the table-format war; control moved to the catalog. |
-| 2025-05-14 | Databricks | Neon | $1.0B (press-reported) | Serverless Postgres for agents; became Lakebase and opened the Postgres land grab. |
-| 2025-05-27 | Salesforce | Informatica | $8.0B (disclosed) | App vendor bought the largest independent data-management suite; now inside Data 360 ARR. |
-| 2025-06-02 | Snowflake | Crunchy Data | $164.5M (disclosed); ~$250M press-reported | Snowflake's answer to Neon, one month later, at a fraction of the price; now Snowflake Postgres. |
-| 2025-06-12 | Meta | Scale AI (49% stake) | $14.3B (press-reported) for 49% | License-and-hire at scale; one customer's stake drove rival labs away. The neutrality lesson. |
+| 2023-09-21 | Cisco | Splunk | $28B (disclosed) | Machine-data platform bought at ~7x trailing revenue; sets the observability-data precedent. |
+| 2024-06-04 | Databricks | Tabular | $2B (press-reported) | Bought the Iceberg creators and defused the table-format war; control moved to the catalog. |
+| 2025-05-14 | Databricks | Neon | $1B (press-reported) | Serverless Postgres for agents; became Lakebase and opened the Postgres land grab. |
+| 2025-05-27 | Salesforce | Informatica | $8B (disclosed) | App vendor bought the largest independent data-management suite; now inside Data 360 ARR. |
+| 2025-06-02 | Snowflake | Crunchy Data | $164.5M (disclosed, 10-Q); ~$250M press-reported | Snowflake's answer to Neon, one month later, at a fraction of the price; now Snowflake Postgres. |
+| 2025-06-12 | Meta | Scale AI (49% stake) | $14.3B (press-reported, for 49%) | License-and-hire at scale; one customer's stake drove rival labs away. The neutrality lesson. |
 | 2025-10-13 | Fivetran | dbt Labs (merger) | Undisclosed | All-stock rebundling of ingestion and transformation; combined ARR approaching $600M (company-stated). |
 | 2025-10-21 | Veeam | Securiti | $1.725B (disclosed) | Backup vendor bought discovery, classification and DSPM: data protection moving up to metadata. |
-| 2025-12-08 | IBM | Confluent | $11.0B (disclosed) EV | The streaming leader went to IBM at ~9.4x trailing revenue; real-time context for enterprise agents. |
-| 2026-01-08 | Snowflake | Observe | $596.2M (disclosed) preliminary; ~$1B press-reported | Snowflake moved into observability and telemetry data; filed price well below press reports. |
-| 2026-02-23 | Everpure | 1touch | $125M (disclosed) | Everpure's discovery and classification buy, relaunched as Data Intelligence; small (~0.3% of market cap). |
+| 2025-12-08 | IBM | Confluent | $11B (disclosed, enterprise value) | The streaming leader went to IBM at ~9.4x trailing revenue; real-time context for enterprise agents. |
+| 2026-01-08 | Snowflake | Observe | $596.2M (disclosed, preliminary, 10-K); ~$1B press-reported | Snowflake moved into observability and telemetry data; filed price well below press reports. |
+| 2026-02-23 | Everpure | 1touch | $125.0M (disclosed) | Everpure's discovery and classification buy, relaunched as Data Intelligence; small (~0.3% of market cap). |
 | 2026-05-04 | SAP | Dremio | Undisclosed | An app vendor bought an Iceberg lakehouse engine, and a FlashBlade reference partner changed owner. |
 | 2026-07-16 | NetApp | DataPelago | Undisclosed | A storage peer bought accelerated data-processing compute to sit next to its arrays. |
-| 2026-08-26 | AWS | DuckLabs | Undisclosed; announced | A hyperscaler bought the in-process OLAP engine company while DuckDB stays MIT-licensed. |
-| 2026-10-15 | Proofpoint (Thoma Bravo) | Varonis | $6.3B (disclosed) transaction value; ~$5.71B equity; pending | The largest 2026 data-security deal; DSPM consolidating into security platforms at ~8.5x revenue. |
+| 2026-08-26 | AWS | DuckLabs | Undisclosed; announced | A hyperscaler agreed to buy the in-process OLAP engine company while DuckDB stays MIT-licensed. |
+| 2026-10-15 | Proofpoint (Thoma Bravo) | Varonis | $6.3B (disclosed, transaction value); ~$5.71B equity value; pending | The largest 2026 data-security deal; DSPM consolidating into security platforms at ~8.5x revenue. |
 
-*Figure 50.5 — Deal-table poster. The pattern runs from buying engines (2010) to buying metadata, context and control points (2024–2026). Storage and data-protection buyers (EMC, Pure Storage, Veeam, Everpure, NetApp) appear at both ends, and the later deals are smaller and closer to the data's meaning. Dates are announcement dates. Source: `data/ma_deals.csv`.[^ma]*
+*Figure 50.18 — Deal-table poster. The pattern runs from buying engines (2010) to buying metadata, context and control points (2024–2026). Storage and data-protection buyers (EMC, Pure Storage, Veeam, Everpure, NetApp) appear at both ends, and the later deals are smaller and closer to the data's meaning. Dates are announcement dates. Source: `data/ma_deals.csv`.[^ma]*
 
 **Three lessons to carry from the table.** First, *control points beat revenue*. MuleSoft, Tabular and Neon bought layers that a larger distribution engine could exploit. Autonomy and Hortonworks bought revenue in an architecture that was about to be replaced. Second, *filed prices and press prices diverge*. For Crunchy Data and Observe, Snowflake's filings show far less than the press reported, so always ask which figure is on the table. Third, *storage vendors have moved from buying engines to buying metadata*. EMC–Greenplum (2010) bought an engine. Veeam–Securiti, Everpure–1touch and NetApp–DataPelago (2025–2026) bought discovery, classification and processing next to the data. That shift is the better-evidenced bet, as [Ch 39](../05-business-and-economics/ch39-ma-history.md) and [Ch 45](../06-history-and-future/ch45-storage-moving-up-the-stack.md) argue.[^ma]
 
@@ -2095,7 +2252,7 @@ The two platforms have converged on product features. They still differ on where
 | Hyperscaler channel | Azure Databricks is a first-party Microsoft service | Marketplace co-sell on AWS, Azure, Google Cloud; >$2B AWS Marketplace sales in CY2025 | Company-stated[^sf-aws-2b] |
 | Everpure tie (public info) | Storage Ecosystem launch partner (2026-06-10); OpenSharing connector in private preview | S3-compatible external stages and Iceberg volumes; no named storage program | Company-stated[^storage-eco][^everpure-os][^sf-s3compat] |
 
-*Figure 50.6 — Databricks vs. Snowflake on one page. The bases differ row by row: Databricks figures are company-stated and unaudited, Snowflake's are GAAP or defined KPIs. The comparable rows are those about scale, product and channel. Rows about valuation compare a private equity mark with a public EV and need the caveat said out loud.*
+*Figure 50.19 — Databricks vs. Snowflake on one page. The bases differ row by row: Databricks figures are company-stated and unaudited, Snowflake's are GAAP or defined KPIs. The comparable rows are those about scale, product and channel. Rows about valuation compare a private equity mark with a public EV and need the caveat said out loud.*
 
 **When each wins (author judgment, from [Ch 27](../04-company-deep-dives/ch27-databricks-vs-snowflake.md)):**
 

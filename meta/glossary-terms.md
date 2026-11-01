@@ -711,3 +711,4 @@
 - **Company guidance** — management's own forecast of a future period's revenue or margin, issued with earnings results. (ch00-1)
 - **Market map** — a diagram that places companies and projects in the layers of an industry stack. (ch00-2)
 - **Control point** — a layer that every other component must pass through, which gives its owner pricing and policy power (in data: the catalog, the semantic layer, the agent interface). (ch00-2)
+- **Spaced repetition** — reviewing material at increasing intervals and concentrating on the items you got wrong, the study method the Ch 50 flashcards are designed for. (ch50)

@@ -381,3 +381,4 @@ Every `[VERIFY: …]` left in the text is listed here with its chapter. Resolve 
 | ch45 | ch45: Pure Storage–Portworx price (~$370M, 2020) rests on training knowledge in data/ma_deals.csv; confirm against the company announcement. | open |
 | ch46 | ch46: No [VERIFY] markers in text. Inherited caveat: NVIDIA AI Data Platform launch partner list (ten storage partners) is flagged [VERIFY] in Ch 40's footnote and is reused here. | open |
 | ch47 | ch47: `[VERIFY date]` in the [^scale] footnote (Scale Venture Partners, "A History of the Magic Number" publication date), inherited from Ch 36. | open |
+| ch50 | ch50 Q251 / deal poster: Pure Storage–Portworx value ~$370M (2020-09-16) rests on a `data/ma_deals.csv` row sourced to "training knowledge (pre-mid-2025) [VERIFY]"; confirm against Pure Storage's 2020 press release or 10-Q. (ch50) | open |

@@ -1,0 +1,1 @@
+- **Spaced repetition** — reviewing material at increasing intervals and concentrating on the items you got wrong, the study method the Ch 50 flashcards are designed for. (ch50)
