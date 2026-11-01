@@ -272,3 +272,5 @@
 5. Iceberg v3 spec-ratification date; Unity Catalog OSS LF stage; OpenAI–Rockset details.
 6. EU Data Act and AI Act baseline dates (pre-2025 knowledge); Council GDPR-omnibus mandate outcome.
 7. Market sizes for data integration, data management software, BI, data governance, data labeling and DSPM. No verified public figure was obtained this sweep (see `data/market_sizes.csv` notes).
+
+> **Integrator note (from Ch 7 drafter, 2026-11-01):** Apache Polaris latest release 1.8.0 (2026-09-28); Apache Iceberg 1.12.0 released 2026-09-29; Iceberg spec: v1–v3 adopted, v4 not yet adopted; Iceberg Java library default table format version remains 2. Polaris graduation date: sources give 2026-02-15 (Incubator page), 2026-02-19 (blogs), 2026-03-05 (ASF announcement) — use "early 2026 (ASF announced 2026-03-05)".
