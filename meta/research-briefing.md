@@ -1,5 +1,8 @@
 # Research briefing: current state of the data / AI-data industry (as of 2026-11-01)
 
+> **Integrator corrections (2026-11-01).** (1) **Ticker:** Everpure announced on 2026-04-07 that its NYSE ticker would change from PSTG to **P**, effective 2026-04-17 (Everpure press release, purestorage.com/company/newsroom/press-releases/everpure-to-change-ticker-symbol.html; Nasdaq, 2026-04-07). Use "NYSE: P (formerly PSTG)". (2) Confirmed: Snowflake Intelligence → **Snowflake CoWork** and Cortex Code → **CoCo**, announced at Snowflake Summit on 2026-06-02 (itdaily.com, itbrief.com.au). (3) Confirmed: Databricks closed a $5B round at a **$190B** valuation on 2026-08-13 and stated a **>$7B revenue run-rate** with >80% YoY growth in its Q2 (company-stated, unaudited); Lakebase >$100M run-rate; data-warehousing >$1.5B run-rate (thenextweb.com; virginiabusiness.com; Morningstar).
+
+
 **Purpose.** Fact sheet for chapter writers. Each bullet gives the fact in our own words, followed by a footnote with publisher, URL and published date. All items were retrieved on 2026-11-01 unless noted.
 
 **Method caveat (read first).** This sweep used live web search. Direct page fetches (WebFetch) were blocked by the session's network allowlist for most hosts, including everpuredata.com, blocksandfiles.com, storagenewsletter.com and clearygottlieb.com. Facts therefore come from search-engine summaries of the cited pages, not from full-page reads. Before a number is published in a chapter, re-open the primary source (SEC filing or company press release) where possible. Items marked `[VERIFY: …]` were either not confirmed live, came from a single or weak source, or rest on pre-2025 knowledge. The search budget ran out before every item could be checked. See "Open items" at the end.
