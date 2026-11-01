@@ -1,0 +1,8 @@
+- ch31: Shared WebSearch budget was exhausted at the first call; facts were taken from data/*.csv, meta/research-*.md, finished chapters (Ch 5, 6, 7, 19, 23, 24, 25) and primary sources cloned from public GitHub repos (duckdb/duckdb-web history and blog posts; trinodb/trino.io blog; ClickHouse/clickhouse-docs history). Background-knowledge facts are marked [VERIFY] or † in the snapshot table.
+- ch31: Assignment called Palantir's 70.3x "EV/NTM"; data/public_comps.csv basis is a TTM proxy (stockanalysis TTM revenue). Chapter labels it EV/TTM and adds a "Don't say this" item. Integrator may want to rename the column basis in Ch 37 comps.
+- ch31: ClickHouse "~60x trailing ARR" is our arithmetic ($15B ÷ >$250M), labelled estimate; the two figures are four months apart (Jan vs May 2026).
+- ch31: Palantir "what you must believe" worked example (EV constant at $433B, terminal 15x revenue, 30%/50% growth) is illustrative, not a forecast.
+- ch31: Chart ch31_valuations mixes private post-money marks and public market caps on a log scale, colour-coded and labelled by basis; Dremio shown at its last private mark (Series E 2022) because SAP deal terms are undisclosed. Starburst, Firebolt and StarTree omitted (no priced valuation on file).
+- ch31: Quadrant placements (openness × growth momentum) are author judgment.
+- ch31: Integrator note confirmed AWS–DuckLabs; the DuckDB blog (2026-08-26) is used as the primary source for licensing/governance commitments. "DuckLabs" is used for the post-May-2026 company name per duckdb.org history.
+- ch31: Prose came in at ~4,400 words vs 3,000 budget because the assignment covers 15+ companies; no padding sections added.

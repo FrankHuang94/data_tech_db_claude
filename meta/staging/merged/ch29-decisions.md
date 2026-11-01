@@ -1,0 +1,7 @@
+- ch29 (2026-11-01): Search budget was exhausted (shared per-turn limit) before ch29 research began. The chapter was written from data/*.csv, meta/research-*.md and sources already cited in ch02/ch04/ch09/ch25, plus clearly flagged pre-mid-2025 knowledge marked [VERIFY]. Hence the high VERIFY count (46).
+- ch29: MongoDB quarterly revenue series (Q1 FY2024–Q3 FY2026) added from recalled 8-K values because the sum of each fiscal year's quarters matches data/company_financials.csv annual totals (FY2024 1683.0 exact; FY2025 2006.5 vs 2006.4; FY2026 2463.8 vs ~2460 rounded). Staged in data/staging/ch29-company_financials.csv and stored in data/ch29_mongodb_quarterly.csv for the chart.
+- ch29: Chart shows computed YoY growth to one decimal (Q2 FY2027 = 30.5%) while prose uses the company-stated 30%; flagged in open questions.
+- ch29: Chart named ch29_mongodb_atlas per assignment, but it plots total quarterly revenue and growth, not Atlas share, because quarterly Atlas shares could not be verified.
+- ch29: Oracle covered briefly (database franchise and support economics); OCI/AI infrastructure deferred to ch28.
+- ch29: Quadrant positions (developer momentum vs enterprise installed base) are author judgment, labelled as such.
+- ch29: Word count (4,383) exceeds the 3,000 budget because the scope list covers ~18 vendors plus the AI shift; no padding added.

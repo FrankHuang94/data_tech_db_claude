@@ -1,0 +1,4 @@
+company,date,round,amount_usd_m,post_money_valuation_usd_b,valuation_basis,lead_investors,category,source,as_of,notes
+Redis,2021-04-13,Series G,110,2,press-reported,,operational database,training knowledge (pre-mid-2025); no URL retrieved 2026-11-01 [VERIFY],2026-11-01,"Redis Labs Series G ~$110M at >$2B valuation; exact date, lead and valuation [VERIFY] (search budget exhausted)"
+Yugabyte,2021-10-28,Series C,188,1.3,press-reported,,operational database,training knowledge (pre-mid-2025); no URL retrieved 2026-11-01 [VERIFY],2026-11-01,"~$188M at ~$1.3B; date and lead [VERIFY]"
+Aerospike,2024-04-01,Series E,109,,undisclosed,Sumeru Equity Partners,operational database,training knowledge (pre-mid-2025); no URL retrieved 2026-11-01 [VERIFY],2026-11-01,"~$109M Series E; exact day, lead and valuation [VERIFY]"

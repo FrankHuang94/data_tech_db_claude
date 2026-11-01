@@ -1,0 +1,16 @@
+- ch31: Snapshot table leaders, HQs and founding years marked † (ClickHouse/Katz, MotherDuck/Tigani 2022, Starburst/Borgman 2017, Dremio 2015, Firebolt/Farkash 2019, Teradata/McMillan 1979, Cloudera/Sansbury 2008, Palantir/Karp 2003, SAP/Klein 1972, IBM/Krishna 1911) are background knowledge, not re-verified (search budget exhausted).
+- ch31: Starburst Series D valuation (~$3.35B recollection) and exact date (Feb 2022).
+- ch31: Dell Data Lakehouse built on Starburst under an OEM arrangement — current status.
+- ch31: Firebolt Series C terms (~$100M at ~$1.4B, Jan 2022 recollection) and any later product/ownership changes; whether Firebolt remains proprietary.
+- ch31: ClickHouse open-sourcing month (believed June 2016).
+- ch31: Druid open-sourcing date (believed Oct 2012), Starburst founding 2017, Palantir AIP launch 2023, Palantir direct listing Sept 2020 (timeline items from background knowledge).
+- ch31: SAP Business Data Cloud launch (believed 2025-02-13) and SAP Databricks partnership terms; primary URL.
+- ch31: SAP–Dremio exact closing date (research briefing says ~July 2026); nature of the same-day Prior Labs transaction.
+- ch31: AWS–DuckLabs close (DuckDB blog said expected effective early Sept 2026).
+- ch31: Cloudera acquisitions Verta (2024), Octopai (2024), Taikun (2025) — dates and terms; KKR/CD&R take-private close Oct 2021 ($16/share, ~$5.3B).
+- ch31: Vertica current owner (OpenText via Micro Focus, Jan 2023) and any 2025–26 divestment.
+- ch31: Teradata Q3 2026 total ARR, public cloud ARR, FY2026 guidance; current VantageCloud product naming and Iceberg support; whether any take-private process has been reported.
+- ch31: Palantir US commercial revenue growth (latest quarter) and AIP bootcamp program details; whether Foundry datasets are Iceberg-compatible.
+- ch31: IBM watsonx.data current engine mix (Presto/Spark) and Iceberg basis.
+- ch31: ClickHouse acquisitions of LibreChat (Nov 2025) and RunReveal (Sep 2026) — aggregator-only sources (shared with ch23).
+- ch31: MotherDuck "Redshift Files" blog exact date (shared with ch23).

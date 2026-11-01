@@ -1,0 +1,19 @@
+- ch29: Web-search budget was exhausted before any ch29 search ran; all items below rest on repo data files, other chapters' sources or pre-mid-2025 knowledge.
+- ch29: MongoDB Q2 FY2027 — confirm Atlas share of revenue (~73%), non-GAAP operating margin (~24%) and customer count (>69,300) against the 2026-09-01 release; also confirm YoY growth (CSV says 30%; $771.8M / $591.4M computes 30.5%).
+- ch29: MongoDB CEO transition Dev Ittycheria -> Chirantan "CJ" Desai (Nov 2025) — confirm release, date, effective date and Ittycheria's continuing role.
+- ch29: MongoDB quarterly revenue Q1 FY2024–Q3 FY2026 in data/ch29_mongodb_quarterly.csv — verify each against the 8-K releases (they reconcile to 10-K annual totals); add Q1 FY2027 (Feb–Apr 2026).
+- ch29: MongoDB quarterly Atlas growth FY2025–FY2026 and size of the FY2025 multi-year EA licence headwind.
+- ch29: MongoDB FY2026 Annual Report (ARS) publication date.
+- ch29: Oracle FY2025 cloud services and license support ($44.0B) and total revenue ($57.4B) — confirm against Oracle Q4 FY2025 release (2025-06).
+- ch29: Oracle co-CEOs Clay Magouyrk and Mike Sicilia — confirm appointment and date.
+- ch29: Oracle support at ~22% of net licence fee — find an Oracle primary source.
+- ch29: Redis Inc. CEO (Rowan Trollope) and Series G ($110M at >$2B, Apr 2021) primary source; Valkey vector-search status.
+- ch29: Couchbase last public fiscal-year revenue (~$200M), licence (BSL), Capella AI services, and Haveli announcement date (2025-06-20).
+- ch29: SingleStore–Vector Capital completion; DataStax and SingleStore 2021–22 valuation marks.
+- ch29: PlanetScale last disclosed round; EDB ownership by Bain Capital (2019) and EDB Postgres AI product.
+- ch29: YugabyteDB $1.3B (Oct 2021) valuation; Aerospike Series E ($109M, Apr 2024); TiDB, ScyllaDB, CockroachDB, YugabyteDB and Aerospike vector-search features.
+- ch29: ScyllaDB source-available licence change (blog 2024-12-18) URL and date.
+- ch29: Neon ">80% of databases created by AI agents" — exact wording in Databricks' 2025-05 press release.
+- ch29: Supabase as default backend for Lovable/Bolt — find company or press statement.
+- ch29: Stack Overflow 2025 PostgreSQL usage (55.6%) and DB-Engines July 2026 positions — confirm on primary pages (shared with ch02).
+- ch29: Gartner cloud DBMS share (~61%) is derived and indicative.
