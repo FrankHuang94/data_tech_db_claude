@@ -1,0 +1,16 @@
+- ch20: Scale AI 2026 fundraising talks at ~$20B valuation (single aggregator source) — confirm with Bloomberg/Reuters/The Information.
+- ch20: AP–OpenAI (Jul 2023), Shutterstock–OpenAI (Jul 2023), Axel Springer–OpenAI (Dec 2023) dates and terms — not re-verified (search budget exhausted); timeline Figure 20.3 depends on them.
+- ch20: Handshake AI latest valuation (Sacra lists $3.5B 2025; TechCrunch says $3.3B in 2022) — confirm.
+- ch20: Labelbox customers, last round and valuation (recollection: $110M Series D Jan 2022, SoftBank) and expert-network (Alignerr) status — confirm.
+- ch20: Toloka customers, valuation, day of $72M Bezos Expeditions round, and Nebius retained stake — confirm with primary release.
+- ch20: Turing and Invisible gross margins — no public data found.
+- ch20: Snorkel AI gross margin / revenue mix — no public data found.
+- ch20: Sacra "Scale: the $290M/year Mechanical Turk" publication date (gross-margin estimates for Scale/Appen/TELUS).
+- ch20: Original outlet and date of report that Surge told staff $1B 2024 revenue vs Scale $870M (cited via Ben's Bites).
+- ch20: Mercor $20B talks — month (Jul 2026?) and whether closed; Crypto Briefing article date.
+- ch20: Search Engine Land "OpenAI may pay Reddit $70M" publication date.
+- ch20: Wiley FY2026 AI licensing revenue ($49M) — verify against Wiley 10-K (FY ends Apr 30, 2026).
+- ch20: Thomson Reuters v. Ross Third Circuit (No. 25-02153) — outcome after June 2026 argument.
+- ch20: NVIDIA NeMo Data Curator blog publication date (20x/5x dedup claim).
+- ch20: SemDeDup ~50% LAION removal with minimal loss — confirm figure against arXiv:2303.09540.
+- ch20: Snorkel AI Series D exact day (late May 2025) for staging row.

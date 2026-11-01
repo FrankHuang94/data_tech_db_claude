@@ -1,0 +1,9 @@
+- ch20: Surge AI and Mercor's 2026 round are shown only as "reported talks (not closed)" in a separate dataset (data/ch20_valuation_talks.csv), not in private_funding staging, consistent with research-notes-funding (Surge excluded because no close confirmed).
+- ch20: Chart ch20_data_vendor_valuations reads data/private_funding.csv plus data/staging/ch20-private_funding.csv so it renders before the integrator merges; after merge, the staging read is a harmless duplicate (deduped on company/date/round).
+- ch20: Staged a CORRECTION of the Snorkel AI 2025-05-01 Series D row (blank amount/valuation) with $100M at $1.3B led by Addition (Snorkel press release). Main CSV date 2025-05-01 vs late May 2025 announcement.
+- ch20: Invisible Technologies valuation recorded as 2.0 ($B) floor because sources say "over $2 billion".
+- ch20: Gretel not staged as a funding row (last valuation ~$320M date unknown); the existing ma_deals row covers the acquisition.
+- ch20: Scale AI 2025 revenue figures conflict across sources ($870M 2024 press-reported; 2025/2026 estimates inconsistent); chapter uses only the 2024 press-reported figure.
+- ch20: Mercor/Handshake revenue described as gross run-rate (before 60–70% contractor pay) to avoid conflating gross billings with net revenue.
+- ch20: Prose words (~3,600) exceed the 2,200 budget; kept because the scope list (four channels + legal + curation + economics) needed the space.
+- ch20: Search budget exhausted before verifying 2023 licensing deals (AP, Shutterstock, Axel Springer) and 2023 papers; those are flagged [VERIFY] or noted "not re-fetched".
