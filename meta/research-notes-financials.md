@@ -40,3 +40,42 @@ All sources retrieved 2026-11-01.
 - Consensus NTM revenue for all names. Rows use FY-guidance-derived figures or TTM proxies.
 - Databricks run-rate disclosures, Confluent annual 2021–2025, Oracle OCI revenue and RPO, Elastic, Datadog annual revenue, Teradata total and cloud ARR, Palantir US commercial growth.
 - Snowflake quarterly GAAP total gross margin, quarterly SBC, and Q3 FY2026 KPIs. MongoDB NRR and Q1 FY2027 detail.
+
+## Comps gap-fill (2026-11-01)
+
+Method: WebSearch excerpts only (WebFetch/HTTP blocked). Market cap/EV from stockanalysis.com snapshots (dates in `as_of`; undated snapshots use the retrieval date and are flagged in notes). Revenue, growth and guidance from company releases as quoted in search excerpts. Re-check against filings before publication. [VERIFY] All sources retrieved 2026-11-01.
+
+| Publisher | Title | URL | Published |
+|---|---|---|---|
+| SAP / SEC | Form 6-K Ex. 99.1, Q3 2026 quarterly statement | https://www.sec.gov/Archives/edgar/data/0001000184/000110465926118617/tm2628113d1_ex99-1.htm | 2026-10-21 |
+| Workday IR | Workday Announces Fiscal 2027 Second Quarter Financial Results | https://investor.workday.com/news-and-events/press-releases/news-details/2026/Workday-Announces-Fiscal-2027-Second-Quarter-Financial-Results/default.aspx | 2026-08-27 |
+| IBM / SEC | Form 8-K Ex. 99.1, Q3 2026 results | https://www.sec.gov/Archives/edgar/data/0000051143/000005114326000093/ibm-20261021xex991.htm | 2026-10-21 |
+| IBM / SEC | Form 10-Q, Q1 2026 (Confluent close 2026-03-17) | https://www.sec.gov/Archives/edgar/data/0000051143/000005114326000038/ibm-20260331.htm | 2026 |
+| Confluent / SEC | Form 10-K, FY2025 | https://www.sec.gov/Archives/edgar/data/1699838/000169983826000006/cflt-20251231.htm | 2026 |
+| Varonis IR | Varonis Announces Second Quarter 2026 Financial Results | https://s203.q4cdn.com/582009126/files/doc_news/Varonis-Announces-Second-Quarter-2026-Financial-Results-2026.pdf | 2026-07-28 |
+| SiliconANGLE | Proofpoint agrees to buy data security company Varonis for $6.3B in cash | https://siliconangle.com/2026/10/15/proofpoint-agrees-to-buy-data-security-company-varonis-for-6-3b-in-cash/ | 2026-10-15 |
+| Constellation Research | Progress Software buys Domo's AI and data platform business for $400 million | https://www.constellationr.com/insights/news/progress-software-buys-domos-ai-and-data-platform-business-400-million | 2026-07 |
+| Domo (Business Wire) | Domo Announces Timing for Second Quarter Fiscal 2027 Financial Results and Provides Transaction Timing Update | https://secure.businesswire.com/news/home/20260831807380/en/Domo-Announces-Timing-for-Second-Quarter-Fiscal-2027-Financial-Results-and-Provides-Transaction-Timing-Update | 2026-08-31 |
+| Benzinga | Domo earnings forecasts (FY2027 guidance summary) | https://www.benzinga.com/quote/DOMO/earnings-forecasts | 2026 |
+| NetApp | NetApp Reports First Quarter of Fiscal Year 2027 Results | https://netapp.com/newsroom/press-releases/news-rel-20260902-results-607632 | 2026-09-02 |
+| Nutanix / SEC | Form 8-K Ex. 99.1, Q4 and FY2026 results | https://www.sec.gov/Archives/edgar/data/0001618732/000117184326005752/exh_991.htm | 2026-08-26 |
+| Dynatrace IR | Q1 FY2027 earnings release (Ex. 99) | https://ir.dynatrace.com/sec-filings/all-sec-filings/content/0001773383-26-000049/q1fy27-earningsreleaseex99.htm | 2026-08-05 |
+| Rubrik | Rubrik Reports Second Quarter Fiscal Year 2027 Financial Results | https://www.rubrik.com/company/newsroom/press-releases/26/rubrik-reports-second-quarter-fiscal-year-2027-financial-results | 2026-08 |
+| Commvault (via Finviz/PR Newswire) | Commvault Announces Second Quarter Fiscal 2027 Financial Results | https://finviz.com/news/408629/commvault-announces-second-quarter-fiscal-2027-financial-results | 2026-10-27 |
+| StorageNewsletter | Commvault fiscal 2Q27 results (total revenue ~$312M) | https://www.storagenewsletter.com/?p=306407 | 2026-10 |
+| GitLab (Business Wire) | GitLab Reports Second Quarter Fiscal Year 2027 Financial Results | https://secure.businesswire.com/news/home/20260901768402/en/GitLab-Reports-Second-Quarter-Fiscal-Year-2027-Financial-Results | 2026-09-01 |
+| C3.ai | C3 AI Announces Fiscal First Quarter 2027 Results | https://c3.ai/news/c3-ai-announces-fiscal-first-quarter-2027-results | 2026-09-02 |
+| Datadog / SEC | Form 8-K Ex. 99.1, Q2 2026 results | https://www.sec.gov/Archives/edgar/data/0001561550/000162828026053829/ex-991x20260630x8k.htm | 2026-08-06 |
+| Elastic (via 01net) | Elastic Reports First Quarter Fiscal 2027 Financial Results | https://www.01net.it/elastic-reports-first-quarter-fiscal-2027-financial-results/ | 2026-08-27 |
+| StorageNewsletter | Oracle fiscal 1Q27 financial results | https://storagenewsletter.com/2026/09/23/oracle-fiscal-1q27-financial-results | 2026-09-23 |
+| Runtime Wire | Microsoft revenue hits $92.3 billion as Azure growth accelerates to 48% | https://runtimewire.com/article/microsoft-revenue-hits-92-3-billion-as-azure-growth-accelerates-to-48 | 2026-10 |
+| Alphabet / SEC | Form 8-K Ex. 99.1, Q3 2026 results | https://www.sec.gov/Archives/edgar/data/0001652044/000165204426000080/googexhibit991q32026.htm | 2026-10-28 |
+| StockAnalysis.com | Statistics / market-cap / ratios / revenue pages for SAP, WDAY, IBM, VRNS, DOMO, NTAP, NTNX, DT, RBRK, CVLT, GTLB, AI, MSFT, GOOGL | https://stockanalysis.com/stocks/{ticker}/ | snapshots 2026-06-05 to 2026-10-30 |
+
+### Notable findings
+
+- **Two new take-privates or asset sales in the comp set.** Proofpoint (backed by Thoma Bravo) agreed on 2026-10-15 to buy Varonis for $49.75/sh in cash, about $6.3B and roughly 8.5x FY2026 revenue guidance. Progress agreed in July 2026 to buy Domo's operating assets for $400M, about 1.3x revenue. Domo carries a going-concern warning.
+- **Confluent precedent.** IBM paid about $11B EV, or about 9.4x FY2025 revenue of $1,167M (+21%). The deal closed 2026-03-17. IBM's 10-Q reports a purchase price of $11.6B.
+- **Hyperscaler cloud is accelerating.** Google Cloud grew 103% to $30.7B in Q3 2026. Azure grew 48% in Q1 FY2027. Oracle's OCI grew 121% in Q1 FY2027, and its RPO is $664B.
+- **Infrastructure with AI exposure.** NetApp grew 30% in Q1 FY2027, but its non-GAAP gross margin guidance is down to 67–68% on component costs. Rubrik grew 38% and trades at about 16x EV/FY-guide revenue, the highest multiple in the security and data-protection group.
+- **Gaps that remain:** gross margin for SAP, Workday, IBM, Nutanix, Dynatrace, Rubrik, Commvault, C3.ai, Datadog, Elastic and Oracle; the C3.ai market-cap snapshot is stale (2026-06-05); the Domo, Varonis and NetApp market-data snapshots are undated or older; Commvault total-revenue guidance; Amazon AWS growth. [VERIFY]
