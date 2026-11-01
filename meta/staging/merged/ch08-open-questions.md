@@ -1,0 +1,8 @@
+- ch08: Glue Data Catalog Delta Lake support — which engines read Delta tables registered in Glue (Athena, EMR, Redshift) as of 2026-11.
+- ch08: Apache Polaris Delta support via "generic tables" — confirm release (believed Polaris 1.0, 2025) and maturity.
+- ch08: Snowflake Horizon Catalog Delta support (Delta-sourced Iceberg tables) — confirm current status.
+- ch08: Google BigLake / BigQuery Delta Lake table support — confirm current status and naming.
+- ch08: Microsoft OneLake catalog — confirm launch (believed Ignite Nov 2024) and governance features (Purview integration).
+- ch08: Apache Gravitino Delta Lake support — confirm.
+- ch08: Project Nessie Delta Lake support — confirm (historically experimental).
+- ch08: Unity Catalog OSS maturity stage at LF AI & Data (sandbox vs incubation vs graduated) as of 2026-11; one wiki says sandbox, latest release v0.4.0 (2026-02) unconfirmed.

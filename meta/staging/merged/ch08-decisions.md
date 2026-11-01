@@ -1,0 +1,5 @@
+- ch08: Assignment said Iceberg REST catalog spec "2023"; Iceberg docs and Dremio state it was introduced in Iceberg 0.14 (2022). Chapter uses 2022 for the spec's introduction and treats 2023–2024 as the vendor-adoption wave.
+- ch08: Polaris graduation date — Incubator page lists 2026-02-15, project/Snowflake/Dremio blogs 2026-02-19, ASF press 2026-03-05. Chapter cites incubator date for graduation and ASF date for the announcement.
+- ch08: Tabular price uses data/ma_deals.csv (~$2B press-reported, TechCrunch 2024-08-14; WSJ $1–2B); Databricks never disclosed.
+- ch08: Delta-support cells in the catalog comparison table are summarized from general knowledge and marked [VERIFY]; the web-search budget ran out before they could be checked individually.
+- ch08: Business catalogs (Collibra, Alation, Atlan) are covered only conceptually; vendor detail deferred to ch33. Funding figures not repeated to avoid drift from data/private_funding.csv.

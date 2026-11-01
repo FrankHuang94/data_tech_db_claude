@@ -1,0 +1,2 @@
+- ch07 | Confirm Amazon S3 Standard LIST request price is still $0.005 per 1,000 (us-east-1) | footnote [^s3-pricing]; used only for an order-of-magnitude worked example.
+- ch07 | Re-fetch Snowflake Polaris press release URL (2024-06-03) | footnote [^sf-polaris]; URL from memory, page could not be fetched (WebFetch blocked, WebSearch budget exhausted).

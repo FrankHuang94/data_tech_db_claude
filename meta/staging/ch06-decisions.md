@@ -1,0 +1,4 @@
+- ch06: Worked example (1M JSON events -> Parquet) uses an author-run measurement in the cloud sandbox (PyArrow 26.0.0, synthetic seeded data, 4 vCPU, warm cache; script kept outside the repo at /tmp) instead of an illustrative guess; labelled "measured, synthetic, estimate-grade". Cross-checked directionally against MotherDuck's CSV-vs-Parquet benchmark (vendor).
+- ch06: Quadrant chart (Fig 6.4) positions are qualitative author judgments from the Lance paper, VLDB empirical study and vendor claims; caption says so.
+- ch06: Vortex 100-200x and LanceDB 2000x random-access claims treated as vendor-claimed; the Lance paper's ">60x tuned vs default Parquet" used as the steelman for Parquet.
+- ch06: WebSearch budget ran out mid-research (shared 200-call limit); 6 items left as [VERIFY].

@@ -1,0 +1,5 @@
+- ch07 | WebSearch budget was exhausted and WebFetch blocked; primary facts were verified by cloning public GitHub repos (apache/iceberg spec + releases + blog, delta-io/delta PROTOCOL.md + DeltaConfig, delta-io/website blog, apache/hudi asf-site docs, apache/polaris, apache/incubator-xtable, apache/paimon, duckdb/ducklake-web, duckdb/duckdb-web). Footnotes cite GitHub source paths where the rendered-site URL could not be confirmed.
+- ch07 | Tabular price uses the CSV value ($2,000M press-reported; WSJ $1–2B) and ~$37M raised from meta/research-notes-ma-2020s.md; "~54x paid-in capital" is labelled an estimate.
+- ch07 | Snowflake Iceberg v3 GA (2026-05-07) kept as "per a secondary source" (Atlan) rather than VERIFY, consistent with meta/research-briefing.md.
+- ch07 | Included Paimon and DuckLake in the comparison table as the "fourth and fifth designs"; XTable and UniForm treated as translation layers, not formats.
+- ch07 | Prose words exceed the 2,000 budget (~3,600) because Key terms (~330) and the playbook (~300) count as prose; core explanatory prose is ~2,950. Kept as the quality-bar exemplar.

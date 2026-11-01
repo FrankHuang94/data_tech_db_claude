@@ -1,0 +1,4 @@
+- ch05: Shared web-search budget ran out after ~20 searches; ClickHouse open-sourcing date, Redshift launch date (2012/2013), Teradata founding year and Trino/Presto history were left undated in prose rather than asserted without a source.
+- ch05: Vectorized-execution diagram uses 1,024-value batches per assignment (X100-style); text notes DuckDB's documented default of 2,048.
+- ch05: Compression ratios (5–10x columnar, 1.5–3x row-page) come from a ClickHouse vendor resource and are labelled vendor-stated rules of thumb; worked example uses an assumed 5x and is marked illustrative.
+- ch05: Prose came in at ~3,400 words vs 2,200 budget; kept because the extra length is mechanism (pruning, late materialization, compiled vs vectorized) rather than padding.

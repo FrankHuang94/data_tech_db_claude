@@ -1,0 +1,5 @@
+- ch02: Stack Overflow 2025 survey — confirm PostgreSQL 55.6% (all respondents) vs 58.2% (professional) directly on survey.stackoverflow.co/2025 (only secondary blog sources seen).
+- ch02: DB-Engines July 2026 ranking positions (Oracle, MySQL, SQL Server, PostgreSQL, MongoDB, Snowflake, Databricks) come from a secondary report (HelloGitHub); confirm on db-engines.com and update to Nov 2026 edition.
+- ch02: DataStax acquisition by IBM — confirm close date before stating "now part of IBM".
+- ch02: Timescale's 2025 rename to TigerData — confirm name and date.
+- ch02: Typical DiskANN random 4 KB reads per query ("a few dozen") — confirm against DiskANN paper/Microsoft docs.

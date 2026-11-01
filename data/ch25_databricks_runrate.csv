@@ -1,0 +1,20 @@
+date,metric,value_usd_b,basis,source,as_of
+2021-08-31,total_run_rate,0.6,press-reported ARR (approximate date; TechCrunch timeline),https://techcrunch.com/2023/06/21/databricks-is-proof-that-strong-unicorns-can-grow-their-way-out-of-a-market-correction,2026-11-01
+2021-12-31,total_run_rate,0.8,press-reported ARR (TechCrunch timeline),https://techcrunch.com/2023/06/21/databricks-is-proof-that-strong-unicorns-can-grow-their-way-out-of-a-market-correction,2026-11-01
+2022-08-31,total_run_rate,1.0,company-stated run-rate (disclosed Aug 2022; month-level date),https://techcrunch.com/2023/06/21/databricks-is-proof-that-strong-unicorns-can-grow-their-way-out-of-a-market-correction,2026-11-01
+2023-01-31,fiscal_year_revenue,1.0,company-stated fiscal-year revenue (FY ended Jan 2023; unaudited private-company figure),https://news.bloomberglaw.com/capital-markets/databricks-says-annual-revenue-jumped-60-to-top-1-billion,2026-11-01
+2023-04-30,data_warehousing_run_rate,0.1,company-stated ARR for Databricks SQL (press-reported via Bloomberg),https://news.bloomberglaw.com/capital-markets/databricks-says-annual-revenue-jumped-60-to-top-1-billion,2026-11-01
+2024-01-31,fiscal_year_revenue,1.6,company-stated fiscal-year revenue (FY ended 2024-01-31; press-reported via CNBC),https://www.nbcdfw.com/news/business/money-report/databricks-tells-investors-annualized-revenue-will-reach-2-4-billion-at-midway-point-of-year/3566774/,2026-11-01
+2024-07-31,total_run_rate,2.4,company projection to investors (press-reported via CNBC; quarter ending Jul 2024),https://www.nbcdfw.com/news/business/money-report/databricks-tells-investors-annualized-revenue-will-reach-2-4-billion-at-midway-point-of-year/3566774/,2026-11-01
+2025-01-31,total_run_rate,3.0,company-stated projection for Q4 ending 2025-01-31 (Series J press release),https://www.aap.com.au/aapreleases/cision20241217ae81438,2026-11-01
+2025-01-31,fiscal_year_revenue,2.6,company-stated fiscal-year revenue (FY ended Jan 2025; press-reported via CNBC),https://www.nbcsandiego.com/news/business/money-report/databricks-says-annualized-revenue-will-reach-3-7-billion-by-next-month/3845982/,2026-11-01
+2025-07-31,total_run_rate,4.0,company-stated run-rate floor (">$4B" in Q2; press release 2025-09-08),https://www.databricks.com/company/newsroom/press-releases/databricks-surpasses-4b-revenue-run-rate-exceeding-1b-ai-revenue,2026-11-01
+2025-07-31,ai_products_run_rate,1.0,company-stated run-rate floor (">$1B" AI products),https://www.databricks.com/company/newsroom/press-releases/databricks-surpasses-4b-revenue-run-rate-exceeding-1b-ai-revenue,2026-11-01
+2025-10-31,total_run_rate,4.8,company-stated run-rate floor (">$4.8B" in Q3; press release 2025-12-16),https://www.aap.com.au/aapreleases/cision20251216ae48422,2026-11-01
+2025-10-31,data_warehousing_run_rate,1.0,company-stated run-rate floor (">$1B" Data Warehousing),https://www.aap.com.au/aapreleases/cision20251216ae48422,2026-11-01
+2025-10-31,ai_products_run_rate,1.0,company-stated run-rate floor (">$1B" AI products),https://www.aap.com.au/aapreleases/cision20251216ae48422,2026-11-01
+2026-01-31,total_run_rate,5.4,company-stated run-rate floor (">$5.4B" in Q4; press release 2026-02-09),https://www.aap.com.au/aapreleases/cision20260209ae83222,2026-11-01
+2026-01-31,ai_products_run_rate,1.4,company-stated run-rate floor (">$1.4B" AI products),https://www.aap.com.au/aapreleases/cision20260209ae83222,2026-11-01
+2026-07-31,total_run_rate,7.0,company-stated run-rate floor (">$7B" in Q2; press release 2026-08-13),https://www.databricks.com/company/newsroom/press-releases/databricks-grows-80-yoy-surpasses-7b-revenue-run-rate-scales,2026-11-01
+2026-07-31,data_warehousing_run_rate,1.5,company-stated run-rate floor (">$1.5B" data warehousing; press-reported via TNW/Constellation),https://www.constellationr.com/insights/news/databricks-hits-7-billion-revenue-run-rate-q2-190-billion-valuation,2026-11-01
+2026-07-31,lakebase_run_rate,0.1,company-stated run-rate floor (">$100M" Lakebase),https://www.databricks.com/company/newsroom/press-releases/databricks-grows-80-yoy-surpasses-7b-revenue-run-rate-scales,2026-11-01

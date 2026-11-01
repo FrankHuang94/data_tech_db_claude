@@ -1,0 +1,4 @@
+- ch02 (2026-11-01): Web-search budget for the session ran out after ~16 searches. Canonical, pre-2025 facts (Codd 1970, Bigtable 2006, Dynamo 2007, PG 9.4 JSONB 2014, OpenAI embedding dims, Lucene BM25 defaults, pgvector 2,000-dim HNSW limit, MongoDB 16 MiB) are cited to primary URLs marked "not live-fetched"; time-sensitive items rest on live search results.
+- ch02: DB-Engines ranking cited from a July 2026 secondary report plus Redgate's H1 2026 press release (Redgate operates DB-Engines); no Oct/Nov 2026 edition surfaced in search.
+- ch02: Word count (3,201) deliberately exceeds 1,900 budget because the assignment required per-model "good at / access pattern / query / flagships / avoid when" for eight models plus a four-way worked example.
+- ch02: Quantitative I/O characterization of models kept qualitative (no vendor IOPS figures) to avoid unsourced numbers; DiskANN reads-per-query left as [VERIFY].

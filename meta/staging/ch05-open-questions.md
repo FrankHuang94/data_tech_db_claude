@@ -1,0 +1,2 @@
+- ch05: Confirm Amazon Redshift's current query-compilation model (code-generated query segments) for the engine table. (ch05)
+- ch05: Confirm Vertica's current owner (OpenText, via its 2023 Micro Focus acquisition). (ch05)

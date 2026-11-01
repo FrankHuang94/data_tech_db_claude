@@ -1,0 +1,6 @@
+- ch06 | Arrow Flight introduction date (believed Oct 2019 Apache Arrow blog "Introducing Apache Arrow Flight") | search budget exhausted
+- ch06 | Nimble (Meta) release status and license as of 2026-11 (github.com/facebookincubator/nimble) | only third-party status table found
+- ch06 | S3 request-rate guidance: 5,500 GET/HEAD requests per second per partitioned prefix (AWS S3 performance docs) | from prior knowledge, not re-verified
+- ch06 | Wes McKinney's current affiliation (Voltron Data / Posit) | from prior knowledge
+- ch06 | Avro origin date (~2009, Hadoop subproject, Doug Cutting) | not re-verified
+- ch06 | Parquet Apache top-level project date (believed April 2015) | not re-verified
