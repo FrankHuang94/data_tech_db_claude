@@ -31,3 +31,4 @@ Every `[VERIFY: …]` left in the text is listed here with its chapter. Resolve 
 | ch06 | ch06 / Wes McKinney's current affiliation (Voltron Data / Posit) / from prior knowledge | open |
 | ch06 | ch06 / Avro origin date (~2009, Hadoop subproject, Doug Cutting) / not re-verified | open |
 | ch06 | ch06 / Parquet Apache top-level project date (believed April 2015) / not re-verified | open |
+| ch03 | ch03: [VERIFY: confirm 20–30x wording in RocksDB blog 2022-10-31] — "leveled compaction write amplification typically 20–30x user data" was surfaced via a search summary attributed to rocksdb.org/blog/2022/10/31/align-compaction-output-file.html; page could not be fetched. Also used in "Numbers that matter". | open |
