@@ -1,5 +1,5 @@
 # 4. Distributed Databases
-> **Depth:** L2 · **Reading time:** ~11 min · **Last verified:** 2026-11-01 · **Prerequisites:** [Ch 3 — Database Internals](ch03-database-internals.md)
+> **Depth:** L2 · **Reading time:** ~19 min · **Last verified:** 2026-11-01 · **Prerequisites:** [Ch 3 — Database Internals](ch03-database-internals.md)
 
 ## TL;DR
 

@@ -1,0 +1,5 @@
+- 2026-11-01 | ch04 | Chapter runs ~4,300 prose words vs 2,000 budget: required scope (consensus, 2PC, four clock approaches, CAP/PACELC, consistency models, disaggregation, 3-region worked example, NewSQL landscape) could not be covered at L2 in less. Integrator may trim Key terms/playbook if Part 1 length is a concern.
+- 2026-11-01 | ch04 | PACELC classifications for Dynamo, Cassandra, Riak, MongoDB, PNUTS, VoltDB follow Abadi (2012); NewSQL classifications (PC/EC) are the author's, for default configurations.
+- 2026-11-01 | ch04 | Inter-region RTTs in the payments worked example are labelled estimates derived from fibre propagation (~200 km/ms), not measured cloud figures.
+- 2026-11-01 | ch04 | CockroachDB licence: announcement dated 2024-08-15; effective with v24.3 (Nov 2024). Described as source-available enterprise licence with free tier (<$10M revenue), not "open source".
+- 2026-11-01 | ch04 | Web search budget was exhausted mid-research (Cockroach Labs 2025-26 news and Spanner 2025-26 product updates not checked); chapter relies on pre-existing CSV rows for Cockroach Labs funding and Databricks-Neon.

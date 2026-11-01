@@ -1,0 +1,4 @@
+- ch04 | Spanner PostgreSQL-dialect interface: confirm current feature coverage/GA status (Who's who table). | Search budget exhausted.
+- ch04 | Aurora DSQL: confirm the AWS-documented replication protocol of the journal (third-party sources say Paxos-based). | Only third-party descriptions found.
+- ch04 | Aurora DSQL: find a named public production reference customer. | None surfaced.
+- ch04 | Stack Overflow 2025 survey PostgreSQL usage (~55.6%): check against survey.stackoverflow.co; secondary sources disagree whether figure is all respondents or professionals (other figure 58.2%). | Secondary sources only.
