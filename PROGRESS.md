@@ -4,14 +4,14 @@
 
 ## Current status
 
-- **Phase:** 0 — setup and research sweep (in progress)
-- **Next step:** merge research outputs into `data/`, build core charts, then draft Ch 7 and Ch 25 (quality bars).
+- **Phase:** 0.4 / 1 — quality-bar chapters (Ch 7, Ch 25) and Part 1 batch drafting in parallel
+- **Next step:** integrate Ch 7, Ch 25 and Part 1 (Ch 1–6, 8) as they land; QA; then launch Part 2 batch.
 
 ## Phase checklist
 
 - [x] Phase 0.1 skeleton, CLAUDE.md, style guide, templates, outline, scripts, mkdocs.yml, Pages workflow; mmdc + Python deps installed
-- [ ] Phase 0.2 research sweep (comps/financials, private funding, M&A 2010s, M&A 2020s, products/Everpure/market sizes)
-- [ ] Phase 0.3 outline finalized
+- [x] Phase 0.2 research sweep (comps/financials, funding 79 rounds, M&A 119 deals, briefing, market sizes) — WebSearch-only (see decision 9)
+- [x] Phase 0.3 outline finalized
 - [ ] Phase 0.4 quality-bar chapters Ch 7 and Ch 25
 - [ ] Phase 1 batches (Part 1 → 2 → 3 → 4 → 5 → 6 → 7 → 0)
 - [ ] Phase 2 independent reviews (all Parts)
@@ -21,57 +21,59 @@
 
 Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + comparison tables (`scripts/qa_report.py`).
 
+**Totals:** 0/52 chapters drafted · 0 prose words · 0 visuals · 0 [VERIFY] markers.
+
 | Ch | File | Status | Words | Budget | Visuals | VERIFY | Reviewed |
 |---|---|---|---|---|---|---|---|
-| 0.1 | ch00-1-how-to-use.md | not started | 0 | 1,200 | 0 | 0 | no |
-| 0.2 | ch00-2-market-map.md | not started | 0 | 1,800 | 0 | 0 | no |
-| 1 | ch01-data-stack-map.md | not started | 0 | 2,200 | 0 | 0 | no |
-| 2 | ch02-data-models.md | not started | 0 | 1,900 | 0 | 0 | no |
-| 3 | ch03-database-internals.md | not started | 0 | 2,300 | 0 | 0 | no |
-| 4 | ch04-distributed-databases.md | not started | 0 | 2,000 | 0 | 0 | no |
-| 5 | ch05-analytical-engines.md | not started | 0 | 2,200 | 0 | 0 | no |
-| 6 | ch06-file-formats.md | not started | 0 | 1,800 | 0 | 0 | no |
-| 7 | ch07-open-table-formats.md | not started | 0 | 2,000 | 0 | 0 | no |
-| 8 | ch08-catalogs-and-metastores.md | not started | 0 | 1,600 | 0 | 0 | no |
-| 9 | ch09-pipeline-patterns.md | not started | 0 | 2,000 | 0 | 0 | no |
-| 10 | ch10-ingestion-and-integration.md | not started | 0 | 1,900 | 0 | 0 | no |
-| 11 | ch11-streaming-and-event-platforms.md | not started | 0 | 2,200 | 0 | 0 | no |
-| 12 | ch12-transformation-and-orchestration.md | not started | 0 | 1,900 | 0 | 0 | no |
-| 13 | ch13-data-quality-observability-lineage.md | not started | 0 | 1,800 | 0 | 0 | no |
-| 14 | ch14-semantic-layers-and-bi.md | not started | 0 | 2,000 | 0 | 0 | no |
-| 15 | ch15-governance-security-privacy.md | not started | 0 | 2,200 | 0 | 0 | no |
-| 16 | ch16-ai-data-lifecycle.md | not started | 0 | 2,200 | 0 | 0 | no |
-| 17 | ch17-unstructured-data-processing.md | not started | 0 | 2,100 | 0 | 0 | no |
-| 18 | ch18-embeddings-and-vector-search.md | not started | 0 | 2,600 | 0 | 0 | no |
-| 19 | ch19-retrieval-architectures.md | not started | 0 | 2,200 | 0 | 0 | no |
-| 20 | ch20-training-data-supply-chain.md | not started | 0 | 2,200 | 0 | 0 | no |
-| 21 | ch21-ml-platforms-feature-stores-llmops.md | not started | 0 | 2,100 | 0 | 0 | no |
-| 22 | ch22-agents-and-data.md | not started | 0 | 2,400 | 0 | 0 | no |
-| 23 | ch23-real-time-analytics-htap.md | not started | 0 | 2,000 | 0 | 0 | no |
-| 24 | ch24-data-meets-compute-and-storage.md | not started | 0 | 2,200 | 0 | 0 | no |
-| 25 | ch25-databricks.md | not started | 0 | 4,500 | 0 | 0 | no |
-| 26 | ch26-snowflake.md | not started | 0 | 4,500 | 0 | 0 | no |
-| 27 | ch27-databricks-vs-snowflake.md | not started | 0 | 2,500 | 0 | 0 | no |
-| 28 | ch28-hyperscaler-data-platforms.md | not started | 0 | 3,500 | 0 | 0 | no |
-| 29 | ch29-operational-database-vendors.md | not started | 0 | 3,000 | 0 | 0 | no |
-| 30 | ch30-data-movement-streaming-companies.md | not started | 0 | 3,000 | 0 | 0 | no |
-| 31 | ch31-analytical-engine-challengers-legacy.md | not started | 0 | 3,000 | 0 | 0 | no |
-| 32 | ch32-ai-native-data-companies.md | not started | 0 | 3,500 | 0 | 0 | no |
-| 33 | ch33-governance-catalog-security-companies.md | not started | 0 | 2,500 | 0 | 0 | no |
-| 34 | ch34-application-giants-data-platforms.md | not started | 0 | 2,000 | 0 | 0 | no |
-| 35 | ch35-business-models.md | not started | 0 | 2,500 | 0 | 0 | no |
-| 36 | ch36-unit-economics-kpis.md | not started | 0 | 2,500 | 0 | 0 | no |
-| 37 | ch37-public-comps-valuation.md | not started | 0 | 2,500 | 0 | 0 | no |
-| 38 | ch38-open-source-strategy.md | not started | 0 | 2,000 | 0 | 0 | no |
-| 39 | ch39-ma-history.md | not started | 0 | 3,500 | 0 | 0 | no |
-| 40 | ch40-gtm-partnerships.md | not started | 0 | 2,000 | 0 | 0 | no |
-| 41 | ch41-market-sizing.md | not started | 0 | 1,000 | 0 | 0 | no |
-| 42 | ch42-history-of-databases.md | not started | 0 | 3,000 | 0 | 0 | no |
-| 43 | ch43-modern-data-stack.md | not started | 0 | 2,000 | 0 | 0 | no |
-| 44 | ch44-future-trends.md | not started | 0 | 3,000 | 0 | 0 | no |
-| 45 | ch45-storage-moving-up-the-stack.md | not started | 0 | 2,000 | 0 | 0 | no |
-| 46 | ch46-talking-with-data-people.md | not started | 0 | 2,200 | 0 | 0 | no |
-| 47 | ch47-diligence-checklist.md | not started | 0 | 2,000 | 0 | 0 | no |
-| 48 | ch48-question-bank.md | not started | 0 | 2,000 | 0 | 0 | no |
-| 49 | ch49-explain-in-30-seconds.md | not started | 0 | 1,500 | 0 | 0 | no |
-| 50 | ch50-self-test-cheat-sheets.md | not started | 0 | 1,300 | 0 | 0 | no |
+| 0.1 | ch00-1-how-to-use.md | not started | 0 | 1200 | 0 | 0 | no |
+| 0.2 | ch00-2-market-map.md | not started | 0 | 1800 | 0 | 0 | no |
+| 1 | ch01-data-stack-map.md | not started | 0 | 2200 | 0 | 0 | no |
+| 2 | ch02-data-models.md | not started | 0 | 1900 | 0 | 0 | no |
+| 3 | ch03-database-internals.md | not started | 0 | 2300 | 0 | 0 | no |
+| 4 | ch04-distributed-databases.md | not started | 0 | 2000 | 0 | 0 | no |
+| 5 | ch05-analytical-engines.md | not started | 0 | 2200 | 0 | 0 | no |
+| 6 | ch06-file-formats.md | not started | 0 | 1800 | 0 | 0 | no |
+| 7 | ch07-open-table-formats.md | not started | 0 | 2000 | 0 | 0 | no |
+| 8 | ch08-catalogs-and-metastores.md | not started | 0 | 1600 | 0 | 0 | no |
+| 9 | ch09-pipeline-patterns.md | not started | 0 | 2000 | 0 | 0 | no |
+| 10 | ch10-ingestion-and-integration.md | not started | 0 | 1900 | 0 | 0 | no |
+| 11 | ch11-streaming-and-event-platforms.md | not started | 0 | 2200 | 0 | 0 | no |
+| 12 | ch12-transformation-and-orchestration.md | not started | 0 | 1900 | 0 | 0 | no |
+| 13 | ch13-data-quality-observability-lineage.md | not started | 0 | 1800 | 0 | 0 | no |
+| 14 | ch14-semantic-layers-and-bi.md | not started | 0 | 2000 | 0 | 0 | no |
+| 15 | ch15-governance-security-privacy.md | not started | 0 | 2200 | 0 | 0 | no |
+| 16 | ch16-ai-data-lifecycle.md | not started | 0 | 2200 | 0 | 0 | no |
+| 17 | ch17-unstructured-data-processing.md | not started | 0 | 2100 | 0 | 0 | no |
+| 18 | ch18-embeddings-and-vector-search.md | not started | 0 | 2600 | 0 | 0 | no |
+| 19 | ch19-retrieval-architectures.md | not started | 0 | 2200 | 0 | 0 | no |
+| 20 | ch20-training-data-supply-chain.md | not started | 0 | 2200 | 0 | 0 | no |
+| 21 | ch21-ml-platforms-feature-stores-llmops.md | not started | 0 | 2100 | 0 | 0 | no |
+| 22 | ch22-agents-and-data.md | not started | 0 | 2400 | 0 | 0 | no |
+| 23 | ch23-real-time-analytics-htap.md | not started | 0 | 2000 | 0 | 0 | no |
+| 24 | ch24-data-meets-compute-and-storage.md | not started | 0 | 2200 | 0 | 0 | no |
+| 25 | ch25-databricks.md | not started | 0 | 4500 | 0 | 0 | no |
+| 26 | ch26-snowflake.md | not started | 0 | 4500 | 0 | 0 | no |
+| 27 | ch27-databricks-vs-snowflake.md | not started | 0 | 2500 | 0 | 0 | no |
+| 28 | ch28-hyperscaler-data-platforms.md | not started | 0 | 3500 | 0 | 0 | no |
+| 29 | ch29-operational-database-vendors.md | not started | 0 | 3000 | 0 | 0 | no |
+| 30 | ch30-data-movement-streaming-companies.md | not started | 0 | 3000 | 0 | 0 | no |
+| 31 | ch31-analytical-engine-challengers-legacy.md | not started | 0 | 3000 | 0 | 0 | no |
+| 32 | ch32-ai-native-data-companies.md | not started | 0 | 3500 | 0 | 0 | no |
+| 33 | ch33-governance-catalog-security-companies.md | not started | 0 | 2500 | 0 | 0 | no |
+| 34 | ch34-application-giants-data-platforms.md | not started | 0 | 2000 | 0 | 0 | no |
+| 35 | ch35-business-models.md | not started | 0 | 2500 | 0 | 0 | no |
+| 36 | ch36-unit-economics-kpis.md | not started | 0 | 2500 | 0 | 0 | no |
+| 37 | ch37-public-comps-valuation.md | not started | 0 | 2500 | 0 | 0 | no |
+| 38 | ch38-open-source-strategy.md | not started | 0 | 2000 | 0 | 0 | no |
+| 39 | ch39-ma-history.md | not started | 0 | 3500 | 0 | 0 | no |
+| 40 | ch40-gtm-partnerships.md | not started | 0 | 2000 | 0 | 0 | no |
+| 41 | ch41-market-sizing.md | not started | 0 | 1000 | 0 | 0 | no |
+| 42 | ch42-history-of-databases.md | not started | 0 | 3000 | 0 | 0 | no |
+| 43 | ch43-modern-data-stack.md | not started | 0 | 2000 | 0 | 0 | no |
+| 44 | ch44-future-trends.md | not started | 0 | 3000 | 0 | 0 | no |
+| 45 | ch45-storage-moving-up-the-stack.md | not started | 0 | 2000 | 0 | 0 | no |
+| 46 | ch46-talking-with-data-people.md | not started | 0 | 2200 | 0 | 0 | no |
+| 47 | ch47-diligence-checklist.md | not started | 0 | 2000 | 0 | 0 | no |
+| 48 | ch48-question-bank.md | not started | 0 | 2000 | 0 | 0 | no |
+| 49 | ch49-explain-in-30-seconds.md | not started | 0 | 1500 | 0 | 0 | no |
+| 50 | ch50-self-test-cheat-sheets.md | not started | 0 | 1300 | 0 | 0 | no |
