@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" width="1000" height="700" role="img" aria-labelledby="t45 d45" font-family="Helvetica, Arial, sans-serif">
+  <title id="t45">Storage to data to AI stack map with Everpure's publicly announced position (SV-18)</title>
+  <desc id="d45">Seven horizontal layers stacked from bottom to top: media, arrays and object storage; data services such as snapshots, replication and cyber-resilience; data management and metadata intelligence (discovery, classification, semantic context); table formats and catalogs; engines and platforms such as Databricks, Snowflake, hyperscalers and Starburst; vector, KV-cache and retrieval; and AI applications and agents. A right-hand column marks Everpure's publicly announced products in vermillion for layers one, two, three and six (FlashArray, FlashBlade, Evergreen//One, Enterprise Data Cloud, Fusion and the intelligent control plane, Data Intelligence from the 1touch acquisition, Data Stream and the Key-Value Accelerator). Layers four, five and seven are drawn with dashed outlines as adjacent layers that Everpure reaches through connectors and partners rather than its own products. Based on public information as of 2026-11-01.</desc>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="1000" height="700" fill="#FFFFFF"/>
+
+  <!-- Title -->
+  <text x="500" y="30" text-anchor="middle" font-size="20" font-weight="bold" fill="#000000">Storage → data → AI: where Everpure's public announcements sit</text>
+  <text x="500" y="52" text-anchor="middle" font-size="13" fill="#666666">Layers bottom to top. Solid vermillion = announced Everpure product in that layer. Dashed = adjacent layer reached via partners or connectors.</text>
+
+  <!-- Column headers -->
+  <text x="145" y="80" text-anchor="middle" font-size="13" font-weight="bold" fill="#666666">Layer</text>
+  <text x="480" y="80" text-anchor="middle" font-size="13" font-weight="bold" fill="#666666">What lives here (examples)</text>
+  <text x="835" y="80" text-anchor="middle" font-size="13" font-weight="bold" fill="#666666">Everpure, public information</text>
+
+  <!-- Upward arrow -->
+  <line x1="22" y1="650" x2="22" y2="100" stroke="#666666" stroke-width="2"/>
+  <polygon points="22,92 15,106 29,106" fill="#666666"/>
+  <text x="14" y="380" font-size="12" fill="#666666" transform="rotate(-90 14 380)" text-anchor="middle">closer to the bytes  →  closer to the user</text>
+
+  <!-- Layer 7: AI apps and agents (AI, adjacent) -->
+  <rect x="40" y="90" width="210" height="72" rx="6" fill="#009E73" fill-opacity="0.18" stroke="#009E73" stroke-width="2"/>
+  <text x="145" y="120" text-anchor="middle" font-size="15" font-weight="bold" fill="#000000">7. AI apps and agents</text>
+  <text x="145" y="140" text-anchor="middle" font-size="12" fill="#000000">copilots, RAG apps, agents</text>
+  <rect x="260" y="90" width="440" height="72" rx="6" fill="#FFFFFF" stroke="#009E73" stroke-width="1"/>
+  <text x="272" y="118" font-size="13" fill="#000000">Agent platforms (Snowflake CoWork, Agent Bricks, Gemini</text>
+  <text x="272" y="138" font-size="13" fill="#000000">Enterprise), enterprise search, MCP servers and clients</text>
+  <rect x="710" y="90" width="250" height="72" rx="6" fill="#FFFFFF" stroke="#D55E00" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="722" y="118" font-size="12" fill="#000000">Adjacent: Data Intelligence MCP</text>
+  <text x="722" y="136" font-size="12" fill="#000000">interface (Oct 2026) lets agents</text>
+  <text x="722" y="154" font-size="12" fill="#000000">query metadata</text>
+
+  <!-- Layer 6: vector / KV and retrieval (AI, announced) -->
+  <rect x="40" y="172" width="210" height="72" rx="6" fill="#009E73" fill-opacity="0.18" stroke="#009E73" stroke-width="2"/>
+  <text x="145" y="202" text-anchor="middle" font-size="15" font-weight="bold" fill="#000000">6. Vector, KV and retrieval</text>
+  <text x="145" y="222" text-anchor="middle" font-size="12" fill="#000000">embeddings, ANN, KV-cache tiers</text>
+  <rect x="260" y="172" width="440" height="72" rx="6" fill="#FFFFFF" stroke="#009E73" stroke-width="1"/>
+  <text x="272" y="200" font-size="13" fill="#000000">Vector DBs (Milvus, LanceDB, Pinecone), S3 Vectors,</text>
+  <text x="272" y="220" font-size="13" fill="#000000">DiskANN on NVMe; KV offload (NVIDIA Dynamo, CMX tier)</text>
+  <rect x="710" y="172" width="250" height="72" rx="6" fill="#D55E00" fill-opacity="0.16" stroke="#D55E00" stroke-width="2.5"/>
+  <text x="722" y="198" font-size="12" font-weight="bold" fill="#000000">Data Stream (Jun 2026, NVIDIA)</text>
+  <text x="722" y="216" font-size="12" font-weight="bold" fill="#000000">Key-Value Accelerator (Dynamo)</text>
+  <text x="722" y="234" font-size="12" fill="#000000">Milvus 2.6 tiered-storage partner</text>
+
+  <!-- Layer 5: engines and platforms (data, adjacent) -->
+  <rect x="40" y="254" width="210" height="72" rx="6" fill="#E69F00" fill-opacity="0.20" stroke="#E69F00" stroke-width="2"/>
+  <text x="145" y="284" text-anchor="middle" font-size="15" font-weight="bold" fill="#000000">5. Engines and platforms</text>
+  <text x="145" y="304" text-anchor="middle" font-size="12" fill="#000000">SQL, Spark, warehouses</text>
+  <rect x="260" y="254" width="440" height="72" rx="6" fill="#FFFFFF" stroke="#E69F00" stroke-width="1"/>
+  <text x="272" y="282" font-size="13" fill="#000000">Databricks, Snowflake, AWS / Azure / Google data services,</text>
+  <text x="272" y="302" font-size="13" fill="#000000">Starburst (Trino), SAP Business Data Cloud (Dremio), Spark</text>
+  <rect x="710" y="254" width="250" height="72" rx="6" fill="#FFFFFF" stroke="#D55E00" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="722" y="280" font-size="12" fill="#000000">Partner territory: Databricks</text>
+  <text x="722" y="298" font-size="12" fill="#000000">Storage Ecosystem launch partner;</text>
+  <text x="722" y="316" font-size="12" fill="#000000">Starburst, Dremio ref. architectures</text>
+
+  <!-- Layer 4: table formats and catalogs (data, adjacent) -->
+  <rect x="40" y="336" width="210" height="72" rx="6" fill="#E69F00" fill-opacity="0.20" stroke="#E69F00" stroke-width="2"/>
+  <text x="145" y="366" text-anchor="middle" font-size="15" font-weight="bold" fill="#000000">4. Table formats, catalogs</text>
+  <text x="145" y="386" text-anchor="middle" font-size="12" fill="#000000">the commit and policy point</text>
+  <rect x="260" y="336" width="440" height="72" rx="6" fill="#FFFFFF" stroke="#E69F00" stroke-width="1"/>
+  <text x="272" y="364" font-size="13" fill="#000000">Apache Iceberg, Delta Lake; Unity Catalog, Polaris, Horizon;</text>
+  <text x="272" y="384" font-size="13" fill="#000000">OpenSharing; S3 Tables (managed Iceberg in the bucket)</text>
+  <rect x="710" y="336" width="250" height="72" rx="6" fill="#FFFFFF" stroke="#D55E00" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="722" y="362" font-size="12" fill="#000000">Adjacent: OpenSharing connector</text>
+  <text x="722" y="380" font-size="12" fill="#000000">(private preview, Jun 2026); Iceberg</text>
+  <text x="722" y="398" font-size="12" fill="#000000">tables hosted on FlashBlade</text>
+
+  <!-- Layer 3: data management and metadata intelligence (data, announced) -->
+  <rect x="40" y="418" width="210" height="72" rx="6" fill="#E69F00" fill-opacity="0.20" stroke="#E69F00" stroke-width="2"/>
+  <text x="145" y="446" text-anchor="middle" font-size="15" font-weight="bold" fill="#000000">3. Metadata intelligence</text>
+  <text x="145" y="466" text-anchor="middle" font-size="12" fill="#000000">discovery, classification,</text>
+  <text x="145" y="482" text-anchor="middle" font-size="12" fill="#000000">semantic context</text>
+  <rect x="260" y="418" width="440" height="72" rx="6" fill="#FFFFFF" stroke="#E69F00" stroke-width="1"/>
+  <text x="272" y="446" font-size="13" fill="#000000">DSPM (Cyera, BigID, Varonis, Veeam-Securiti); business</text>
+  <text x="272" y="466" font-size="13" fill="#000000">catalogs (Collibra, Alation, Atlan); Hammerspace metadata</text>
+  <rect x="710" y="418" width="250" height="72" rx="6" fill="#D55E00" fill-opacity="0.16" stroke="#D55E00" stroke-width="2.5"/>
+  <text x="722" y="444" font-size="12" font-weight="bold" fill="#000000">Data Intelligence (from 1touch,</text>
+  <text x="722" y="462" font-size="12" font-weight="bold" fill="#000000">$125.0M, closed May 2026)</text>
+  <text x="722" y="480" font-size="12" fill="#000000">incl. third-party storage, SaaS</text>
+
+  <!-- Layer 2: data services (storage, announced) -->
+  <rect x="40" y="500" width="210" height="72" rx="6" fill="#0072B2" fill-opacity="0.16" stroke="#0072B2" stroke-width="2"/>
+  <text x="145" y="530" text-anchor="middle" font-size="15" font-weight="bold" fill="#000000">2. Data services</text>
+  <text x="145" y="550" text-anchor="middle" font-size="12" fill="#000000">snapshots, replication, cyber</text>
+  <text x="145" y="566" text-anchor="middle" font-size="12" fill="#000000">resilience, mobility</text>
+  <rect x="260" y="500" width="440" height="72" rx="6" fill="#FFFFFF" stroke="#0072B2" stroke-width="1"/>
+  <text x="272" y="528" font-size="13" fill="#000000">Array snapshots and replication; backup and cyber-recovery</text>
+  <text x="272" y="548" font-size="13" fill="#000000">(Veeam, Rubrik, Cohesity, Commvault); container data services</text>
+  <rect x="710" y="500" width="250" height="72" rx="6" fill="#D55E00" fill-opacity="0.16" stroke="#D55E00" stroke-width="2.5"/>
+  <text x="722" y="526" font-size="12" font-weight="bold" fill="#000000">Fusion, intelligent control plane,</text>
+  <text x="722" y="544" font-size="12" font-weight="bold" fill="#000000">cyber-anomaly detection;</text>
+  <text x="722" y="562" font-size="12" font-weight="bold" fill="#000000">Portworx (2020)</text>
+
+  <!-- Layer 1: media, arrays and object storage (storage, announced) -->
+  <rect x="40" y="582" width="210" height="72" rx="6" fill="#0072B2" fill-opacity="0.16" stroke="#0072B2" stroke-width="2"/>
+  <text x="145" y="612" text-anchor="middle" font-size="15" font-weight="bold" fill="#000000">1. Media, arrays, object</text>
+  <text x="145" y="632" text-anchor="middle" font-size="12" fill="#000000">flash, NVMe, S3-compatible</text>
+  <rect x="260" y="582" width="440" height="72" rx="6" fill="#FFFFFF" stroke="#0072B2" stroke-width="1"/>
+  <text x="272" y="610" font-size="13" fill="#000000">Hyperscaler object storage (S3, Blob, GCS); VAST, NetApp,</text>
+  <text x="272" y="630" font-size="13" fill="#000000">Dell, DDN, WEKA, Hammerspace; NAND and HDD suppliers</text>
+  <rect x="710" y="582" width="250" height="72" rx="6" fill="#D55E00" fill-opacity="0.16" stroke="#D55E00" stroke-width="2.5"/>
+  <text x="722" y="608" font-size="12" font-weight="bold" fill="#000000">FlashArray, FlashBlade (//EXA),</text>
+  <text x="722" y="626" font-size="12" font-weight="bold" fill="#000000">Evergreen//One subscriptions,</text>
+  <text x="722" y="644" font-size="12" font-weight="bold" fill="#000000">Enterprise Data Cloud (2025)</text>
+
+  <!-- Legend -->
+  <rect x="40" y="668" width="22" height="16" fill="#D55E00" fill-opacity="0.16" stroke="#D55E00" stroke-width="2.5"/>
+  <text x="70" y="681" font-size="12" fill="#000000">Announced Everpure product</text>
+  <rect x="250" y="668" width="22" height="16" fill="#FFFFFF" stroke="#D55E00" stroke-width="2" stroke-dasharray="5 3"/>
+  <text x="280" y="681" font-size="12" fill="#000000">Adjacent layer (partners, connectors)</text>
+  <rect x="510" y="668" width="14" height="16" fill="#0072B2" fill-opacity="0.16" stroke="#0072B2"/>
+  <text x="530" y="681" font-size="12" fill="#000000">storage</text>
+  <rect x="590" y="668" width="14" height="16" fill="#E69F00" fill-opacity="0.20" stroke="#E69F00"/>
+  <text x="610" y="681" font-size="12" fill="#000000">data</text>
+  <rect x="655" y="668" width="14" height="16" fill="#009E73" fill-opacity="0.18" stroke="#009E73"/>
+  <text x="675" y="681" font-size="12" fill="#000000">AI</text>
+  <text x="960" y="681" text-anchor="end" font-size="12" fill="#666666">Public information as of 2026-11-01</text>
+</svg>

@@ -1,0 +1,5 @@
+- ch38: Free-to-paid conversion rates presented only as a labelled estimate (low single digits) with an illustrative worked example; no rigorous public study found, and consultancy blogs citing 15–60% were rejected as unsourced.
+- ch38: Valuation comparison (Figure 38.7) reuses EV/NTM values from data/public_comps.csv rather than new pulls; Confluent shown at IBM deal multiple (EV/trailing revenue), flagged in caption.
+- ch38: Iceberg vs Delta governance argued from ASF board-report totals, delta.io's project-stated contributor count and a 2022 Dremio analysis (labelled as interested vendor), because no neutral employer-level committer count was found.
+- ch38: Redis 8 AGPL dated 2025-05-01 (Phoronix), consistent with ch29. HashiCorp BSL dated 2023-08-10 (LWN). IBM–HashiCorp closed 2025-02-27 ($6.4B EV). Elastic AGPL dated 2024-08-29.
+- ch38: Hyperscaler "strip-mining" debate presented as steelman on both sides, concluding risk scales with how much of the vendor's product is "we operate it for you".

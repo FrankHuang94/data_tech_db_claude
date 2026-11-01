@@ -1,0 +1,6 @@
+- ch38: [VERIFY: current Fusion licence split] — whether part of the dbt Fusion runtime moved from ELv2 to Apache 2.0 after the 2025 launch; dbt docs and third-party reports conflict.
+- ch38: [VERIFY: Iceberg committers by employer] — no published employer-by-employer count of Iceberg PMC/committers found; Whimsy board report gives totals only (25 PMC / 39 committers, 2026).
+- ch38: [VERIFY: publication date] — AWS Database Blog "Valkey turns two" (assumed ~March 2026).
+- ch38: [VERIFY: Fusion runtime Apache 2.0 claim] — footnote dbt-fusion; later reports not confirmed by dbt docs.
+- ch38: [VERIFY: incubator entry date] — Apache Polaris entry into the Apache Incubator (August 2024 per secondary sources; Snowflake announced Polaris June 2024).
+- ch38: [VERIFY: exact annual-report URL] — ASF FY2025 annual report (9,905 committers, 295 projects; released 2025-08-27); URL used is an ASF News entry surfaced by search.

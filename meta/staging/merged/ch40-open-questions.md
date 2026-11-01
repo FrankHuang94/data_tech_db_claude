@@ -1,0 +1,6 @@
+- ch40: [VERIFY: current Google Cloud Partner Advantage tier names] — not confirmed live.
+- ch40: [VERIFY: date and effective terms] of AWS Marketplace professional-services listing fee cut (2.5% → 0.5%), per CRN Australia 2026 only.
+- ch40: [VERIFY: date of Microsoft's 20%→3% commercial-marketplace fee cut, believed July 2021] — Microsoft ISV page undated.
+- ch40: [VERIFY: current billed-revenue threshold for Azure IP co-sell eligibility] — older partner blog cites $100K; not used in text.
+- ch40: [VERIFY: NVIDIA AI Data Platform launch partner list against NVIDIA newsroom original] — taken from HPCwire/TechPowerUp reposts.
+- ch40: [VERIFY: whether current Everpure Cloud Block Store marketplace listings are MACC/EDP-eligible].

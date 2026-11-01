@@ -1,0 +1,6 @@
+- ch40: AWS EDP marketplace cap (~25% default, negotiable) sourced only from a consultancy (Redress Compliance); labelled "estimate" and used only in the illustrative worked example.
+- ch40: Snowflake AWS Marketplace "$2B in CY2025 / $7B lifetime" treated as gross contract value transacted (company-stated), explicitly not comparable to GAAP revenue ($4,683.9M FY2026 from data/company_financials.csv).
+- ch40: Databricks Storage Ecosystem date kept at 2026-06-10 (blog date, consistent with Ch 25); some coverage ties it to DAIS ~2026-06-15. Ch 25's "coming later" partner list kept; one secondary source lists a broader launch cohort — not used.
+- ch40: HPE Ezmeral successor (renamed HPE Data Fabric Software in 8.0) has no verified Starburst/OEM data-platform partnership; omitted from the partnership table rather than speculating.
+- ch40: No Deloitte/Slalom-specific figures found in budget; SI section anchored on Accenture's two business groups (company-stated headcounts).
+- ch40: Databricks tech-partner tier labels (Registered/Validated/Select/Elite) may predate the Feb 2026 Brickbuilder restructuring; flagged in the footnote.

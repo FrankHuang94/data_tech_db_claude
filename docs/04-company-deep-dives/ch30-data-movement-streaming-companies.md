@@ -4,8 +4,8 @@
 ## TL;DR
 
 - **The layer was sold off in 18 months.** Between May 2025 and June 2026 the three best-known independent data-movement businesses changed hands or merged. Salesforce bought Informatica (~$8B equity value), IBM bought Confluent (~$11B enterprise value) and Fivetran merged with dbt Labs in an all-stock deal. The surviving independents (Airbyte, Redpanda, Matillion, Estuary) are much smaller.[^infa-close][^ibm-close][^ft-dbt-close]
-- **Confluent is the reference precedent.** IBM paid about **9.4x** Confluent's FY2025 GAAP revenue of $1,167M, which grew 21%. Confluent Cloud made up $624M of that, or 53%. Growth had slowed from 64% in FY2021. Read the price as a fair growth-adjusted multiple for a category leader whose growth was fading, not a scarcity premium.[^comps-cflt][^cflt-fin]
-- **The buyers wanted context for AI agents, not pipes.** Salesforce wants governed, matched master data under Data Cloud and Agentforce. IBM wants a real-time event layer under watsonx, beside Red Hat and HashiCorp. Fivetran + dbt Labs wants to be the neutral ingestion-to-semantics layer between customers and Snowflake, Databricks and the hyperscalers.
+- **Confluent is the reference precedent.** IBM paid about **9.4x** Confluent's FY2025 GAAP revenue of $1,166.7M, which grew 21%. Confluent Cloud made up $624M of that (+27%), or 53%. Non-GAAP operating margin was only 7.4%, and the GAAP operating loss was $380.1M. Growth had slowed from 64% in FY2021. Read the price as a fair growth-adjusted multiple for a category leader whose growth was fading, not a scarcity premium.[^comps-cflt][^cflt-fin]
+- **The buyers wanted context for AI agents, not pipes.** Salesforce wants governed, matched master data under Data 360 (renamed from Data Cloud in October 2025) and Agentforce. IBM wants a real-time event layer under watsonx, beside Red Hat and HashiCorp. Fivetran + dbt Labs wants to be the neutral ingestion-to-semantics layer between customers and Snowflake, Databricks and the hyperscalers.
 - **Why consolidation hit this layer.** Platforms now bundle good-enough connectors. Pricing is under pressure from per-connection meters and diskless Kafka designs. Agents need integrated, governed context. Buyers are tired of stitching ten tools together. And 2021-vintage private marks needed an exit.
 - **Everpure angle (public information only).** Streaming retention is moving onto object storage, and data movement decides where lakehouse tables land. Both trends make S3-compatible on-prem storage a possible landing zone. The practical options are certifications with diskless-Kafka engines, landing-zone designs with self-hostable ingestion, and watching IBM, which is both a partner prospect and a storage rival.
 
@@ -13,7 +13,7 @@
 
 | Company | Founded / HQ | Leader (latest public) | Owner / status (2026-11-01) | Scale marker (labelled) | Last price (basis, date) |
 |---|---|---|---|---|---|
-| Confluent | 2014 / Mountain View, CA | Jay Kreps (co-founder, CEO at close) | IBM subsidiary since 2026-03-17 | $1,167M FY2025 revenue, +21% (GAAP); >6,500 customers (company-stated) | ~$11B EV, $31/share cash (announced deal value, 2025-12-08)[^ibm-close][^comps-cflt] |
+| Confluent | 2014 / Mountain View, CA | Jay Kreps (co-founder, CEO at close) | IBM subsidiary since 2026-03-17 | $1,166.7M FY2025 revenue, +21% (GAAP); >6,500 customers (company-stated) | ~$11B EV, $31/share cash (announced deal value, 2025-12-08)[^ibm-close][^comps-cflt] |
 | Informatica | 1993 / Redwood City, CA | Amit Walia (CEO at close) [VERIFY: post-close role] | Salesforce subsidiary since 2025-11-18 | ~$1.6B FY2024 revenue (GAAP) [VERIFY] | ~$8B equity value, $25/share cash (2025-05-27)[^infa-close][^infa-fin] |
 | Fivetran + dbt Labs | 2012 (Fivetran, Oakland) and 2016 (dbt Labs, Philadelphia) | George Fraser (CEO), Tristan Handy (president) | Private; merger closed 2026-06-01 | ARR "approaching $600M" combined (company-stated) | Not priced (all-stock). Last rounds $5.6B (Fivetran, 2021) and $4.2B (dbt Labs, 2022), company-stated[^ft-dbt-close][^funding] |
 | Airbyte | 2020 / San Francisco | Michel Tricot (co-founder, CEO) | Private | 700+ connectors (company-stated); revenue not disclosed | $1.5B post-money, $150M Series B (company-stated, 2021-12-17)[^ab-seriesb] |
@@ -118,7 +118,7 @@ Confluent's portfolio has four layers. (1) **Kafka itself**, as Confluent Platfo
 
 ### Redpanda
 
-Redpanda is a single binary that speaks the Kafka protocol. Its pitch is lower tail latency and fewer machines for the same throughput (vendor claims). Business-wise, the more important product decision was **BYOC**. Redpanda runs the control plane, and the data plane and data stay in the customer's cloud account, which helps with security reviews and lets customers burn down cloud commitments. Iceberg Topics (GA April 2025) and the object-storage "Cloud Topics" tier mirror Confluent's Tableflow and Freight.[^rp-iceberg][^rp-streamfest] Redpanda bought Benthos in 2024 to add a connector and stream-processing framework (Redpanda Connect) [VERIFY: deal date and terms].[^rp-benthos]
+Redpanda is a single binary that speaks the Kafka protocol. Its pitch is lower tail latency and fewer machines for the same throughput (vendor claims). Business-wise, the more important product decision was **BYOC**. Redpanda runs the control plane, and the data plane and data stay in the customer's cloud account, which helps with security reviews and lets customers burn down cloud commitments. Iceberg Topics (GA April 2025) and the object-storage "Cloud Topics" tier mirror Confluent's Tableflow and Freight.[^rp-iceberg][^rp-streamfest] Redpanda bought Benthos in May 2024 (terms undisclosed) to add a connector and stream-processing framework (Redpanda Connect).[^rp-benthos]
 
 ### Fivetran + dbt Labs
 
@@ -133,7 +133,7 @@ IDMC is the broadest suite here. It covers integration (batch, CDC, API and appl
 - **Airbyte** sells three things: open source under the Elastic License (ELv2), a cloud service priced in credits or capacity ("Data Workers"), and self-managed enterprise licences. Its AI strategy has two halves. One is cheaper connectors, through an AI-assisted Connector Builder that drafts a connector from API documentation (2024). The other is positioning connectors as data access for agents, via PyAirbyte and agent-facing tooling [VERIFY: current agent-product names].[^ab-ai][^ab-license][^ab-pricing]
 - **Matillion** offers visual ELT that pushes work down into Snowflake, Databricks and Redshift, priced in credits. It has added "Maia" AI agents for pipeline building [VERIFY: launch date].[^matillion]
 - **Qlik Talend** is the Thoma Bravo-owned roll-up of Qlik, Attunity (CDC replication) and Talend with Stitch. It is strong in enterprise CDC.[^qlik-talend]
-- **Boomi** is an iPaaS that Dell sold to Francisco Partners and TPG in 2021 [VERIFY: $4B]. It added ELT and CDC through Rivery (~$100M, press-reported, December 2024) and observability through Elementary (October 2026).[^boomi-dell][^rivery][^elementary]
+- **Boomi** is an iPaaS that Dell sold to Francisco Partners and TPG for about $4B in 2021 (announced deal value). It added ELT and CDC through Rivery (~$100M, press-reported, December 2024) and observability through Elementary (October 2026).[^boomi-dell][^rivery][^elementary]
 - **MuleSoft** is Salesforce's API-led application integration business, bought for $6.5B in 2018. It now sits beside Informatica inside Salesforce.[^mulesoft]
 
 ## How it makes money
@@ -160,21 +160,21 @@ IDMC is the broadest suite here. It covers integration (batch, CDC, API and appl
 
 ### Confluent (GAAP, fiscal year = calendar year)
 
-![Bar chart of Confluent GAAP revenue from $150M in FY2019 to $1,167M in FY2025, with Confluent Cloud at 51% of revenue in FY2024 and 53% in FY2025, and a growth line falling from 64% in FY2021 to 21% in FY2025](../assets/charts/ch30_confluent.png)
+![Bar chart of Confluent GAAP revenue from $150M in FY2019 to $1,167M (rounded from $1,166.7M) in FY2025, with Confluent Cloud at 51% of revenue in FY2024 and 53% in FY2025, and a growth line falling from 64% in FY2021 to 21% in FY2025](../assets/charts/ch30_confluent.png)
 
-*Figure 30.5 — Confluent's revenue grew about 7.8x in six years, but growth fell every year after FY2021. Cloud passed half of revenue in FY2024 (our figure, derived from FY2025 growth). FY2019–FY2024 totals are recalled from filings and flagged for re-check. Source: `data/ch30_confluent_financials.csv`.[^cflt-fin]*
+*Figure 30.5 — Confluent's revenue grew about 7.8x in six years, but growth fell every year after FY2021. Cloud passed half of revenue in FY2024 (our figure, derived from FY2025 growth). FY2024 ($963.6M) and FY2025 ($1,166.7M) are confirmed against the FY2025 10-K and release; FY2019–FY2023 totals are recalled from filings and flagged for re-check. Source: `data/ch30_confluent_financials.csv`.[^cflt-fin]*
 
-Revenue went from $149.8M (FY2019) to $1,167M (FY2025). Growth peaked at 64% in FY2021 and then decelerated to 51%, 33%, 24% and 21%.[^cflt-fin] Confluent Cloud grew 27% in FY2025, faster than the total, so the self-managed Platform business was growing in the low teens on our arithmetic: ($1,167M − $624M) ÷ ($963.6M − $491M) ≈ 15% (estimate).[^comps-cflt] The company reported GAAP operating losses throughout its public life, driven largely by stock-based compensation, and reached non-GAAP operating profitability only late [VERIFY: first non-GAAP profitable quarter].[^cflt-10k]
+Revenue went from $149.8M (FY2019) to $1,166.7M (FY2025). Growth peaked at 64% in FY2021 and then decelerated to 51%, 33%, 24% and 21%.[^cflt-fin] FY2025 revenue split into subscription $1,119.7M and services $47.0M; Q4 alone was $314.8M (+21%), with Cloud at $169M (+23%), so cloud growth was itself slowing into the sale.[^cflt-10k] Confluent Cloud grew 27% for the year, faster than the total, so everything else (mainly self-managed Platform, plus services) grew about 15% on our arithmetic: ($1,166.7M − $624M) ÷ ($963.6M − $491M) ≈ 15% (estimate; the FY2024 Cloud base is derived). The company reported GAAP operating losses throughout its public life (FY2025: −$380.1M), driven largely by stock-based compensation. On a non-GAAP basis it was only modestly profitable: operating margin 2.9% in FY2024 and 7.4% in FY2025.[^cflt-10k] A buyer was therefore paying for growth and strategic fit, not for current earnings.
 
 ### Deal multiples
 
 | Deal (announced) | Price | Revenue basis | Multiple | Label |
 |---|---|---|---|---|
-| IBM–Confluent (2025-12) | ~$11.0B EV (IBM recorded $11.6B purchase price) | FY2025 revenue $1,167M (GAAP), +21% | **~9.4x** EV/trailing revenue (~9.9x on recorded price) | Estimate from disclosed figures[^comps-cflt][^ibm-10q] |
+| IBM–Confluent (2025-12) | ~$11.0B EV (IBM recorded $11.6B purchase price) | FY2025 revenue $1,166.7M (GAAP), +21% | **~9.4x** EV/trailing revenue (~9.9x on recorded price) | Estimate from disclosed figures[^comps-cflt][^ibm-10q] |
 | Salesforce–Informatica (2025-05) | ~$8B equity value | FY2024 revenue ~$1.6B (GAAP) [VERIFY] | **~5x** equity value/trailing revenue; EV/revenue higher by net debt [VERIFY] | Estimate[^infa-close][^infa-fin] |
-| Permira/CPPIB–Informatica (2015-04) | $5.3B | FY2014 revenue ~$1.05B (GAAP) [VERIFY] | **~5x** | Estimate[^infa-pe][^infa-hist] |
-| Salesforce–MuleSoft (2018-03) | $6.5B | FY2017 revenue ~$297M (GAAP) [VERIFY] | **~22x** | Estimate[^mulesoft] |
-| IBM–HashiCorp (2024-04; context) | ~$6.4B | FY2024 (to Jan 2024) revenue ~$583M (GAAP) [VERIFY] | **~11x** | Estimate[^hashicorp] |
+| Permira/CPPIB–Informatica (2015-04) | $5.3B | FY2014 revenue ~$1.05B (GAAP) | **~5x** | Estimate[^infa-pe][^infa-hist] |
+| Salesforce–MuleSoft (2018-03) | $6.5B | FY2017 revenue ~$297M (GAAP) | **~22x** | Estimate[^mulesoft] |
+| IBM–HashiCorp (2024-04; context) | ~$6.4B | FY2024 (to Jan 2024) revenue ~$583M (GAAP) | **~11x** | Estimate[^hashicorp] |
 | Fivetran–HVR (2021-09) | $700M | Not disclosed | n/a | Disclosed price[^hvr] |
 | Confluent–WarpStream (2024-09) | $135.1M preliminary (+ up to $76.2M holdbacks) | Not disclosed | n/a | GAAP disclosure (10-Q)[^ma-csv] |
 | IBM–StreamSets and webMethods (2023-12) | €2.13B (~$2.3B) | Not disclosed | n/a | Disclosed price[^ibm-ss] |
@@ -191,9 +191,9 @@ xychart-beta
     bar [5.0, 5.0, 9.4, 11.0, 22.0]
 ```
 
-*Figure 30.7 — Informatica's multiple did not move in ten years, despite a cloud rebuild. Confluent's sits between the mature suite and the high-growth integration precedent. All bars are estimates from the table above; four of the five revenue bases are flagged [VERIFY].*
+*Figure 30.7 — Informatica's multiple did not move in ten years, despite a cloud rebuild. Confluent's sits between the mature suite and the high-growth integration precedent. All bars are estimates from the table above; the Informatica 2025 revenue base is still flagged [VERIFY].*
 
-> **Bridge: valuation.** Divide the multiple by growth. Confluent cleared at ~9.4x for 21% growth, about **0.45x per point of growth**. Snowflake traded at 16.9x EV/NTM revenue on 35% growth on 2026-10-30, about 0.48x per point.[^comps-sf] On that crude basis IBM paid a market price, not a takeover premium over fundamentals. The premium was over Confluent's depressed pre-announcement share price. Strip out the cloud-mix and margin differences and the takeaway holds: in 2025–26, buyers paid for growth and margins, not for category leadership.
+> **Bridge: valuation.** Divide the multiple by growth. Confluent cleared at ~9.4x for 21% growth, about **0.45x per point of growth**. Snowflake traded at 16.9x EV/NTM revenue on 35% growth on 2026-10-30, about 0.48x per point.[^comps-sf] The bases do not match: Confluent's multiple is EV/*trailing* revenue at a December 2025 deal date, Snowflake's is EV/*NTM* ten months later. On an NTM basis Confluent's multiple would be lower still (roughly 8x if growth held near 18–20%; our estimate), which strengthens rather than weakens the point. On that crude basis IBM paid a market price, not a takeover premium over fundamentals. The premium was over Confluent's depressed pre-announcement share price. Strip out the cloud-mix and margin differences and the takeaway holds: in 2025–26, buyers paid for growth and margins, not for category leadership.
 
 ### Fivetran + dbt Labs, Airbyte and Redpanda (private)
 
@@ -214,7 +214,7 @@ flowchart LR
         IBM["IBM watsonx, Red Hat, HashiCorp"]
     end
     subgraph SFG["Salesforce"]
-        SF["Data Cloud and Agentforce"]
+        SF["Data 360 and Agentforce"]
     end
     subgraph FTG["Fivetran plus dbt Labs"]
         FT["Fivetran"]
@@ -257,11 +257,11 @@ The integration logic follows. OpenShift becomes a natural deployment target for
 
 ### Salesforce–Informatica: why Salesforce bought it
 
-Salesforce's agent strategy needs clean, unified, governed data. Agentforce answers are only as good as the customer records under them. Data Cloud already offered zero-copy access to Snowflake and Databricks, and MuleSoft already offered APIs. What Salesforce lacked was the **industrial-grade data-management toolkit**: MDM to resolve entities, data quality to fix records, a catalog and lineage to show where data came from, and bulk integration from non-Salesforce systems.[^infa-close] Informatica is the most complete supplier of exactly that toolkit to the Global 2000.
+Salesforce's agent strategy needs clean, unified, governed data. Agentforce answers are only as good as the customer records under them. Data Cloud (renamed Data 360 at Dreamforce in October 2025) already offered zero-copy access to Snowflake and Databricks, and MuleSoft already offered APIs. What Salesforce lacked was the **industrial-grade data-management toolkit**: MDM to resolve entities, data quality to fix records, a catalog and lineage to show where data came from, and bulk integration from non-Salesforce systems.[^infa-close] Informatica is the most complete supplier of exactly that toolkit to the Global 2000.
 
 > **Bridge: semiconductors (supply security).** Salesforce buying Informatica resembles a **system vendor buying a key component supplier** to secure supply, as when NVIDIA bought Mellanox. NVIDIA's GPUs were the product, but performance at datacenter scale depended on an interconnect it did not control. Agentforce is the product, but agent quality depends on the data-management "interconnect" that Informatica supplied to Salesforce's customers and to its rivals. Owning it secures the input and lets Salesforce co-design the two. As with Mellanox, the risk is that customers of the rivals (SAP, Oracle, ServiceNow) start sourcing elsewhere.
 
-**What happened post-close.** Public detail is thin. This sweep found no separately disclosed Informatica revenue line inside Salesforce's results, and no confirmed changes to IDMC pricing or third-party connector support [VERIFY: Salesforce FY2027 segment disclosure, leadership changes and integration milestones]. On the market side, Salesforce's enterprise value exceeded its market capitalization at 2026-10-30, reflecting net debt after the cash deal, and its market cap was down about 21% year on year (stockanalysis, 2026-10-30).[^comps-crm] That decline reflects broader worries about AI's effect on application seats as much as the deal.
+**What happened post-close.** Salesforce does not report an Informatica revenue line, but it does disclose Informatica inside an ARR metric. In Q2 FY2027 (May–Jul 2026) it reported Data 360 ARR of $2.4B (+>200% YoY), **including $1.1B of Informatica Cloud ARR**, within combined Agentforce + Data 360 ARR of about $3.9B (all company-stated).[^crm-q2fy27] Strip out Informatica and organic Data 360 ARR is roughly $1.3B (our arithmetic), so most of the headline triple-digit growth is the acquisition. Salesforce also broadened its Agentforce ARR definition in Q2 to include Slackbot and "Headless 360", which makes period comparisons harder. This sweep found no confirmed changes to IDMC pricing or third-party connector support [VERIFY: leadership changes and integration milestones]. On the market side, Salesforce's enterprise value exceeded its market capitalization at 2026-10-30, reflecting net debt after the cash deal, and its market cap was down about 21% year on year (stockanalysis, 2026-10-30).[^comps-crm] That decline reflects broader worries about AI's effect on application seats as much as the deal.
 
 ### Fivetran: merger rationale and the IPO question
 
@@ -345,7 +345,7 @@ Five forces arrived together, and each one alone would have pressured a standalo
 
 **Don't say this**
 
-- "IBM overpaid for Confluent." On a growth-adjusted basis (~0.45x per point of growth) the price was in line with public comps.
+- "IBM overpaid for Confluent." On a crude growth-adjusted basis (~0.45x per point of growth, trailing basis) the price was in line with public comps.
 - "Fivetran acquired dbt Labs." It was an all-stock merger with joint leadership.
 - "Informatica is legacy on-prem ETL." Most new business had moved to IDMC cloud consumption before the sale.
 - "Kafka belongs to IBM now." Apache Kafka is an Apache Software Foundation project; IBM owns Confluent.

@@ -22,7 +22,7 @@
 
 Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + comparison tables (`scripts/qa_report.py`).
 
-**Totals:** 34/52 chapters drafted · 129,773 prose words · 321 visuals · 439 [VERIFY] markers.
+**Totals:** 37/52 chapters drafted · 138,131 prose words · 345 visuals · 451 [VERIFY] markers.
 
 | Ch | File | Status | Words | Budget | Visuals | VERIFY | Reviewed |
 |---|---|---|---|---|---|---|---|
@@ -52,12 +52,12 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 22 | ch22-agents-and-data.md | QA pass | 4,255 | 2400 | 10 | 4 | no |
 | 23 | ch23-real-time-analytics-htap.md | QA pass | 3,360 | 2000 | 9 | 13 | no |
 | 24 | ch24-data-meets-compute-and-storage.md | QA pass | 3,630 | 2200 | 11 | 5 | no |
-| 25 | ch25-databricks.md | QA pass | 5,237 | 4500 | 13 | 6 | no |
-| 26 | ch26-snowflake.md | QA pass | 6,237 | 4500 | 16 | 28 | no |
+| 25 | ch25-databricks.md | QA pass | 5,329 | 4500 | 13 | 6 | no |
+| 26 | ch26-snowflake.md | QA pass | 6,364 | 4500 | 16 | 28 | no |
 | 27 | ch27-databricks-vs-snowflake.md | QA pass | 3,875 | 2500 | 11 | 17 | no |
 | 28 | ch28-hyperscaler-data-platforms.md | QA pass | 5,206 | 3500 | 10 | 29 | no |
 | 29 | ch29-operational-database-vendors.md | QA pass | 4,383 | 3000 | 11 | 46 | no |
-| 30 | ch30-data-movement-streaming-companies.md | QA pass | 4,152 | 3000 | 10 | 42 | no |
+| 30 | ch30-data-movement-streaming-companies.md | drafted | 4,366 | 3000 | 10 | 36 | no |
 | 31 | ch31-analytical-engine-challengers-legacy.md | QA pass | 4,389 | 3000 | 8 | 30 | no |
 | 32 | ch32-ai-native-data-companies.md | QA pass | 4,637 | 3500 | 11 | 36 | no |
 | 33 | ch33-governance-catalog-security-companies.md | QA pass | 3,495 | 2500 | 9 | 18 | no |
@@ -65,10 +65,10 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 35 | ch35-business-models.md | not started | 0 | 2500 | 0 | 0 | no |
 | 36 | ch36-unit-economics-kpis.md | not started | 0 | 2500 | 0 | 0 | no |
 | 37 | ch37-public-comps-valuation.md | not started | 0 | 2500 | 0 | 0 | no |
-| 38 | ch38-open-source-strategy.md | not started | 0 | 2000 | 0 | 0 | no |
+| 38 | ch38-open-source-strategy.md | QA pass | 3,283 | 2000 | 8 | 6 | no |
 | 39 | ch39-ma-history.md | not started | 0 | 3500 | 0 | 0 | no |
-| 40 | ch40-gtm-partnerships.md | not started | 0 | 2000 | 0 | 0 | no |
-| 41 | ch41-market-sizing.md | not started | 0 | 1000 | 0 | 0 | no |
+| 40 | ch40-gtm-partnerships.md | QA pass | 2,915 | 2000 | 9 | 6 | no |
+| 41 | ch41-market-sizing.md | QA pass | 1,727 | 1000 | 7 | 6 | no |
 | 42 | ch42-history-of-databases.md | not started | 0 | 3000 | 0 | 0 | no |
 | 43 | ch43-modern-data-stack.md | not started | 0 | 2000 | 0 | 0 | no |
 | 44 | ch44-future-trends.md | not started | 0 | 3000 | 0 | 0 | no |

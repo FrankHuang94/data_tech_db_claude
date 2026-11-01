@@ -306,3 +306,9 @@ Every `[VERIFY: …]` left in the text is listed here with its chapter. Resolve 
 | ch26 | ch26: [VERIFY] TruEra deal date (weak secondary source). | open |
 | ch26 | ch26: [VERIFY] Docs pages not re-opened: persisted query results (24h), Time Travel (1/90 days) and Fail-safe (7 days), compute cost (credits per size, 60s minimum, 10% cloud-services allowance), S3-compatible storage and external volumes. | open |
 | ch26 | ch26: Chart/data issue: snowflake_rpo.png and snowflake_nrr.png plot "FY2026" and "Q4 FY2026" as separate bars/points although they are the same period (duplicate rows in company_financials.csv with different fiscal_period labels). | open |
+| ch40 | ch40: [VERIFY: current Google Cloud Partner Advantage tier names] — not confirmed live. | open |
+| ch40 | ch40: [VERIFY: date and effective terms] of AWS Marketplace professional-services listing fee cut (2.5% → 0.5%), per CRN Australia 2026 only. | open |
+| ch40 | ch40: [VERIFY: date of Microsoft's 20%→3% commercial-marketplace fee cut, believed July 2021] — Microsoft ISV page undated. | open |
+| ch40 | ch40: [VERIFY: current billed-revenue threshold for Azure IP co-sell eligibility] — older partner blog cites $100K; not used in text. | open |
+| ch40 | ch40: [VERIFY: NVIDIA AI Data Platform launch partner list against NVIDIA newsroom original] — taken from HPCwire/TechPowerUp reposts. | open |
+| ch40 | ch40: [VERIFY: whether current Everpure Cloud Block Store marketplace listings are MACC/EDP-eligible]. | open |
