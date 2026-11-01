@@ -13,19 +13,19 @@
 
 | Company | Status / owner | HQ / founded | Leader (public record) | Scale marker | Latest valuation or market cap | Key backers / owner |
 |---|---|---|---|---|---|---|
-| ClickHouse | Private | Spun out of Yandex; incorporated Sept 2021[^ch-inc] | Aaron Katz (CEO) [VERIFY] | >$250M ARR, >4,000 customers (May 2026, company-stated)[^ch-arr] | $15B post-money (Jan 2026, press-reported)[^ch-seriesd] | Dragoneer (D), Khosla (C), Index, Benchmark[^ch-seriesc][^ch-inc] |
+| ClickHouse | Private | Spun out of Yandex; incorporated Sept 2021[^ch-inc] | Aaron Katz (CEO)† | >$250M ARR, >4,000 customers (May 2026, company-stated)[^ch-arr] | $15B post-money (Jan 2026, press-reported)[^ch-seriesd] | Dragoneer (D), Khosla (C), Index, Benchmark[^ch-seriesc][^ch-inc] |
 | DuckDB / DuckLabs | MIT project; DuckLabs agreed to join AWS (Aug 2026) | Amsterdam; CWI research 2018, Labs spun out 2021[^duck-history] | Hannes Mühleisen, Mark Raasveldt (founders) | >30 staff (2026); duckdb.org >8M monthly unique visitors (company-stated)[^duck-history][^duck-40k] | Terms undisclosed[^aws-duck] | AWS (acquirer); IP held by DuckDB Foundation |
-| MotherDuck | Private | Seattle; 2022 [VERIFY] | Jordan Tigani (CEO) [VERIFY] | Not disclosed | ~$400M post-money (Sept 2023, press-reported)[^motherduck] | Felicis, a16z |
-| Starburst | Private | Boston; 2017 [VERIFY] | Justin Borgman (CEO) [VERIFY] | Not disclosed | $250M Series D (Feb 2022); valuation not confirmed [VERIFY: ~$3.35B][^starburst-d] | Alkeon (lead, D) |
-| Dremio | Acquired by SAP (2026) | Santa Clara; 2015 [VERIFY] | Integrated into SAP Business Data Cloud | Not disclosed | $2B at Series E (Jan 2022, company-stated); deal terms undisclosed[^dremio-e][^sap-dremio] | SAP (owner) |
-| Firebolt | Private | Tel Aviv / US; 2019 [VERIFY] | Eldad Farkash (CEO) [VERIFY] | Not disclosed | Series C ~2022, terms unconfirmed [VERIFY][^firebolt] | n/a |
-| Teradata (TDC) | Public, NYSE | San Diego; 1979 [VERIFY] | Steve McMillan (CEO) [VERIFY] | ~$1.69B TTM revenue (GAAP)[^fin-tdc] | $3.19B market cap, $2.88B EV (2026-10-28)[^comps-tdc] | Public float |
-| Cloudera | Private (KKR, CD&R since 2021) | Santa Clara; 2008 [VERIFY] | Charles Sansbury (CEO) [VERIFY] | No audited figures since going private | $5.3B take-private equity value (2021)[^ma-cloudera] | KKR, Clayton Dubilier & Rice |
-| Palantir (PLTR) | Public, Nasdaq | Denver; 2003 [VERIFY] | Alex Karp (CEO) | $6.16B TTM revenue to Q2 2026, ~79% YoY (GAAP)[^fin-pltr] | $442B market cap, $433B EV (2026-10-30)[^comps-pltr] | Public float |
-| SAP (SAP) | Public, NYSE / Xetra | Walldorf; 1972 | Christian Klein (CEO) | Q3 2026 revenue €10.27B, cloud +26% (IFRS)[^comps-sap] | $274B market cap (2026-10-30)[^comps-sap] | Public float |
-| IBM (IBM) | Public, NYSE | Armonk; 1911 | Arvind Krishna (CEO) | Q3 2026 revenue $17.1B; Data +19% incl. Confluent (GAAP)[^comps-ibm] | $244B market cap (2026-10-30)[^comps-ibm] | Public float |
+| MotherDuck | Private | Seattle; 2022† | Jordan Tigani (CEO)† | Not disclosed | ~$400M post-money (Sept 2023, press-reported)[^motherduck] | Felicis, a16z |
+| Starburst | Private | Boston; 2017† | Justin Borgman (CEO)† | Not disclosed | $250M Series D (Feb 2022); valuation not confirmed [VERIFY: ~$3.35B][^starburst-d] | Alkeon (lead, D) |
+| Dremio | Acquired by SAP (2026) | Santa Clara; 2015† | Integrated into SAP Business Data Cloud | Not disclosed | $2B at Series E (Jan 2022, company-stated); deal terms undisclosed[^dremio-e][^sap-dremio] | SAP (owner) |
+| Firebolt | Private | Tel Aviv / US; 2019† | Eldad Farkash (CEO)† | Not disclosed | Series C ~2022, terms unconfirmed [VERIFY][^firebolt] | n/a |
+| Teradata (TDC) | Public, NYSE | San Diego; 1979† | Steve McMillan (CEO)† | ~$1.69B TTM revenue (GAAP)[^fin-tdc] | $3.19B market cap, $2.88B EV (2026-10-28)[^comps-tdc] | Public float |
+| Cloudera | Private (KKR, CD&R since 2021) | Santa Clara; 2008† | Charles Sansbury (CEO)† | No audited figures since going private | $5.3B take-private equity value (2021)[^ma-cloudera] | KKR, Clayton Dubilier & Rice |
+| Palantir (PLTR) | Public, Nasdaq | Denver; 2003† | Alex Karp (CEO)† | $6.16B TTM revenue to Q2 2026, ~79% YoY (GAAP)[^fin-pltr] | $442B market cap, $433B EV (2026-10-30)[^comps-pltr] | Public float |
+| SAP (SAP) | Public, NYSE / Xetra | Walldorf; 1972† | Christian Klein (CEO)† | Q3 2026 revenue €10.27B, cloud +26% (IFRS)[^comps-sap] | $274B market cap (2026-10-30)[^comps-sap] | Public float |
+| IBM (IBM) | Public, NYSE | Armonk; 1911† | Arvind Krishna (CEO)† | Q3 2026 revenue $17.1B; Data +19% incl. Confluent (GAAP)[^comps-ibm] | $244B market cap (2026-10-30)[^comps-ibm] | Public float |
 
-*Figure 31.1 — Snapshot. The challengers disclose almost nothing audited; only ClickHouse publishes a recent ARR floor. The public incumbents span two orders of magnitude in value, which tells you more about growth expectations than about installed base.*
+*Figure 31.1 — Snapshot. Cells marked † (HQ, founding year, CEO) are background knowledge not re-checked in this session's live sources [VERIFY: leaders and founding dates]; everything else is footnoted. The challengers disclose almost nothing audited; only ClickHouse publishes a recent ARR floor. The public incumbents span two orders of magnitude in value, which tells you more about growth expectations than about installed base.*
 
 ## Origin story and strategic arc
 
