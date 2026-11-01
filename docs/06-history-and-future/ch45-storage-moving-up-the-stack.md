@@ -27,7 +27,7 @@ Read the stack from the bytes upward. Layers 1–2 are classic storage: media, a
 
 *Figure 45.1 — Everpure's public announcements sit in the storage layers, in metadata intelligence and in part of the vector/KV layer. Table formats, engines and agent platforms are reached through partners and connectors, and that boundary is where the strategic choices lie. Sources: footnotes in this chapter.*
 
-The layers are not equally valuable. Gross margins and multiples rise as you climb, but so does the number of well-funded incumbents. Layers 4–5 are where Databricks (a >$7B revenue run-rate, company-stated) and Snowflake fight ([Ch 27](../04-company-deep-dives/ch27-databricks-vs-snowflake.md)). Layer 3 is where DSPM and catalog vendors are consolidating at high prices ([Ch 33](../04-company-deep-dives/ch33-governance-catalog-security-companies.md)). Layer 6 is still being defined.
+The layers are not equally valuable. Gross margins and multiples rise as you climb, but so does the number of well-funded incumbents. Layers 4–5 are where Databricks (a >$7B revenue run-rate, company-stated, August 2026) and Snowflake fight[^db-7b] ([Ch 27](../04-company-deep-dives/ch27-databricks-vs-snowflake.md)). Layer 3 is where DSPM and catalog vendors are consolidating at high prices ([Ch 33](../04-company-deep-dives/ch33-governance-catalog-security-companies.md)). Layer 6 is still being defined.
 
 ### Opportunity 1: the lakehouse substrate
 
@@ -282,6 +282,7 @@ Read the mix numbers with care. Q2 FY2027 revenue grew 38% (GAAP), and product r
 
 ## Sources
 
+[^db-7b]: Databricks, "Databricks Grows >80% YoY, Surpasses $7B Revenue Run-Rate, Scales Lakebase, Genie and Unity AI Gateway," https://www.databricks.com/company/newsroom/press-releases/databricks-grows-80-yoy-surpasses-7b-revenue-run-rate-scales, published 2026-08-13; retrieved 2026-11-01 (as cited in Ch 25). Company-stated run-rate, unaudited.
 [^comps-peers]: AI Data Atlas dataset `data/public_comps.csv`, rows for NetApp (EV/NTM 5.1x, as of 2026-10-01), Rubrik (16.0x, as of 2026-10-26), Commvault and Varonis, citing https://stockanalysis.com/stocks/ntap/financials/ratios/ and https://stockanalysis.com/stocks/rbrk/market-cap/; retrieved 2026-11-01. NTM revenue is a guidance or TTM proxy (estimate).
 [^ep-wwt]: World Wide Technology (reposting Pure Storage press release), "Pure Storage rebrands to Everpure and announces intent to acquire 1touch," https://www.wwt.com/news/pure-storage-rebrands-to-everpure-and-announces-intent-to-acquire-1touch, published 2026-02-23; retrieved 2026-11-01.
 [^ep-ticker]: Everpure press release, "Everpure to change ticker symbol," https://www.purestorage.com/company/newsroom/press-releases/everpure-to-change-ticker-symbol.html, published 2026-04-07 (effective 2026-04-17); Nasdaq, 2026-04-07; retrieved 2026-11-01 (via `meta/research-briefing.md`).

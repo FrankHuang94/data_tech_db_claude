@@ -6,14 +6,14 @@
 - **[Real-time analytics](../glossary.md#real-time-analytics)** means sub-second queries over data that is seconds old, served to thousands of concurrent callers. The callers are customer-facing dashboards, observability consoles, ad-tech bidders and, increasingly, AI agents. A warehouse BI query takes seconds to minutes and serves tens of analysts. Different jobs, different engines.
 - The leading engines (ClickHouse, Apache Druid, Apache Pinot) get their speed by **doing work at write time**: sorting, pre-aggregating and indexing data as it lands, so that each read touches only a few kilobytes to megabytes. ClickHouse reported **>$250M ARR** (company-stated, May 2026) and a **$15B** valuation (press-reported, January 2026).[^ch-arr][^ch-seriesd]
 - **[HTAP](../glossary.md#htap)** (hybrid transactional/analytical processing) puts transactions and analytics in one system, usually as a row store for writes plus a continuously replicated column store for scans behind one SQL front end. SingleStore, TiDB, Oracle Database In-Memory, SAP HANA, AlloyDB, Snowflake Hybrid Tables and now DuckDB-inside-Postgres all take versions of this approach.
-- **Most queries are small.** MotherDuck's reading of Amazon's published Redshift fleet data found that only about 0.03% of queries scan more than 10 TB.[^md-redshift][^redset] That is the case for in-process engines like DuckDB, which AWS agreed to buy the company behind in August 2026.[^aws-duck]
+- **Most queries are small.** MotherDuck's reading of Amazon's published Redshift fleet data found that only about 0.03% of queries scan more than 10 TB.[^md-redshift][^redset] That is the case for in-process engines like DuckDB, whose parent company, DuckLabs, AWS agreed to buy in August 2026 (terms undisclosed).[^aws-duck]
 - Agents make latency and per-query cost matter more. An agent that issues eight dependent queries pays the engine's latency eight times, and agents generate traffic at machine rates. That favors engines priced and built for many cheap queries over engines built for few expensive ones.
 
 ## Why this matters (business + Everpure lens)
 
 The analytics market has split by workload shape. The cloud warehouses ([Ch 5](../01-data-systems-foundations/ch05-analytical-engines.md), [Ch 26](../04-company-deep-dives/ch26-snowflake.md)) are optimized for flexible queries by a small number of humans. A second market has grown up around **[user-facing analytics](../glossary.md#user-facing-analytics)**: the "who viewed your profile" panel, the merchant dashboard inside a payments app, the log search box in an observability tool. Those products put an analytical query behind every page load. ClickHouse's revenue trajectory is the clearest financial signal of that split. It said it passed $250M ARR in May 2026, more than tripling year over year and adding over 1,000 customers since its January Series D (company-stated).[^ch-arr] Its valuation rose from $6.35B in May 2025 to $15B eight months later (both press-reported).[^ch-seriesc][^ch-seriesd]
 
-AI agents add a third consumer. When an agent answers "why did churn rise in the Northeast last week?", it issues a chain of SQL tool calls, each depending on the last ([Ch 22](ch22-agents-and-data.md)). The engine behind those calls needs warehouse-grade SQL with real-time-grade latency and cost. That is why ClickHouse launched Claude-powered agents at its May 2026 conference, and why Databricks, Snowflake and AWS have all bought Postgres or embedded-analytics assets since 2025.[^ch-arr][^mooncake][^aws-duck]
+AI agents add a third consumer. When an agent answers "why did churn rise in the Northeast last week?", it issues a chain of SQL tool calls, each depending on the last ([Ch 22](ch22-agents-and-data.md)). The engine behind those calls needs warehouse-grade SQL with real-time-grade latency and cost. ClickHouse, for example, launched Claude-powered agents at its May 2026 conference, and Databricks, Snowflake and AWS have all bought Postgres or embedded-analytics assets since 2025, in part for this reason.[^ch-arr][^mooncake][^aws-duck]
 
 For Everpure, the storage profile of these engines is distinctive. They are **latency-bound, not just throughput-bound**: the hot set sits on local NVMe for millisecond reads, while the bulk sits on object storage (ClickHouse Cloud's SharedMergeTree keeps all table data in shared object storage).[^ch-smt] Options a strategy team might evaluate, based on public information, include validating S3-compatible on-premises object storage as the shared tier for self-managed ClickHouse, Druid or Pinot clusters, and positioning fast flash as the cache tier those engines depend on.
 
@@ -118,7 +118,7 @@ The variants differ in where the column copy lives and how fresh it is:
 
 - **SingleStore** keeps an in-memory row store and a disk-based column store in the same engine. Its SIGMOD 2022 paper describes a "universal storage" table that serves both patterns.[^s2-paper] Vector Capital agreed to a growth buyout of SingleStore in September 2025 (terms undisclosed; Bloomberg cited roughly $500M, press-reported).[^singlestore]
 - **TiDB** (PingCAP) stores rows in TiKV, a Raft-replicated key-value store, and adds **TiFlash** columnar replicas that join each Raft group as non-voting learners. Analytics therefore read a consistent, near-current snapshot without slowing the write quorum.[^tidb-paper]
-- **Oracle Database In-Memory** and **SAP HANA** brought dual-format, in-memory columnar processing to the enterprise incumbents in the early 2010s [VERIFY: Oracle In-Memory GA 2014; HANA GA 2011].
+- **Oracle Database In-Memory** (GA July 2014, with Database 12.1.0.2) and **SAP HANA** (GA June 2011) brought dual-format, in-memory columnar processing to the enterprise incumbents (pre-2025 knowledge, not re-fetched).
 - **AlloyDB** (Google's Postgres-compatible service) adds a columnar engine, an in-memory column cache populated automatically from row tables. Google states speedups of up to 100× on analytical queries (vendor-stated, TPC-H-like tests).[^alloydb]
 - **Snowflake Hybrid Tables** (the Unistore feature) come at HTAP from the warehouse side, adding a row store for point operations. They reached GA on AWS in November 2024.[^sf-hybrid]
 - **Postgres plus an embedded column engine** is the 2025–26 pattern. pg_duckdb (from MotherDuck, Hydra and DuckDB Labs, beta October 2024) runs DuckDB inside the Postgres process.[^pgduckdb] Databricks acquired Mooncake Labs, the team behind pg_mooncake's Postgres-to-columnar mirroring, in October 2025 for Lakebase.[^mooncake] AWS shipped DuckDB-powered analytics inside Aurora PostgreSQL in autumn 2026, so one query can join live tables with Iceberg and Parquet data in S3.[^aurora-duck]
@@ -230,8 +230,8 @@ quadrantChart
 ```mermaid
 timeline
     title Real-time analytics and HTAP milestones
-    2011 : SAP HANA in-memory database [VERIFY]
-    2014 : Gartner names HTAP : Druid SIGMOD paper : Oracle Database In-Memory [VERIFY]
+    2011 : SAP HANA in-memory database GA
+    2014 : Gartner names HTAP : Druid SIGMOD paper : Oracle Database In-Memory GA
     2015 : Pinot open-sourced by LinkedIn
     2016 : ClickHouse open-sourced by Yandex
     2020 : TiDB HTAP paper at VLDB

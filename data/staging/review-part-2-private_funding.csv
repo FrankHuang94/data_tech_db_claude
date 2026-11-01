@@ -1,0 +1,2 @@
+company,date,round,amount_usd_m,post_money_valuation_usd_b,valuation_basis,lead_investors,category,source,as_of,notes
+dbt Labs,2022-02-24,Series D,222,4.2,company-stated,Altimeter Capital,transformation,https://sacra.com/c/dbt/,2026-11-01,"CORRECTION of dbt Labs Series D row (Part 2 review): note should read combined ARR ""approaching $600M"" (company-stated at 2026-06-01 close), not '~$600M ARR reported'. Date (Feb 2022) and Altimeter lead consistent with reviewer's settled pre-2025 knowledge; primary release not re-fetched, so integrator may keep [VERIFY day]."

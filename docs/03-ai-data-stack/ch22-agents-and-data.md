@@ -4,7 +4,7 @@
 ## TL;DR
 
 - AI agents reach data in three ways: they write SQL themselves ([text-to-SQL](../glossary.md#text-to-sql)), they call governed tools such as a semantic-layer metric API, or they retrieve documents and memories (see [Ch 19](ch19-retrieval-architectures.md)). Most production systems blend all three behind one protocol.
-- Text-to-SQL looks close to solved on academic benchmarks and is far from solved on real schemas. In the same 2025 paper, one model setup scored 91.2% on Spider 1.0 and 73.0% on BIRD, but only 21.3% on the enterprise-style Spider 2.0.[^spider2] The fix is context, not a bigger model: a catalog for schema linking, a semantic layer for business meaning, and a loop that tests and repairs queries.
+- Text-to-SQL looks close to solved on academic benchmarks and is far from solved on real schemas. The Spider 2.0 paper (2025) compares the best published results of the time on Spider 1.0 (91.2%) and BIRD (73.0%) with only 21.3% for its own best setup on the enterprise-style Spider 2.0.[^spider2] The fix is context, not a bigger model: a catalog for schema linking, a semantic layer for business meaning, and a loop that tests and repairs queries.
 - The [Model Context Protocol](../glossary.md#model-context-protocol) (MCP) became the standard way to plug agents into data. Anthropic launched it in November 2024. OpenAI, Google and Microsoft adopted it in 2025, and Anthropic donated it to the Linux Foundation's [Agentic AI Foundation](../glossary.md#agentic-ai-foundation) in December 2025.[^mcp-launch][^mcp-adopt][^mcp-donate] Every major data platform now ships an MCP server.
 - Governance is the real product. The hard problems are [identity propagation](../glossary.md#identity-propagation) (the agent acts *as* a specific user), least-privilege tools, row filters, audit and cost limits. The top security risk is [prompt injection](../glossary.md#prompt-injection) hidden in the data an agent reads.
 - Agents also *create* databases. Neon said more than 80% of its databases were provisioned by agents (company-stated, May 2025), and that claim helped set off a Postgres land grab: Databricks–Neon (Lakebase), Snowflake–Crunchy Data (Snowflake Postgres), Supabase at a $10.5B valuation, plus new hyperscaler Postgres services.[^neon-dbx][^supabase-f]
@@ -98,19 +98,19 @@ sequenceDiagram
 
 *Figure 22.2 — The text-to-SQL loop: most accuracy gains come from better schema linking and the execute-and-repair cycle, not from the first draft of SQL.*
 
-The benchmarks tell a cautionary story. Spider 1.0 (2018) uses small, clean, single-database schemas, and leading systems now exceed 90% there. BIRD (2023) added larger, messier databases and "evidence" hints. On BIRD's public leaderboard, Google reported 80.04% execution accuracy for Gemini-SQL2 in June 2026, and Huawei reported 82.39% for its DataGallery system in September 2026. The human baseline the leaderboard lists is 92.96%.[^bird-gemini][^bird-huawei] [Spider 2.0](../glossary.md#spider-2-0), presented at ICLR 2025, used 632 real enterprise workflow tasks on BigQuery, Snowflake and other engines, with databases that often exceed 1,000 columns. The best setup in the paper, OpenAI's o1-preview inside an agent framework, solved 21.3%.[^spider2] Third-party snapshots in 2026 put the best Spider 2.0-Lite scores in the 45–53% range (vendor-reported, differing subsets).[^spider2-repo]
+The benchmarks tell a cautionary story. Spider 1.0 (2018) uses small, clean, single-database schemas, and leading systems now exceed 90% there. BIRD (2023) added larger, messier databases and "evidence" hints. On BIRD's public leaderboard, Google reported 80.04% execution accuracy for Gemini-SQL2 in June 2026, and Huawei reported 82.39% for its DataGallery system in September 2026. The human baseline the leaderboard lists is 92.96%.[^bird-gemini][^bird-huawei] [Spider 2.0](../glossary.md#spider-2-0), presented at ICLR 2025, used 632 real enterprise workflow tasks on BigQuery, Snowflake and other engines, with databases that often exceed 1,000 columns. The best setup in the paper, OpenAI's o1-preview inside an agent framework, solved 21.3%. The paper compares that with 91.2% on Spider 1.0 and 73.0% on BIRD. Those two figures match the leading leaderboard systems of the time, not o1-preview runs on those benchmarks.[^spider2] Third-party snapshots in 2026 put the best Spider 2.0-Lite scores in the 45–53% range (vendor-reported, differing subsets).[^spider2-repo]
 
-Figure 22.3 shows the gap on one model and one evaluation, which is the fairest comparison available.
+Figure 22.3 shows the gap as the Spider 2.0 paper presents it. The bars come from different systems, so read the chart as "best available result on each benchmark", not as one model scored three ways.
 
 ```mermaid
 xychart-beta
-  title "Same model setup, three benchmarks (execution accuracy, %)"
+  title "Best reported result per benchmark (execution accuracy, %)"
   x-axis ["Spider 1.0", "BIRD", "Spider 2.0"]
   y-axis "Percent of tasks solved" 0 --> 100
   bar [91.2, 73.0, 21.3]
 ```
 
-*Figure 22.3 — Accuracy collapses as schemas approach enterprise reality: o1-preview with an agent framework, as reported in the Spider 2.0 paper (arXiv v2, March 2025).*
+*Figure 22.3 — Accuracy collapses as schemas approach enterprise reality. Spider 1.0 and BIRD bars are the leading leaderboard results cited in the Spider 2.0 paper; the Spider 2.0 bar is o1-preview with an agent framework (arXiv v2, March 2025).*
 
 Real enterprise accuracy is lower still, for reasons no benchmark fully captures. Schemas have thousands of tables with names like `F_ACCT_USG_D2`. The same concept lives in three places with different freshness. Business logic, such as fiscal calendars, which accounts count as "enterprise", or whether refunds net against revenue, is written down nowhere a model can read. And a wrong answer looks exactly like a right one. A query that double-counts through a one-to-many join returns a confident number, not an error.
 
@@ -120,7 +120,7 @@ The fix is to give the model context instead of hoping it infers it. Chapter 14 
 
 ### MCP: the bus between agents and systems
 
-MCP defines three roles. The **host** is the application the user interacts with. The **client** is the connector inside the host that keeps one session per server. The **[MCP server](../glossary.md#mcp-server)** wraps a system such as a warehouse, a CRM or a file store. Servers expose three primitives. **Tools** are functions the model can call (`run_query`, `list_metrics`). **Resources** are data the host can read into context (a table description, a document). **Prompts** are reusable templates the user can invoke. Local servers talk over standard input/output; remote servers use streamable HTTP. The specification moved quickly. The June 2025 revision classed remote MCP servers as OAuth 2.1 resource servers that must validate tokens issued specifically for them. The November 2025 revision tightened OAuth alignment further (resource indicators, protected-resource metadata).[^mcp-auth][^keycloak] A further revision dated July 2026 has been reported [VERIFY: contents and status of the 2026-07-28 MCP specification revision].
+MCP defines three roles. The **host** is the application the user interacts with. The **client** is the connector inside the host that keeps one session per server. The **[MCP server](../glossary.md#mcp-server)** wraps a system such as a warehouse, a CRM or a file store. Servers expose three primitives. **Tools** are functions the model can call (`run_query`, `list_metrics`). **Resources** are data the host can read into context (a table description, a document). **Prompts** are reusable templates the user can invoke. Local servers talk over standard input/output; remote servers use streamable HTTP. The specification moved quickly. The June 2025 revision classed remote MCP servers as OAuth 2.1 resource servers that publish protected-resource metadata and must validate tokens issued specifically for them, with clients required to name the target server through resource indicators. The November 2025 revision refined authorization further, for example in how clients register with servers.[^mcp-auth][^keycloak] A further revision dated July 2026 has been reported [VERIFY: contents and status of the 2026-07-28 MCP specification revision].
 
 | Element | What it is | Data-platform example | Who controls it |
 |---|---|---|---|
@@ -285,7 +285,7 @@ Three bets for the next two years. (1) Agent traffic will exceed human query tra
 
 | Metric | Value | Basis | Source / date |
 |---|---|---|---|
-| Spider 1.0 / BIRD / Spider 2.0, o1-preview with agent framework | 91.2% / 73.0% / 21.3% | Academic paper | Lei et al., arXiv v2, 2025-03[^spider2] |
+| Spider 1.0 / BIRD / Spider 2.0, best reported results (Spider 2.0: o1-preview with agent framework) | 91.2% / 73.0% / 21.3% | Academic paper (first two are leaderboard results it cites) | Lei et al., arXiv v2, 2025-03[^spider2] |
 | BIRD top submitted system | 82.39% execution accuracy (Huawei DataGallery) | Vendor-reported leaderboard result | Technology Magazine, 2026-09[^bird-huawei] |
 | BIRD human baseline | 92.96% | Leaderboard reference | BIRD leaderboard[^bird-huawei] |
 | GPT-4 over SQL vs semantic representation | 16.7% vs 54.2% | Vendor-run study | data.world, 2023-11[^dw-bench] |
@@ -323,7 +323,7 @@ Three bets for the next two years. (1) Agent traffic will exceed human query tra
 
 **"Don't say this"**
 
-- "Text-to-SQL is solved; models score over 90%." That is Spider 1.0. On enterprise-style Spider 2.0, the same class of system scored about 21% in the paper.
+- "Text-to-SQL is solved; models score over 90%." That is Spider 1.0. On enterprise-style Spider 2.0, the best system in the paper scored about 21%.
 - "MCP is secure" or "MCP is insecure." MCP is a connection standard. Security depends on server scope, identity and policy.
 - "The agent has its own admin account, so it can answer anything." That is exactly the confused-deputy pattern that defeats row-level security.
 - "Agent memory replaces the warehouse." Memory caches context. Governed facts should be re-read from the system of record.

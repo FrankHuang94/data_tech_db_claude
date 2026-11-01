@@ -162,7 +162,7 @@ Generative AI keeps the loop but changes what moves through it. Most enterprises
 | Model serving | Run models efficiently on GPUs | vLLM; SGLang; NVIDIA NIM and Triton; TGI; Databricks Model Serving; Bedrock | vLLM hosted by PyTorch Foundation, commercialised by Inferact ($150M seed, Jan 2026)[^ray-pt][^inferact]; Hugging Face TGI in maintenance mode[^tgi] |
 | Fine-tuning | Adapt open-weight models to domain data | Mosaic AI; Snowflake Cortex Training; Bedrock custom models; hyperscaler tuning | Bundled into data platforms and clouds; Cortex Training announced Summit 2026[^sf-summit] |
 
-*Figure 21.5 — Every LLMOps category has an open-source anchor, and in five of seven categories at least one leading independent was bought between 2024 and 2026.*
+*Figure 21.5 — Every LLMOps category has an open-source anchor, and in at least four of seven categories (experiment tracking, tracing, guardrails, gateways) a leading independent was bought between 2024 and 2026.*
 
 > **Bridge: semiconductors.** LLM evals are **post-silicon validation**. A chip is not shipped because the RTL simulated correctly; it ships when the validation suite exercises enough of the specification on real silicon, and coverage metrics say where the gaps are. A golden set is the test program, LLM-as-judge is an automated tester whose own accuracy must be correlated against a reference (human graders), and online evals are field-return analysis. The hard part in both worlds is coverage: a 500-question golden set that misses the edge cases customers hit is a 98% pass rate that means very little.
 

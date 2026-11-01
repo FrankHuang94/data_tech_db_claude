@@ -22,7 +22,7 @@
 
 Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + comparison tables (`scripts/qa_report.py`).
 
-**Totals:** 45/52 chapters drafted · 169,458 prose words · 421 visuals · 490 [VERIFY] markers.
+**Totals:** 45/52 chapters drafted · 169,727 prose words · 421 visuals · 482 [VERIFY] markers.
 
 | Ch | File | Status | Words | Budget | Visuals | VERIFY | Reviewed |
 |---|---|---|---|---|---|---|---|
@@ -34,8 +34,8 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 4 | ch04-distributed-databases.md | QA pass | 4,408 | 2000 | 10 | 5 | no |
 | 5 | ch05-analytical-engines.md | QA pass | 3,437 | 2200 | 8 | 2 | no |
 | 6 | ch06-file-formats.md | QA pass | 2,993 | 1800 | 7 | 2 | no |
-| 7 | ch07-open-table-formats.md | QA pass | 3,629 | 2000 | 9 | 1 | no |
-| 8 | ch08-catalogs-and-metastores.md | QA pass | 2,640 | 1600 | 6 | 8 | no |
+| 7 | ch07-open-table-formats.md | QA pass | 3,634 | 2000 | 9 | 1 | no |
+| 8 | ch08-catalogs-and-metastores.md | QA pass | 2,660 | 1600 | 6 | 8 | no |
 | 9 | ch09-pipeline-patterns.md | QA pass | 3,503 | 2000 | 10 | 3 | no |
 | 10 | ch10-ingestion-and-integration.md | QA pass | 2,758 | 1900 | 8 | 8 | no |
 | 11 | ch11-streaming-and-event-platforms.md | QA pass | 3,681 | 2200 | 10 | 5 | no |
@@ -49,9 +49,9 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 19 | ch19-retrieval-architectures.md | QA pass | 3,785 | 2200 | 11 | 6 | no |
 | 20 | ch20-training-data-supply-chain.md | QA pass | 3,652 | 2200 | 8 | 20 | no |
 | 21 | ch21-ml-platforms-feature-stores-llmops.md | QA pass | 3,436 | 2100 | 9 | 0 | no |
-| 22 | ch22-agents-and-data.md | QA pass | 4,255 | 2400 | 10 | 4 | no |
-| 23 | ch23-real-time-analytics-htap.md | QA pass | 3,360 | 2000 | 9 | 13 | no |
-| 24 | ch24-data-meets-compute-and-storage.md | QA pass | 3,630 | 2200 | 11 | 5 | no |
+| 22 | ch22-agents-and-data.md | QA pass | 4,328 | 2400 | 10 | 4 | no |
+| 23 | ch23-real-time-analytics-htap.md | QA pass | 3,366 | 2000 | 9 | 10 | no |
+| 24 | ch24-data-meets-compute-and-storage.md | QA pass | 3,641 | 2200 | 11 | 3 | no |
 | 25 | ch25-databricks.md | QA pass | 5,339 | 4500 | 13 | 6 | no |
 | 26 | ch26-snowflake.md | QA pass | 6,449 | 4500 | 16 | 29 | no |
 | 27 | ch27-databricks-vs-snowflake.md | QA pass | 3,918 | 2500 | 11 | 17 | no |
@@ -60,7 +60,7 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 30 | ch30-data-movement-streaming-companies.md | QA pass | 4,365 | 3000 | 10 | 25 | no |
 | 31 | ch31-analytical-engine-challengers-legacy.md | QA pass | 4,460 | 3000 | 8 | 21 | no |
 | 32 | ch32-ai-native-data-companies.md | QA pass | 4,760 | 3500 | 11 | 24 | no |
-| 33 | ch33-governance-catalog-security-companies.md | QA pass | 3,495 | 2500 | 9 | 18 | no |
+| 33 | ch33-governance-catalog-security-companies.md | QA pass | 3,647 | 2500 | 9 | 15 | no |
 | 34 | ch34-application-giants-data-platforms.md | QA pass | 3,419 | 2000 | 12 | 50 | no |
 | 35 | ch35-business-models.md | QA pass | 3,881 | 2500 | 9 | 1 | no |
 | 36 | ch36-unit-economics-kpis.md | QA pass | 4,083 | 2500 | 11 | 10 | no |
@@ -72,7 +72,7 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 42 | ch42-history-of-databases.md | QA pass | 4,565 | 3000 | 7 | 31 | no |
 | 43 | ch43-modern-data-stack.md | QA pass | 2,284 | 2000 | 6 | 5 | no |
 | 44 | ch44-future-trends.md | QA pass | 4,204 | 3000 | 9 | 12 | no |
-| 45 | ch45-storage-moving-up-the-stack.md | QA pass | 2,705 | 2000 | 8 | 17 | no |
+| 45 | ch45-storage-moving-up-the-stack.md | QA pass | 2,707 | 2000 | 8 | 17 | no |
 | 46 | ch46-talking-with-data-people.md | not started | 0 | 2200 | 0 | 0 | no |
 | 47 | ch47-diligence-checklist.md | not started | 0 | 2000 | 0 | 0 | no |
 | 48 | ch48-question-bank.md | not started | 0 | 2000 | 0 | 0 | no |
