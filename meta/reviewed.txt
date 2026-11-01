@@ -18,3 +18,12 @@ ch05-analytical-engines.md
 ch06-file-formats.md
 ch07-open-table-formats.md
 ch08-catalogs-and-metastores.md
+ch16-ai-data-lifecycle.md
+ch17-unstructured-data-processing.md
+ch18-embeddings-and-vector-search.md
+ch19-retrieval-architectures.md
+ch20-training-data-supply-chain.md
+ch21-ml-platforms-feature-stores-llmops.md
+ch22-agents-and-data.md
+ch23-real-time-analytics-htap.md
+ch24-data-meets-compute-and-storage.md

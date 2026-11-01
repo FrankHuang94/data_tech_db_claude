@@ -43,15 +43,15 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 13 | ch13-data-quality-observability-lineage.md | reviewed | 3,448 | 1800 | 8 | 5 | yes |
 | 14 | ch14-semantic-layers-and-bi.md | reviewed | 2,900 | 2000 | 7 | 5 | yes |
 | 15 | ch15-governance-security-privacy.md | reviewed | 4,434 | 2200 | 8 | 10 | yes |
-| 16 | ch16-ai-data-lifecycle.md | QA pass | 3,660 | 2200 | 6 | 1 | no |
-| 17 | ch17-unstructured-data-processing.md | QA pass | 3,160 | 2100 | 10 | 11 | no |
-| 18 | ch18-embeddings-and-vector-search.md | QA pass | 4,467 | 2600 | 11 | 6 | no |
-| 19 | ch19-retrieval-architectures.md | QA pass | 3,785 | 2200 | 11 | 6 | no |
-| 20 | ch20-training-data-supply-chain.md | QA pass | 3,652 | 2200 | 8 | 20 | no |
-| 21 | ch21-ml-platforms-feature-stores-llmops.md | QA pass | 3,436 | 2100 | 9 | 0 | no |
-| 22 | ch22-agents-and-data.md | QA pass | 4,328 | 2400 | 10 | 4 | no |
-| 23 | ch23-real-time-analytics-htap.md | QA pass | 3,366 | 2000 | 9 | 10 | no |
-| 24 | ch24-data-meets-compute-and-storage.md | QA pass | 3,641 | 2200 | 11 | 3 | no |
+| 16 | ch16-ai-data-lifecycle.md | reviewed | 3,660 | 2200 | 6 | 1 | yes |
+| 17 | ch17-unstructured-data-processing.md | reviewed | 3,160 | 2100 | 10 | 11 | yes |
+| 18 | ch18-embeddings-and-vector-search.md | reviewed | 4,467 | 2600 | 11 | 6 | yes |
+| 19 | ch19-retrieval-architectures.md | reviewed | 3,785 | 2200 | 11 | 6 | yes |
+| 20 | ch20-training-data-supply-chain.md | reviewed | 3,652 | 2200 | 8 | 20 | yes |
+| 21 | ch21-ml-platforms-feature-stores-llmops.md | reviewed | 3,436 | 2100 | 9 | 0 | yes |
+| 22 | ch22-agents-and-data.md | reviewed | 4,328 | 2400 | 10 | 4 | yes |
+| 23 | ch23-real-time-analytics-htap.md | reviewed | 3,366 | 2000 | 9 | 10 | yes |
+| 24 | ch24-data-meets-compute-and-storage.md | reviewed | 3,641 | 2200 | 11 | 3 | yes |
 | 25 | ch25-databricks.md | reviewed | 5,339 | 4500 | 13 | 6 | yes |
 | 26 | ch26-snowflake.md | reviewed | 6,449 | 4500 | 16 | 29 | yes |
 | 27 | ch27-databricks-vs-snowflake.md | reviewed | 3,918 | 2500 | 11 | 17 | yes |
