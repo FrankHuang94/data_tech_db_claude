@@ -154,3 +154,95 @@ flowchart LR
 **Database@ 各大云。** Oracle 把 Exadata 硬件安装在 Microsoft、Google 和 AWS 的数据中心里，并在那里以服务形式运行 Oracle Database。客户通过宿主云的云市场购买，并消耗其在该云上的承诺额度。截至 2025 年 10 月，Database@Azure 已在 28 个区域运行，Database@Google Cloud 在 8 个区域运行、另有 9 个在规划中。Oracle Database@AWS 正在扩张，但我们未找到官方区域数量。[^oracle-dbazure][^oracle-aiworld] 这是本章中竞合关系最清晰的案例：三家竞争对手托管 Oracle 的硬件，因为它们客户最重要的数据库就运行在这些硬件上。
 
 > **深入（L3）。** BigQuery 的速度来自三个解耦的层级，而不是某个巧妙的索引。存储位于 Colossus 上，采用列式格式，其编码和统计信息让引擎得以跳过数据。计算是按查询阶段分配的 Dremel 工作节点池（“slot”）。中间结果通过一个独立的远程内存 **shuffle** 服务传递，因此各阶段可以独立扩展，某个工作节点失败也不会丢失 shuffle 数据。Melnik 等人 2020 年发表于 VLDB 的回顾论文详细介绍了无服务器调度、解耦 shuffle 和列式存储如何从 2010 年的设计演进而来。[^dremel20] AWS Redshift RA3 和 Snowflake 则通过在对象存储前用本地 SSD 缓存热数据，实现了类似的分离。
+
+## 盈利模式
+
+### 计价单位与利润所在
+
+超大规模云厂商以类似基础设施的单位为数据产品定价：每 GB 每月的存储、请求次数、扫描的 TB 数（Athena、BigQuery 按需）、slot 小时或 RPU 小时（BigQuery 版本、Redshift Serverless）、DynamoDB 读/写单位，以及**容量单位**（Fabric 和 Power BI Premium，一个由所有 Fabric 工作负载共享的预留资源池；见[基于容量的定价（capacity-based pricing）](../glossary.md#capacity-based-pricing)）。数据产品很少需要单独自负盈亏，它的回报来自它所带动的计算、存储和网络消费。BigQuery 客户还会购买 Cloud Storage、Dataflow、Vertex/Gemini token 和出口流量。Fabric 客户通常早已为 Microsoft 365 和 Power BI 席位付过费。
+
+这就是制造黏性的环节之所以便宜或免费的原因：
+
+- **目录。** Glue Data Catalog 在免费额度之上按对象数和请求数收取少量费用，Microsoft 则把 OneLake 目录并入 Fabric 容量。[^glue-pricing] Google 的 Knowledge Catalog 元数据随 BigQuery 使用量适度计费 [VERIFY: Knowledge Catalog 当前定价]。免费的目录，本质上是为“决定哪个引擎能读取数据”的那一层支付的获客成本（见[第 8 章](../01-data-systems-foundations/ch08-catalogs-and-metastores.md)）。
+- **[零 ETL](../glossary.md#zero-etl)与镜像。** AWS 曾表示 Aurora 到 Redshift 的零 ETL 不单独收取复制费用，客户只为源端和目标端资源付费 [VERIFY: 当前零 ETL 定价页面]；Fabric 镜像计算也是免费的。[^zetl-ga][^fabric-mirror] 消除数据管道，就消除了使用 Fivetran、Informatica 或 Databricks Lakeflow 的一个理由，也消除了把分析副本放在同一朵云之外的一个理由。零 ETL 就像一家免费帮你拆箱的搬家公司，但只会把东西搬进它自己的房子。见[第 9 章](../02-pipelines-and-governance/ch09-pipeline-patterns.md)。
+- **免费迁移与抵扣额度。** 数据库迁移工具和迁移资助额度的逻辑相同：云厂商一次性承担转换成本，然后连续多年赚取运行率收入。
+
+### 承诺消费额度：超大规模云厂商的“照付不议”
+
+大客户会签订多年期**承诺消费协议**。AWS 的协议历来称为 Enterprise Discount Program（EDP；如今一般称为私有定价协议），Microsoft 的是 **Microsoft Azure Consumption Commitment（MACC）**，Google 也有同类的承诺合同。客户承诺在三年内消费比如 $100M，以换取折扣，任何差额仍需付费。通过云厂商**云市场**购买的合格第三方软件也计入承诺额度。Microsoft 在文档中写明，合格的 Azure Marketplace 购买计入 MACC。[^macc] AWS 和 Google 也有类似的云市场消耗规则，并有合同层面的具体限制 [VERIFY: AWS 和 Google 关于云市场支出中多大比例计入承诺额度的现行规则]。
+
+> **类比：照付不议（take-or-pay）供货协议。** MACC 或 EDP 相当于云领域的**照付不议晶圆或存储器供货协议**。买方承诺采购量并为差额付费，供应商则获得建设产能（这里是数据中心）所需的可见度。云市场消耗是其中的巧妙之处：这就好比 TSMC 允许客户把承诺的晶圆量花在*第三方*的芯片上，只要订单经过 TSMC 的账簿。客户花的是已承诺的预算，因此 Databricks 和 Snowflake 卖得更多。超大规模云厂商保住了承诺额度、赚取云市场费用，同时还托管这些工作负载。Oracle 的 $664B RPO 则是供应商一侧的镜像：由 AI 实验室*与*房东签订的照付不议算力合同。[^orcl-q1]
+
+### 集团层面的经济性
+
+数据产品所在分部的经济性差异很大。Google Cloud 的营业利润在 Q3 2026 升至 **$11.1B，上年同期为 $3.6B**，对应收入 $30.7B（GAAP）。[^goog-q3] Oracle 则处于相反的阶段。其过去十二个月资本开支 **$75.7B** 超过了 **$46.9B** 的经营现金流，自由现金流为 **–$28.7B**（非 GAAP，经营现金流减资本开支，截至 2026-10-20）。Oracle 还出售了 **$20B 普通股**来为建设融资。[^orcl-fcf][^comps] 数据库许可证和支持服务（Oracle 传统的高毛利业务）实际上正在为一场 AI 基础设施建设提供资金，而这场建设的回报取决于少数几个大租户。
+
+## 财务数据
+
+四家公司都没有单列“数据平台”收入。最好的公开替代指标是图 28.5 中的云分部数据，其中混合了数据产品、通用计算，以及越来越多的 AI 加速器。
+
+![2024 年 Q3 至 2026 年 Q3 云分部收入同比增速折线图。截至 2025 年 Q3，AWS 增速为 17% 至 20%，Google Cloud 和 Azure 约为 30% 至 40%，Oracle OCI 约为 45% 至 55%。到最新季度，Oracle OCI 达到 121%，Google Cloud 103%，Azure 48%，AWS 39%（Q2 2026 为 37%）。侧边柱状图显示最新季度收入：AWS $46.0B（Q3 2026），Google Cloud $30.7B，Azure 约 $33.2B，OCI 约 $7.4B](../assets/charts/ch28_cloud_growth.png)
+
+*图 28.5 — 2025 至 2026 年间，在 AI 算力推动下，Google、Microsoft 和 Oracle 的云业务增速大致翻了一倍到两倍；AWS 在最大的基数上把增速从 20% 提高到 39%，大约翻了一倍。Q4 2025 至 Q2 2026 之间的多数季度未汇编，因此以虚线连接空缺。资料来源：`data/ch28_cloud_segments.csv`。[^segments][^amzn-q3]*
+
+| 厂商 | 最新期间 | 云收入 | 同比增速 | 口径 | 驱动因素 |
+|---|---|---|---|---|---|
+| AWS | Q3 2026（2026 年 7–9 月） | $46.0B | +39% | GAAP 分部（Amazon 8-K） | 约五年来最快增速，高于 Q2 2026 的 37%；$184B 年化运行率（公司披露）[^amzn-q3] |
+| Google Cloud | Q3 2026 | $30.7B | +103% | GAAP 分部 | TPU 系统销售和 AI 基础设施；营业利润 $11.1B[^goog-q3] |
+| Microsoft Azure | Q1 FY2027（2026 年 7–9 月） | ~$33.2B | +48% | 媒体报道（首次披露 Azure 金额） | AI 算力；超出 44–45% 的固定汇率指引[^msft-q1] |
+| Oracle OCI | Q1 FY2027（2026 年 6–8 月） | ~$7.4B | +121% | 媒体报道 | CPU/GPU 基础设施约 $6.5B，+151%；Q2 云业务指引 +65–71%[^orcl-q1] |
+
+*图 28.6 — 最新云分部数据。各分部口径不同：Google Cloud 包含 Workspace；Microsoft 报告的是“Azure 及其他云服务”；OCI 仅为 Oracle 的基础设施业务线。*
+
+**AWS。** AWS 分部销售额在 Q3 2026 为 **$46.0B，增长 39%**（GAAP 分部收入，2026-10-29 公布），为约五年来最快增速，高于 Q2 2026 的 37%。Amazon 称该业务的**年化运行率为 $184B**（公司披露；即单季度 × 4）。Amazon 合并净销售额为 $201.9B（+12%），因此 AWS 占收入不到四分之一，却是主要增长引擎。[^amzn-q3] 一年前 AWS 增长 20% 至 $33.0B（Q3 2025），这本身已是从 2025 年上半年 17–17.5% 的再加速。[^segments] 按收入计，它仍是最大的云厂商；按百分比计，它仍是四家中增速最慢的。按绝对金额计，AWS 同比增加约 $13.0B，而 Google Cloud 约为 $15.5B（作者根据分部数据计算），因此本季度 Google 新增收入多于 AWS。截至 2026-10-30，Amazon 市值约为 $2.6T。[^comps] 本章资料来源中没有 AWS 本季度的分部营业利润 [VERIFY: 从 Amazon 8-K 中获取 AWS Q3 2026 分部营业利润]。
+
+**Google Cloud。** 103% 的增长是真实的，但需要仔细解读。对 8-K 的报道指出，TPU 系统销售有所贡献，这意味着 Google 如今在销售 AI 加速器系统，而不仅仅是出租。[^goog-q3][^comps] Alphabet Q3 2026 资本开支为 **$51.4B**。财报发布后股价下跌超过 8%（媒体报道），表明投资者在增长与资本开支之间进行了权衡。[^comps] 就数据平台分析而言，BigQuery 在这部分收入中的占比并未披露。
+
+**Microsoft。** Q1 FY2027 总收入为 $92.3B（媒体报道），Microsoft Cloud 达到 $63.9B，增长 30%。[^msft-q1] Microsoft 在该季度首次披露 Azure 的收入金额，约为 $33.2B（媒体报道）。这意味着 Azure 每季度比 AWS 的 $46.0B 少约 $13B，不过两者口径不同（“Azure 及其他云服务”对比 AWS 分部）[VERIFY: Azure 金额需与 Microsoft 投资者关系资料核对]。媒体摘要还报道了 **$677B（+73%）** 的商业 RPO 和 **$39.4B** 的季度资本开支。[^msft-q1] Fabric 收入未单独披露。
+
+**Oracle。** Q1 FY2027 总收入约为 $19.35B（GAAP，媒体报道），其中 OCI 约 $7.4B，RPO 达到 **$664B，同比增加 $209B**。[^orcl-q1] 增加 $209B 意味着一年前约为 $455B，与 Oracle 在 2025 年 9 月报告的跃升相符。媒体报道把那次跃升的大部分归因于与 **OpenAI** 签订的多年期算力合同，据《华尔街日报》报道，该合同从 2027 年起约**五年、总额约 $300B**（媒体报道；Oracle 在其公告中未点名交易对手）。[^openai-oracle] Oracle 给出的 FY2027 收入指引至少为 $90B，截至 2026-10-23，EV/未来 12 个月收入约为 5.7x；由于存在净负债，EV 远高于市值。[^comps] 看多者把积压订单视为 AI 时代的收入可见度；看空者则指出，这些订单高度集中、后置，并且在自由现金流为负的情况下依靠债务和股权融资。
+
+## 客户与市场进入
+
+### 与 Databricks 和 Snowflake 的竞合
+
+超大规模云厂商与独立数据平台之间的关系，是这个市场中最重要的商业动态。每一美元 Databricks 或 Snowflake 收入，都会以*三种*方式为超大规模云厂商带来收入：平台作为营业成本购买的基础设施、云市场费用，以及客户承诺额度的消耗。同时，它也*替代*了客户本可能花在 Redshift、BigQuery 或 Fabric 上的一美元。
+
+```mermaid
+flowchart LR
+    CUST["企业客户"]
+    subgraph HYP["超大规模云厂商"]
+        COMMIT["承诺消费额度<br/>EDP、MACC、Google 承诺合同"]
+        MKT["云市场<br/>联合销售、费用、私有报价"]
+        INFRA["计算、存储、网络"]
+        NATIVE["原生竞品<br/>Redshift、BigQuery、Fabric"]
+    end
+    subgraph IND["独立平台"]
+        DBX["Databricks"]
+        SNOW["Snowflake"]
+    end
+    CUST -->|"签订多年期承诺"| COMMIT
+    CUST -->|"通过其购买平台"| MKT
+    MKT -->|"消耗"| COMMIT
+    MKT -->|"扣除费用后付款"| DBX
+    MKT -->|"扣除费用后付款"| SNOW
+    DBX -->|"营业成本"| INFRA
+    SNOW -->|"营业成本"| INFRA
+    NATIVE -.->|"争夺同一笔预算"| DBX
+    NATIVE -.->|"争夺同一笔预算"| SNOW
+    CUST -.->|"或直接购买"| NATIVE
+```
+
+*图 28.7 — 竞合（coopetition）。实线箭头表示资金流向；虚线箭头表示竞争。无论客户选择哪个平台，超大规模云厂商都能在基础设施和承诺额度上获益，这正是它会与竞争对手联合销售的原因。*
+
+**Microsoft 的版本最为深入。** 自 2018 年 3 月正式可用以来，Azure Databricks 一直是 Azure 的第一方服务。Microsoft 负责销售、计费并提供一线支持，其消费与任何 Azure 服务一样计入 MACC。[^adb-ga] Microsoft 至少从 2019 年 E 轮起就是 Databricks 的投资者。[^funding] 然而 Fabric 是 Microsoft 面向同一批买家的自有产品，而且 Fabric 镜像可以把 Snowflake 和 Azure Databricks 的数据复制到 OneLake。[^fabric-mirror] 无论哪种情况 Microsoft 都会赢，但走向哪一边取决于其一线销售的激励机制。这使得与 Microsoft 的关系成为 Databricks 最大的单一渠道风险（见[第 25 章](ch25-databricks.md)）。
+
+**AWS 和 Google 采用云市场模式。** Databricks 和 Snowflake 都通过 AWS Marketplace 和 Google Cloud Marketplace 销售，在 AWS 上按交易量计它们位列最重要的卖家之列。我们无法确认两家公司当前披露的云市场销售数据 [VERIFY: Snowflake 和 Databricks 公司披露的 AWS Marketplace 销售额]。在供给侧，Snowflake 的文件中描述了对其云服务商（主要是 AWS）的大额多年期容量承诺 [VERIFY: Snowflake 最新 10-K 中 AWS 采购承诺的当前金额和期限]。Databricks 的无服务器产品同样把云成本转入自身的营业成本（见[第 25 章](ch25-databricks.md)和[第 26 章](ch26-snowflake.md)）。
+
+> **类比：IDM 与无晶圆厂（fabless）芯片公司。** 超大规模云厂商是**整合元件制造商（IDM）**：它们拥有晶圆厂（数据中心），自研芯片（Graviton、TPU、Maia），并销售成品（Redshift、BigQuery、Fabric）。Databricks 和 Snowflake 是**无晶圆厂公司**：它们设计产品，向 IDM 租用晶圆厂产能，因此基础设施计入营业成本。Snowflake 约 75% 的非 GAAP 产品毛利率（Q2 FY2027）就是向代工厂付费后的无晶圆厂毛利率。[^sf-q2] 与半导体行业一样，无晶圆厂公司的执行力往往胜过 IDM 的内部设计团队。IDM 乐于向它们出售产能，但在合同续约时掌控着定价、路线图节奏和客户关系。IDM 最好的武器不是更好的芯片，而是捆绑销售，Intel 当年的平台折扣就是例证。在这里，与 Power BI 捆绑的 Fabric、与 Aurora 捆绑的零 ETL 扮演的正是这一角色。
+
+### Fabric 的采用与市场份额
+
+Microsoft 在 FabCon 2025 上表示，Fabric 已有超过 **19,000 家付费客户**（公司披露，经二手回顾报道）。[^fabric-cust] 后来的财报电话会引用了更高的数字，但我们未能为本章核实 [VERIFY: 公司最新披露的 Fabric 付费客户数和收入增速]。一家付费客户可能只是一笔小额容量采购，因此这个数字更能说明覆盖广度而非深度。Fabric 真正的优势在于分发：每个 Power BI Premium 租户都已拥有可以运行 Fabric 工作负载的容量。
+
+在市场份额方面，Gartner 的 DBMS 研究估算 **2024 年**市场总规模为 **$119.7B**（分析师估算，+13.4%），并且多年来一直把 Microsoft、AWS、Oracle 和 Google 列为按收入计最大的四家 DBMS 厂商，排在 Databricks 和 Snowflake 之前。[^gartner-dbms] 最新一版中的厂商排名和份额位于 Gartner 付费墙之后 [VERIFY: 从公开的 Gartner 摘要中获取 2024 或 2025 年厂商排名和份额]。到 2024 年，云 DBMS 已占市场的大部分（根据 Gartner 摘要估算；见 `data/market_sizes.csv`）。[^gartner-dbms]
