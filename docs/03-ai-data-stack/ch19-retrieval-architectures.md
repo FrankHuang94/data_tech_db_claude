@@ -1,5 +1,5 @@
 # 19. Retrieval Architectures: RAG, Hybrid Search, GraphRAG and Context Engineering
-> **Depth:** L2 · **Reading time:** ~13 min · **Last verified:** 2026-11-01 · **Prerequisites:** [Ch 18 — Embeddings and vector search](ch18-embeddings-and-vector-search.md), [Ch 17 — Unstructured data processing](ch17-unstructured-data-processing.md)
+> **Depth:** L2 · **Reading time:** ~16 min · **Last verified:** 2026-11-01 · **Prerequisites:** [Ch 18 — Embeddings and vector search](ch18-embeddings-and-vector-search.md), [Ch 17 — Unstructured data processing](ch17-unstructured-data-processing.md)
 
 ## TL;DR
 

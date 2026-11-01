@@ -103,3 +103,8 @@ Judgment calls made during the autonomous build. Newest at the bottom.
 | ch23 | 2026-11-01 | ch23: Framed "small data" figures as MotherDuck's (vendor) analysis of Amazon's public Redset data, not as Amazon's own conclusion; Redset paper cited for its qualitative findings only. | drafter judgment |
 | ch23 | 2026-11-01 | ch23: Agent-latency and cost-per-query examples are explicitly illustrative (author assumptions: $1/node-hour, 2 s x 8 nodes vs 50 ms x 2 nodes, 167 QPS). | drafter judgment |
 | ch23 | 2026-11-01 | ch23: Quadrant chart placements are author judgment of typical deployments, labelled as such. | drafter judgment |
+| ch17 | 2026-11-01 | ch17: Treated the "80–90% unstructured" statistic as a weakly sourced rule of thumb: cited the 1998 Merrill Lynch origin (via Grimes/Wikipedia), AIIM/CMSWire's failed provenance search, and the 2023 Box-sponsored IDC paper (~90%) labelled as sponsored research. | drafter judgment |
+| ch17 | 2026-11-01 | ch17: Cost-per-1,000-pages comparison uses vendor list prices only (first volume tier, US regions); data-platform functions (Databricks, Snowflake) are shown as "not a flat rate" rather than converted from credits. | drafter judgment |
+| ch17 | 2026-11-01 | ch17: Snowflake naming: used "AI Functions" (formerly Cortex AISQL) and AI_PARSE_DOCUMENT per Snowflake's migration guide; Openflow as the Datavolo product. | drafter judgment |
+| ch17 | 2026-11-01 | ch17: Quadrant vendor map placements are explicitly author judgment from public product descriptions. | drafter judgment |
+| ch17 | 2026-11-01 | ch17: Chapter runs ~3,100 prose words vs 2,100 budget; overage is the worked example, cost table commentary and ACL/sync mechanism, kept because they are the chapter's core. | drafter judgment |

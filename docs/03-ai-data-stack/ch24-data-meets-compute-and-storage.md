@@ -1,5 +1,5 @@
 # 24. Where the Data Stack Meets Compute and Storage
-> **Depth:** L2 · **Reading time:** ~12 min · **Last verified:** 2026-11-01 · **Prerequisites:** [Ch 5 — Analytical engines](../01-data-systems-foundations/ch05-analytical-engines.md), [Ch 7 — Open table formats](../01-data-systems-foundations/ch07-open-table-formats.md)
+> **Depth:** L2 · **Reading time:** ~16 min · **Last verified:** 2026-11-01 · **Prerequisites:** [Ch 5 — Analytical engines](../01-data-systems-foundations/ch05-analytical-engines.md), [Ch 7 — Open table formats](../01-data-systems-foundations/ch07-open-table-formats.md)
 
 ## TL;DR
 

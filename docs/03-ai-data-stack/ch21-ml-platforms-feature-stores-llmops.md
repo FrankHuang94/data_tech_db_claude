@@ -1,5 +1,5 @@
 # 21. ML Platforms, Feature Stores and LLMOps
-> **Depth:** L2 · **Reading time:** ~11 min · **Last verified:** 2026-11-01 · **Prerequisites:** [Ch 16 — The AI data lifecycle](ch16-ai-data-lifecycle.md)
+> **Depth:** L2 · **Reading time:** ~15 min · **Last verified:** 2026-11-01 · **Prerequisites:** [Ch 16 — The AI data lifecycle](ch16-ai-data-lifecycle.md)
 
 ## TL;DR
 
@@ -124,11 +124,11 @@ A **point-in-time join** attaches, for each training example, the most recent fe
 sequenceDiagram
     participant DS as Data scientist
     participant FS as Feature store SDK
-    participant OFF as Offline store
+    participant OS as Offline store
     participant TR as Training job
     DS->>FS: Labels - C-1042 as of 2026-03-01, label 1
-    FS->>OFF: Find rows for C-1042 with feature_ts on or before 2026-03-01
-    OFF-->>FS: Candidates 2026-02-15 and 2026-02-28
+    FS->>OS: Find rows for C-1042 with feature_ts on or before 2026-03-01
+    OS-->>FS: Candidates 2026-02-15 and 2026-02-28
     Note over FS: Keep the latest candidate, drop rows dated after the label time
     FS->>FS: Apply TTL - reject values older than 30 days
     FS-->>DS: tickets_30d 1, days_since_login 6

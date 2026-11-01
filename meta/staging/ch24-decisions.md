@@ -1,0 +1,6 @@
+- ch24: Storage hardware/protocols not re-taught (companion Everpure Tech Atlas); the chapter covers only how the data stack uses and stresses object storage. The storage-requirements table lists evaluation methods, not product claims.
+- ch24: All GPU speedups (cudf.pandas 150x, cuML 50x, Velox ~12x, FINRA 14x/90%, CBA >80%, DataPelago 80%/10x) labelled vendor- or customer-stated; FINRA figure rests on a secondary summary of a re:Invent session.
+- ch24: Egress chart (Fig 24.6) uses blended estimates ($0.022/GB-month storage, $0.06/GB egress) rather than exact AWS tiers; assumptions stated in footnote.
+- ch24: Cloudera 66% AI-repatriation figure used as directional only (vendor-commissioned survey); Barclays/Flexera repatriation figures not used because only second-hand sources were found.
+- ch24: Everpure–Snowflake: cited the 2022 Pure/Snowflake joint on-prem S3-compatible external tables announcement; no current FlashBlade certification list found, so no "validated" claim is made.
+- ch24: Over budget (3,630 vs 2,200 prose words) because the assignment's scope list was long; no padding added.

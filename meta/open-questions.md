@@ -99,3 +99,14 @@ Every `[VERIFY: …]` left in the text is listed here with its chapter. Resolve 
 | ch23 | ch23: AWS News Blog date for Aurora PostgreSQL Iceberg/Parquet (DuckDB-powered) querying (Sep–Oct 2026). | open |
 | ch23 | ch23: AWS–DuckLabs closing status (agreement signed 2026-08-26; later Amazon/InfoQ items say "acquired"). | open |
 | ch23 | ch23: SingleStore–Vector Capital close date (secondary sources say Oct 2025) and ~$500M (Bloomberg, press-reported). | open |
+| ch17 | ch17: Embedding list price assumption ($0.02 per million tokens) used in the worked example — confirm against a current embedding-model price list. | open |
+| ch17 | ch17: CMSWire (J. Mancini) "Deconstructing a content management urban legend" — publication date. | open |
+| ch17 | ch17: Databricks "From PDFs to Production" document-intelligence blog — exact publication day (Nov 2025); also whether ai_parse_document has left Beta/Public Preview. | open |
+| ch17 | ch17: Glean post-2025 ARR ($200M Dec 2025; ~$300M May 2026) — primary source; data/private_funding.csv note labels $300M "company-stated" but search found it only in Sacra (estimate). | open |
+| ch17 | ch17: Azure AI Document Intelligence current USD list rates (Read $1.50, Layout $10 per 1,000 pages) on the official pricing page. | open |
+| ch17 | ch17: Mistral OCR 3 announcement — exact day (Dec 2025). | open |
+| ch17 | ch17: LlamaParse credit price ($1.25 per 1,000 credits, from usagepricing tracker) on the official pricing page. | open |
+| ch17 | ch17: Reducto r-1 blog — exact publication day (Sept 2026) and confirmation of ~1 cent/page "all in". | open |
+| ch17 | ch17: Docling's donation to the Linux Foundation (which foundation; date). | open |
+| ch17 | ch17: NVIDIA "Finding the Best Chunking Strategy" blog — publication date. | open |
+| ch17 | ch17: Official Gemini 3 Flash list price ($0.50 / $3.00 per 1M input/output tokens per aggregator). | open |

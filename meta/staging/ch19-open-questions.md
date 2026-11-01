@@ -1,0 +1,7 @@
+- ch19: Confirm whether Anthropic applies a long-context surcharge to Claude Sonnet 5.5 prompts above 200K tokens (illustrative cost example assumes flat $2/$10 pricing).
+- ch19: Verify the press-reported GPT-5.5 surcharge ($10/$45 per M tokens for prompts above 272K tokens) against OpenAI's pricing page.
+- ch19: Verify Cohere Rerank 4 Fast/Pro rates ($2.00/$2.50 per 1,000 searches) on Cohere's own pricing page; check the reported Oct 2026 per-token Rerank 5 pricing.
+- ch19: Find Glean's primary press release for $300M ARR (May 2026); currently seen only via secondary sources and data/private_funding.csv notes.
+- ch19: Exact publication date of Snowflake blog "Cortex Search: State-of-the-Art Hybrid Search for RAG Applications" (2024).
+- ch19: Date on which Databricks renamed Vector Search to "Databricks AI Search".
+- ch19: GA date of Everpure KVA integration with NVIDIA Dynamo (reported as planned for Feb–Apr 2026).

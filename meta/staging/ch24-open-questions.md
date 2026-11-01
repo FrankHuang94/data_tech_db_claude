@@ -1,0 +1,5 @@
+- ch24: Voltron Data operating status in 2026 (last public news found: Accenture investment 2025-02-20, Carahsoft partnership 2025-04); confirm whether Theseus is still sold.
+- ch24: NVIDIA–HEAVY.AI acquisition — date, terms and primary announcement (only PitchBook/NEA/dbdb.io and NVIDIA-hosted docs found).
+- ch24: RAPIDS launch date (believed GTC Europe, October 2018) used in the History timeline.
+- ch24: S3 request list prices ($0.005 per 1,000 PUT/LIST; $0.0004 per 1,000 GET) not re-confirmed on the live AWS pricing page.
+- ch24: EU Data Act dates (application 2025-09-12; switching charges to zero by 2027-01-12) not re-checked against EUR-Lex.

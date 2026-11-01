@@ -1,0 +1,5 @@
+- ch19: Prose came in at ~3,780 words vs a 2,200 budget; kept because the extra length is mechanism (RRF worked example, cost worked example, failure-mode table, evaluation) rather than padding. Integrator may trim History or Who's who if Part 3 balance matters.
+- ch19: Illustrative long-context vs RAG cost uses Claude Sonnet 5.5 list prices from Anthropic's pricing page (snapshot 2026-10-06) as the primary case and GPT-5.5 as a cross-check; Gemini 3.x prices omitted because only third-party pricing summaries (which conflicted) were found.
+- ch19: KV-cache size (~330 GB per 1M tokens) is an estimate computed from the public Llama 3 70B architecture (FP16, GQA), not a vendor figure.
+- ch19: Glean source in data/private_funding.csv is Wikipedia; proposed a source correction to TechCrunch 2025-06-10 in data/staging/ch19-private_funding.csv.
+- ch19: Elastic–Jina AI deal value uses the $43.4M purchase consideration from Elastic's later 10-Q (an earlier 10-Q showed $44.6M).
