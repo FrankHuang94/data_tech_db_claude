@@ -256,3 +256,151 @@ xychart-beta
 | Everpure FlashBlade | 本地统一文件与 S3 对象平台 | Dremio 和 Starburst 参考架构；Databricks Storage Ecosystem 首发合作伙伴；基于 NVIDIA 的 Data Stream[^dremio-pure][^starburst-ep][^storage-eco][^data-stream] | 见存储桥接 |
 
 *图 24.9 — GPU 数据工具如今覆盖数据框、Spark、向量检索和现有 SQL 引擎。更不起眼的趋势是存储厂商在自己的产品中加入计算能力。*
+
+## 历史与发展轨迹
+
+```mermaid
+timeline
+    title 对象存储成为数据库底座
+    2006 : S3 以最终一致性推出
+    2016 : Snowflake 论文让对象存储成为持久磁盘
+    2018 : NVIDIA 启动 RAPIDS 项目
+    2020 : S3 实现强读后写一致性
+    2022 : Snowflake 本地兼容 S3 表预览
+    2023 : cudf pandas 加速器模式 : S3 Express One Zone
+    2024 : S3 条件写入 : S3 Tables : 云迁出费用豁免
+    2025 : GTC 发布 Project Aether 与 cuML accel : 欧盟数据法案开始适用 : S3 Vectors 正式发布
+    2026 : AWS European Sovereign Cloud : NetApp 收购 DataPelago : Databricks Storage Ecosystem : Everpure Data Stream
+```
+
+*图 24.10 — 二十年间，对象存储从一个"哑"存储桶变成了具备事务、表、向量和 GPU 数据路径的组件。2024–2026 年的集中爆发把数据库特性搬进了存储 API。*
+
+RAPIDS 的起始年份 2018 年，对应的是 NVIDIA 于 2018 年 10 月在 GTC Europe 上开源该项目（基于 2025 年前的知识，未重新抓取）。发展轨迹指向同一个方向。存储 API 吸收了越来越多的数据库工作：提交、表、向量、凭证分发。计算向存储靠拢，既通过 GPU 加速引擎，也通过存储厂商嵌入引擎。悬而未决的问题是：谁拥有两者之间的那一层。目录厂商（Databricks、Snowflake、AWS）想要它，存储厂商也在争夺它（[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)）。
+
+## 关键数字
+
+| 指标 | 数值 | 口径 | 来源 / 日期 |
+|---|---|---|---|
+| S3 Standard 存储（前 50 TB） | 约 $0.023/GB-月 | 标价，美国东部 | AWS 定价，2026[^s3-pricing] |
+| S3 PUT/LIST 与 GET 请求 | 每 1,000 次 $0.005 和 $0.0004 | 标价，美国东部 | AWS 定价[^s3-pricing] |
+| AWS 互联网出口流量，第一档 | 约 $0.09/GB；每月前 100 GB 免费 | 标价 | AWS 定价；AWS 2021-11[^s3-pricing][^aws-100gb] |
+| Cloudflare R2 存储 / 出口流量 | $0.015/GB-月 / $0 | 标价 | Cloudflare 文档，2026[^r2] |
+| S3 Express One Zone 降价 | 存储 −31%，PUT −55%，GET −85% | 厂商公告 | AWS，2025-04-10[^s3-express-cut] |
+| S3 单前缀请求速率 | 每秒 3,500 次写入、5,500 次读取 | AWS 声明 | AWS 文档[^s3-perf] |
+| S3 Vectors 规模 | 每个索引最多 2B 个向量，查询约 100 ms | AWS 声明 | re:Invent 2025[^s3-vectors] |
+| `cudf.pandas` 发布时提速 | 最高约 150 倍（5 GB 基准测试） | 厂商宣称，最佳情况 | NVIDIA，2023-11[^cudf-pandas] |
+| GPU Velox 类 TPC-H 提速 | 单个 DGX B200 上约 12 倍 | 厂商宣称 | NVIDIA，2025[^velox-gpu] |
+| FINRA 在 GPU 上运行 Spark | 提速 14 倍，节省 90% 成本，单一工作负载 | 客户/厂商声明 | re:Invent 2025[^finra] |
+| OpenSearch GPU 索引构建 | 约 274 → 29 分钟（10M × 768 维） | 项目基准测试 | OpenSearch，2025[^cuvs] |
+| DataPelago 宣称的收益 | 成本最多降低 80%，速度最多快 10 倍 | 厂商宣称 | NetApp，2026-07[^datapelago] |
+| AI 工作负载回迁（12 个月） | 66% 的受访者 | 厂商委托调查 | Cloudera，2026-08[^cloudera-survey] |
+
+*图 24.11 — 价格均为标价，提速数据均为厂商宣称。两者都只是谈判或概念验证的起点，而不是可据以规划的结果。*
+
+## 存储桥接
+
+> **存储桥接。** 湖仓使用 FlashBlade 这类兼容 S3 的本地存储，作为 Iceberg 或 Delta 表之下的持久层。引擎（Dremio、Starburst/Trino、Spark）通过范围 GET 读取 Parquet，并通过目录进行提交。Everpure 的公开资料显示了一个面向混合 Iceberg 湖仓的 Dremio 联合解决方案（2024 年简介；Dremio 现归 SAP 所有），以及一个 Starburst"可扩展湖仓分析"（Scalable Lakehouse Analytics）参考架构。[^dremio-pure][^starburst-ep][^sap-dremio] Pure 与 Snowflake 于 2022 年宣布了一个通过兼容 S3 的外部表使用本地数据的联合解决方案。[^sf-onprem] Everpure 是 Databricks Storage Ecosystem 的首发合作伙伴，其 OpenSharing 连接器自 2026 年 6 月起处于私有预览阶段。[^storage-eco][^everpure-os] FlashBlade 还在 NVIDIA AI Data Platform 设计上承载 Data Stream。[^data-stream][^aidp] 基于公开信息，战略团队可能评估的选项包括：（1）与引擎合作伙伴一起，针对上文的要求表发布独立测试结果；（2）像 S3 Tables 那样增加感知表的服务（REST 目录、维护）；（3）认证基于 RDMA 的 S3（cuObject）路径，使 GPU ETL 能直接读取湖仓表；（4）将 DataPelago 先例与通过合作实现存储内计算进行比较。协议和硬件细节见配套的 *Everpure Tech Atlas*。
+
+## 对话手册
+
+**向产品经理提的问题**
+
+1. "你们的本地客户目前在兼容 S3 的存储上运行哪些引擎和目录？他们最先要求哪些认证（Snowflake 测试套件、Databricks Storage Ecosystem、Starburst、Dremio）？"
+2. "客户的 GPU 集群相对于其湖仓表位于何处？当两者不在同一位置时，他们报告的出口流量费或复制成本有多少？"
+3. "欧盟《数据法案》和 2024 年的迁出费用豁免如何改变了客户的多云计划？你们看到的是稳态的跨云读取，还是仅限于迁移？"
+
+**向工程师提的问题**
+
+1. "请给我看在一次 100 GB/s 扫描运行期间，每秒 10,000 次请求下 16 KB GET 和 HEAD 的 p99 延迟。Iceberg 规划时间会怎样变化？"
+2. "你们如何在跨节点竞争条件下实现 `If-Match` 和 `If-None-Match`？又是如何测试确保恰好只有一次提交胜出的？"
+3. "对于一个 Spark RAPIDS 或 cuDF 作业，运行时间中 I/O 与计算各占多少比例？GPUDirect Storage 或基于 RDMA 的 S3 会改变这一比例吗？"
+
+**好的回答听起来是什么样的。** 它们把元数据性能与吞吐量区分开来，并分别给出数字。它们谈的是条件写入的正确性测试，而不仅仅是 API 覆盖面。关于 GPU，它们会展示一份把 I/O 与计算分开的性能剖析，并承认哪些作业没有提速。关于出口流量费，它们会点出具体的计划（迁出豁免、欧盟按成本定价）及其条件。
+
+**不要这样说**
+
+- "GPU 能让每条查询都变快。" I/O 受限的扫描和小查询收益甚微；厂商的提速数据来自关联和聚合密集型作业。
+- "兼容 S3 就意味着兼容。" 条件写入、并发下的一致性、LIST 行为以及分段上传的边界情况差异很大。
+- "出口流量费已经没了。" 迁出豁免只覆盖离开一个云的情况，欧盟计划只覆盖符合条件的流量。在大多数情况下，稳态跨云读取仍然收费。
+- "缓存解决了对象存储的延迟问题。" 只对重复访问的工作集有效；弹性计算在缩容或挂起时会丢失缓存。
+- "Databricks 和 Snowflake 可以在本地运行。" 它们不能。它们可以通过兼容 S3 的表、OpenSharing 或联邦查询读取本地数据。
+
+## 深入阅读
+
+- NVIDIA RAPIDS 关于 cuDF、`cudf.pandas` 以及 Spark RAPIDS 资格评估和性能剖析工具的文档。[^cudf-ga][^aether]
+- Velox GPU 相关工作和 Presto GPU 博客，了解现有引擎如何获得 GPU 算子。[^velox-gpu][^presto-gpu]
+- AWS 的 S3 性能指南和条件写入公告，了解湖仓所依赖的 API 契约。[^s3-perf][^s3-cond][^s3-ifmatch]
+- NVIDIA 的 cuObject 文档，了解基于 RDMA 的 S3 设计及其对存储服务器的要求。[^cuobject]
+- [第 16 章](ch16-ai-data-lifecycle.md)介绍为 GPU 供数的 AI 数据生命周期，[第 40 章](../05-business-and-economics/ch40-gtm-partnerships.md)介绍存储与平台的合作关系如何销售。
+
+## 关键术语
+
+- [对象存储（Object storage）](../glossary.md#object-storage) — 通过 HTTP 访问、按键存储不可变对象的扁平化存储，例如 S3。
+- [湖仓一体（Lakehouse）](../glossary.md#lakehouse) — 在对象存储上的开放表格式和文件格式之上实现数据仓库级的管理。
+- [读后写一致性（Read-after-write consistency）](../glossary.md#read-after-write-consistency) — 保证一次成功的写入对随后的读取和列表操作立即可见。
+- [条件写入（Conditional write）](../glossary.md#conditional-write) — 仅在某个前提条件成立时（如对象不存在或 ETag 未改变）才会成功的对象写入。
+- [比较并交换（Compare-and-swap）](../glossary.md#compare-and-swap) — 作为表提交基础的原子性"仅在未改变时更新"操作。
+- [S3 Express One Zone](../glossary.md#s3-express-one-zone) — AWS 使用目录存储桶的单可用区低延迟 S3 存储类别。
+- [请求计费（Request pricing）](../glossary.md#request-pricing) — 对 PUT、GET 和 LIST 等对象存储操作按次收取的费用。
+- [RAPIDS](../glossary.md#rapids) — NVIDIA 面向数据科学和数据处理的开源 GPU 库套件。
+- [cuDF](../glossary.md#cudf) — RAPIDS 的 GPU 数据框库，包括 pandas 加速器模式。
+- [cuVS](../glossary.md#cuvs) — RAPIDS 中用于 GPU 向量索引构建和检索的库。
+- [RAPIDS Accelerator for Apache Spark](../glossary.md#rapids-accelerator-for-apache-spark) — 在 GPU 上运行 Spark SQL 和 DataFrame 算子的插件。
+- [GPUDirect Storage](../glossary.md#gpudirect-storage) — NVIDIA 将数据从存储直接移入 GPU 显存、绕过主机 DRAM 的技术。
+- [算术强度（Arithmetic intensity）](../glossary.md#arithmetic-intensity) — 每搬运一个字节所执行的操作数；决定作业是受计算约束还是受带宽约束。
+- [缓存层（Cache tier）](../glossary.md#cache-tier) — 位于较慢的对象存储前方、存放热工作集的快速本地存储。
+- [数据引力（Data gravity）](../glossary.md#data-gravity) — 大型数据集对计算和应用产生的吸引力。
+- [出口流量费（Egress fee）](../glossary.md#egress-fee) — 云服务商对离开其网络或区域的数据按 GB 收取的费用。
+- [查询联邦（Query federation）](../glossary.md#query-federation) — 通过把工作下推到其他系统来就地查询其中的数据。
+- [零拷贝数据共享（Zero-copy data sharing）](../glossary.md#zero-copy-data-sharing) — 就地授予数据访问权限而不复制数据。
+- [数据主权（Data sovereignty）](../glossary.md#data-sovereignty) — 要求数据在某一司法管辖区内存储和处理的法律要求。
+- [主权云（Sovereign cloud）](../glossary.md#sovereign-cloud) — 在本地司法管辖和本地人员配置下运营、以满足主权规则的云区域。
+- [云回迁（Cloud repatriation）](../glossary.md#cloud-repatriation) — 将工作负载或数据从公有云迁回本地或私有基础设施。
+- [纠删码（Erasure coding）](../glossary.md#erasure-coding) — 将数据存储为数据分片加校验分片，以比复制更低的开销承受故障。
+- [OpenSharing](../glossary.md#opensharing) — 源自 Delta Sharing 一脉、用于就地共享表的开放协议。
+
+## 资料来源
+
+[^s3-consistency]: AWS, "Amazon S3 now delivers strong read-after-write consistency automatically for all applications," https://aws.amazon.com/about-aws/whats-new/2020/12/amazon-s3-now-delivers-strong-read-after-write-consistency-automatically-for-all-applications/，发布 2020-12-01；检索 2026-11-01。
+[^s3-cond]: AWS, "Amazon S3 now supports conditional writes," https://aws.amazon.com/about-aws/whats-new/2024/08/amazon-s3-conditional-writes/，发布 2024-08-20；检索 2026-11-01。
+[^s3-ifmatch]: AWS, "Amazon S3 adds new functionality for conditional writes," https://aws.amazon.com/about-aws/whats-new/2024/11/amazon-s3-functionality-conditional-writes，发布 2024-11-25；检索 2026-11-01。另见 S. Willison, https://simonwillison.net/2024/Nov/26/s3-conditional-writes，2024-11-26。
+[^s3-express]: AWS News Blog, "New Amazon S3 Express One Zone high performance storage class," https://aws.amazon.com/blogs/aws/new-amazon-s3-express-one-zone-high-performance-storage-class/，发布 2023-11-28；检索 2026-11-01。延迟为厂商声明。
+[^s3-express-cut]: AWS, "Amazon S3 Express One Zone reduces storage and request prices," https://aws.amazon.com/about-aws/whats-new/2025/04/amazon-s3-express-one-zone-reduces-storage-request-prices/，发布 2025-04-10；AWS News Blog, "Up to 85% price reductions for Amazon S3 Express One Zone," https://aws.amazon.com/blogs/aws/up-to-85-price-reductions-for-amazon-s3-express-one-zone/，2025-04；检索 2026-11-01。
+[^s3tables]: AWS News Blog, "New Amazon S3 Tables: Storage optimized for analytics workloads," https://aws.amazon.com/blogs/aws/new-amazon-s3-tables-storage-optimized-for-analytics-workloads/，发布 2024-12-03；检索 2026-11-01。
+[^s3-vectors]: AWS News Blog, "Top announcements of AWS re:Invent 2025," https://aws.amazon.com/blogs/aws/top-announcements-of-aws-reinvent-2025，发布 2025-12；Blocks & Files, "AWS piles on S3 upgrades from vector search to 50 TB objects," https://www.blocksandfiles.com/ai-ml/2025/12/03/aws-piles-on-s3-upgrades-from-vector-search-to-50-tb-objects/1704690，2025-12-03；检索 2026-11-01（经由 `meta/research-briefing.md`）。数字为厂商声明。
+[^s3-list]: AWS, "ListObjectsV2 — Amazon S3 API Reference" (MaxKeys up to 1,000), https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html，持续更新的文档；检索 2026-11-01。
+[^s3-perf]: AWS, "Best practices design patterns: optimizing Amazon S3 performance," https://docs.aws.amazon.com/AmazonS3/latest/userguide/optimizing-performance.html，持续更新的文档；检索 2026-11-01。
+[^s3-pricing]: AWS, "Amazon S3 pricing" (S3 Standard storage, requests and data transfer, US East), https://aws.amazon.com/s3/pricing/，持续更新的文档；检索 2026-11-01。存储和出口流量阶梯已与 2026 年第三方指南交叉核对（例如 CloudForecast, https://www.cloudforecast.io/blog/amazon-s3-pricing-and-optimization-guide/，2026）。[VERIFY: 每 1,000 次 PUT/LIST $0.005 和每 1,000 次 GET $0.0004 的请求价格尚未在 AWS 实时页面上重新确认]
+[^aws-100gb]: AWS, "AWS price reduction for data transfers out to the internet," https://aws.amazon.com/about-aws/whats-new/2021/11/aws-price-reduction-data-transfers-internet，发布 2021-11；检索 2026-11-01。
+[^aws-exit]: AWS News Blog, "Free data transfer out to internet when moving out of AWS," https://aws.amazon.com/blogs/aws/free-data-transfer-out-to-internet-when-moving-out-of-aws/，发布 2024-03-05（2025-09 更新）；InfoQ, https://www.infoq.com/news/2024/03/aws-egress-fees/，2024-03；检索 2026-11-01。Google 的豁免（2024 年 1 月）依据下文引用的 The Register。
+[^eu-egress]: The Register, "Big clouds scramble as EU Data Act brings new data transfer rules," https://www.theregister.com/2025/09/10/big_clouds_scramble_over_eu/，发布 2025-09-10；DatacenterDynamics, "Google axes some data transfer costs in preparation for EU Data Act," https://www.datacenterdynamics.com/en/news/google-axes-some-data-transfer-costs-in-preparation-for-eu-data-act/，2025-09；检索 2026-11-01。
+[^eu-data-act]: `meta/research-briefing.md` F 节（欧盟《数据法案》自 2025-09-12 起适用；切换费用于 2027-01-12 前降至零）。日期与法规文本一致：Regulation (EU) 2023/2854, Art. 50（自 2025 年 9 月 12 日起适用）及 Art. 29（在 2027 年 1 月 12 日之前降低切换费用，并自该日起取消），https://eur-lex.europa.eu/eli/reg/2023/2854/oj，发布 2023-12-22（2025 年前的来源，审阅者已依据通过的文本确认；未重新抓取）。
+[^r2]: Cloudflare, "R2 pricing," https://developers.cloudflare.com/r2/pricing/，持续更新的文档；检索 2026-11-01。
+[^dbx-cache]: Databricks documentation, "Optimize performance with caching on Databricks" (disk cache), https://docs.databricks.com/gcp/en/optimizations/disk-cache，持续更新的文档；检索 2026-11-01。
+[^sf-cache]: Snowflake documentation, "Optimizing the warehouse cache," https://docs.snowflake.com/en/user-guide/performance-query-warehouse-cache，持续更新的文档；检索 2026-11-01。
+[^warp]: Starburst, "Announcing the public preview of Warp Speed in Starburst Galaxy," https://www.starburst.io/blog/announcing-warp-speed-starburst-galaxy/，2023；InfoWorld, "Starburst adds low-code and Warp Speed capabilities…," https://www.infoworld.com/article/2337952/starburst-adds-low-code-and-warp-speed-capabilities-to-enterprise-and-galaxy-offerings.html，2023-02；检索 2026-11-01。提速数据为厂商宣称。
+[^alluxio]: Oracle Cloud Infrastructure 博客关于 Alluxio 作为 OCI GPU 计算旁分布式缓存的文章，https://blogs.oracle.com/cloud-infrastructure/?p=18122，2026；NVIDIA Technical Blog, "Accelerating analytics and AI with Alluxio and NVIDIA GPUs," https://developer.nvidia.com/blog/accelerating-analytics-and-ai-with-alluxio-and-nvidia-gpus，日期不详；检索 2026-11-01。
+[^cudf-pandas]: NVIDIA Technical Blog, "RAPIDS cuDF Accelerates pandas Nearly 150x with Zero Code Changes," https://developer.nvidia.com/blog/rapids-cudf-accelerates-pandas-nearly-150x-with-zero-code-changes，发布 2023-11；BigDATAwire, "Pandas on GPU runs 150x faster, Nvidia says," https://bigdatawire.com/2023/11/08/pandas-on-gpu-runs-150x-faster-nvidia-says，2023-11-08；检索 2026-11-01。厂商基准测试。
+[^cudf-ga]: RAPIDS, "cuDF pandas Accelerator Mode," https://rapids.ai/cudf-pandas/，持续更新的文档；检索 2026-11-01。
+[^cuml-accel]: NVIDIA Technical Blog, "NVIDIA cuML Brings Zero Code Change Acceleration to scikit-learn," https://developer.nvidia.com/blog/nvidia-cuml-brings-zero-code-change-acceleration-to-scikit-learn/，发布 2025-03；检索 2026-11-01。提速数据为厂商报告。
+[^aether]: BigDATAwire, "NVIDIA Pushes Boundaries of Apache Spark With RAPIDS and Project Aether," https://bigdatawire.com/2025/03/21/nvidia-pushes-boundaries-of-apache-spark-with-rapids-and-project-aether，发布 2025-03-21；NVIDIA blog, "Project Aether accelerates Apache Spark," https://blogs.nvidia.com/blog/project-aether-accelerates-apache-spark，2025-03；NVIDIA, "RAPIDS Accelerator for Apache Spark overview," https://docs.nvidia.com/cudf-spark/25.08/overview.html；检索 2026-11-01。CBA 的成果为客户/厂商声明。
+[^finra]: DEV Community 对 AWS re:Invent 2025 会议 AIM279 的总结，"FINRA: accelerate massive data processing with NVIDIA on AWS EMR," https://dev.to/kazuya_dev/aws-reinvent-2025-finra-accelerate-massive-data-processing-with-nvidia-on-aws-emr-aim279-4cae，2025-12；检索 2026-11-01。对厂商会议的二手总结；单一工作负载。
+[^cuvs]: NVIDIA Technical Blog, "Optimizing Vector Search for Indexing and Real-Time Retrieval with NVIDIA cuVS," https://developer.nvidia.com/blog/optimizing-vector-search-for-indexing-and-real-time-retrieval-with-nvidia-cuvs/，2025；OpenSearch, "GPU-accelerated vector search in OpenSearch: A new frontier," https://opensearch.org/blog/gpu-accelerated-vector-search-opensearch-new-frontier，2025；NVIDIA cuVS integrations, https://docs.nvidia.com/cuvs/getting-started/integrations；检索 2026-11-01。
+[^velox-gpu]: NVIDIA Technical Blog, "Accelerating Large-Scale Data Analytics with GPU-Native Velox and NVIDIA cuDF," https://developer.nvidia.com/blog/accelerating-large-scale-data-analytics-with-gpu-native-velox-and-nvidia-cudf，2025；IBM Community, "Accelerating data analytics: GPU, Velox and NVIDIA," https://community.ibm.com/community/user/blogs/ali-leclerc/2025/10/07/accelerating-data-analytics-gpu-velox-nvidia，2025-10-07；检索 2026-11-01。性能数据为厂商声明。
+[^presto-gpu]: Presto Foundation blog, "GPU-Accelerated Presto C++ is Here: Nightly Images for NVIDIA GPUs," https://prestodb.io/blog/2026/06/24/gpu-accelerated-presto-c/，发布 2026-06-24；检索 2026-11-01。
+[^voltron]: Accenture newsroom, "Accenture invests in Voltron Data to help organizations use GPU technology to simplify large-scale data processing," https://newsroom.accenture.com/news/2025/accenture-invests-in-voltron-data-to-help-organizations-use-gpu-technology-to-simplify-large-scale-data-processing，发布 2025-02-20；Help Net Security, "Voltron Data Theseus…," https://www.helpnetsecurity.com/2023/12/01/voltron-data-theseus/，2023-12-01；检索 2026-11-01。
+[^heavy]: PitchBook, "HEAVY.AI company profile," https://pitchbook.com/profiles/company/98344-09，日期不详；NEA portfolio, https://www.nea.com/portfolio/heavy-ai，日期不详；NVIDIA 托管的 HeavyDB 文档，https://docs.nvidia.com/heavyai/installation-and-configuration/system-requirements/hardware，日期不详；检索 2026-11-01。未找到 NVIDIA 的一手公告。
+[^datapelago]: NetApp press release, "NetApp Acquires DataPelago, Making Data AI-Ready at the Infrastructure Layer," https://www.netapp.com/en/newsroom/press-releases/news-rel-20260716-210092/，发布 2026-07-16；Blocks & Files, https://blocksandfiles.com/ai-ml/2026/07/17/netapp-buys-datapelago-to-become-full-stack-ai-data-infrastructure-provider/5274250，2026-07-17；检索 2026-11-01。条款未披露；收益为厂商宣称。
+[^cuobject]: NVIDIA, "NVIDIA cuObject: Accelerated CUDA libraries for Object Storage," release r1.16, https://docs.nvidia.com/gpudirect-storage/cuobject/index.html，日期 2026-01-12；检索 2026-11-01。
+[^aidp]: StorageNewsletter, "NVIDIA GTC 2025: Pure Storage Integrates NVIDIA AI Data Platform into FlashBlade," https://www.storagenewsletter.com/2025/03/19/nvidia-gtc-2025-pure-storage-integrates-nvidia-ai-data-platform-into-flashblade/，发布 2025-03-19；检索 2026-11-01。
+[^data-stream]: Everpure via PR Newswire, "Everpure Unveils Data-Primacy Architecture for the AI Era," https://www.prnewswire.com/news-releases/everpure-unveils-data-primacy-architecture-for-the-ai-era-302803097.html，发布 2026-06-17；Everpure newsroom, https://www.everpuredata.com/company/newsroom/press-releases/everpure-announces-data-stream.html，2026-06-17；检索 2026-11-01（经由 `meta/research-briefing.md`）。
+[^dremio-pure]: Dremio partner page, https://www.dremio.com/partners/pure-storage/，日期不详；Pure Storage/Dremio solution brief, https://dremio.com/wp-content/uploads/2024/10/Dremio-Pure-Storage-Solutions-Brief-1.pdf，2024-10；检索 2026-11-01（经由 `meta/research-briefing.md`）。
+[^starburst-ep]: Everpure partner page, "Starburst," https://www.everpuredata.com/la/partners/technology-alliance-partners/starburst.html，日期不详；检索 2026-11-01（经由 `meta/research-briefing.md`）。
+[^sap-dremio]: Dremio newsroom, "SAP to Acquire Dremio…," https://www.dremio.com/newsroom/sap-to-acquire-dremio-to-unify-sap-and-non-sap-data-to-power-agentic-ai/，发布 2026-05-04；检索 2026-11-01（经由 `meta/research-briefing.md`；据同一文件，交易约于 2026 年 7 月完成）。
+[^storage-eco]: Databricks blog, "Announcing the Databricks Storage Ecosystem: Governing the Enterprise Data Estate Wherever It Lives," https://www.databricks.com/blog/announcing-databricks-storage-ecosystem-governing-enterprise-data-estate-wherever-it-lives，发布 2026-06-10；检索 2026-11-01（引用方式同第 25 章）。
+[^everpure-os]: Everpure blog, "Everpure OpenSharing Connector," https://blog.everpuredata.com/products/everpure-opensharing-connector/，发布 2026-06；检索 2026-11-01（引用方式同第 25 章）。厂商声明；自 2026-06-09 起私有预览。
+[^sf-onprem]: Snowflake blog, "Now in Private Preview: Using On-Premises Data in Place with Snowflake," https://www.snowflake.com/en/blog/external-tables-on-prem/，发布 2022-06；Pure Storage 博客关于 FlashBlade–Snowflake 联合解决方案的文章，https://blog.purestorage.com/?p=105573，2022；检索 2026-11-01。
+[^sf-s3compat]: Snowflake documentation, "Working with Amazon S3-compatible storage," https://docs.snowflake.com/en/user-guide/tables-external-s3-compatible，持续更新的文档；检索 2026-11-01。
+[^aws-esc]: Amazon press release, "AWS Launches AWS European Sovereign Cloud and Announces Expansion Across Europe," https://press.aboutamazon.com/2026/1/aws-launches-aws-european-sovereign-cloud-and-announces-expansion-across-europe，发布 2026-01-14（Business Wire, https://www.businesswire.com/news/home/20260114444935/en/）；检索 2026-11-01。
+[^cloudera-survey]: Virtualization Review, "Cloudera survey: 66 percent repatriated AI workloads from public cloud," https://virtualizationreview.com/articles/2026/08/12/cloudera-survey-66-percent-repatriated-ai-workloads-from-public-cloud.aspx，发布 2026-08-12；检索 2026-11-01。厂商委托调查。
+[^assump]: 作者的示意性假设（估算，非厂商数据）：两个 400 Gb/s 端口 ≈ 每节点最大摄取 100 GB/s；1 PB = 1,000,000 GB；S3 Standard 存储在 50 TB / 450 TB / 500 TB+ 各档的混合费率 ≈ $0.022/GB-月；阶梯折扣后的互联网出口流量混合费率 ≈ $0.06/GB（第一档标价 ≈ $0.09/GB）。小文件算例：1B 个对象 × $0.005/1,000 次 PUT = $5,000；4,000 GB × $0.023 ≈ $92。
