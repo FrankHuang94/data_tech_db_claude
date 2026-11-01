@@ -1,6 +1,6 @@
 # CLAUDE.md — AI Data Atlas: standing rules and execution mode
 
-This repository is the **AI Data Atlas**, a knowledge base of at least 100,000 words (target ~120,000) on databases, data pipelines, data platforms, the AI-data stack and the businesses behind them. It is written for a corporate-development / strategy professional (CFA, MBA, legal background, semiconductor and AI-infrastructure M&A experience) joining Strategy & Corporate Development at **Everpure** (formerly Pure Storage, NYSE: PSTG). A companion repo, the "Everpure Tech Atlas", already covers storage hardware, protocols and AI storage, so **do not re-teach storage**. Where storage matters, add a short "Storage bridge" box and move on.
+This repository is the **AI Data Atlas**, a knowledge base of at least 100,000 words (target ~120,000) on databases, data pipelines, data platforms, the AI-data stack and the businesses behind them. It is written for a corporate-development / strategy professional (CFA, MBA, legal background, semiconductor and AI-infrastructure M&A experience) joining Strategy & Corporate Development at **Everpure** (formerly Pure Storage; renamed Feb 23, 2026; NYSE ticker changed from PSTG to **P** on Apr 17, 2026). A companion repo, the "Everpure Tech Atlas", already covers storage hardware, protocols and AI storage, so **do not re-teach storage**. Where storage matters, add a short "Storage bridge" box and move on.
 
 **After any context compaction:** re-read this file and `PROGRESS.md`, then continue with the next unfinished item.
 
