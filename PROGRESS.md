@@ -22,29 +22,29 @@
 
 Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + comparison tables (`scripts/qa_report.py`).
 
-**Totals:** 41/52 chapters drafted · 153,522 prose words · 382 visuals · 447 [VERIFY] markers.
+**Totals:** 45/52 chapters drafted · 169,150 prose words · 421 visuals · 494 [VERIFY] markers.
 
 | Ch | File | Status | Words | Budget | Visuals | VERIFY | Reviewed |
 |---|---|---|---|---|---|---|---|
 | 0.1 | ch00-1-how-to-use.md | not started | 0 | 1200 | 0 | 0 | no |
 | 0.2 | ch00-2-market-map.md | not started | 0 | 1800 | 0 | 0 | no |
-| 1 | ch01-data-stack-map.md | QA pass | 3,417 | 2200 | 10 | 4 | no |
-| 2 | ch02-data-models.md | QA pass | 3,201 | 1900 | 7 | 5 | no |
-| 3 | ch03-database-internals.md | QA pass | 4,376 | 2300 | 10 | 1 | no |
-| 4 | ch04-distributed-databases.md | QA pass | 4,315 | 2000 | 10 | 4 | no |
-| 5 | ch05-analytical-engines.md | QA pass | 3,400 | 2200 | 8 | 2 | no |
+| 1 | ch01-data-stack-map.md | QA pass | 3,429 | 2200 | 10 | 4 | no |
+| 2 | ch02-data-models.md | QA pass | 3,230 | 1900 | 7 | 4 | no |
+| 3 | ch03-database-internals.md | QA pass | 4,485 | 2300 | 10 | 1 | no |
+| 4 | ch04-distributed-databases.md | QA pass | 4,408 | 2000 | 10 | 5 | no |
+| 5 | ch05-analytical-engines.md | QA pass | 3,437 | 2200 | 8 | 2 | no |
 | 6 | ch06-file-formats.md | QA pass | 2,967 | 1800 | 7 | 6 | no |
 | 7 | ch07-open-table-formats.md | QA pass | 3,602 | 2000 | 9 | 2 | no |
 | 8 | ch08-catalogs-and-metastores.md | QA pass | 2,640 | 1600 | 6 | 8 | no |
-| 9 | ch09-pipeline-patterns.md | QA pass | 3,461 | 2000 | 10 | 3 | no |
-| 10 | ch10-ingestion-and-integration.md | QA pass | 2,751 | 1900 | 8 | 9 | no |
-| 11 | ch11-streaming-and-event-platforms.md | QA pass | 3,593 | 2200 | 10 | 5 | no |
-| 12 | ch12-transformation-and-orchestration.md | QA pass | 3,250 | 1900 | 7 | 3 | no |
-| 13 | ch13-data-quality-observability-lineage.md | QA pass | 3,395 | 1800 | 8 | 6 | no |
-| 14 | ch14-semantic-layers-and-bi.md | QA pass | 2,857 | 2000 | 7 | 4 | no |
+| 9 | ch09-pipeline-patterns.md | QA pass | 3,503 | 2000 | 10 | 3 | no |
+| 10 | ch10-ingestion-and-integration.md | QA pass | 2,758 | 1900 | 8 | 8 | no |
+| 11 | ch11-streaming-and-event-platforms.md | QA pass | 3,681 | 2200 | 10 | 5 | no |
+| 12 | ch12-transformation-and-orchestration.md | QA pass | 3,319 | 1900 | 7 | 3 | no |
+| 13 | ch13-data-quality-observability-lineage.md | QA pass | 3,448 | 1800 | 8 | 5 | no |
+| 14 | ch14-semantic-layers-and-bi.md | QA pass | 2,900 | 2000 | 7 | 5 | no |
 | 15 | ch15-governance-security-privacy.md | QA pass | 4,343 | 2200 | 8 | 9 | no |
-| 16 | ch16-ai-data-lifecycle.md | QA pass | 3,600 | 2200 | 6 | 1 | no |
-| 17 | ch17-unstructured-data-processing.md | QA pass | 3,144 | 2100 | 10 | 11 | no |
+| 16 | ch16-ai-data-lifecycle.md | QA pass | 3,660 | 2200 | 6 | 1 | no |
+| 17 | ch17-unstructured-data-processing.md | QA pass | 3,160 | 2100 | 10 | 11 | no |
 | 18 | ch18-embeddings-and-vector-search.md | QA pass | 4,359 | 2600 | 11 | 5 | no |
 | 19 | ch19-retrieval-architectures.md | QA pass | 3,781 | 2200 | 11 | 7 | no |
 | 20 | ch20-training-data-supply-chain.md | QA pass | 3,610 | 2200 | 8 | 20 | no |
@@ -56,23 +56,23 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 26 | ch26-snowflake.md | QA pass | 6,449 | 4500 | 16 | 29 | no |
 | 27 | ch27-databricks-vs-snowflake.md | QA pass | 3,918 | 2500 | 11 | 17 | no |
 | 28 | ch28-hyperscaler-data-platforms.md | QA pass | 5,371 | 3500 | 10 | 26 | no |
-| 29 | ch29-operational-database-vendors.md | QA pass | 4,383 | 3000 | 11 | 46 | no |
+| 29 | ch29-operational-database-vendors.md | QA pass | 4,557 | 3000 | 11 | 40 | no |
 | 30 | ch30-data-movement-streaming-companies.md | QA pass | 4,365 | 3000 | 10 | 25 | no |
 | 31 | ch31-analytical-engine-challengers-legacy.md | QA pass | 4,460 | 3000 | 8 | 21 | no |
-| 32 | ch32-ai-native-data-companies.md | QA pass | 4,637 | 3500 | 11 | 36 | no |
+| 32 | ch32-ai-native-data-companies.md | QA pass | 4,760 | 3500 | 11 | 24 | no |
 | 33 | ch33-governance-catalog-security-companies.md | QA pass | 3,495 | 2500 | 9 | 18 | no |
 | 34 | ch34-application-giants-data-platforms.md | QA pass | 3,419 | 2000 | 12 | 50 | no |
 | 35 | ch35-business-models.md | QA pass | 3,881 | 2500 | 9 | 1 | no |
 | 36 | ch36-unit-economics-kpis.md | QA pass | 4,083 | 2500 | 11 | 10 | no |
-| 37 | ch37-public-comps-valuation.md | not started | 0 | 2500 | 0 | 0 | no |
+| 37 | ch37-public-comps-valuation.md | QA pass | 3,199 | 2500 | 15 | 6 | no |
 | 38 | ch38-open-source-strategy.md | QA pass | 3,283 | 2000 | 8 | 6 | no |
 | 39 | ch39-ma-history.md | QA pass | 4,745 | 3500 | 11 | 2 | no |
 | 40 | ch40-gtm-partnerships.md | QA pass | 2,915 | 2000 | 9 | 6 | no |
 | 41 | ch41-market-sizing.md | QA pass | 1,762 | 1000 | 7 | 6 | no |
-| 42 | ch42-history-of-databases.md | not started | 0 | 3000 | 0 | 0 | no |
+| 42 | ch42-history-of-databases.md | QA pass | 4,565 | 3000 | 7 | 31 | no |
 | 43 | ch43-modern-data-stack.md | QA pass | 2,284 | 2000 | 6 | 5 | no |
-| 44 | ch44-future-trends.md | not started | 0 | 3000 | 0 | 0 | no |
-| 45 | ch45-storage-moving-up-the-stack.md | not started | 0 | 2000 | 0 | 0 | no |
+| 44 | ch44-future-trends.md | QA pass | 4,204 | 3000 | 9 | 12 | no |
+| 45 | ch45-storage-moving-up-the-stack.md | QA pass | 2,705 | 2000 | 8 | 17 | no |
 | 46 | ch46-talking-with-data-people.md | not started | 0 | 2200 | 0 | 0 | no |
 | 47 | ch47-diligence-checklist.md | not started | 0 | 2000 | 0 | 0 | no |
 | 48 | ch48-question-bank.md | not started | 0 | 2000 | 0 | 0 | no |

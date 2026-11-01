@@ -85,7 +85,7 @@ db.orders.find({ customer_id: 42 }).sort({ order_date: -1 }).limit(5)
 
 ### Key-value: the hash table at datacenter scale
 
-A [key-value store](../glossary.md#key-value-store) does one thing: given a key, it returns a value. Redis keeps the data in memory and adds data structures such as lists, sets and sorted sets. DynamoDB, which traces back to Amazon's 2007 Dynamo paper, spreads items across partitions by hashing a [partition key](../glossary.md#partition-key). It caps an item at 400 KB and a partition key at 2,048 bytes.[^ddb][^dynamo]
+A [key-value store](../glossary.md#key-value-store) does one thing: given a key, it returns a value. Redis keeps the data in memory and adds data structures such as lists, sets and sorted sets. DynamoDB borrows ideas from Amazon's 2007 Dynamo paper but not its leaderless design: each partition has a single leader replica elected through Multi-Paxos. It spreads items across partitions by hashing a [partition key](../glossary.md#partition-key).[^ddb-atc] It caps an item at 400 KB and a partition key at 2,048 bytes.[^ddb][^dynamo]
 
 ```text
 GET session:7f3a9c      ->  {"user":42,"cart":[...],"ttl":1800}
@@ -112,7 +112,7 @@ SELECT * FROM orders_by_customer WHERE customer_id = 42 LIMIT 20;
 
 A [property graph](../glossary.md#property-graph) stores **nodes** and **edges**, and both can carry properties. A [graph traversal](../glossary.md#graph-traversal) follows edges directly from node to node, so its cost grows with the number of edges it touches, not with the size of the whole table. The alternative graph model is [RDF](../glossary.md#rdf), which stores subject–predicate–object triples, is queried with SPARQL and is common in life sciences and government knowledge graphs.
 
-Neo4j's Cypher was the de facto property-graph language. In April 2024 ISO published **[GQL](../glossary.md#gql)** (ISO/IEC 39075:2024). It is the first new ISO database language since SQL, and it is largely based on Cypher's MATCH syntax.[^gql] Neo4j introduced Cypher 25 in release 2025.06 and states that Cypher now covers most mandatory GQL features.[^neo4j]
+Neo4j's Cypher was the de facto property-graph language. In April 2024 ISO published **[GQL](../glossary.md#gql)** (ISO/IEC 39075:2024). It is the first new ISO database language since SQL. Its pattern-matching syntax draws heavily on Cypher's MATCH clause, with input from Oracle's PGQL and the G-CORE research language.[^gql] Neo4j introduced Cypher 25 in release 2025.06 and states that Cypher now covers most mandatory GQL features.[^neo4j]
 
 ```cypher
 MATCH (:Product {sku:'X1'})<-[:CONTAINS]-(:Order)<-[:PLACED]-(c:Customer)
@@ -250,7 +250,7 @@ flowchart LR
 - **Relational:** Oracle, Microsoft SQL Server, MySQL, PostgreSQL and its many managed variants, plus distributed SQL engines covered in [Ch 4](ch04-distributed-databases.md).
 - **Document:** MongoDB is the category leader and is now multi-model. Its Atlas Vector Search reached GA in December 2023, and vector search for self-managed Community Edition reached GA on 30 June 2026.[^mdb-vs]
 - **Key-value:** Redis Inc. and the Valkey fork backed by the Linux Foundation, Amazon DynamoDB, and Memcached.[^redis]
-- **Wide-column:** Apache Cassandra (with DataStax, now part of IBM [VERIFY: DataStax–IBM close date]), ScyllaDB, Google Bigtable, Apache HBase.
+- **Wide-column:** Apache Cassandra (with DataStax, acquired by IBM in a deal that closed on 28 May 2025),[^datastax] ScyllaDB, Google Bigtable, Apache HBase.
 - **Graph:** Neo4j, Amazon Neptune, TigerGraph. RDF stores such as Stardog and Ontotext GraphDB.
 - **Time-series:** InfluxData (InfluxDB), Timescale (TimescaleDB) [VERIFY: Timescale's 2025 rename to TigerData], and Prometheus under the CNCF.
 - **Search:** Elastic (Elasticsearch), OpenSearch under the Linux Foundation, Apache Solr. All three run on Lucene.[^bm25]
@@ -364,6 +364,8 @@ The "SQL won" story is mostly right about the *interface* and only half right ab
 [^mdb-limits]: MongoDB, "MongoDB Limits and Thresholds" and "Data Modeling — Embedded vs. References," https://www.mongodb.com/docs/manual/reference/limits/ and https://www.mongodb.com/docs/manual/data-modeling/, n.d.; retrieved 2026-11-01 (16 MiB figure corroborated by multiple secondary sources; docs not live-fetched).
 [^mdb-vs]: Constellation Research, "MongoDB Atlas Vector Search, Atlas Search Nodes generally available," https://www.constellationr.com/insights/news/mongodb-atlas-vector-search-atlas-search-nodes-generally-available, published 2023-12-04; MongoDB, "Now GA: MongoDB Search and Vector Search for Community Edition," https://www.mongodb.com/products/updates/now-ga-mongodb-search-and-vector-search-for-community-edition/, published 2026-06-30; retrieved 2026-11-01.
 [^ddb]: Amazon Web Services, "Constraints in Amazon DynamoDB," https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Constraints.html, n.d.; retrieved 2026-11-01.
+[^ddb-atc]: M. Elhemali et al., "Amazon DynamoDB: A Scalable, Predictably Performant, and Fully Managed NoSQL Database Service," USENIX ATC 2022, https://www.usenix.org/conference/atc22/presentation/elhemali, published 2022-07; retrieved 2026-11-01 (canonical citation, not live-fetched).
+[^datastax]: AI Data Atlas, `data/ma_deals.csv` (IBM–DataStax, announced 2025-02-25, closed 2025-05-28, terms undisclosed), citing DBTA, "IBM Officially Closes Acquisition of DataStax," https://www.dbta.com/Editorial/News-Flashes/IBM-Officially-Closes-Acquisition-of-DataStax-169711.aspx, published 2025-05/06; retrieved 2026-11-01.
 [^dynamo]: G. DeCandia et al., "Dynamo: Amazon's Highly Available Key-value Store," SOSP 2007, https://doi.org/10.1145/1294261.1294281, published 2007-10; retrieved 2026-11-01 (canonical citation, not live-fetched).
 [^bigtable]: F. Chang et al., "Bigtable: A Distributed Storage System for Structured Data," OSDI 2006, https://research.google/pubs/bigtable-a-distributed-storage-system-for-structured-data/, published 2006-11; retrieved 2026-11-01 (canonical citation, not live-fetched).
 [^redis]: Phoronix, "Redis 8.0 Released: Now Tri-Licensed With AGPLv3," https://www.phoronix.com/news/Redis-8.0-Goes-AGPLv3, published 2025-05-01; SD Times, "Open source wins again! Redis adds GNU AGPL license to its offering," https://sdtimes.com/os/open-source-wins-again-redis-adds-gnu-agpl-license-to-its-offering/, published 2025-05; retrieved 2026-11-01.

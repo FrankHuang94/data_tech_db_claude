@@ -11,7 +11,7 @@
 
 ## Why this matters (business + Everpure lens)
 
-Pipelines are where data platforms earn and lose money. Ingestion vendors charge per row moved. Fivetran, for example, bills on [monthly active rows](../glossary.md#monthly-active-rows) and in March 2025 moved its volume tiers from the account to each connection, which raised bills for many multi-connector customers.[^fivetran-pricing] Warehouses charge for the compute that transforms the data, and streaming platforms charge for always-on clusters. The industry's two largest recent deals in this layer were IBM's ~$11B purchase of Confluent (closed March 2026) and the all-stock Fivetran–dbt Labs merger (closed June 2026, ~$600M combined ARR, company-stated).[^ma-csv] Both were bets on owning how data moves.
+Pipelines are where data platforms earn and lose money. Ingestion vendors charge per row moved. Fivetran, for example, bills on [monthly active rows](../glossary.md#monthly-active-rows) and in March 2025 moved its volume tiers from the account to each connection, which raised bills for many multi-connector customers.[^fivetran-pricing] Warehouses charge for the compute that transforms the data, and streaming platforms charge for always-on clusters. The largest recent deals in this layer were IBM's ~$11B purchase of Confluent (closed March 2026), Salesforce's ~$8B purchase of Informatica (equity value; closed November 2025) and the all-stock Fivetran–dbt Labs merger (closed June 2026; terms undisclosed; combined ARR "approaching $600M", company-stated).[^ma-csv] All three were bets on owning how data moves.
 
 Zero-ETL and data sharing also change the bargaining position of every platform. A platform that runs the pipeline for you also decides where the copy lands, in which format, and how expensive it is to leave. That is why AWS, Microsoft, Google, Snowflake and Databricks all now offer free or nearly free replication into their own platforms ([Ch 28](../04-company-deep-dives/ch28-hyperscaler-data-platforms.md)).
 
@@ -59,7 +59,7 @@ The second choice is cadence. A **batch** job moves a bounded chunk on a schedul
 | Late and out-of-order data | Absorbed if the window closes late enough | Watermark plus periodic merge | Watermarks, allowed lateness, retractions |
 | Exactly-once | Easy via idempotent overwrite of a partition | Checkpoint plus idempotent or transactional sink | Transactional log plus two-phase commit to sink |
 | Small-file pressure on lake tables | Low | High; needs compaction | Highest; needs compaction and buffering |
-| Typical tools | Airflow plus Spark or dbt, warehouse tasks | Spark Structured Streaming, Dynamic Tables, Delta Live Tables | Flink, Kafka Streams, Spark real-time mode |
+| Typical tools | Airflow plus Spark or dbt, warehouse tasks | Spark Structured Streaming, Dynamic Tables, Lakeflow Spark Declarative Pipelines (formerly Delta Live Tables) | Flink, Kafka Streams, Spark real-time mode |
 | Good fit | Finance close, reporting, ML training sets | Operational dashboards, hourly-to-minute CDC | Fraud scoring, personalization, alerting |
 
 *Figure 9.2 — Each step toward lower latency buys freshness with always-on cost and harder recovery. Most enterprises should default to micro-batch and justify true streaming per use case.*
@@ -68,7 +68,7 @@ The second choice is cadence. A **batch** job moves a bounded chunk on a schedul
 
 **Event time, watermarks and late data (L2).** Streaming is hard because events arrive late and out of order. A phone that was offline uploads purchases two hours after they happened. Google's Dataflow paper (Akidau et al., VLDB 2015) set the vocabulary.[^dataflow] [Event time](../glossary.md#event-time) is when something happened. Processing time is when the system saw it. A [watermark](../glossary.md#watermark) is the engine's running estimate that "all events up to time T have probably arrived." When the watermark passes the end of a window, say 10:00–10:05, the engine emits a result. Events that arrive after that are [late data](../glossary.md#late-data). They are either dropped, or they trigger a corrected result if the window allows late updates. The paper's central argument is that you never get completeness for free. You choose a point on a correctness, latency and cost triangle. A 2026 retrospective by the same group concluded that the event-time foundation held up, but that the industry largely settled on two forms of completeness: watermarks where streams are visible, and snapshot-consistent table refreshes where they are not.[^dataflow-rev]
 
-**[Exactly-once semantics](../glossary.md#exactly-once-semantics).** No network can deliver a message exactly once, because retries after timeouts create duplicates. Systems get "effectively once" by combining at-least-once delivery with deduplication or transactions. Kafka added idempotent producers and transactions in release 0.11 in 2017 (KIP-98).[^kafka-eos] Debezium 3.3 (October 2025) added exactly-once support to its core source connectors.[^debezium-33] The guarantee only holds end to end if the *sink* is idempotent or transactional as well, for example a `MERGE` keyed on primary key and log position. That is the one question to ask anyone who claims exactly-once.
+**[Exactly-once semantics](../glossary.md#exactly-once-semantics).** No network can deliver a message exactly once, because retries after timeouts create duplicates. Systems get "effectively once" by combining at-least-once delivery with deduplication or transactions. Kafka added idempotent producers and transactions in release 0.11 in 2017 (KIP-98).[^kafka-eos] Debezium 3.3 (October 2025) added exactly-once support to its core source connectors, building on the exactly-once source framework Kafka Connect gained in Kafka 3.3 (KIP-618, 2022).[^debezium-33] The guarantee only holds end to end if the *sink* is idempotent or transactional as well, for example a `MERGE` keyed on primary key and log position. That is the one question to ask anyone who claims exactly-once.
 
 ### Change data capture: how changes are detected
 
@@ -117,7 +117,7 @@ AWS introduced "zero-ETL" at re:Invent in November 2022 with Aurora-to-Redshift 
 - **Google Datastream** applies CDC from MySQL, PostgreSQL, Oracle and SQL Server directly into BigQuery (BigQuery target GA April 2023).[^gcp-datastream] BigQuery **federated queries** go further and query Cloud SQL or Spanner in place.[^bq-federated]
 - **Snowflake Postgres mirroring** became GA in October 2026. A CDC worker pushes batches about every 15 seconds into Iceberg change-log tables that Snowflake reads.[^sf-pg-mirror]
 - **Databricks Lakehouse Federation** registers external databases as read-only "foreign catalogs" in Unity Catalog and pushes queries down over JDBC, with no copy at all.[^dbx-federation]
-- **Salesforce–Snowflake zero-copy** exposes Salesforce Data Cloud and Snowflake tables to each other through sharing rather than export.[^sf-sfdc]
+- **Salesforce–Snowflake zero-copy** exposes Salesforce Data 360 (renamed from Data Cloud in October 2025) and Snowflake tables to each other through sharing rather than export.[^sf-sfdc]
 
 ```mermaid
 flowchart LR
@@ -201,7 +201,7 @@ A mid-size retailer has an `orders` table in Postgres: about 50 million rows, ab
 | Recovery | Re-run night; full reload if logic changed | Re-sync window; rebuild silver from bronze | Incremental snapshot of affected table; replay Kafka from offset |
 | Best for | Finance reporting, monthly close | Most BI dashboards | Inventory, fraud, customer-facing status, agents |
 
-*Figure 9.6 — Moving from nightly to minutes cuts staleness by roughly 100x and raises run cost several-fold (illustrative). The failure mode also moves closer to production: design C's worst case is a full disk on the order database.*
+*Figure 9.6 — Moving from nightly to minutes cuts staleness by two to three orders of magnitude and raises run cost several-fold (illustrative). The failure mode also moves closer to production: design C's worst case is a full disk on the order database.*
 
 The decision rule is simple. Price the freshness. If a 5-minute-fresh inventory view prevents a measurable number of oversold orders, design C pays for itself. If the consumer is a weekly executive dashboard, design B is already generous. A common hybrid runs CDC only for the three or four tables that need it, and hourly ELT for everything else.
 
@@ -227,7 +227,7 @@ The strongest argument against the "stream everything" camp is operational. Stre
 | Enterprise CDC / replication | Oracle GoldenGate, Qlik Replicate (ex-Attunity), Fivetran HVR, IBM, Striim, AWS DMS | Heterogeneous, high-volume, mainframe and Oracle sources |
 | Managed ELT connectors | Fivetran (merged with dbt Labs), Airbyte, Matillion, Snowflake Openflow, Databricks Lakeflow Connect | Per-row or per-connector pricing; hundreds of SaaS APIs |
 | Streaming platforms | IBM-Confluent, Redpanda, AWS MSK/Kinesis, Azure Event Hubs | The durable log between CDC and sinks |
-| Reverse ETL / activation | Hightouch, Fivetran (Census), Salesforce Data Cloud | Warehouse-to-SaaS sync, moving into AI marketing |
+| Reverse ETL / activation | Hightouch, Fivetran (Census, agreed 2025), Salesforce Data 360 | Warehouse-to-SaaS sync, moving into AI marketing |
 | Zero-ETL / mirroring | AWS zero-ETL, Fabric mirroring, Google Datastream, Snowflake Postgres mirroring | Free or cheap replication into the vendor's own platform |
 | Sharing / federation | Snowflake Secure Data Sharing, OpenSharing (Delta Sharing), Lakehouse Federation, BigQuery federated queries | Access without copying; governance by the provider |
 
@@ -253,7 +253,7 @@ timeline
 
 *Figure 9.9 — Fifteen years ago CDC was niche replication software. Today it is the hidden engine of zero-ETL, and the companies that sold pipelines are being folded into platforms.*
 
-The arc has three phases. From about 2000 to 2012, ETL tools (Informatica, Talend, DataStage) ran beside fixed-capacity warehouses, and CDC was specialist replication software (GoldenGate, Attunity, DataMirror). From 2012 to 2021, cloud warehouses and the "modern data stack" made ELT the default. Open-source Debezium and Kafka made log-based CDC accessible, and point vendors multiplied. From 2022 onward, the platforms have pulled the pipeline inside. AWS coined zero-ETL, Microsoft made mirroring free, and Snowflake and Databricks built their own connectors and CDC.[^aws-zetl-2022][^fabric-mirror][^sf-pg-mirror] Meanwhile the independents consolidated: Fivetran absorbed HVR, Census, Tobiko and then dbt Labs, and IBM absorbed Confluent.[^ma-csv]
+The arc has three phases. From about 2000 to 2012, ETL tools (Informatica, Talend, DataStage) ran beside fixed-capacity warehouses, and CDC was specialist replication software (GoldenGate, Attunity, DataMirror). From 2012 to 2021, cloud warehouses and the "modern data stack" made ELT the default. Open-source Debezium and Kafka made log-based CDC accessible, and point vendors multiplied. From 2022 onward, the platforms have pulled the pipeline inside. AWS coined zero-ETL, Microsoft made mirroring free, and Snowflake and Databricks built their own connectors and CDC.[^aws-zetl-2022][^fabric-mirror][^sf-pg-mirror] Meanwhile the independents consolidated: Fivetran absorbed HVR and Tobiko, agreed to buy Census and then merged with dbt Labs; Salesforce absorbed Informatica; and IBM absorbed Confluent.[^ma-csv]
 
 The next step is fewer copies, not faster ones. Open table formats let one copy serve many engines ([Ch 7](../01-data-systems-foundations/ch07-open-table-formats.md)). Sharing protocols let one copy serve many organizations. Federation lets some queries skip the copy entirely. Expect pipeline spend to shift from "moving bytes" toward governance of who reads which copy.
 
@@ -265,11 +265,11 @@ The next step is fewer copies, not faster ones. Open table formats let one copy 
 | AWS zero-ETL announcement → GA | Nov 2022 preview → GA 2023-11-07 (Aurora MySQL) | Vendor-stated | AWS, 2022-11-29 and 2023-11-07[^aws-zetl-2022][^aws-zetl-ga] |
 | Fabric free mirror storage | 1 TB per capacity unit (F64 = 64 TB); mirroring compute free | Vendor-stated pricing | Microsoft Learn, 2026[^fabric-mirror] |
 | Snowflake Postgres mirroring batch interval | ~15 seconds | Vendor docs | Snowflake, 2026-10[^sf-pg-mirror] |
-| Spark real-time mode latency | p99 ~40–300 ms | Vendor benchmark | Databricks, 2026-03[^spark-rtm] |
+| Spark real-time mode latency | p99 ~40–300 ms on Databricks' GA benchmark pipelines; Spark 4.1 materials claim single-digit ms for simple stateless queries ([Ch 11](ch11-streaming-and-event-platforms.md)) | Vendor benchmark; workload-dependent | Databricks, 2026-03[^spark-rtm] |
 | Fivetran pricing change | MAR tiering per connection from 2025-03-01 | Company-stated | Fivetran docs, 2025[^fivetran-pricing] |
 | CDC deal prices | Attunity $560M (2019); HVR $700M (2021); Arcion ~$100M (2023) | Disclosed / press-reported | `data/ma_deals.csv`[^ma-csv] |
 | IBM–Confluent | ~$11B, closed 2026-03-17 | Disclosed | `data/ma_deals.csv`[^ma-csv] |
-| Fivetran + dbt Labs combined ARR | ~$600M | Company-stated | Fivetran, 2026-06-01[^ma-csv] |
+| Fivetran + dbt Labs combined ARR | "Approaching $600M" | Company-stated, at close | Fivetran, 2026-06-01[^ma-csv] |
 | Hightouch valuation | $2.75B post-money, $150M Series D (Apr 2026) | Press-reported | Adweek / Pulse 2.0, 2026-04[^hightouch] |
 
 *Figure 9.10 — The deal prices show what buyers pay for CDC know-how. The pricing rows show where pipeline cost actually lands: per-row fees, target compute and storage.*
@@ -339,7 +339,7 @@ The next step is fewer copies, not faster ones. Open table formats let one copy 
 ## Sources
 
 [^redshift-2012]: Computerworld, "Amazon introduces data warehouse service" (Redshift launch; reserved pricing under $1,000/TB/year; AWS estimate of $19,000–25,000/TB/year in-house), https://www.computerworld.com/article/1401411/amazon-introduces-data-warehouse-service.html, published 2012-11-28; retrieved 2026-11-01. In-house figure is an AWS estimate cited from Jeff Barr's launch post.
-[^ma-csv]: AI Data Atlas, `data/ma_deals.csv` (rows: Qlik–Attunity 2019-02-21, Attunity 6-K; Fivetran–HVR 2021-09-20, Fivetran press release; Databricks–Arcion 2023-10-23, TechCrunch; Fivetran–Census 2025-05-01; Fivetran–dbt Labs closed 2026-06-01, Fivetran press release; IBM–Confluent closed 2026-03-17, IBM release; Everpure–1touch closed 2026-05-07, Everpure 10-Q), as_of 2026-11-01; retrieved 2026-11-01.
+[^ma-csv]: AI Data Atlas, `data/ma_deals.csv` (rows: Qlik–Attunity 2019-02-21, Attunity 6-K; Fivetran–HVR 2021-09-20, Fivetran press release; Databricks–Arcion 2023-10-23, TechCrunch; Fivetran–Census 2025-05-01 (status: announced; closing not separately verified); Salesforce–Informatica closed 2025-11-18, ~$8B equity value, Business Wire; Fivetran–dbt Labs closed 2026-06-01, Fivetran press release (combined ARR "approaching $600M"); IBM–Confluent closed 2026-03-17, IBM release; Everpure–1touch closed 2026-05-07, Everpure 10-Q), as_of 2026-11-01; retrieved 2026-11-01.
 [^fivetran-pricing]: Fivetran documentation, "2025 Pricing Updates" (connection-level MAR tiering effective 2025-03-01), https://fivetran.com/docs/core-concepts/usage-based-pricing/pricing-updates/2025-pricing-faq, published 2025; retrieved 2026-11-01. Impact on bills per third-party analyses (e.g., Weld, https://weld.app/blog/fivetran-pricing-2025), press-reported.
 [^dataflow]: T. Akidau et al., "The Dataflow Model: A Practical Approach to Balancing Correctness, Latency, and Cost in Massive-Scale, Unbounded, Out-of-Order Data Processing," PVLDB 8(12):1792–1803, https://www.vldb.org/pvldb/vol8/p1792-Akidau.pdf, published 2015-08; retrieved 2026-11-01.
 [^dataflow-rev]: T. Akidau, S. Fernández-Moctezuma, R. Lax, S. Mills, "The Dataflow Model Revisited," PVLDB 19, https://www.vldb.org/pvldb/vol19/p4953-fernandez-moctezuma.pdf, published 2026; retrieved 2026-11-01 (via search summary; full text not fetched).
@@ -359,7 +359,7 @@ The next step is fewer copies, not faster ones. Open table formats let one copy 
 [^bq-federated]: Google Cloud documentation, "Introduction to federated queries," https://cloud.google.com/bigquery/docs/federated-queries-intro, living document; retrieved 2026-11-01 [VERIFY: page not re-opened this session].
 [^sf-pg-mirror]: Snowflake engineering blog, "How we pushed CDC into Postgres, and turned replication into clockwork," https://www.snowflake.com/en/blog/engineering/postgres-to-snowflake-replication-mirroring/, published 2026-10-20; Snowflake documentation, "Postgres-to-Snowflake mirroring performance considerations," https://docs.snowflake.com/en/user-guide/snowflake-postgres/postgres-data-mirroring-performance; retrieved 2026-11-01.
 [^dbx-federation]: Databricks documentation, "What is Lakehouse Federation?," https://docs.databricks.com/aws/en/query-federation/index.html, living document; retrieved 2026-11-01.
-[^sf-sfdc]: Snowflake blog, "Bidirectional Data Sharing Between Snowflake and Salesforce Data Cloud Is Now Generally Available," https://snowflake.com/blog/bi-directional-data-sharing-snowflake-salesforce-ga, published 2024 [VERIFY: exact date]; CIO.com, "Salesforce debuts Zero Copy Partner Network," https://www.cio.com/article/2095136/salesforce-debuts-zero-copy-partner-network-to-ease-data-integration.html, published 2024-04; retrieved 2026-11-01.
+[^sf-sfdc]: Snowflake blog, "Bidirectional Data Sharing Between Snowflake and Salesforce Data Cloud Is Now Generally Available," https://snowflake.com/blog/bi-directional-data-sharing-snowflake-salesforce-ga, published 2024 [VERIFY: exact date]; CIO.com, "Salesforce debuts Zero Copy Partner Network," https://www.cio.com/article/2095136/salesforce-debuts-zero-copy-partner-network-to-ease-data-integration.html, published 2024-04; retrieved 2026-11-01. Data Cloud was renamed Data 360 at Dreamforce 2025 (~2025-10-14), per `meta/verified-facts.md` item 11.
 [^sf-sharing]: Snowflake documentation, "About Secure Data Sharing," https://docs.snowflake.com/en/user-guide/data-sharing-intro, living document; retrieved 2026-11-01.
 [^sf-sharing-2017]: Snowflake, "Data Sharing" white paper, https://www.snowflake.com/wp-content/uploads/2017/06/Snowflake_DataSharing_WP_06222017.pdf, published 2017-06-22; DBTA, "Snowflake Introduces Data Sharing," https://www.dbta.com/Editorial/News-Flashes/Snowflake-Introduces-Data-Sharing-119015.aspx, published 2017; retrieved 2026-11-01.
 [^opensharing]: Linux Foundation, "Linux Foundation Announces OpenSharing Project to Standardize AI Asset and Data Exchange," https://www.linuxfoundation.org/press/linux-foundation-announces-opensharing-project-to-standardize-ai-asset-and-data-exchange, published 2026-06-10; Databricks press release, https://www.databricks.com/company/newsroom/press-releases/databricks-announces-opensharing, published 2026-06; retrieved 2026-11-01.

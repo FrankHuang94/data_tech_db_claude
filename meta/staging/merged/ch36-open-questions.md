@@ -1,0 +1,6 @@
+- ch36: Snowflake Q1 FY2027 (Feb–Apr 2026) GAAP sales and marketing expense — derived as ~$590M (six-month ~$1.20B less Q2 $611.6M); confirm exact figure from the Q1 FY2027 10-Q and recompute magic number (~1.06 raw / ~0.72 day-adjusted).
+- ch36: Snowflake Q2 FY2027 non-GAAP add-backs other than SBC (~$76M derived) — confirm split (amortization of acquired intangibles, employer payroll tax on equity, other) from the release reconciliation; SBC $424M is press-reported via sec-api.io.
+- ch36: Exact SEC filing dates for Snowflake FY2026 10-K, Snowflake Q2 FY2027 10-Q and MongoDB FY2026 10-K.
+- ch36: Everpure segment gross margins (non-GAAP product ~68% / subscription services ~76.5% Q2 FY2026; 72.9% / 75.5% Q3 FY2026) rest on third-party summaries — confirm against 10-Q; also confirm publication date of the Q3 FY26 slide deck.
+- ch36: Palantir Q2 2026 and ServiceNow Q3 2026 release day-of-month dates.
+- ch36: Scale Venture Partners "A History of the Magic Number" publication date.

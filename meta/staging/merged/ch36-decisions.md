@@ -1,0 +1,6 @@
+- ch36: Snowflake FY2022 NRR — CSV carries 178% (as originally reported in the FY2022 10-K); the FY2023 10-K restates FY2022 as 177% after cohort adjustments. Chapter uses 178% for the peak (CSV) and notes the restatement.
+- ch36: Rule-of-40 chart basis — growth = GAAP total revenue YoY for latest reported quarter (Nutanix = FY2026); FCF margin = company full-year guide or actual where the company gives one (Snowflake, ServiceNow, Nutanix, Everpure estimate from $ guidance midpoints), else latest quarter. Marker shape distinguishes the two. Stored in data/ch36_rule_of_40.csv.
+- ch36: Palantir plotted on Q2 2026 quarter growth (93%) rather than the TTM 79% in public_comps.csv, to match the quarter-based growth of other comps.
+- ch36: Magic number computed on GAAP S&M (incl. SBC); added a day-count adjustment (Q1 FY2027 = 89 days, Q2 = 92 days) because consumption revenue is day-sensitive. Labelled estimate.
+- ch36: Everpure Q2 FY2027 GAAP operating margin computed as $63M / ~$1,186M (product $687M + subscription services $499M) = 5.3%.
+- ch36: Word count (4,083) exceeds the 2,500 budget; kept because the worked example, KPI reference card and Everpure lens were all required scope.

@@ -1,0 +1,2 @@
+- ch39: AWS–DuckLabs closing not confirmed by a primary source (announced 2026-08-26; DuckDB analytics shipped in Aurora PostgreSQL). [VERIFY]
+- ch39: Informatica October 2021 IPO final price per share (offering ~$841M, marketed $29–32, opened ~$29) — confirm from the 424B4 pricing page. [VERIFY]

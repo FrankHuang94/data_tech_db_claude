@@ -89,7 +89,7 @@ The cost side is what investors underweight. A SaaS vendor that changes its pagi
 |---|---|---|---|
 | Fivetran | Monthly active rows (MAR), tiered **per connection** since Mar 2025 | Distinct rows inserted, updated or (since Jan 2026) deleted per month, per connection; $5 base for connections with 1 to 1M MAR | List price; Standard tier falls from $500 per million MAR to $1.18 at >1B[^ft-pricing][^ft-2025][^ft-2026] |
 | Airbyte Cloud | Credits (Standard) or capacity in "Data Workers" (Pro, Enterprise Flex) | Volume synced (credit tiers) or reserved parallel compute (capacity) | Company pricing page; capacity tiers quote-only[^ab-pricing] |
-| Airbyte OSS / self-managed | Free software (ELv2 licensed) | Your own Kubernetes compute plus engineering time | License docs[^ab-license] |
+| Airbyte OSS / self-managed | Free to use; source-available under ELv2 (not an OSI open-source licence; some connectors MIT) | Your own Kubernetes compute plus engineering time | License docs[^ab-license] |
 | Informatica IDMC | Informatica Processing Units (IPUs), pre-paid and pooled; Flex IPU option | IPUs consumed across any eligible IDMC service (integration, quality, catalog) | Company blogs; per-IPU rates not public[^infa-ipu] |
 | Matillion | Credits consumed per "task hour" of pipeline run time | Pipeline run time by pipeline type and edition | Company terms; published rates conflict[^matillion] |
 | AWS Glue | DPU-hours, billed per second | Spark/Python job run time × workers; $0.44 per DPU-hour standard, $0.29 Flex | List price, US East[^glue] |
@@ -148,10 +148,10 @@ The steelman for each alternative is strong. **Platform bundling** wins on simpl
 | Vendor | Model | Pricing unit | Deployment | Open source | Owner / status (Nov 2026) | Sweet spot |
 |---|---|---|---|---|---|---|
 | Fivetran (+ dbt Labs) | Managed ELT plus transformation, reverse ETL | MAR per connection | SaaS; hybrid agent | No (dbt Core is OSS) | Private; merger closed 2026-06-01[^ft-dbt-close] | Broad SaaS coverage for lean teams |
-| Airbyte | Open-core ELT | Credits / Data Workers | Cloud, self-managed, OSS | Yes (ELv2)[^ab-license] | Private; last priced round $150M Series B at $1.5B, Dec 2021[^ab-seriesb] | Developer teams, long-tail sources |
+| Airbyte | Open-core ELT | Credits / Data Workers | Cloud, self-managed, OSS | Source-available (ELv2; some connectors MIT)[^ab-license] | Private; last priced round $150M Series B at $1.5B, Dec 2021[^ab-seriesb] | Developer teams, long-tail sources |
 | Informatica IDMC | Enterprise data management suite | IPUs | SaaS, hybrid | No | Salesforce subsidiary since 2025-11-18[^infa-close] | Global 2000, MDM plus quality |
 | Matillion | ETL/ELT with visual designer | Credits | SaaS, hybrid agents | No | Private | Snowflake/Databricks shops wanting low-code |
-| Qlik Talend Cloud (incl. Stitch) | CDC replication plus ETL and quality | Subscription / capacity | SaaS, on-prem | Talend Open Studio retired [VERIFY] | Private (Thoma Bravo); Talend closed May 2023[^qlik-talend] | Enterprise CDC (ex-Attunity) |
+| Qlik Talend Cloud (incl. Stitch) | CDC replication plus ETL and quality | Subscription / capacity | SaaS, on-prem | Talend Open Studio retired (Qlik ended it on 2024-01-31)[^qlik-talend] | Private (Thoma Bravo); Talend closed May 2023[^qlik-talend] | Enterprise CDC (ex-Attunity) |
 | Boomi (incl. Rivery) | iPaaS plus data integration | Subscription tiers | SaaS, runtime agents | No | Private; bought Rivery Dec 2024, Elementary Oct 2026[^rivery][^elementary] | Mid-market app-plus-data |
 | MuleSoft | API-led application integration | Subscription / capacity | SaaS, on-prem | No | Salesforce since 2018 ($6.5B)[^mulesoft] | App-to-app APIs |
 | Estuary | Real-time CDC plus batch | Data volume | SaaS, BYOC | Partly (Flow runtime) | Private; $17M Series A, Oct 2025 (company-stated)[^estuary] | Low-latency CDC |
@@ -193,7 +193,7 @@ quadrantChart
 
 The first generation (Informatica, IBM DataStage, TIBCO, Talend) sold on-prem ETL servers to IT departments, licensed by CPU or by connector. Private equity took several of them private when growth slowed: Vista bought TIBCO ($4.3B, 2014) and Permira and CPPIB bought Informatica ($5.3B, 2015).[^tibco][^infa-pe] The cloud-warehouse wave created a second generation built on ELT and SaaS. Fivetran (founded 2012) and Stitch led it, and Airbyte followed in 2020 as the open-source challenger. That generation was valued at its peak in 2021, when Fivetran raised $565M and bought HVR for $700M, and Airbyte raised $150M at $1.5B.[^hvr][^ab-seriesb]
 
-Consolidation since then has run in three directions. Platforms bought CDC and connector technology: Databricks bought Arcion (~$100M, 2023), ClickHouse bought PeerDB (2024) and Snowflake bought Datavolo (2024), which became Openflow.[^arcion][^peerdb][^datavolo] Application and infrastructure vendors bought integration: IBM bought StreamSets and webMethods (€2.13B, closed July 2024), and Salesforce bought Informatica.[^ibm][^infa-close] And the independents bundled themselves. Fivetran added Census (reverse ETL) and Tobiko (SQLMesh) in 2025, then merged with dbt Labs.[^census][^tobiko][^ft-dbt-close]
+Consolidation since then has run in three directions. Platforms bought CDC and connector technology: Databricks bought Arcion (~$100M, 2023), ClickHouse bought PeerDB (2024) and Snowflake bought Datavolo (2024), which became Openflow.[^arcion][^peerdb][^datavolo] Application and infrastructure vendors bought integration: IBM bought StreamSets and webMethods (€2.13B, closed July 2024), and Salesforce bought Informatica.[^ibm][^infa-close] And the independents bundled themselves. Fivetran agreed to buy Census (reverse ETL; closing not separately announced) and bought Tobiko (SQLMesh) in 2025, then merged with dbt Labs.[^census][^tobiko][^ft-dbt-close]
 
 ```mermaid
 timeline
@@ -205,7 +205,7 @@ timeline
   2021 : Fivetran buys HVR : Airbyte raises Series B at 1.5B valuation
   2023 : Qlik closes Talend : Databricks buys Arcion
   2024 : IBM closes StreamSets and webMethods : ClickHouse buys PeerDB : Snowflake buys Datavolo : Boomi buys Rivery
-  2025 : Fivetran buys Census and Tobiko : Openflow launches : Salesforce closes Informatica
+  2025 : Fivetran agrees to buy Census, buys Tobiko : Openflow launches : Salesforce closes Informatica
   2026 : Fivetran and dbt Labs close merger : Boomi buys Elementary
 ```
 
@@ -230,7 +230,7 @@ timeline
 | Google Datastream CDC | $2.00/GiB first 2,500 GiB, down to $0.80 | List price | Google Cloud, 2026[^datastream] |
 | Boomi–Rivery | ~$100M | Press-reported (Calcalist); undisclosed | 2024-12[^rivery] |
 
-*Figure 10.8 — The independent ingestion market is now small next to the platforms it feeds. The largest standalone player plus dbt Labs is about $0.6B of ARR (company-stated).*
+*Figure 10.8 — The independent ingestion market is now small next to the platforms it feeds. The largest standalone player plus dbt Labs is approaching $0.6B of ARR (company-stated, June 2026).*
 
 ## Storage bridge
 
@@ -318,7 +318,7 @@ timeline
 [^peerdb]: TechCrunch, "Real-time database startup ClickHouse acquires PeerDB to expand its Postgres support," https://techcrunch.com/2024/07/30/real-time-database-startup-clickhouse-acquires-peerdb-to-expand-its-postgres-support, published 2024-07-30; retrieved 2026-11-01.
 [^rivery]: Boomi via Business Wire, "Boomi Boosts Data Management Capabilities with Acquisition of Modern Data Integration Provider Rivery," https://www.businesswire.com/news/home/20241212909154/en, published 2024-12-12; retrieved 2026-11-01. ~$100M price press-reported by Calcalist, https://www.calcalistech.com/ctechnews/article/h1eodtavjl, 2024-12; not confirmed by Boomi.
 [^elementary]: BigDATAwire, "What Boomi's Acquisition of Elementary Means for Data Teams," https://www.hpcwire.com/bigdatawire/2026/10/26/what-boomis-acquisition-of-elementary-means-for-data-teams/, published 2026-10-26; retrieved 2026-11-01.
-[^qlik-talend]: Qlik, "Qlik Acquires Talend," press release, https://www.qlik.com/us/news/company/press-room/press-releases/qlik-acquires-talend, published 2023-05-16; BigDATAwire, https://www.hpcwire.com/bigdatawire/2023/05/16/qlik-completes-acquisition-talend/, 2023-05-16; retrieved 2026-11-01. Terms undisclosed.
+[^qlik-talend]: Qlik, "Qlik Acquires Talend," press release, https://www.qlik.com/us/news/company/press-room/press-releases/qlik-acquires-talend, published 2023-05-16; BigDATAwire, https://www.hpcwire.com/bigdatawire/2023/05/16/qlik-completes-acquisition-talend/, 2023-05-16; retrieved 2026-11-01. Terms undisclosed. Talend Open Studio discontinuation effective 2024-01-31 per Qlik's 2023 end-of-life notice (reviewer knowledge, settled pre-2025; notice not re-fetched).
 [^mulesoft]: Salesforce, "Salesforce Signs Definitive Agreement to Acquire MuleSoft," https://investor.salesforce.com/news/news-details/2018/Salesforce-Signs-Definitive-Agreement-to-Acquire-MuleSoft/default.aspx, published 2018-03-20; retrieved 2026-11-01.
 [^estuary]: Estuary Series A release via Venture Capital Access Online, "Estuary Raises $17M Series A…," https://www.vcaonline.com/news/2025102107/estuary-raises-17m-series-a-to-power-ai-for-enterprises-with-right-time-data-movement/, published 2025-10-21 (M13-led; 200+ systems, company-stated); retrieved 2026-11-01. SiliconANGLE headlined the round at $14M, https://siliconangle.com/2025/10/21/estuary-raises-14m-try-solve-one-hardest-problems-data-movement/ [VERIFY: $17M vs $14M].
 [^dlthub]: why.berlin / Berlin Partner, "Python data tool dltHub lands $8M seed funding" (Bessemer-led), https://why.berlin/n/python-data-tool-dlthub-lands-8m-seed-funding, 2025 [VERIFY: announcement date]; retrieved 2026-11-01. Press-reported.

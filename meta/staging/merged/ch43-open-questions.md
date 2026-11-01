@@ -1,0 +1,6 @@
+- ch43: Named layoffs and shutdowns among MDS vendors 2022–2024 (not systematically recorded in data/*.csv); add sourced examples or keep generic. [VERIFY]
+- ch43: Exact publication date of a16z's updated "Emerging Architectures for Modern Data Infrastructure" (2022 edition). [VERIFY]
+- ch43: Benn Stancil essay URL and date (cited via dbt Analytics Engineering Podcast episodes 23 and 56; essay title as reported "The problem was the product: How the modern data stack got lost"). [VERIFY]
+- ch43: Fivetran–Census closing date not separately confirmed. [VERIFY]
+- ch43: Prefect–Dagster closing date (announced 2026-07-13). [VERIFY]
+- ch43 staging: dbt Labs Series C (June 2021, $150M) exact day, lead investor and post-money valuation (~$1.5B press-reported, not re-checked). [VERIFY]

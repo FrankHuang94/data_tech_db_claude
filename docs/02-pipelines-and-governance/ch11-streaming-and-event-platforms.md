@@ -33,7 +33,7 @@ Kafka's vocabulary maps onto that design:
 - A **[topic](../glossary.md#topic)** is a named log, such as `orders` or `card-swipes`.
 - A topic is split into **[partitions](../glossary.md#partition)**. Each partition is an independent, ordered log. Ordering is guaranteed only *within* a partition, so producers choose a key (customer ID, card number) that routes related events to the same partition.
 - **[Brokers](../glossary.md#broker)** are the servers that store partitions and serve reads and writes.
-- Each partition has one **leader** replica and, typically, two **followers** on other brokers (replication factor 3). The followers that are fully caught up form the **[in-sync replica](../glossary.md#in-sync-replicas)** (ISR) set. A write configured with `acks=all` is acknowledged only once every ISR member has it.[^kafka-docs]
+- Each partition has one **leader** replica and, typically, two **followers** on other brokers (replication factor 3). The followers that are fully caught up form the **[in-sync replica](../glossary.md#in-sync-replicas)** (ISR) set. A write configured with `acks=all` is acknowledged only once every ISR member has it. That protects against loss only if `min.insync.replicas` is at least 2; otherwise the ISR can shrink to the leader alone and `acks=all` quietly degrades to a single copy.[^kafka-docs]
 - **[Consumer groups](../glossary.md#consumer-group)** are how applications read. Each partition is assigned to exactly one consumer within a group, so a group with three consumers reading a three-partition topic gets three-way parallelism. A second group (say, the fraud model and the data-lake loader) reads the same data independently, with its own offsets. Kafka stores those committed offsets in an internal topic.[^kafka-docs]
 - **Retention** decides how long data stays: by time (seven days is the common default) or by size. **[Log compaction](../glossary.md#log-compaction)** is the alternative. It keeps only the latest record per key, which turns a topic into a durable changelog of current state, such as "latest address per customer".[^kafka-docs]
 
@@ -98,7 +98,7 @@ For its first decade, Kafka kept cluster metadata (which broker leads which part
 
 By default, a network retry can cause a producer to write the same record twice ("at-least-once"). KIP-98, shipped in Kafka 0.11 (2017), added two mechanisms:[^kip98]
 
-1. An **[idempotent producer](../glossary.md#idempotent-producer)**. Each producer gets an ID and stamps every batch with a per-partition sequence number. The broker discards any batch whose sequence it has already accepted, so retries cannot create duplicates.
+1. An **[idempotent producer](../glossary.md#idempotent-producer)**. Each producer gets an ID and stamps every batch with a per-partition sequence number. The broker discards any batch whose sequence it has already accepted, so retries cannot create duplicates. Idempotence has been on by default since Kafka 3.0, but it only covers retries within one producer session: a producer that restarts gets a new ID unless it uses a `transactional.id`, whose epoch also fences off "zombie" instances.
 2. **Transactions.** A producer can write to several partitions *and* commit its consumer offsets as one atomic unit. Consumers set to `read_committed` see either all of those writes or none of them.
 
 Together these give **[exactly-once semantics](../glossary.md#exactly-once-semantics)** for read-process-write loops that stay inside Kafka. The guarantee ends at the boundary: if the output goes to an external database, that system must also be idempotent or join the transaction (Flink's two-phase-commit sinks do this).
@@ -125,7 +125,7 @@ sequenceDiagram
 
 ### Tiered storage, then diskless
 
-Kafka's broker-local disks made long retention expensive. Every byte of history sat on three replicas of block storage. **[Tiered storage](../glossary.md#tiered-storage)** (KIP-405) moves closed log segments to object storage, while recent "hot" segments stay on broker disks. It was under development from Kafka 3.6 and was declared production-ready in Kafka 3.9 (November 2024).[^kafka39] Tiered storage cuts *storage* cost. It does not touch the *network* cost, because the hot tier is still replicated three times across AZs.
+Kafka's broker-local disks made long retention expensive. Every byte of history sat on three replicas of block storage. **[Tiered storage](../glossary.md#tiered-storage)** (KIP-405) moves closed log segments to object storage, while recent "hot" segments stay on broker disks. It shipped as early access in Kafka 3.6 (October 2023) and was declared production-ready in Kafka 3.9 (November 2024).[^kafka39] Tiered storage cuts *storage* cost. It does not touch the *network* cost, because the hot tier is still replicated three times across AZs.
 
 The newer "Kafka on object storage" designs go further. They make object storage the primary store and the brokers stateless.
 
@@ -164,7 +164,7 @@ Monthly ingest is 1 GB/s × 2,592,000 s = **2,592,000 GB (≈2.6 PB)**.
 | **Total, follower fetching off** | 8,640,000 | **$172,800** |
 | Total, rack-aware follower fetching on (KIP-392) | 6,912,000 | $138,240 |
 
-*Figure 11.4 — Replication alone is 60% of the classic bill. Fixing consumer placement helps; only removing broker-to-broker copying changes the order of magnitude.*
+*Figure 11.4 — Replication alone is 60% of the classic bill. Fixing consumer placement helps; only removing cross-AZ copying altogether (replication and client traffic) changes the order of magnitude.*
 
 Now the object-storage design. Producers and consumers talk only to agents in their own AZ, so cross-AZ data traffic is roughly zero. EC2-to-S3 transfer within a region is free.[^s3-pricing] What remains is S3 request charges. Assume nine agents (three per AZ), each uploading one object every 250 ms: that is 36 PUTs per second, or 93.3 million a month. At $0.005 per 1,000 PUTs that comes to about $467. If each AZ reads every object once, that adds 280 million GETs at $0.0004 per 1,000, about $112.[^s3-pricing] The total is **≈$580/month**, versus $138K–$173K for classic Kafka: a reduction of more than 99% on this line item.
 
@@ -178,7 +178,7 @@ xychart-beta
 
 *Figure 11.5 — On these assumptions, inter-AZ transfer dominates classic Kafka's network bill, while the object-storage design pays only S3 request fees. Illustrative arithmetic, not vendor pricing.*
 
-Three caveats keep this honest. First, Amazon MSK does not bill inter-broker replication traffic within a cluster, although client traffic that crosses AZs is still billed. That is the "MSK-style" bar, which assumes follower fetching for consumers.[^msk-pricing] Second, this compares network lines only. S3 storage, compute and vendor licence fees still apply. A faster flush interval (say 50 ms to cut latency) multiplies PUT costs by five, though the total stays small. Third, the saving is bought with latency, so it suits logs, telemetry, lake ingestion and CDC fan-out, not sub-10 ms trading or payments authorization.
+Three caveats keep this honest. First, Amazon MSK does not bill inter-broker replication traffic within a cluster, although client traffic that crosses AZs is still billed. That is the "MSK-style" bar, which assumes follower fetching for consumers.[^msk-pricing] Second, this compares network lines only. S3 storage, compute and vendor licence fees still apply, and real object-native engines also issue extra PUTs and GETs for compaction and metadata, which this sketch omits. A faster flush interval (say 50 ms to cut latency) multiplies PUT costs by five, though the total stays small. Third, the saving is bought with latency, so it suits logs, telemetry, lake ingestion and CDC fan-out, not sub-10 ms trading or payments authorization.
 
 ## Stream processing
 
@@ -287,7 +287,7 @@ Looking ahead, three things seem likely. Object storage will become the default 
 | Confluent customer base | >6,500 organizations; ~40% of Fortune 500 | Company-stated, press-reported | ChannelWeb, 2026-03[^ibm-close] |
 | Freight cluster trade | Up to 90% lower TCO; latency up to ~1–2 s | Company claim | Confluent, 2025[^freight] |
 | WarpStream p99 produce latency (S3 Express One Zone) | 169 ms | Vendor benchmark | WarpStream[^warpstream-bench] |
-| Spark 4.1 real-time mode | Single-digit ms p99 for stateless queries | Vendor claim | Databricks[^spark-rtm] |
+| Spark 4.1 real-time mode | Single-digit ms p99 for simple stateless queries; Databricks' GA benchmarks cite ~40–300 ms p99 for heavier pipelines ([Ch 9](ch09-pipeline-patterns.md)) | Vendor claim; workload-dependent | Databricks[^spark-rtm] |
 
 *Figure 11.10 — The headline numbers: a $0.02/GB network tax, an ~$11B exit and a 9.4x revenue multiple for the category leader.*
 
@@ -376,7 +376,7 @@ Options a strategy team might evaluate, based on public information: certifying 
 [^warpstream-bench]: WarpStream, "WarpStream S3 Express One Zone benchmark and total cost of ownership," https://www.warpstream.com/blog/warpstream-s3-express-one-zone-benchmark-and-total-cost-of-ownership, n.d.; WarpStream, "Cost-effective logging at scale: ShareChat's journey to WarpStream," https://www.warpstream.com/blog/cost-effective-logging-at-scale-sharechats-journey-to-warpstream, n.d.; retrieved 2026-11-01. Vendor-reported.
 [^freight]: Confluent, "Freight Clusters Are Generally Available," https://www.confluent.io/blog/freight-clusters-are-generally-available/, published 2025 (Q1 2025 launch); retrieved 2026-11-01. Company claims.
 [^cflt-10q]: Confluent, Inc., Form 10-Q for the quarter ended 2024-09-30, SEC EDGAR, https://www.sec.gov/Archives/edgar/data/1699838/000095017024119042/cflt-20240930.htm, published 2024-11; retrieved 2026-11-01. (Immerok consideration per an earlier 2023 10-Q, as recorded in data/ma_deals.csv.)
-[^cflt-10k]: Confluent, Inc., Form 10-K for fiscal year ended 2025-12-31, SEC EDGAR, https://www.sec.gov/Archives/edgar/data/1699838/000169983826000006/cflt-20251231.htm, published 2026; retrieved 2026-11-01. FY2025 figures as recorded in data/public_comps.csv (via secondary summary; re-check against the 10-K).
+[^cflt-10k]: Confluent, Inc., Form 10-K for fiscal year ended 2025-12-31, SEC EDGAR, https://www.sec.gov/Archives/edgar/data/1699838/000169983826000006/cflt-20251231.htm, published 2026; retrieved 2026-11-01. FY2025 figures (total revenue $1,166.7M GAAP, +21%; Confluent Cloud $624M, +27%) confirmed in `meta/verified-facts.md` item 1 against the 10-K and Confluent's Business Wire release of 2026-02-10/11, https://www.businesswire.com/news/home/20260210008002/en/Confluent-Announces-Fourth-Quarter-and-Fiscal-Year-2025-Financial-Results.
 [^ibm-close]: IBM, "IBM Completes Acquisition of Confluent," via Stock Titan, https://www.stocktitan.net/news/IBM/ibm-completes-acquisition-of-confluent-making-real-time-data-the-lbuwdbharsqe.html, published 2026-03-17; ChannelWeb UK, "IBM completes $11bn Confluent acquisition," https://www.channelweb.co.uk/news-network/2026/ibm-completes-11bn-confluent-acquisition, published 2026-03; retrieved 2026-11-01.
 [^ibm-10q]: IBM, Form 10-Q for the quarter ended 2026-03-31, SEC EDGAR, https://www.sec.gov/Archives/edgar/data/0000051143/000005114326000038/ibm-20260331.htm, published 2026-04; retrieved 2026-11-01.
 [^tableflow]: Confluent, "Confluent Announces the General Availability of Tableflow," Business Wire, https://www.businesswire.com/news/home/20250318342911/en/confluent-announces-the-general-availability-of-tableflow, published 2025-03-18; Confluent docs, "Tableflow overview," https://docs.confluent.io/cloud/current/topics/tableflow/overview.html, n.d.; retrieved 2026-11-01.

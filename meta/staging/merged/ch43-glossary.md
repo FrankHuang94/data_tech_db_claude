@@ -1,0 +1,6 @@
+- **Modern data stack** — The 2016–2022 architecture of a cloud warehouse surrounded by specialist SaaS tools for ingestion, transformation, orchestration, BI, activation, observability and cataloging. (ch43)
+- **Point tool** — A product that performs one step of a data workflow and relies on other vendors' products for the rest. (ch43)
+- **Integration tax** — The hidden cost of stitching many vendors together: extra contracts, failure points, duplicated metadata and no single owner of the outcome. (ch43)
+- **Unbundling** — Splitting the functions of an integrated suite into separately sold, best-of-breed products. (ch43)
+- **Rebundling** — Recombining separately sold products into suites or platforms through mergers, acquisitions or native platform features. (ch43)
+- **Post-modern data stack** — The 2025–26 consolidated architecture of open tables on object storage, a governing catalog, a few platforms and AI agents on top. (ch43)

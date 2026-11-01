@@ -25,7 +25,7 @@ DATA, DST, MST = ROOT / "data", ROOT / "data" / "staging", ROOT / "meta" / "stag
 DRY = "--dry-run" in sys.argv
 
 SPECS = {
-    "ma_deals": (("date", "acquirer", "target"), ["*ma_deals*.csv", "ma_20*.csv"]),
+    "ma_deals": (("acquirer", "target"), ["*ma_deals*.csv", "ma_20*.csv"]),
     "private_funding": (("company", "round"), ["*private_funding*.csv"]),
     "public_comps": (("ticker",), ["*public_comps*.csv"]),
     "company_financials": (("company", "fiscal_period", "metric"), ["*company_financials*.csv"]),

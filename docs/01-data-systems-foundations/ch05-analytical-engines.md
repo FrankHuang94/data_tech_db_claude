@@ -6,7 +6,7 @@
 - Analytical queries touch a few columns across billions of rows. Storing data **column by column** lets the engine read only those columns, and similar values sit next to each other, so they compress well. Together these routinely cut bytes scanned by one to two orders of magnitude (worked example below).
 - Modern engines process data in **batches of about a thousand values** (vectorized execution, MonetDB/X100 → DuckDB, ClickHouse, Velox, Photon) or **compile each query to machine code** (HyPer, Spark whole-stage codegen). Both approaches exist to keep the CPU fed from cache instead of stalling on memory.
 - The 2000s MPP warehouses (Teradata, Netezza, Greenplum, Redshift classic) were **shared-nothing**: each node owned its slice of the data. That design scales reads well, but resizing the cluster means physically reshuffling the data.
-- Snowflake's 2016 design made **object storage the durable disk**, used stateless compute clusters with local SSD caches, and put a separate services layer in charge of metadata. Elastic scaling, isolated concurrency and pay-per-use followed from that one decision. BigQuery, Redshift RA3 and Databricks took the same path.
+- Snowflake's 2016 design made **object storage the durable disk**, used stateless compute clusters with local SSD caches, and put a separate services layer in charge of metadata. Elastic scaling, isolated concurrency and pay-per-use followed from that one decision. BigQuery (whose Dremel lineage disaggregated storage inside Google even earlier), Redshift RA3 and Databricks converged on the same pattern.
 - Engines are coming apart into reusable parts: **Arrow** for memory format, **Velox/DataFusion** for execution, and Parquet/Iceberg for storage. Performance is becoming a commodity, and the strategic control points move to storage throughput, caching and the catalog.
 
 ## Why this matters (business + Everpure lens)
@@ -159,7 +159,7 @@ The latest shift is to open, reusable engine parts. **Apache Arrow** standardize
 - **Column store with encoding at an assumed 5×** (the low end of the vendor rule of thumb): **4.8 GB**. `store` is dictionary-encoded, `date` is RLE or delta-encoded, and `price` is bit-packed.
 - **Plus zone-map pruning:** if the table holds 36 months clustered by date, only about one month of micro-partitions survives, roughly **0.13 GB**.
 
-At an assumed 10 GB/s of scan throughput, those are about 40 seconds, 2.4 seconds, 0.5 seconds and a few hundredths of a second. On a consumption-priced warehouse that is also roughly the cost ratio.
+At an assumed 10 GB/s of scan throughput, those are about 40 seconds, 2.4 seconds, 0.5 seconds and roughly a hundredth of a second. On a consumption-priced warehouse that is also roughly the cost ratio.
 
 ```mermaid
 xychart-beta
@@ -192,7 +192,7 @@ The strongest case *for* shared-nothing today is that local NVMe is faster and c
 | Amazon Redshift | MPP with code-generated query segments [VERIFY: current Redshift compilation model] | RA3 managed storage: SSD cache plus S3[^ra3] | Resize, concurrency scaling, serverless | No | AWS-native warehousing |
 | Databricks Photon | Vectorized C++ under Spark APIs[^photon] | Delta/Iceberg/Parquet in customer object storage | Elastic clusters, serverless SQL | No (Spark, Delta are open) | Lakehouse ETL plus SQL on open files |
 | ClickHouse | Vectorized columnar | MergeTree on local disk or object storage | Self-managed or cloud service | Yes | Real-time, high-concurrency analytics, observability |
-| DuckDB | Vectorized, in-process, 2,048-value vectors[^duckdb-vec] | Local files, Parquet/Iceberg on object storage | Single machine | Yes (MIT) | Laptop and embedded analytics |
+| DuckDB | Vectorized, in-process, 2,048-value vectors[^duckdb-vec] | Local files, Parquet/Iceberg on object storage | Single machine | Yes (MIT; DuckDB Foundation) | Laptop and embedded analytics |
 | Trino | Distributed MPP-style SQL over external data | Any lake or federated source; no storage of its own | Cluster scaling (Starburst offers managed service) | Yes | Federated and lake queries across many sources |
 | Apache Druid / Apache Pinot | Segment-based with indexes, columnar | Local segments plus deep storage on object storage | Cluster scaling | Yes | Sub-second, user-facing dashboards on fresh events |
 | Velox / DataFusion | Vectorized libraries[^velox][^datafusion] | Whatever the host engine uses | N/A (components) | Yes | Building blocks for new engines |
@@ -203,7 +203,7 @@ The strongest case *for* shared-nothing today is that local NVMe is faster and c
 
 - **Cloud warehouses:** Snowflake, the reference design for separated storage and compute ([Ch 26](../04-company-deep-dives/ch26-snowflake.md)); Google BigQuery (serverless); Amazon Redshift (MPP heritage, now RA3 and serverless); Microsoft Fabric/Synapse.
 - **Lakehouse engines:** Databricks Photon and Spark SQL, which run over open formats in the customer's bucket ([Ch 7](ch07-open-table-formats.md)).
-- **Challengers and open engines:** ClickHouse, which raised $400M at a $15B valuation in January 2026 (press-reported),[^clickhouse-val] plus DuckDB/MotherDuck, Trino/Starburst, Dremio, Firebolt, and real-time engines Druid/Imply and Pinot/StarTree ([Ch 31](../04-company-deep-dives/ch31-analytical-engine-challengers-legacy.md), [Ch 23](../03-ai-data-stack/ch23-real-time-analytics-htap.md)).
+- **Challengers and open engines:** ClickHouse, which raised $400M at a $15B valuation in January 2026 (press-reported),[^clickhouse-val] plus DuckDB/MotherDuck (AWS signed a definitive agreement in August 2026 to acquire DuckDB Labs, terms undisclosed; DuckDB itself stays MIT-licensed under the DuckDB Foundation),[^aws-ducklabs] Trino/Starburst, Dremio (acquired by SAP in 2026), Firebolt, and real-time engines Druid/Imply and Pinot/StarTree ([Ch 31](../04-company-deep-dives/ch31-analytical-engine-challengers-legacy.md), [Ch 23](../03-ai-data-stack/ch23-real-time-analytics-htap.md)).
 - **Legacy MPP:** Teradata, Netezza (IBM), Greenplum (Broadcom via VMware), Vertica (OpenText via Micro Focus) [VERIFY: Vertica current owner]. They hold large installed bases but face steady migration to the cloud.
 - **Components:** Apache Arrow, Velox, DataFusion. These sit underneath many of the above and are increasingly the shared substrate.
 
@@ -325,4 +325,5 @@ The arc runs in three acts. **Act 1 (2005–2012): columnar and vectorized ideas
 [^manifesto]: P. Pedreira, O. Erling, K. Karanasos, S. Schneider, W. McKinney, S. R. Valluri, M. Zait, J. Nadeau, "The Composable Data Management System Manifesto," PVLDB 16(10): 2679–2685, https://www.vldb.org/pvldb/vol16/p2679-pedreira.pdf, published 2023; retrieved 2026-11-01.
 [^duckdb10]: M. Raasveldt, H. Mühleisen, "Announcing DuckDB 1.0.0," DuckDB blog, https://duckdb.org/2024/06/03/announcing-duckdb-100.html, published 2024-06-03; retrieved 2026-11-01.
 [^clickhouse-val]: Bloomberg, "ClickHouse Lands $15 Billion Valuation in AI Database Race," https://bloomberg.com/news/articles/2026-01-16/clickhouse-lands-15-billion-valuation-in-ai-database-race, published 2026-01-16; retrieved 2026-11-01 (via `data/private_funding.csv`).
+[^aws-ducklabs]: Amazon, "AWS to acquire DuckLabs," https://www.aboutamazon.com/news/company-news/aws-ducklabs, published ~2026-08-25/26; retrieved 2026-11-01 (via `meta/verified-facts.md` item 13 and `meta/research-briefing.md` integrator notes). Terms undisclosed.
 [^ep-starburst]: Everpure, "Technology Alliance Partners: Starburst," https://www.everpuredata.com/la/partners/technology-alliance-partners/starburst.html, n.d.; retrieved 2026-11-01 (via `meta/research-briefing.md`).

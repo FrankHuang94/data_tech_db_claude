@@ -326,3 +326,21 @@ Every `[VERIFY: …]` left in the text is listed here with its chapter. Resolve 
 | ch41 | ch41: Verify the 2021 DBMS total (~$80B) in TechRepublic/Gartner (carried from data/market_sizes.csv). | open |
 | ch41 | ch41 (not in text, in data): Gartner 2025 DBMS actual (market-share 2025 report, Ronthal) not public; $136.0B row is derived from the 2026 forecast. | open |
 | ch35 | ch35: [VERIFY: current Snowflake and Databricks sales-compensation design (quota credit on consumption vs bookings); text relies on public commentary before 2025, not a 2026 primary source.] | open |
+| ch36 | ch36: Snowflake Q1 FY2027 (Feb–Apr 2026) GAAP sales and marketing expense — derived as ~$590M (six-month ~$1.20B less Q2 $611.6M); confirm exact figure from the Q1 FY2027 10-Q and recompute magic number (~1.06 raw / ~0.72 day-adjusted). | open |
+| ch36 | ch36: Snowflake Q2 FY2027 non-GAAP add-backs other than SBC (~$76M derived) — confirm split (amortization of acquired intangibles, employer payroll tax on equity, other) from the release reconciliation; SBC $424M is press-reported via sec-api.io. | open |
+| ch36 | ch36: Exact SEC filing dates for Snowflake FY2026 10-K, Snowflake Q2 FY2027 10-Q and MongoDB FY2026 10-K. | open |
+| ch36 | ch36: Everpure segment gross margins (non-GAAP product ~68% / subscription services ~76.5% Q2 FY2026; 72.9% / 75.5% Q3 FY2026) rest on third-party summaries — confirm against 10-Q; also confirm publication date of the Q3 FY26 slide deck. | open |
+| ch36 | ch36: Palantir Q2 2026 and ServiceNow Q3 2026 release day-of-month dates. | open |
+| ch36 | ch36: Scale Venture Partners "A History of the Magic Number" publication date. | open |
+| ch37 | ch37: Supabase Oct 2026 Series F extension ($150M at $10.65B) rests on a single source (NBR, 2026-10-03) — confirm with a second outlet or company statement. | open |
+| ch37 | ch37: Splunk growth rate at deal announcement (Sep 2023) and the ~7.1x LTM multiple on ~$3.9B LTM revenue come from a secondary deal-data site — verify against Splunk 10-Q (quarter ended 2023-07-31). | open |
+| ch37 | ch37: Couchbase FY2025 (Feb 2024–Jan 2025) revenue ~$209M is from the ROIC.ai aggregator — verify against Couchbase 10-K; multiple uses $1.5B equity value, not EV. | open |
+| ch37 | ch37: BVP Nasdaq Emerging Cloud Index "average revenue multiple 5.8x" on cloudindex.bvp.com is undated and appears trailing — confirm date and basis (NTM vs TTM) before citing as current. | open |
+| ch39 | ch39: AWS–DuckLabs closing not confirmed by a primary source (announced 2026-08-26; DuckDB analytics shipped in Aurora PostgreSQL). [VERIFY] | open |
+| ch39 | ch39: Informatica October 2021 IPO final price per share (offering ~$841M, marketed $29–32, opened ~$29) — confirm from the 424B4 pricing page. [VERIFY] | open |
+| ch43 | ch43: Named layoffs and shutdowns among MDS vendors 2022–2024 (not systematically recorded in data/*.csv); add sourced examples or keep generic. [VERIFY] | open |
+| ch43 | ch43: Exact publication date of a16z's updated "Emerging Architectures for Modern Data Infrastructure" (2022 edition). [VERIFY] | open |
+| ch43 | ch43: Benn Stancil essay URL and date (cited via dbt Analytics Engineering Podcast episodes 23 and 56; essay title as reported "The problem was the product: How the modern data stack got lost"). [VERIFY] | open |
+| ch43 | ch43: Fivetran–Census closing date not separately confirmed. [VERIFY] | open |
+| ch43 | ch43: Prefect–Dagster closing date (announced 2026-07-13). [VERIFY] | open |
+| ch43 | ch43 staging: dbt Labs Series C (June 2021, $150M) exact day, lead investor and post-money valuation (~$1.5B press-reported, not re-checked). [VERIFY] | open |

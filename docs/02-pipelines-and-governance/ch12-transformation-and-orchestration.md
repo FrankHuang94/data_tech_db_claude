@@ -13,7 +13,7 @@
 
 Every dashboard number, forecast feature and RAG source table has passed through a transformation layer. That layer encodes the company's business logic: what counts as "net revenue", which orders are cancelled, how a store is mapped to a region. A strategy professional should care for three reasons.
 
-First, this is where **lock-in lives**. Moving warehouses is painful, but rewriting 2,000 dbt models is worse. That is why dbt's 2025 license change and the Fivetran–dbt merger worried customers so much. It is also why Snowflake and Databricks want transformation to run inside their own engines.
+First, this is where **lock-in lives**. Moving warehouses is painful, but rewriting 2,000 dbt models is worse. That is why dbt's 2025 decision to ship the Fusion engine under ELv2 and proprietary terms, and then the Fivetran–dbt merger, worried customers so much. It is also why Snowflake and Databricks want transformation to run inside their own engines.
 
 Second, **orchestration is a reliability business with weak pricing power**. Airflow is free and offered as a managed service by AWS (MWAA) and Google (Cloud Composer). Commercial vendors therefore compete on operations, observability and developer experience, not on scheduling itself.
 
@@ -197,7 +197,7 @@ Neither orchestrator fixes the column rename. Retrying a schema break just fails
 |---|---|---|---|---|---|
 | dbt Core (v1.x / v2) | SQL + Jinja models, `ref()` DAG | Any warehouse via adapters | Apache 2.0 (Core v2 runtime is Rust) | Huge ecosystem and talent pool | Text templating; v1 parse slow on big projects |
 | dbt platform (Cloud) / Fusion | Same models plus IDE, CI, semantic layer, Mesh | SaaS; Fusion binary local | Proprietary SaaS; Fusion under dbt license | Fastest path for enterprises; SQL comprehension | Now part of Fivetran; pricing and roadmap risk |
-| SQLMesh | Parsed SQL/Python, plan-based deploys | Many engines via SQLGlot | Apache 2.0; Linux Foundation project (2026) | Virtual environments, column lineage, cheap CI | Smaller community; owner also owns dbt |
+| SQLMesh | Parsed SQL/Python, plan-based deploys | Many engines via SQLGlot | Apache 2.0; Linux Foundation project (2026) | Virtual environments, column lineage, cheap CI | Smaller community; its main sponsor (Fivetran) also owns dbt |
 | Coalesce | Visual, metadata-driven, generates SQL | Snowflake first, others added | Proprietary SaaS | Fast for teams that prefer GUIs and templates | Less portable; smaller ecosystem |
 | Dataform (Google) | SQLX models in BigQuery | BigQuery only | Free in GCP (pay for queries) | Zero extra cost, native to BigQuery | Single-cloud |
 | Snowflake Dynamic Tables | Declarative SQL with target lag | Snowflake only | Snowflake consumption | No orchestrator needed; incremental refresh | Logic locked to one engine; limited testing |
@@ -223,7 +223,7 @@ Sources for the table: dbt, SQLMesh, Snowflake, Databricks and Google documentat
 
 ## Who's who
 
-- **Fivetran + dbt Labs.** Fivetran now owns the default ingestion connector library, the default transformation framework (dbt), its main challenger (SQLMesh, donated to the Linux Foundation in March 2026) and reverse ETL (Census).[^merger-close][^sqlmesh-lf] It is a full ELT vendor sitting between the warehouses and their customers. George Fraser is CEO and Tristan Handy is president. See [Ch 30](../04-company-deep-dives/ch30-data-movement-streaming-companies.md).
+- **Fivetran + dbt Labs.** Fivetran now owns the default ingestion connector library, the default transformation framework (dbt), its main challenger (SQLMesh, donated to the Linux Foundation in March 2026) and reverse ETL (Census, agreed May 2025; closing not separately announced).[^merger-close][^sqlmesh-lf] It is a full ELT vendor sitting between the warehouses and their customers. George Fraser is CEO and Tristan Handy is president. See [Ch 30](../04-company-deep-dives/ch30-data-movement-streaming-companies.md).
 - **Astronomer.** The main commercial steward of Airflow and largest contributor to it. It sells the Astro managed service and raised a $93M Series D in May 2025 (press-reported valuation of about $775M).[^astro-d] Its risk is that AWS and Google sell managed Airflow next to their own compute. MWAA has supported Airflow 3.0 since October 2025.[^mwaa]
 - **Prefect + Dagster.** Prefect announced the acquisition of Dagster Labs on 13 July 2026, with terms undisclosed. Both products keep their names and licenses: Dagster is pitched as the "outcomes" layer and Prefect as the "execution" layer.[^prefect-dagster] `[VERIFY: closing date]`
 - **Temporal.** The durable-execution leader, born from Uber's Cadence. It reported more than 4,300 paying customers (press-reported) at its Series E.[^temporal]
@@ -249,7 +249,7 @@ timeline
 
 *Figure 12.6 — The open-source tools of 2014–2020 became the venture-funded companies of 2021–2022, and then the consolidation targets of 2025–2026.*
 
-The arc has three phases. **2014–2020, open-source invention.** Airflow (Airbnb, open-sourced 2015, Apache top-level project January 2019)[^airflow-hist] and dbt (2016) replaced proprietary ETL GUIs with code. **2021–2022, the modern-data-stack peak.** dbt Labs raised a $150M Series C and renamed itself in June 2021, then a $222M Series D at a $4.2B valuation (company-stated) in February 2022.[^fishtown][^funding-csv] Fivetran raised at $5.6B in September 2021.[^funding-csv] **2023–2026, rebundling.** dbt Labs bought Transform (2023), passed $100M ARR (company-stated, February 2025) and bought SDF.[^transform][^dbt-100m][^sdf] Then the independents merged: Fivetran–Tobiko, Fivetran–dbt and Prefect–Dagster. The platforms meanwhile built or hosted transformation natively. Both 2021-vintage valuations were never re-priced. The all-stock merger avoided a price test, which suggests the standalone marks were rich. See [Ch 43](../06-history-and-future/ch43-modern-data-stack.md).
+The arc has three phases. **2014–2020, open-source invention.** Airflow (Airbnb, open-sourced 2015, Apache top-level project January 2019)[^airflow-hist] and dbt (2016) replaced proprietary ETL GUIs with code. **2021–2022, the modern-data-stack peak.** dbt Labs raised a $150M Series C and renamed itself in June 2021, then a $222M Series D at a $4.2B valuation (company-stated) in February 2022.[^fishtown][^funding-csv] Fivetran raised at $5.6B in September 2021.[^funding-csv] **2023–2026, rebundling.** dbt Labs bought Transform (2023), passed $100M ARR (company-stated, February 2025) and bought SDF.[^transform][^dbt-100m][^sdf] Then the independents consolidated: Fivetran bought Tobiko and merged with dbt Labs, and Prefect agreed to buy Dagster (pending). The platforms meanwhile built or hosted transformation natively. Neither the 2021 Fivetran mark nor the 2022 dbt Labs mark was re-priced in a later round, and the all-stock merger avoided a cash price test. Outsiders therefore cannot tell whether the standalone marks still held. The bear reading is that they were rich; the bull reading is that combining avoided a down round while combined ARR kept growing toward $600M. See [Ch 43](../06-history-and-future/ch43-modern-data-stack.md).
 
 Next: transformation becomes a **compiler problem**, with parsed SQL, column lineage and cheap virtual environments, and orchestration becomes an **agent runtime problem**. Agents will write more dbt models. That raises the value of tests, contracts and semantic definitions ([Ch 14](ch14-semantic-layers-and-bi.md)) and of observability ([Ch 13](ch13-data-quality-observability-lineage.md)) as guardrails.
 
@@ -270,7 +270,7 @@ Next: transformation becomes a **compiler problem**, with parsed SQL, column lin
 | Temporal annualized revenue | >$250M | Press-reported | 2026-09[^temporal] |
 | Snowflake Dynamic Tables minimum target lag | 60 seconds | Product documentation | Snowflake docs[^dt] |
 
-*Figure 12.7 — The transformation layer is a roughly half-billion-dollar ARR franchise. Orchestration's value is moving toward agent-era durable execution.*
+*Figure 12.7 — The combined ingestion-plus-transformation vendor is approaching $0.6B of ARR, of which dbt Labs contributed over $100M as of early 2025 (both company-stated). Orchestration's value is moving toward agent-era durable execution.*
 
 ## Conversation playbook
 

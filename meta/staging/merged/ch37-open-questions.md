@@ -1,0 +1,4 @@
+- ch37: Supabase Oct 2026 Series F extension ($150M at $10.65B) rests on a single source (NBR, 2026-10-03) — confirm with a second outlet or company statement.
+- ch37: Splunk growth rate at deal announcement (Sep 2023) and the ~7.1x LTM multiple on ~$3.9B LTM revenue come from a secondary deal-data site — verify against Splunk 10-Q (quarter ended 2023-07-31).
+- ch37: Couchbase FY2025 (Feb 2024–Jan 2025) revenue ~$209M is from the ROIC.ai aggregator — verify against Couchbase 10-K; multiple uses $1.5B equity value, not EV.
+- ch37: BVP Nasdaq Emerging Cloud Index "average revenue multiple 5.8x" on cloudindex.bvp.com is undated and appears trailing — confirm date and basis (NTM vs TTM) before citing as current.

@@ -11,9 +11,9 @@
 
 ## Why this matters (business + Everpure lens)
 
-Investors describe AI as a compute story, and the GPU bill supports that view. Data is the input that compute cannot substitute for. Gartner predicted that through 2026 organizations will abandon 60% of AI projects that lack AI-ready data (analyst prediction).[^gartner] IDC estimated that about 90% of organizational data is unstructured (2022, analyst estimate, vendor-sponsored).[^idc] Unstructured data is the kind that RAG and agents consume, and it is the kind that traditional warehouses ignored. Whoever cleans, classifies, versions and serves that data captures the lifecycle's recurring spend. Training a model is closer to a one-time capital project.
+Investors describe AI as a compute story, and the GPU bill supports that view. Data is the input that compute cannot substitute for. Gartner predicted that through 2026 organizations will abandon 60% of AI projects that lack AI-ready data (analyst prediction).[^gartner] IDC estimated that about 90% of the data organizations generated in 2022 was unstructured (white paper published 2023, analyst estimate, Box-sponsored).[^idc] Unstructured data is the kind that RAG and agents consume, and it is the kind that traditional warehouses ignored. Whoever cleans, classifies, versions and serves that data captures the lifecycle's recurring spend. Training a model is closer to a one-time capital project.
 
-For a corporate-development reader, the useful split is between stages where frontier labs build everything in-house and stages where enterprises buy. Labs build their own crawlers, curation pipelines and RL environments, and they buy mainly GPUs, storage and human data from vendors such as Scale AI. Scale AI was valued at about $29B when Meta bought 49% of it in June 2025 (press-reported).[^scale] Enterprises buy almost everything: the model through an API, the vector index, the evaluation tools and the agent runtime. That is the market where Databricks, Snowflake and the hyperscalers compete. It is also where Everpure has positioned its 2026 moves. Data Intelligence (from the 1touch acquisition) discovers and classifies data, and Data Stream vectorizes data on FlashBlade with NVIDIA GPUs.[^everpure-ds] Both sit in the enterprise curation and deployment-context stages. They do not touch frontier pretraining.
+For a corporate-development reader, the useful split is between stages where frontier labs build everything in-house and stages where enterprises buy. Labs build their own crawlers, curation pipelines and RL environments, and they buy mainly GPUs, storage and human data from vendors such as Scale AI. Scale AI was valued at about $29B when Meta paid about $14.3B for a 49% non-voting stake in June 2025 (press-reported).[^scale] Enterprises buy almost everything: the model through an API, the vector index, the evaluation tools and the agent runtime. That is the market where Databricks, Snowflake and the hyperscalers compete. It is also where Everpure has positioned its 2026 moves. Data Intelligence (from the 1touch acquisition) discovers and classifies data, and Data Stream vectorizes data on FlashBlade with NVIDIA GPUs.[^everpure-ds] Both sit in the enterprise curation and deployment-context stages. They do not touch frontier pretraining.
 
 ## How it works
 
@@ -93,7 +93,7 @@ At about 4 bytes of English text per token (rule of thumb, estimate), 15 trillio
 
 The Llama 3 paper is one of the few public descriptions of the storage underneath. Meta trained on Tectonic, its distributed file system: 240 PB on 7,500 SSD-equipped servers, with 2 TB/s sustained and 7 TB/s peak throughput.[^llama3-paper] The paper names bursty checkpoint writes, which saturate the fabric for short periods, as the main storage challenge. It also reports 466 job interruptions during a 54-day period of pretraining, about one every 2.8 hours.[^llama3-paper] A [model checkpoint](../glossary.md#model-checkpoint) is the insurance against those interruptions.
 
-**Worked example: checkpoint size.** Mixed-precision training with the Adam optimizer holds roughly 16 bytes of state per parameter (bf16 weights and gradients, plus fp32 master weights and two optimizer moments). For a 405-billion-parameter model that is about 6.5 TB per full checkpoint (estimate). At 2 TB/s that takes a few seconds in the ideal case. In practice tens of thousands of GPUs write at the same moment and then go quiet. Labs therefore checkpoint asynchronously to host memory or local NVMe and then drain to shared storage.
+**Worked example: checkpoint size.** Mixed-precision training with the Adam optimizer holds roughly 16 bytes of state per parameter in memory (bf16 weights and gradients, plus fp32 master weights and two optimizer moments). A checkpoint usually omits the gradients, so it stores about 14 bytes per parameter. For a 405-billion-parameter model that is about 5.7 TB per full checkpoint (estimate; about 6.5 TB if gradients are kept). At 2 TB/s that takes about three seconds in the ideal case. In practice tens of thousands of GPUs write at the same moment and then go quiet. Labs therefore checkpoint asynchronously to host memory or local NVMe and then drain to shared storage.
 
 > **Bridge: semiconductors.** Checkpoints and dataset versions are **wafer lot genealogy**. When a field failure comes back, a fab traces the die to its lot, tool and recipe. When a model regresses, a lab has to trace it to the checkpoint, the data mix and the exact shard manifest. Without that record, nobody can reproduce or explain the result.
 
@@ -129,7 +129,7 @@ Enterprises rarely change model weights. They change what the model sees. RAG (L
 4. Index the vectors with keyword search alongside.
 5. At query time, retrieve the top chunks, check permissions and place them in the prompt.
 
-Menlo Ventures' 2024 survey found RAG in 51% of enterprise generative-AI deployments, compared with 9% that relied mainly on fine-tuning (survey, press-reported).[^menlo24] In 2025 the discipline was renamed [context engineering](../glossary.md#context-engineering). Anthropic describes it as deciding, on every model call, which instructions, retrieved data, tool results and history to include.[^context-eng]
+Menlo Ventures' 2024 survey found RAG in 51% of enterprise generative-AI deployments, compared with 9% that relied mainly on fine-tuning (survey, press-reported).[^menlo24] In 2025 practitioners began describing the broader discipline as [context engineering](../glossary.md#context-engineering). Anthropic describes it as deciding, on every model call, which instructions, retrieved data, tool results and history to include.[^context-eng]
 
 Fine-tuning has not disappeared. It has become a managed feature that each platform offers. Snowflake's Cortex Fine-tuning (GA February 2025) trains parameter-efficient adapters inside the account.[^sf-ft] Snowflake added Cortex Training for managed GPU fine-tuning of open-weight models at Summit 2026.[^sf-summit26] AWS's Bedrock Knowledge Bases can use S3 Vectors as a managed RAG store.[^s3v-bedrock]
 
@@ -159,7 +159,7 @@ The [data flywheel](../glossary.md#data-flywheel) is the strongest moat argument
 
 - **Copyright** sits mostly in Stages 1–2. In *Bartz v. Anthropic*, Judge Alsup held in 2025 that training on books was fair use but that keeping pirated copies was not. The case then settled for $1.5B, about $3,000 per work, and the settlement received final approval in July 2026.[^bartz] The lesson for data teams is that provenance records matter as much as the training itself. FineWeb's dataset card likewise records domains removed after a cease-and-desist notice.[^fineweb-card]
 - **PII** appears at every stage, and it is worst in Stage 8, where user conversations become training candidates.
-- **[Data poisoning](../glossary.md#data-poisoning)** is cheaper than intuition suggests. Anthropic, the UK AI Security Institute and the Alan Turing Institute found that about 250 malicious documents could backdoor models from 600M to 13B parameters, whatever the model size. For the largest model that was 0.00016% of its training tokens (research result, narrow trigger behavior).[^poison] In RAG the same attack only requires getting one document into the index.
+- **[Data poisoning](../glossary.md#data-poisoning)** is cheaper than intuition suggests. Anthropic, the UK AI Security Institute and the Alan Turing Institute found that about 250 malicious documents could backdoor models from 600M to 13B parameters, whatever the model size. For the largest model that was 0.00016% of its training tokens (research result, narrow trigger behavior).[^poison] In RAG the bar can be lower still: research attacks on retrieval have needed only a handful of planted documents per targeted question, because the attacker only has to get them into the index and ranked.
 
 ## Design choices and trade-offs
 
@@ -190,7 +190,7 @@ The opposite steelman, "long context makes RAG obsolete," is also partly true. M
 | 3. Pretraining | PyTorch, Megatron, in-house stacks; Tectonic-class file systems | Tokenized binary shards; Safetensors checkpoints | Sequential reads plus random shuffle; checkpoint write bursts |
 | 4. Post-training | Scale AI, Surge AI, Mercor, Snorkel; RL-environment startups | Prompt/response pairs, rankings, environment specs | Small datasets; sandbox VMs; trace logging |
 | 5. Evaluation | Open benchmark suites, Weights & Biases, MLflow, Braintrust, Agent Bricks evals | Question sets, judge rubrics, scores | Small, versioned, access-restricted |
-| 6. Deployment context | Databricks Vector Search, Snowflake Cortex Search, Bedrock Knowledge Bases + S3 Vectors, Gemini Enterprise Agent Platform, Pinecone, Elasticsearch, pgvector | Chunks, embeddings, metadata | Low-latency random reads; frequent index refresh |
+| 6. Deployment context | Databricks Vector Search (now "AI Search" in its docs), Snowflake Cortex Search, Bedrock Knowledge Bases + S3 Vectors, Gemini Enterprise Agent Platform, Pinecone, Elasticsearch, pgvector | Chunks, embeddings, metadata | Low-latency random reads; frequent index refresh |
 | 7. Agents | MCP servers, Agent Bricks, Snowflake CoWork and Cortex Agents, Bedrock agents, LangGraph | Tool calls, memory records | Small transactional reads/writes (often Postgres) |
 | 8. Feedback | LangSmith, Arize, W&B Weave, lakehouse tables, lakeFS | Traces, ratings, preference pairs | Append-heavy logs; long retention |
 
@@ -231,11 +231,11 @@ There are three phases. **Scale (2020–2023):** better models came from more to
 | Qwen3 pretraining | ~36T tokens, 119 languages | Company-stated | Qwen tech report, 2025-05[^qwen3] |
 | Llama 3 training storage | 240 PB, 2 TB/s sustained, 7 TB/s peak | Paper-stated | Llama 3 paper, 2024-07[^llama3-paper] |
 | Llama 3 job interruptions | 466 in 54 days | Paper-stated | Llama 3 paper, 2024-07[^llama3-paper] |
-| Full checkpoint, 405B params | ~6.5 TB | Estimate (16 bytes/param) | This chapter |
+| Full checkpoint, 405B params | ~5.7 TB (~6.5 TB with gradients) | Estimate (~14 bytes/param; 16 with gradients) | This chapter |
 | InstructGPT datasets | ~13k SFT, ~33k RM, ~31k RL prompts | Paper-stated | Ouyang et al., 2022-03[^instructgpt] |
 | Llama 3 human-annotated post-training examples | >10M | Company-stated | Meta, 2024-04-18[^llama3-blog] |
 | Poisoning threshold | ~250 documents (0.00016% of tokens at 13B) | Research result | Anthropic et al., 2025-10[^poison] |
-| Unstructured share of org data | ~90% (2022) | Analyst estimate, vendor-sponsored | IDC via StorageNewsletter, 2023-09-07[^idc] |
+| Unstructured share of org data | ~90% of data generated in 2022 | Analyst estimate, vendor-sponsored | IDC via StorageNewsletter, 2023-09-07[^idc] |
 | Enterprise deployments using RAG vs fine-tuning | 51% vs 9% (2024) | Survey, press-reported | Menlo Ventures, 2024-11[^menlo24] |
 | Enterprise gen-AI spend | ~$37B (2025), up ~3.2x | Survey-based estimate | Menlo Ventures, 2025-12-09[^menlo25] |
 | AI projects abandoned without AI-ready data | 60% through 2026 | Analyst prediction | Gartner, 2025-02-26[^gartner] |
