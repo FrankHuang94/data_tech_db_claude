@@ -258,3 +258,158 @@ pie title "按类别划分的一句话解释（共 71 条）"
 **49. RLHF data（RLHF 数据）.** 人类反馈强化学习（RLHF）以一个奖励模型为目标来调优模型，而该奖励模型是用人类对"哪个回答更好"的判断训练出来的。稀缺的投入是偏好数据和专家数据，这就是数据标注公司和专家网络公司能获得高估值的原因；它相当于良率学习，工程师的判断变成了训练信号。（[第 20 章](../03-ai-data-stack/ch20-training-data-supply-chain.md)）
 
 **50. Hybrid search（混合检索）.** 把关键词检索（BM25）与向量检索结合起来，并合并两份排序列表，通常采用倒数排名融合（reciprocal rank fusion）。关键词能抓住嵌入会模糊掉的精确零件号和名称，向量能抓住同义改写，就像一只基金把量化筛选与分析师判断相结合。（[第 18 章](../03-ai-data-stack/ch18-embeddings-and-vector-search.md)）
+
+## 商业
+
+**51. DBU（Databricks 单位）.** Databricks Unit（DBU）是一种按小时计的标准化处理量单位，定价从传统作业计算（classic jobs compute）的约 $0.15 到无服务器 SQL 的约 $0.70 不等（第三方整理的美国标价）。[^dbx-pricing] 可以把它想象成千瓦时：一块电表，不同工作负载适用不同的电价。（[第 25 章](../04-company-deep-dives/ch25-databricks.md)、[第 35 章](../05-business-and-economics/ch35-business-models.md)）
+
+**52. Snowflake credit（Snowflake 积分）.** Snowflake 的计算单位：正在运行的虚拟仓库按秒消耗积分，规格每升一档，每小时费率翻一倍，而每个积分的价格取决于版本和区域。客户通常预先承诺购买积分，Snowflake 只在积分被消耗时才确认收入，就像预付费的手机通话分钟数。（[第 26 章](../04-company-deep-dives/ch26-snowflake.md)、[第 35 章](../05-business-and-economics/ch35-business-models.md)）
+
+**53. Consumption model（按用量计费模式）.** 客户按实际使用量付费，而不是按席位或许可证付费，因此收入跟随工作负载变化。它把价格与价值挂钩，并让小额交易得以成长，但也使收入更难预测，并把客户的优化行为转化为增长放缓：这是收费公路，而不是租约。（[第 35 章](../05-business-and-economics/ch35-business-models.md)）
+
+**54. NRR（净收入留存率）.** 净收入留存率（NRR）是去年那批客户今年带来的收入，除以同一批客户一年前带来的收入，包含扩张并扣除缩减和流失：相当于软件行业的同店销售额。Snowflake 披露 Q2 FY2027（2026 年 5–7 月，公司 KPI）的 NRR 为 126%，低于 FY2022 的 178% 峰值和 FY2023 的 158%。[^sf-q2][^sf-hist]（[第 36 章](../05-business-and-economics/ch36-unit-economics-kpis.md)）
+
+**55. RPO（剩余履约义务）.** 剩余履约义务（RPO）是已签约但尚未确认的收入：即在手订单。Snowflake 在 Q2 FY2027 的 RPO 约为 $9.0B（GAAP；其中约 54% 预计在 12 个月内确认，即当期部分 cRPO），低于 FY2026 年末的 $9.77B。这一下降部分是季节性的：许多续约在财年 Q4 签订，随后在 Q1–Q2 被消耗的速度快于新承诺到来的速度。[^sf-q2]（[第 36 章](../05-business-and-economics/ch36-unit-economics-kpis.md)）
+
+**56. Cloud COGS（云销货成本）.** 对于云数据平台而言，销货成本（COGS）主要是支付给超大规模云厂商的账单，用于运行客户查询所需的计算、存储和网络。毛利率是在一项厂商无法控制的成本之上获得的溢价，相当于无晶圆厂公司的晶圆成本，而承诺消费额度协议就是它的长期晶圆协议。（[第 36 章](../05-business-and-economics/ch36-unit-economics-kpis.md)）
+
+**57. Rule of 40（40 法则）.** 收入增速加上自由现金流利润率应至少达到 40%，这是检验增长是否靠花钱买来的快速测试。Snowflake 得分约 58（Q2 FY2027 GAAP 收入增速 35%，加上 23% 的全年调整后 FCF 利润率指引），Palantir 披露的得分为 155%（公司披露，Q2 2026）。[^r40][^pltr]（[第 36 章](../05-business-and-economics/ch36-unit-economics-kpis.md)）
+
+**58. EV/NTM revenue（EV/未来 12 个月收入）.** 企业价值除以预期未来十二个月收入，相当于尚无可观 EBITDA 的公司的 EV/EBITDA。2026 年 10 月 30 日，Snowflake 的交易倍数接近 16.9x，Palantir 接近 53x（以 FY2026 指引为基础；按过去 12 个月收入计约为 70x），两者都基于由指引推导出的未来 12 个月估算值。[^comps]（[第 37 章](../05-business-and-economics/ch37-public-comps-valuation.md)）
+
+**59. Run-rate vs ARR（年化运行率与 ARR）.** 收入年化运行率把最近一个季度或月份的全部收入（包括用量收入）年化；年度经常性收入（ARR）则把已签约的订阅价值年化。Databricks 的">$7B 收入年化运行率"（公司披露，2026 年 8 月）既不是 ARR，也不是经审计的 GAAP 收入，正如晶圆厂某一个月的强劲产出并不等于一份已签署的长期协议。[^db-7b]（[第 25 章](../04-company-deep-dives/ch25-databricks.md)、[第 36 章](../05-business-and-economics/ch36-unit-economics-kpis.md)）
+
+**60. Open core（开放核心）.** 免费开放开源核心，围绕它销售专有功能、托管服务或支持，Databricks（Spark）、Confluent（Kafka）和 MongoDB 都是这么做的。它能以低成本推动采用，就像用免费的参考设计来卖芯片，但超大规模云厂商同样可以托管这个免费核心。（[第 38 章](../05-business-and-economics/ch38-open-source-strategy.md)）
+
+**61. SSPL and BSL（SSPL 与 BSL 许可）.** 两种源码可见许可，用于阻止竞争对手（主要是超大规模云厂商）将软件作为服务出售：MongoDB 的 Server Side Public License（2018）要求公开整个服务栈，而 Business Source License 在某个变更日期之前限制生产用途。两者都不是 OSI 认可的开源许可；可以把它们看作带有使用领域限制条款的专利许可。（[第 38 章](../05-business-and-economics/ch38-open-source-strategy.md)）
+
+## 公司
+
+**62. Databricks.** 湖仓一体公司，由 Apache Spark 的创建者创立，基于开放格式销售数据工程、数据仓库、数据治理（Unity Catalog）、Postgres（Lakebase）和 AI 工具。2026 年 8 月，公司披露其收入年化运行率超过 $7B，增速超过 80%，并以 $190B 估值融资 $5B（公司披露）。[^db-7b]（[第 25 章](../04-company-deep-dives/ch25-databricks.md)）
+
+**63. Snowflake.** 将存算分离商业化的云数据仓库，目前正扩展到 Iceberg、Postgres 和 AI 智能体（Snowflake CoWork）。Q2 FY2027（2026 年 5–7 月）产品收入约为 $1.49B，增长 37%（GAAP），FY2027 产品收入指引上调至 $6.07B（公司披露）。[^sf-q2]（[第 26 章](../04-company-deep-dives/ch26-snowflake.md)、[第 27 章](../04-company-deep-dives/ch27-databricks-vs-snowflake.md)）
+
+**64. Microsoft Fabric.** Microsoft 的 SaaS 分析套件（数据管道、Spark、数据仓库、实时分析、Power BI），构建在 OneLake 之上——一个以 Delta 和 Parquet 格式存储、覆盖整个租户的数据湖。它的优势在于能够以一张容量账单分发到现有的 Power BI 和 Microsoft 365 环境中，就像一家把整块板卡打包销售的垂直整合器件制造商（IDM）。（[第 28 章](../04-company-deep-dives/ch28-hyperscaler-data-platforms.md)）
+
+**65. BigQuery.** Google Cloud 的无服务器数据仓库，源自 Google 的 Dremel，按扫描的 TB 数或按槽位小时（slot-hour）计价。它所在的云业务分部在 Q3 2026 增长 103% 至 $30.7B（GAAP 分部收入），不过这一增长大部分可能来自 AI 算力和 TPU 销售；BigQuery 的份额未披露。[^goog-q3]（[第 28 章](../04-company-deep-dives/ch28-hyperscaler-data-platforms.md)）
+
+**66. ClickHouse.** 一个源自 Yandex 的开源列式数据库，为极速实时分析而构建：相当于市场中的高主频芯片。其公司于 2026 年 1 月获得媒体报道的 $15B 估值，并于 2026 年 5 月披露 ARR 超过 $250M。[^ch-seriesd][^ch-arr]（[第 23 章](../03-ai-data-stack/ch23-real-time-analytics-htap.md)、[第 31 章](../04-company-deep-dives/ch31-analytical-engine-challengers-legacy.md)）
+
+**67. DuckDB.** 一个进程内分析型数据库（"分析领域的 SQLite"），无需服务器即可在笔记本电脑、notebook 或应用程序内部运行，是数据世界里的边缘芯片。AWS 于 2026 年 8 月同意收购其背后的公司 DuckLabs，条款未披露；DuckDB 仍在 DuckDB Foundation 之下保持 MIT 许可。[^aws-duck]（[第 31 章](../04-company-deep-dives/ch31-analytical-engine-challengers-legacy.md)）
+
+**68. Confluent.** 由 Kafka 创建者创立的公司，销售托管的 Kafka 和 Flink。FY2025（日历年）收入为 $1,166.7M，增长 21%（GAAP），其中 Confluent Cloud 贡献 $624M；IBM 于 2026 年 3 月 17 日完成了约 $11B 的收购。[^cflt][^ibm-close]（[第 30 章](../04-company-deep-dives/ch30-data-movement-streaming-companies.md)）
+
+**69. Fivetran + dbt Labs.** Fivetran 的托管抽取与加载连接器与 dbt Labs 的数据转换框架进行了合并，这是一笔全股票交易，于 2025 年 10 月宣布、2026 年 6 月 1 日完成，合并后 ARR "接近 $600M"（公司披露）。[^ft-dbt-close] 这是现代数据栈的整合，正如当年单点工具型 EDA 厂商被并入套件。（[第 30 章](../04-company-deep-dives/ch30-data-movement-streaming-companies.md)、[第 43 章](../06-history-and-future/ch43-modern-data-stack.md)）
+
+**70. Palantir.** 一种构建"本体（ontology）"的软件——本体是对客户业务对象及其允许操作的受治理模型——使操作人员和 AI 智能体通过它采取行动（Foundry、AIP）；在这里，语义层本身就是产品。Q2 2026 收入增长 93%（GAAP），股票交易倍数接近 53x EV/未来 12 个月收入（以 FY2026 指引为基础，估算；EV/过去 12 个月收入约为 70x）。[^pltr][^comps]（[第 34 章](../04-company-deep-dives/ch34-application-giants-data-platforms.md)）
+
+**71. Everpure and 1touch（Everpure 与 1touch）.** Everpure（原 Pure Storage；NYSE: P）以 $125.0M 的披露现金对价收购了一家数据发现、数据分类和语义上下文公司 1touch；交易于 2026 年 5 月 7 日完成交割，并于 2026 年 6 月以 Everpure Data Intelligence 的名义重新发布。[^ep-10q][^ep-di] 这是一家存储厂商从"存储数据"走向"理解数据"；战略团队基于公开信息可能评估的选项见第 45 章。（[第 24 章](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)、[第 33 章](../04-company-deep-dives/ch33-governance-catalog-security-companies.md)、[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)）
+
+## 概念之间如何关联
+
+把这些一句话解释当作一条链条来记，比当作一张清单来记更容易。下面的流程图沿着一条路径，从存储上的字节一直走到智能体给出的答案。每个节点都是上文的一个条目，每个箭头都是一种依赖关系：右边的层只有在左边的层运作良好时才能运作良好。
+
+```mermaid
+flowchart LR
+  subgraph Store["数据存放在哪里"]
+    OBJ["对象存储"] --> PQ["Parquet 文件"]
+    PQ --> ICE["Iceberg 或 Delta 表"]
+    ICE --> CAT["目录<br/>Unity 或 Polaris"]
+  end
+  subgraph Move["数据如何流动"]
+    WAL["预写日志"] --> CDC["CDC"]
+    CDC --> KAF["Kafka 与 Flink"]
+    KAF --> ICE
+    DBT["dbt 模型"] --> ICE
+  end
+  subgraph Govern["谁可以使用数据"]
+    CLS["数据分类与 DSPM"] --> POL["RBAC 与 ABAC 策略"]
+  end
+  subgraph Serve["AI 如何使用数据"]
+    SEM["语义层"] --> MCP["MCP 服务器"]
+    EMB["嵌入与向量索引"] --> RAG["RAG 与重排序"]
+    RAG --> CTX["上下文工程"]
+    MCP --> CTX
+    CTX --> AGT["AI 智能体的回答"]
+  end
+  CAT --> SEM
+  CAT --> POL
+  POL --> MCP
+  POL --> RAG
+  PQ --> EMB
+```
+
+*图 49.5 — 从字节到答案。Parquet 通过 Iceberg 或 Delta 变成表。随后，目录成为语义层和访问策略共同依赖的控制点。智能体通过 MCP 和检索接触数据，而这两条路径都从目录继承数据治理。谁拥有目录和策略层，谁就处在每一个 AI 回答的关键路径上，这正是 Databricks、Snowflake 和存储厂商都在争夺它的原因。*
+
+## 值得随身携带的数字
+
+以下是本章中仅有的数字。每个数字都带有日期和标签；引用时要么照此引用，要么干脆不引用。
+
+| 指标 | 数值 | 口径与期间 | 条目 |
+|---|---|---|---|
+| Databricks 收入年化运行率 | >$7B，增速 >80% | 公司披露的年化运行率，2026 年 8 月 | 59、62 |
+| Databricks 估值 | $190B（$5B 融资轮） | 公司披露，私募融资轮于 2026-08-13 完成 | 62 |
+| Snowflake 产品收入 | 约 $1.49B，+37% | GAAP，Q2 FY2027（2026 年 5–7 月） | 63 |
+| Snowflake NRR | 126% | 公司 KPI，Q2 FY2027 | 54 |
+| Snowflake RPO | 约 $9.0B（FY2026 年末为 $9.77B） | GAAP，Q2 FY2027 | 55 |
+| Snowflake EV/未来 12 个月收入 | 约 16.9x | 估算，基于指引推导的未来 12 个月收入，截至 2026-10-30 | 58 |
+| Palantir EV/未来 12 个月收入 | 约 53x | 估算，FY2026 指引中值，截至 2026-10-30 | 58、70 |
+| Confluent 收入 | $1,166.7M，+21% | GAAP，FY2025（日历年） | 68 |
+| IBM–Confluent 交易 | 约 $11B | 披露的企业价值，2026-03-17 完成交割 | 22、68 |
+| ClickHouse 估值 | $15B | 媒体报道，2026 年 1 月 | 66 |
+| Fivetran + dbt Labs ARR | 接近 $600M | 公司披露，2026 年 6 月 | 69 |
+| Everpure–1touch | $125.0M | 披露的现金对价（10-Q），2026-05-07 完成交割 | 71 |
+
+*图 49.6 — 值得随身携带的数字。十二行中出现了四种不同的标签（GAAP、公司披露、媒体报道、估算），把它们混为一谈，是一个听起来正确的数字变成错误论断最常见的方式。*
+
+## 最常被混淆的概念对
+
+| 人们常说 | 实际情况 | 为何重要 | 条目 |
+|---|---|---|---|
+| 说 Databricks "ARR 为 $7B" | 这是公司披露的**收入年化运行率**（近期收入的年化值，包含用量收入），既不是 ARR，也不是 GAAP 收入 | 把 ARR 倍数套用到用量型年化运行率上，会高估收入的持久性 | 59 |
+| 把"数据湖"和"湖仓一体"当作同义词 | 湖仓一体是数据湖**加上**提供事务和数据治理的表格式与目录 | 价值以及厂商锁定都存在于元数据层 | 10 |
+| 把任何向量检索都叫作"向量数据库" | 向量**索引**是一种数据结构。向量**数据库**是围绕索引构建的完整系统 | 如今大多数在位厂商都提供向量索引，这挤压了独立向量数据库的空间 | 39 |
+| "零 ETL 意味着没有副本" | 它的意思是**无需你自建管道**。数据仍然被复制并存储两份 | 存储和出口流量费并不会消失 | 27 |
+| "RPO 就是明年的收入" | RPO 是**全部**已签约但未确认的收入，其中只有一部分落在未来 12 个月内 | RPO 下降而收入上升，可能是健康的额度消耗，而不是需求崩塌 | 55 |
+| "开源意味着谁都可以托管它" | SSPL 和 BSL 是**源码可见**许可，禁止提供竞争性的托管服务 | 许可证的选择决定了超大规模云厂商能否拿走这部分收入 | 61 |
+| "脱敏和令牌化是一回事" | 脱敏是在**查询时**隐藏值。令牌化是替换**存储的**值 | 只有令牌化能保护下游副本 | 35 |
+| "MCP 是一个智能体框架" | MCP 是智能体与工具或数据之间的**连接协议** | 价值归属于拥有服务器及其背后权限的一方 | 46 |
+| "EU AI Act 高风险规则自 2026 年 8 月起适用" | 2026 年的 Omnibus 已将其推迟至 **2027 年 12 月 2 日和 2028 年 8 月 2 日** | 弄错合规日期会削弱任何数据治理方面的推介 | 36 |
+
+*图 49.7 — 最常被混淆的概念对。每一行都是一条"不要这样说"。中间一列是 30 秒内的纠正说法，条目编号指向完整的一句话解释。*
+
+## 关键术语
+
+- [OLTP](../glossary.md#oltp) 与 [OLAP](../glossary.md#olap) — 事务型工作负载与分析型工作负载。
+- [B 树（B-tree）](../glossary.md#b-tree)与 [LSM 树（LSM-tree）](../glossary.md#lsm-tree) — 读优化与写优化的索引结构。
+- [MVCC](../glossary.md#mvcc) — 保留多个行版本，使读者与写入者互不阻塞。
+- [列式存储（Columnar storage）](../glossary.md#columnar-storage)与[向量化执行（Vectorized execution）](../glossary.md#vectorized-execution) — 分析引擎速度快的两个原因。
+- [存算分离（Separation of storage and compute）](../glossary.md#separation-of-storage-and-compute) — 共享的持久化存储，弹性的计算。
+- [Apache Parquet](../glossary.md#apache-parquet) 与 [Apache Arrow](../glossary.md#apache-arrow) — 磁盘上和内存中的列式格式。
+- [预写日志（Write-ahead log）](../glossary.md#write-ahead-log) — 持久化的变更日志，同时为 CDC 提供数据。
+- [湖仓一体（Lakehouse）](../glossary.md#lakehouse)与[数据湖（Data lake）](../glossary.md#data-lake) — 有或没有表格式与目录层的开放文件。
+- [开放表格式（Open table format）](../glossary.md#open-table-format)、[Apache Iceberg](../glossary.md#apache-iceberg)、[Delta Lake](../glossary.md#delta-lake) 与 [Apache Hudi](../glossary.md#apache-hudi) — 把文件变成表的元数据层。
+- [数据目录（Data catalog）](../glossary.md#data-catalog)、[Unity Catalog](../glossary.md#unity-catalog) 与 [Apache Polaris](../glossary.md#apache-polaris) — 湖仓一体的控制点。
+- [时间旅行（Time travel）](../glossary.md#time-travel)与[压缩合并（Compaction）](../glossary.md#compaction) — 快照查询与表维护。
+- [ETL](../glossary.md#etl)、[ELT](../glossary.md#elt)、[反向 ETL（Reverse ETL）](../glossary.md#reverse-etl)与[零 ETL（Zero-ETL）](../glossary.md#zero-etl) — 主要的数据移动模式。
+- [变更数据捕获（Change data capture）](../glossary.md#change-data-capture)、[Apache Kafka](../glossary.md#apache-kafka) 与 [Apache Flink](../glossary.md#apache-flink) — 基于日志的捕获、事件传输与流计算。
+- [dbt](../glossary.md#dbt) 与[编排器（Orchestrator）](../glossary.md#orchestrator) — 以代码方式进行数据转换，以及运行它的调度器。
+- [数据契约（Data contract）](../glossary.md#data-contract)、[数据可观测性（Data observability）](../glossary.md#data-observability)与[数据血缘（Data lineage）](../glossary.md#data-lineage) — 预防、发现和追溯坏数据。
+- [语义层（Semantic layer）](../glossary.md#semantic-layer) — 面向 BI 和 AI 的受治理业务定义。
+- [基于角色的访问控制（Role-based access control）](../glossary.md#role-based-access-control)与[基于属性的访问控制（Attribute-based access control）](../glossary.md#attribute-based-access-control) — 角色授权与属性驱动的策略。
+- [数据安全态势管理（Data security posture management）](../glossary.md#data-security-posture-management)与[数据分类（Data classification）](../glossary.md#data-classification) — 发现敏感数据并为其贴标签。
+- [动态数据脱敏（Dynamic data masking）](../glossary.md#dynamic-data-masking)与[令牌化（Tokenization）](../glossary.md#tokenization) — 隐藏视图与替换存储值。
+- [EU AI Act](../glossary.md#eu-ai-act) — 欧盟按风险分级的 AI 监管法规，包含训练数据治理义务。
+- [权限感知检索（Permission-aware retrieval）](../glossary.md#permission-aware-retrieval) — 按用户强制执行源系统访问权限的检索。
+- [嵌入（Embedding）](../glossary.md#embedding)、[向量索引（Vector index）](../glossary.md#vector-index)、[向量数据库（Vector database）](../glossary.md#vector-database)、[HNSW](../glossary.md#hnsw) 与 [DiskANN](../glossary.md#diskann) — 语义向量及检索它们的结构。
+- [检索增强生成（Retrieval-augmented generation）](../glossary.md#retrieval-augmented-generation)、[重排序器（Reranker）](../glossary.md#reranker)、[GraphRAG](../glossary.md#graphrag) 与[混合检索（Hybrid search）](../glossary.md#hybrid-search) — 面向 LLM 的检索模式。
+- [上下文工程（Context engineering）](../glossary.md#context-engineering)与[模型上下文协议（Model Context Protocol）](../glossary.md#model-context-protocol) — 什么内容进入模型的上下文窗口，以及连接工具和数据的标准接口。
+- [文本转 SQL（Text-to-SQL）](../glossary.md#text-to-sql)与[特征存储（Feature store）](../glossary.md#feature-store) — 自然语言查询与一致的机器学习特征。
+- [人类反馈强化学习（Reinforcement learning from human feedback）](../glossary.md#reinforcement-learning-from-human-feedback)与[偏好数据（Preference data）](../glossary.md#preference-data) — 把人类判断作为训练信号。
+- [DBU](../glossary.md#dbu) 与 [Snowflake credit](../glossary.md#snowflake-credit) — 两种主要的用量计量单位。
+- [按用量计费（Consumption pricing）](../glossary.md#consumption-pricing) — 按使用量付费，而不是按席位或许可证付费。
+- [净收入留存率（Net revenue retention）](../glossary.md#net-revenue-retention)与[剩余履约义务（Remaining performance obligations）](../glossary.md#remaining-performance-obligations) — 客户群组扩张与已签约的积压订单。
+- [云 COGS（Cloud COGS）](../glossary.md#cloud-cogs)与[40 法则（Rule of 40）](../glossary.md#rule-of-40) — 毛利率背后的超大规模云厂商账单，以及"增长加现金"测试。
+- [EV/未来 12 个月收入（EV to NTM revenue）](../glossary.md#ev-to-ntm-revenue)、[收入年化运行率（Revenue run-rate）](../glossary.md#revenue-run-rate)与[年度经常性收入（Annual recurring revenue）](../glossary.md#annual-recurring-revenue) — 估值倍数以及两个最常被混淆的收入指标。
+- [开放核心（Open core）](../glossary.md#open-core)、[SSPL](../glossary.md#sspl) 与 [Business Source License](../glossary.md#business-source-license) — 开源商业模式，以及阻止超大规模云厂商转售的许可证。
+- [Microsoft Fabric](../glossary.md#microsoft-fabric)、[OneLake](../glossary.md#onelake) 与 [BigQuery](../glossary.md#bigquery) — 超大规模云厂商的分析平台。

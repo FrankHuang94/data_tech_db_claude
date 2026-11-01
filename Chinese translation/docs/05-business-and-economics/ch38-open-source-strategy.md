@@ -132,3 +132,118 @@ timeline
 ### 开放权重：下一章
 
 AI 模型正以新的形式经历同样的争论。Meta 的 Llama、Mistral、DeepSeek 等公开了模型权重，但条款各不相同。有些采用 Apache 2.0 或 MIT。另一些采用带有使用限制或用户数门槛的定制许可证，这些许可证除了名称之外，实质上都是源码可用许可证。2024 年 10 月，OSI 发布了开源 AI 定义 1.0（Open Source AI Definition 1.0）。它要求提供关于训练数据的足够信息，以便重建一个实质等同的系统，而 OSI 表示 Llama 的许可证不符合要求。[^osaid] 战略逻辑似曾相识：免费权重推动采用，而赚钱靠的是托管、微调和工具。治理在这里也在向基金会转移。Anthropic 于 2025 年 12 月将模型上下文协议（MCP）捐赠给 Linux Foundation 旗下的 Agentic AI Foundation。[^mcp] 可以预期，某个模型提供商会在未来某个版本上收紧条款；如果真的发生，也可以预期会出现一个基于最后一个开放检查点的分叉。
+
+## 设计选择与权衡
+
+| 策略 | 价值获取方式 | 能否防范超大规模云厂商？ | 社区成本 | 最强版本论证 |
+|---|---|---|---|---|
+| 宽松核心 + 托管服务 | 比任何人都更好地运营软件 | 否 | 最低 | 采用面最广。如果厂商的服务明显更好（MongoDB Atlas、Confluent Cloud），则能胜出。 |
+| 宽松核心 + 专有企业功能（开放核心） | 功能门控 | 部分。超大规模云厂商必须重建这些功能。 | 中等 | 毛利率最高（GitLab 86.5% 非 GAAP）[^comps]，产品打包清晰。 |
+| 源码可用（SSPL、BSL、ELv2） | 独家托管权 | 是，在法律上 | 高：分叉风险、发行版禁用、企业政策阻力 | 当厂商规模小而超大规模云厂商规模大时，保护托管服务业务。 |
+| 与 AGPL 双重许可 | 著佐权威慑加商业许可 | 大部分 | 中等 | 保留"开源"标签（获 OSI 批准），同时仍能威慑转售。 |
+| 捐赠给中立基金会 | 设定生态标准；在相邻层变现 | 否，这是设计使然 | 赢得社区 | 将"竞争对手采用"的问题转化为标准。当赚钱的地方在上一层时有效（Polaris、Unity Catalog OSS、Kafka）。 |
+
+*图 38.6 — 选择在于控制代码还是控制标准。源码可用许可证将前者最大化，基金会将后者最大化。*
+
+接下来是经济性比较。无论采用何种许可证，托管服务业务的毛利率都趋于 75% 左右。MongoDB 报告 GAAP 74%、非 GAAP 76%，Elastic 非 GAAP 77%，而专有软件 Snowflake 的非 GAAP 产品毛利率为 74.7%。[^mdb-q2][^estc-q1][^comps] 开源也不能带来估值溢价。
+
+```mermaid
+xychart-beta
+    title "EV/未来 12 个月收入，开源出身 vs 专有，2026 年 10 月（估算）"
+    x-axis ["Datadog", "Snowflake", "Confluent 交易（过去 12 个月）", "MongoDB", "GitLab", "Elastic"]
+    y-axis "EV / 未来 12 个月收入（倍）" 0 --> 25
+    bar [21.5, 16.9, 9.4, 9.0, 7.2, 4.6]
+```
+
+*图 38.7 — 两家专有软件公司（Datadog、Snowflake）的估值约为开源出身公司的两倍。按第 37 章的回归，增速差异（36% 和 35% 对比 15–30%）只能解释这一差距的一小部分；NRR、按用量计费的可见度和 AI 敞口的作用更大。无论如何，该图都不支持开源能带来溢价的观点。Confluent 的柱子并非 EV/未来 12 个月收入：它是 IBM 控制权交易的倍数，即约 $11B EV ÷ FY2025 GAAP 收入 $1,166.7M（2025-12-08 公告，2026-03-17 完成）。数值来自 `data/public_comps.csv`，市场数据截至 2026-10-02 至 2026-10-30。*[^comps]
+
+## 主要参与者
+
+- **更换过许可证的厂商：** MongoDB（SSPL）、Elastic（SSPL/ELv2/AGPL）、Redis（RSAL/SSPL/AGPL）、Cockroach Labs（Enterprise 许可证）、HashiCorp（BSL，现属 IBM）、Confluent（附加组件采用 Community License，现属 IBM）、ScyllaDB（自 2024 年起源码可用）、dbt Labs（Fusion 组件采用 ELv2）。参见[第 29 章](../04-company-deep-dives/ch29-operational-database-vendors.md)和[第 30 章](../04-company-deep-dives/ch30-data-movement-streaming-companies.md)。
+- **分叉的赞助方：** AWS（OpenSearch、Valkey 以及 DocumentDB 式的兼容服务）、Google Cloud 和 Oracle（Valkey），以及 OpenTofu 支持者中的 Spacelift、env0、Harness 和 Gruntwork。[^opentofu-lf]
+- **基金会：** ASF（FY2025 有 295 个项目、9,905 名提交者），[^asf-fy25] Linux Foundation 及其旗下的 LF AI & Data、CNCF、OpenSearch Software Foundation 和 Agentic AI Foundation，以及作为定义守护者的 OSI。
+- **坚持宽松许可的参与者：** DuckDB（MIT，隶属 DuckDB Foundation）、PostgreSQL（社区治理），以及在 ASF 项目之上进行销售的 Apache 原生公司，如 Dremio 和 Starburst。
+- **连续收购方：** IBM 先后收购了 Red Hat（2019）、HashiCorp（2025）、DataStax（2025）和 Confluent（2026）。它是开源出身基础设施最明确的买家。
+
+## 历史与发展轨迹
+
+第一个时代（1998–2010）确立了基本词汇。OSI 于 1998 年成立，ASF 成为 Hadoop 时代数据项目的默认归宿，公司靠支持服务赚钱。第二个时代（2010–2018）是开放核心加云。Databricks、Confluent、Elastic 和 MongoDB 围绕宽松许可的核心构建了企业版和托管服务。第三个时代（2018–2024）是上文所述的许可证变更浪潮，由超大规模云厂商的托管服务引发。第四个时代（2024 年起）从限制许可证转向设定标准。厂商将目录和协议捐赠给基金会，超大规模云厂商资助分叉，两家更换过许可证的公司重新加入了 AGPL。"公平源码"试图为延时开放的许可证贴上一个体面的标签。[^fsl] 下一轮值得关注的是：AI 模型许可证、围绕智能体协议治理权的争夺，以及厂商是否会像 dbt Labs 对 Fusion 那样，为 AI 时代的引擎重新引入源码可用条款。[^dbt-fusion][^mcp]
+
+## 关键数字
+
+| 指标 | 数值 | 口径 | 来源 / 日期 |
+|---|---|---|---|
+| MongoDB Atlas 收入占比 | FY2026（2025 年 2 月–2026 年 1 月）的 73% | 公司披露 | MongoDB 年报，2026[^mdb-atlas] |
+| IBM–HashiCorp | EV $6.4B，每股现金 $35 | 公司披露 | 2024-04-24 公告；2025-02-27 完成（IBM）[^ibm-hashi] |
+| IBM–Confluent | EV 约 $11B，约为 FY2025 GAAP 收入（$1,166.7M）的 9.4x | 公司披露 / 本书测算 | 2025-12-08 公告，2026-03-17 完成；IBM 10-Q；`data/public_comps.csv`[^comps] |
+| 基金会成立时 OpenSearch 下载量 | 7 亿次以上 | 基金会披露 | Linux Foundation，2024-09-16[^osf] |
+| 2025 年 Valkey 活跃贡献者 | 346 | 项目披露（LFX 分析） | Valkey 博客，2025-12[^valkey-ye] |
+| 分叉以来 Valkey 的贡献者和拉取请求 | 225 名以上贡献者，1,500 个以上 PR；Docker 拉取量 1 亿次以上 | AWS 披露 | AWS Database Blog，2026[^valkey-two] |
+| Valkey 早期贡献者基础 | 头六个月有来自 10 家公司的 29 位贡献者 | 研究 | Foster，2024[^foster] |
+| ElastiCache for Valkey 与 Redis OSS 价格对比 | 低 20%（基于节点）、低 33%（无服务器） | AWS 标价 | AWS，2024-10[^valkey-price] |
+| OpenTofu 下载量 | GitHub 下载量 1,000 万次以上 | 基金会披露 | CNCF 博客，2026-03-09[^tofu-cncf] |
+| Iceberg PMC / 提交者 | 25 / 39 | ASF 理事会报告 | ASF Whimsy，2026[^iceberg-board] |
+| Delta Lake 贡献者基础 | 190 名以上开发者，70 个以上组织 | 项目披露 | delta.io，2026-11-01 检索[^delta-io] |
+| ASF 规模 | 295 个项目，9,905 名提交者（FY2025，截至 2025 年 4 月 30 日的年度） | 基金会披露 | ASF，2025-08-27[^asf-fy25] |
+| CockroachDB 免费版门槛 | 年收入低于 $10M | 公司披露 | Cockroach Labs，2024-08-15[^crdb-license] |
+| 变更日期延迟 | BSL ≤4 年（HashiCorp：4 年）；FSL 2 年 | 许可证条款 | LWN 2023；TechCrunch 2023[^hashi-bsl][^fsl] |
+| 毛利率，托管服务模式 | MongoDB 74% GAAP / 76% 非 GAAP；Elastic 77% 非 GAAP；GitLab 86.5% 非 GAAP | GAAP / 非 GAAP，最新季度 | 公司公告，2026 年 8 月–9 月[^mdb-q2][^estc-q1][^comps] |
+| 免费到付费转化率 | 活跃用户的个位数低段百分比 | 估算（经验法则） | 见注释[^conv-est] |
+
+*图 38.8 — 分叉指标（贡献者、下载量、价差）是领先指标。交易价值表明，更换过许可证的公司仍然可以是 $6–11B 的资产。*
+
+## 存储桥接
+
+> **存储桥接。** 对基础设施厂商而言，开放格式取代专有集成，成为入场门票。基于公开信息，战略团队可能评估的选项包括：(1) 公布表格式所依赖的 S3 行为（强一致性、条件写入、高元数据请求速率）的一致性测试结果，并针对 Iceberg、Delta 和 Polaris/Unity Catalog 的各版本进行测试；(2) 向上游贡献，例如贡献给 S3 兼容性测试套件或 Iceberg 的存储 I/O 层，使公司成为 ASF 项目中被认可的参与者，而不仅仅是使用者；(3) 以 Apache 2.0 许可发布连接器和 Kubernetes operator，使其无需许可证审查即可出现在合作伙伴的参考架构中；(4) 对于任何旨在赢得合作伙伴的产品，避免使用源码可用许可证，因为企业的开源政策会拖慢采用。对象协议的细节请参阅配套的 *Everpure Tech Atlas*。
+
+## 对话手册
+
+**向产品经理提的问题**
+
+1. "客户在生产环境中运行的代码采用什么许可证？收入中来自托管服务与自管理许可证的比例分别是多少？"
+2. "如果 AWS 或 Google 明天推出你们项目的托管版本，你们还能卖什么是它们卖不了的？"
+3. "你们是否拥有所有贡献的版权或签有 CLA？商标归谁所有？"
+
+**向工程师提的问题**
+
+1. "过去 12 个月的提交中，有多大比例来自公司外部？有多少提交者不是你们的员工？"
+2. "哪些功能在开放核心中，哪些是专有的？过去两年你们是否移动过这条界线？"
+3. "如果出现一个分叉，它的 API 兼容性会以多快的速度与你们产生偏离？用户那边会出现什么问题？"
+
+**好的回答听起来是什么样的。** 它们会按组件说明许可证（"服务器采用 SSPL，驱动程序采用 Apache 2.0"）。它们会量化外部贡献，并指出管理这些贡献的基金会或 CLA。它们描述的变现界线基于运维价值，例如正常运行时间、安全和规模，而不是社区可以重建的功能。它们将超大规模云厂商的产品视为需要与之竞争的需求信号，而不仅仅是威胁。
+
+**不要这样说**
+
+- "SSPL 是开源的。" 它没有获得 OSI 批准。MongoDB 于 2019 年 3 月撤回了 OSI 审查。[^osi-sspl]
+- "AGPL 意味着你不能商业使用它。" AGPL 允许商业使用。它要求在通过网络提供软件时共享修改。
+- "更换许可证会毁掉公司。" MongoDB、Elastic 和 HashiCorp 之后都实现了增长或以好价钱出售。它们失去的是对社区的控制。
+- "Linux Foundation 就意味着厂商中立。" 治理因项目而异。Delta Lake 和 Unity Catalog 位于 LF，但仍由 Databricks 主导。
+- "开放权重就是开源。" 大多数模型许可证不符合 OSI 的开源 AI 定义。[^osaid]
+
+## 深入阅读
+
+- OSI 的开源定义，以及其 2019 年 3 月关于 SSPL 的许可证审查摘要。[^osi-sspl]
+- Dawn Foster，*The New Dynamics of Open Source: Relicensing, Forks, & Community Impact*（2024），提供 OpenSearch、Valkey 和 OpenTofu 分叉中贡献者所属机构的数据。[^foster]
+- 将 SSPL 第 13 条、ELv2 的三项限制以及 BSL 的"附加使用授权"（Additional Use Grant）文本并排阅读。
+- ASF 孵化器的毕业标准，了解"社区重于代码"在实践中意味着什么。
+
+## 关键术语
+
+- [开放核心（Open core）](../glossary.md#open-core) — 免费的开源引擎加付费的专有企业功能。
+- [开源定义（Open Source Definition）](../glossary.md#open-source-definition) — 许可证要被称为开源所必须满足的 OSI 十项标准。
+- [宽松许可证（Permissive license）](../glossary.md#permissive-license) — Apache 2.0、MIT 或 BSD 等许可证，允许以极少的条件进行再利用，包括用于专有产品。
+- [著佐权（Copyleft）](../glossary.md#copyleft) — 一种许可条件，要求衍生作品以相同条款共享。
+- [AGPL](../glossary.md#agpl) — 一种著佐权许可证，其共享义务也适用于通过网络提供的软件。
+- [源码可用许可证（Source-available license）](../glossary.md#source-available-license) — 公开代码但限制使用，通常禁止竞争性托管服务。
+- [SSPL](../glossary.md#sspl) — MongoDB 的许可证，要求服务提供商公开其整个服务技术栈。
+- [商业源代码许可证（Business Source License）](../glossary.md#business-source-license) — 一种在变更日期之后转为开源的源码可用许可证。
+- [Elastic License 2.0](../glossary.md#elastic-license-20) — 一种简短的源码可用许可证，禁止以托管服务形式转售和绕过许可证密钥。
+- [公平源码（Fair source）](../glossary.md#fair-source) — 对在固定延迟期后转为开源的源码可用许可证的统称，例如 Sentry 的 FSL。
+- [更换许可证（Relicensing）](../glossary.md#relicensing) — 更改项目未来版本的许可证，通常是为了限制竞争对手。
+- [软件分叉（Software fork）](../glossary.md#software-fork) — 从另一个项目最后一个宽松许可代码副本出发而启动的独立项目。
+- [贡献者许可协议（Contributor license agreement）](../glossary.md#contributor-license-agreement) — 授予项目所有者对所贡献代码权利的合同，使更换许可证成为可能。
+- [项目管理委员会（Project Management Committee）](../glossary.md#project-management-committee) — 治理一个 Apache 项目的个人群体。
+- [Valkey](../glossary.md#valkey) — Linux Foundation 旗下以 BSD 许可的 Redis 7.2.4 分叉。
+- [开放权重（Open weights）](../glossary.md#open-weights) — 公开发布的 AI 模型参数，其许可证不一定是开源许可证。
+- [Apache Polaris](../glossary.md#apache-polaris) — 由 Snowflake 捐赠的 Iceberg REST 目录，自 2026 年起为 Apache 顶级项目。
+- [Unity Catalog](../glossary.md#unity-catalog) — Databricks 的治理目录，在 LF AI & Data 有一个 Apache 2.0 开源服务器。
