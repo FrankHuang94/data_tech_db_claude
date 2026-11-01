@@ -281,3 +281,28 @@ Every `[VERIFY: …]` left in the text is listed here with its chapter. Resolve 
 | ch28 | ch28: Databricks Series G participant list (AWS, CapitalG) in data/private_funding.csv. | open |
 | ch28 | ch28: History footnote URLs (S3 launch, DynamoDB, Cosmos DB, Exadata, Autonomous DB, Database@Google Cloud/AWS), Azure Databricks GA blog, Fabric launch/GA blog, AlloyDB docs, Bedrock Knowledge Bases docs — not re-fetched. | open |
 | ch28 | ch28: Oracle headquarters — Austin vs announced Nashville move (status as of 2026). | open |
+| ch26 | ch26: [VERIFY: exact handover dates] | open |
+| ch26 | ch26: [VERIFY: appointment date and Scarpelli's advisory role, against 8-K] | open |
+| ch26 | ch26: [VERIFY: FY2026 10-K headcount] | open |
+| ch26 | ch26: [VERIFY: Speiser's founding role at Pure Storage] | open |
+| ch26 | ch26: [VERIFY: current list prices by region] | open |
+| ch26 | ch26: [VERIFY: current cloud purchase commitments in 10-K notes] | open |
+| ch26 | ch26: [VERIFY: the ~$97M FY2023 figure management cited in March 2022] | open |
+| ch26 | ch26: [VERIFY: Q2 FY2027 cRPO share or amount] | open |
+| ch26 | ch26: [VERIFY: authorisation sizes, FY2026 repurchase amount, convertible terms against the 10-K] | open |
+| ch26 | ch26: [VERIFY: Q2 FY2027 Forbes Global 2000 count and total customer count] | open |
+| ch26 | ch26: [VERIFY: timing and structure of the compensation change] | open |
+| ch26 | ch26: [VERIFY: share of revenue by cloud from 10-K] | open |
+| ch26 | ch26: [VERIFY: figures on Snowflake IR deck] | open |
+| ch26 | ch26: [VERIFY: deal date] | open |
+| ch26 | ch26: [VERIFY: CRO and product-leadership changes] | open |
+| ch26 | ch26: [VERIFY: GA status and supported-vendor list for S3-compatible external volumes] | open |
+| ch26 | ch26: [VERIFY: Pure Storage–Snowflake 2022 announcement and current certification status] | open |
+| ch26 | ch26: [VERIFY] Natoma Labs acquisition close (announced May 2026; ~$110M per 10-Q). | open |
+| ch26 | ch26: [VERIFY] Snowflake FY2020–FY2024 10-K figures in data/company_financials.csv (carried from analyst records, not re-read). | open |
+| ch26 | ch26: [VERIFY] IPO terms: $120 price, ~$3.4B raised, $250M Berkshire and Salesforce placements, ~$245 first-day open (424B4). | open |
+| ch26 | ch26: [VERIFY] Snowflake Series C amount ($45M vs $79M). | open |
+| ch26 | ch26: [VERIFY] Product launch years for Snowpark (2020), Native Apps, Unistore (2022), from pre-2025 records. | open |
+| ch26 | ch26: [VERIFY] TruEra deal date (weak secondary source). | open |
+| ch26 | ch26: [VERIFY] Docs pages not re-opened: persisted query results (24h), Time Travel (1/90 days) and Fail-safe (7 days), compute cost (credits per size, 60s minimum, 10% cloud-services allowance), S3-compatible storage and external volumes. | open |
+| ch26 | ch26: Chart/data issue: snowflake_rpo.png and snowflake_nrr.png plot "FY2026" and "Q4 FY2026" as separate bars/points although they are the same period (duplicate rows in company_financials.csv with different fiscal_period labels). | open |
