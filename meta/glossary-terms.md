@@ -699,3 +699,4 @@
 - **Key-person risk** — the value a company loses if a few individuals, such as founders or core engineers, leave. (ch47)
 - **Multi-tenancy** — serving many customers from shared infrastructure while keeping their data and workloads isolated from one another. (ch47)
 - **Vendor lock-in** — the cost and difficulty a customer faces in leaving a vendor's data format, catalog or contract. (ch47)
+- **Listen-for note** — in the Ch 48 question bank, a short description of what a strong answer to a question contains, used as a scoring key after the meeting. (ch48)

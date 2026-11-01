@@ -1,0 +1,267 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1000" width="1400" height="1000" role="img" aria-labelledby="t00 d00" font-family="Helvetica, Arial, sans-serif">
+  <title id="t00">The one-page market map of the data and AI-data stack (SV-1), as of 2026-11-01</title>
+  <desc id="d00">Nine horizontal layers stacked from bottom to top: infrastructure and object storage (AWS S3, Azure Blob Storage, Google Cloud Storage, Everpure, NetApp, Dell, VAST Data, MinIO); file and table formats (Parquet, Arrow, Lance, Iceberg, Tabular acquired by Databricks, Delta Lake, Hudi); catalogs and governance (Unity Catalog, Polaris and Horizon, AWS Glue, Dataplex or Knowledge Catalog, Microsoft Purview, Collibra, Atlan, Alation, BigID, Cyera, 1touch acquired by Everpure, Varonis pending sale to Proofpoint); operational databases (Oracle, MongoDB, PostgreSQL with Neon acquired by Databricks, Crunchy Data acquired by Snowflake and Supabase, Redis, CockroachDB, DynamoDB, Spanner, Aurora); analytical platforms and engines (Databricks, Snowflake, BigQuery, Redshift, Microsoft Fabric, ClickHouse, DuckDB with DuckLabs agreed to be acquired by AWS, Trino and Starburst, Dremio acquired by SAP, Teradata); pipelines and streaming (Fivetran plus dbt Labs, Airbyte, Informatica acquired by Salesforce, Confluent acquired by IBM, Redpanda, Flink, Airflow and Astronomer, Dagster agreed to be acquired by Prefect); semantic layer and BI (Power BI, Tableau, Looker, Sigma, ThoughtSpot, Cube, AtScale); AI data (Pinecone, Weaviate, Qdrant, Milvus and Zilliz, Unstructured, LlamaIndex, Scale AI, Snorkel AI, MLflow, Weights and Biases acquired by CoreWeave); and agents and applications (Model Context Protocol, Salesforce Agentforce and Data 360, ServiceNow, SAP Business Data Cloud, Palantir AIP, Workday Data Cloud). Chip borders mark public companies (solid), private companies (dashed) and open-source projects or standards (grey fill). Arrows inside labels name the acquirer for 2024 to 2026 deals. Everpure is outlined in vermillion. A right-hand arrow shows value migrating upward from storage and compute toward catalogs, semantics and agents. Original diagram based on public information.</desc>
+  <rect x="0" y="0" width="1400" height="1000" fill="#FFFFFF"/>
+  <text x="700" y="32" text-anchor="middle" font-size="22" font-weight="bold" fill="#000000">The data and AI-data stack on one page (as of 2026-11-01)</text>
+  <text x="700" y="56" text-anchor="middle" font-size="13" fill="#666666">Representative companies and projects per layer, bottom (closest to the bytes) to top (closest to the user). Not a ranking. "A → B" = A acquired by, or agreed to sell to, B (2024–26).</text>
+  <g id="layer1">
+    <rect x="16" y="809.4" width="1216" height="85.6" rx="6" fill="#DCEBF6" stroke="#0072B2" stroke-width="1.2"/>
+    <rect x="16" y="809.4" width="10" height="85.6" rx="3" fill="#0072B2"/>
+    <text x="36" y="839.2" font-size="15" font-weight="bold" fill="#000000">1. Infrastructure &amp;</text>
+    <text x="54" y="857.2" font-size="15" font-weight="bold" fill="#000000">object storage</text>
+    <text x="36" y="876.2" font-size="12" fill="#444444">Atlas: Ch 28 · 32 · 45</text>
+    <rect x="262.0" y="839.2" width="66.8" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="295.4" y="856.7" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">AWS S3</text>
+    <rect x="336.8" y="839.2" width="139.2" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="406.4" y="856.7" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Azure Blob Storage</text>
+    <rect x="484.0" y="839.2" width="149.9" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="558.9" y="856.7" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Google Cloud Storage</text>
+    <rect x="641.9" y="839.2" width="76.6" height="26" rx="5" fill="#FFFFFF" stroke="#D55E00" stroke-width="2.6"/>
+    <text x="680.2" y="856.7" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#000000">Everpure</text>
+    <rect x="726.5" y="839.2" width="64.5" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="758.8" y="856.7" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">NetApp</text>
+    <rect x="799.0" y="839.2" width="42.9" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="820.4" y="856.7" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Dell</text>
+    <rect x="849.9" y="839.2" width="86.9" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="893.3" y="856.7" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">VAST Data</text>
+    <rect x="944.8" y="839.2" width="53.5" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="971.5" y="856.7" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">MinIO</text>
+  </g>
+  <g id="layer2">
+    <rect x="16" y="717.9" width="1216" height="85.6" rx="6" fill="#E6F3FB" stroke="#56B4E9" stroke-width="1.2"/>
+    <rect x="16" y="717.9" width="10" height="85.6" rx="3" fill="#56B4E9"/>
+    <text x="36" y="747.7" font-size="15" font-weight="bold" fill="#000000">2. File &amp; table</text>
+    <text x="54" y="765.7" font-size="15" font-weight="bold" fill="#000000">formats</text>
+    <text x="36" y="784.7" font-size="12" fill="#444444">Atlas: Ch 6 · 7 · 25 · 38</text>
+    <rect x="262.0" y="747.7" width="116.4" height="26" rx="5" fill="#EDEDED" stroke="#888888" stroke-width="1.2"/>
+    <text x="320.2" y="765.2" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000" font-style="italic">Apache Parquet</text>
+    <rect x="386.4" y="747.7" width="106.4" height="26" rx="5" fill="#EDEDED" stroke="#888888" stroke-width="1.2"/>
+    <text x="439.6" y="765.2" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000" font-style="italic">Apache Arrow</text>
+    <rect x="500.8" y="747.7" width="56.0" height="26" rx="5" fill="#EDEDED" stroke="#888888" stroke-width="1.2"/>
+    <text x="528.8" y="765.2" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000" font-style="italic">Lance</text>
+    <rect x="564.8" y="747.7" width="111.6" height="26" rx="5" fill="#EDEDED" stroke="#888888" stroke-width="1.2"/>
+    <text x="620.6" y="765.2" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000" font-style="italic">Apache Iceberg</text>
+    <rect x="684.4" y="747.7" width="152.6" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="760.7" y="765.2" text-anchor="middle" font-size="12.5" fill="#000000">Tabular <tspan font-weight="bold" fill="#000000">→ Databricks</tspan></text>
+    <rect x="845.0" y="747.7" width="85.8" height="26" rx="5" fill="#EDEDED" stroke="#888888" stroke-width="1.2"/>
+    <text x="887.9" y="765.2" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000" font-style="italic">Delta Lake</text>
+    <rect x="938.8" y="747.7" width="92.6" height="26" rx="5" fill="#EDEDED" stroke="#888888" stroke-width="1.2"/>
+    <text x="985.1" y="765.2" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000" font-style="italic">Apache Hudi</text>
+  </g>
+  <g id="layer3">
+    <rect x="16" y="626.3" width="1216" height="85.6" rx="6" fill="#F7E8F0" stroke="#CC79A7" stroke-width="1.2"/>
+    <rect x="16" y="626.3" width="10" height="85.6" rx="3" fill="#CC79A7"/>
+    <text x="36" y="656.1" font-size="15" font-weight="bold" fill="#000000">3. Catalogs &amp;</text>
+    <text x="54" y="674.1" font-size="15" font-weight="bold" fill="#000000">governance</text>
+    <text x="36" y="693.1" font-size="12" fill="#444444">Atlas: Ch 8 · 15 · 33</text>
+    <rect x="262.0" y="638.1" width="103.2" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="313.6" y="655.6" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Unity Catalog</text>
+    <rect x="373.2" y="638.1" width="121.4" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="433.9" y="655.6" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Polaris / Horizon</text>
+    <rect x="502.6" y="638.1" width="77.4" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="541.3" y="655.6" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">AWS Glue</text>
+    <rect x="588.0" y="638.1" width="199.3" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="687.6" y="655.6" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Dataplex / Knowledge Catalog</text>
+    <rect x="795.2" y="638.1" width="136.6" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="863.6" y="655.6" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Microsoft Purview</text>
+    <rect x="939.9" y="638.1" width="67.2" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="973.5" y="655.6" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Collibra</text>
+    <rect x="1015.1" y="638.1" width="52.9" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="1041.6" y="655.6" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Atlan</text>
+    <rect x="1076.0" y="638.1" width="63.5" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="1107.8" y="655.6" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Alation</text>
+    <rect x="1147.5" y="638.1" width="51.4" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="1173.2" y="655.6" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">BigID</text>
+    <rect x="262.0" y="672.1" width="56.0" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="290.0" y="689.6" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Cyera</text>
+    <rect x="326.0" y="672.1" width="136.6" height="26" rx="5" fill="#FFFFFF" stroke="#D55E00" stroke-width="2.6"/>
+    <text x="394.3" y="689.6" text-anchor="middle" font-size="12.5" fill="#000000">1touch <tspan font-weight="bold" fill="#D55E00">→ Everpure</tspan></text>
+    <rect x="470.6" y="672.1" width="208.9" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="575.1" y="689.6" text-anchor="middle" font-size="12.5" fill="#000000">Varonis <tspan font-weight="bold" fill="#000000">→ Proofpoint (pending)</tspan></text>
+  </g>
+  <g id="layer4">
+    <rect x="16" y="534.8" width="1216" height="85.6" rx="6" fill="#FCF0D9" stroke="#E69F00" stroke-width="1.2"/>
+    <rect x="16" y="534.8" width="10" height="85.6" rx="3" fill="#E69F00"/>
+    <text x="36" y="564.6" font-size="15" font-weight="bold" fill="#000000">4. Operational</text>
+    <text x="54" y="582.6" font-size="15" font-weight="bold" fill="#000000">databases</text>
+    <text x="36" y="601.6" font-size="12" fill="#444444">Atlas: Ch 29</text>
+    <rect x="262.0" y="546.6" width="120.1" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="322.1" y="564.1" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Oracle Database</text>
+    <rect x="390.1" y="546.6" width="75.1" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="427.7" y="564.1" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">MongoDB</text>
+    <rect x="473.2" y="546.6" width="95.2" height="26" rx="5" fill="#EDEDED" stroke="#888888" stroke-width="1.2"/>
+    <text x="520.9" y="564.1" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000" font-style="italic">PostgreSQL</text>
+    <rect x="576.5" y="546.6" width="135.1" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="644.1" y="564.1" text-anchor="middle" font-size="12.5" fill="#000000">Neon <tspan font-weight="bold" fill="#000000">→ Databricks</tspan></text>
+    <rect x="719.6" y="546.6" width="185.5" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="812.4" y="564.1" text-anchor="middle" font-size="12.5" fill="#000000">Crunchy Data <tspan font-weight="bold" fill="#000000">→ Snowflake</tspan></text>
+    <rect x="913.1" y="546.6" width="76.6" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="951.4" y="564.1" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Supabase</text>
+    <rect x="997.8" y="546.6" width="52.9" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="1024.2" y="564.1" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Redis</text>
+    <rect x="1058.6" y="546.6" width="100.5" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="1108.9" y="564.1" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">CockroachDB</text>
+    <rect x="262.0" y="580.6" width="83.6" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="303.8" y="598.1" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">DynamoDB</text>
+    <rect x="353.6" y="580.6" width="69.8" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="388.5" y="598.1" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Spanner</text>
+    <rect x="431.4" y="580.6" width="62.9" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="462.8" y="598.1" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Aurora</text>
+  </g>
+  <g id="layer5">
+    <rect x="16" y="443.2" width="1216" height="85.6" rx="6" fill="#FDF5E3" stroke="#E69F00" stroke-width="1.2"/>
+    <rect x="16" y="443.2" width="10" height="85.6" rx="3" fill="#E69F00"/>
+    <text x="36" y="473.0" font-size="15" font-weight="bold" fill="#000000">5. Analytical platforms</text>
+    <text x="54" y="491.0" font-size="15" font-weight="bold" fill="#000000">&amp; engines</text>
+    <text x="36" y="510.0" font-size="12" fill="#444444">Atlas: Ch 25 · 26 · 27 · 28 · 31</text>
+    <rect x="262.0" y="455.0" width="87.2" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="305.6" y="472.5" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Databricks</text>
+    <rect x="357.2" y="455.0" width="84.1" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="399.3" y="472.5" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Snowflake</text>
+    <rect x="449.4" y="455.0" width="75.1" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="486.9" y="472.5" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">BigQuery</text>
+    <rect x="532.5" y="455.0" width="73.5" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="569.2" y="472.5" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Redshift</text>
+    <rect x="614.0" y="455.0" width="126.0" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="677.0" y="472.5" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Microsoft Fabric</text>
+    <rect x="748.0" y="455.0" width="85.8" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="790.9" y="472.5" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">ClickHouse</text>
+    <rect x="841.8" y="455.0" width="66.1" height="26" rx="5" fill="#EDEDED" stroke="#888888" stroke-width="1.2"/>
+    <text x="874.8" y="472.5" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000" font-style="italic">DuckDB</text>
+    <rect x="915.9" y="455.0" width="124.6" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="978.2" y="472.5" text-anchor="middle" font-size="12.5" fill="#000000">DuckLabs <tspan font-weight="bold" fill="#000000">→ AWS</tspan></text>
+    <rect x="1048.5" y="455.0" width="52.9" height="26" rx="5" fill="#EDEDED" stroke="#888888" stroke-width="1.2"/>
+    <text x="1074.9" y="472.5" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000" font-style="italic">Trino</text>
+    <rect x="1109.4" y="455.0" width="83.5" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="1151.1" y="472.5" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Starburst</text>
+    <rect x="262.0" y="489.0" width="107.7" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="315.9" y="506.5" text-anchor="middle" font-size="12.5" fill="#000000">Dremio <tspan font-weight="bold" fill="#000000">→ SAP</tspan></text>
+    <rect x="377.8" y="489.0" width="76.6" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="416.1" y="506.5" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Teradata</text>
+  </g>
+  <g id="layer6">
+    <rect x="16" y="351.7" width="1216" height="85.6" rx="6" fill="#FCFADF" stroke="#F0E442" stroke-width="1.2"/>
+    <rect x="16" y="351.7" width="10" height="85.6" rx="3" fill="#F0E442"/>
+    <text x="36" y="381.4" font-size="15" font-weight="bold" fill="#000000">6. Pipelines &amp;</text>
+    <text x="54" y="399.4" font-size="15" font-weight="bold" fill="#000000">streaming</text>
+    <text x="36" y="418.4" font-size="12" fill="#444444">Atlas: Ch 30</text>
+    <rect x="262.0" y="363.4" width="141.4" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="332.7" y="380.9" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Fivetran + dbt Labs</text>
+    <rect x="411.4" y="363.4" width="66.6" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="444.7" y="380.9" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Airbyte</text>
+    <rect x="486.0" y="363.4" width="179.1" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="575.6" y="380.9" text-anchor="middle" font-size="12.5" fill="#000000">Informatica <tspan font-weight="bold" fill="#000000">→ Salesforce</tspan></text>
+    <rect x="673.1" y="363.4" width="122.0" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="734.1" y="380.9" text-anchor="middle" font-size="12.5" fill="#000000">Confluent <tspan font-weight="bold" fill="#000000">→ IBM</tspan></text>
+    <rect x="803.1" y="363.4" width="76.6" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="841.4" y="380.9" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Redpanda</text>
+    <rect x="887.8" y="363.4" width="96.4" height="26" rx="5" fill="#EDEDED" stroke="#888888" stroke-width="1.2"/>
+    <text x="935.9" y="380.9" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000" font-style="italic">Apache Flink</text>
+    <rect x="992.1" y="363.4" width="113.9" height="26" rx="5" fill="#EDEDED" stroke="#888888" stroke-width="1.2"/>
+    <text x="1049.1" y="380.9" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000" font-style="italic">Apache Airflow</text>
+    <rect x="1114.0" y="363.4" width="94.1" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="1161.1" y="380.9" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Astronomer</text>
+    <rect x="262.0" y="397.4" width="138.2" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="331.1" y="414.9" text-anchor="middle" font-size="12.5" fill="#000000">Dagster <tspan font-weight="bold" fill="#000000">→ Prefect</tspan></text>
+  </g>
+  <g id="layer7">
+    <rect x="16" y="260.1" width="1216" height="85.6" rx="6" fill="#F7E8F0" stroke="#CC79A7" stroke-width="1.2"/>
+    <rect x="16" y="260.1" width="10" height="85.6" rx="3" fill="#CC79A7"/>
+    <text x="36" y="289.9" font-size="15" font-weight="bold" fill="#000000">7. Semantic layer</text>
+    <text x="54" y="307.9" font-size="15" font-weight="bold" fill="#000000">&amp; BI</text>
+    <text x="36" y="326.9" font-size="12" fill="#444444">Atlas: Ch 14 · 28 · 34</text>
+    <rect x="262.0" y="289.9" width="75.7" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="299.9" y="307.4" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Power BI</text>
+    <rect x="345.8" y="289.9" width="66.6" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="379.1" y="307.4" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Tableau</text>
+    <rect x="420.4" y="289.9" width="62.9" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="451.8" y="307.4" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Looker</text>
+    <rect x="491.2" y="289.9" width="56.6" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="519.6" y="307.4" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Sigma</text>
+    <rect x="555.9" y="289.9" width="98.9" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="605.3" y="307.4" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">ThoughtSpot</text>
+    <rect x="662.8" y="289.9" width="49.1" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="687.3" y="307.4" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Cube</text>
+    <rect x="719.9" y="289.9" width="68.2" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="754.0" y="307.4" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">AtScale</text>
+  </g>
+  <g id="layer8">
+    <rect x="16" y="168.6" width="1216" height="85.6" rx="6" fill="#DDF2EB" stroke="#009E73" stroke-width="1.2"/>
+    <rect x="16" y="168.6" width="10" height="85.6" rx="3" fill="#009E73"/>
+    <text x="36" y="207.3" font-size="15" font-weight="bold" fill="#000000">8. AI data</text>
+    <text x="36" y="226.3" font-size="12" fill="#444444">Atlas: Ch 32</text>
+    <rect x="262.0" y="180.3" width="73.5" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="298.8" y="197.8" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Pinecone</text>
+    <rect x="343.5" y="180.3" width="75.6" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="381.3" y="197.8" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Weaviate</text>
+    <rect x="427.1" y="180.3" width="62.9" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="458.6" y="197.8" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Qdrant</text>
+    <rect x="498.0" y="180.3" width="100.4" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="548.2" y="197.8" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Milvus / Zilliz</text>
+    <rect x="606.4" y="180.3" width="104.1" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="658.4" y="197.8" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Unstructured</text>
+    <rect x="718.5" y="180.3" width="87.9" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="762.4" y="197.8" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">LlamaIndex</text>
+    <rect x="814.4" y="180.3" width="135.8" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="882.2" y="197.8" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Scale AI (49% Meta)</text>
+    <rect x="958.1" y="180.3" width="82.6" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="999.4" y="197.8" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Snorkel AI</text>
+    <rect x="1048.8" y="180.3" width="67.2" height="26" rx="5" fill="#EDEDED" stroke="#888888" stroke-width="1.2"/>
+    <text x="1082.4" y="197.8" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000" font-style="italic">MLflow</text>
+    <rect x="262.0" y="214.3" width="132.0" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="328.0" y="231.8" text-anchor="middle" font-size="12.5" fill="#000000">W&amp;B <tspan font-weight="bold" fill="#000000">→ CoreWeave</tspan></text>
+  </g>
+  <g id="layer9">
+    <rect x="16" y="77.0" width="1216" height="85.6" rx="6" fill="#D0ECE2" stroke="#009E73" stroke-width="1.2"/>
+    <rect x="16" y="77.0" width="10" height="85.6" rx="3" fill="#009E73"/>
+    <text x="36" y="106.8" font-size="15" font-weight="bold" fill="#000000">9. Agents &amp;</text>
+    <text x="54" y="124.8" font-size="15" font-weight="bold" fill="#000000">applications</text>
+    <text x="36" y="143.8" font-size="12" fill="#444444">Atlas: Ch 22 · 34</text>
+    <rect x="262.0" y="106.8" width="165.8" height="26" rx="5" fill="#EDEDED" stroke="#888888" stroke-width="1.2"/>
+    <text x="344.9" y="124.3" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000" font-style="italic">Model Context Protocol</text>
+    <rect x="435.8" y="106.8" width="226.1" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="548.8" y="124.3" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Salesforce Agentforce / Data 360</text>
+    <rect x="669.9" y="106.8" width="92.6" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="716.2" y="124.3" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">ServiceNow</text>
+    <rect x="770.5" y="106.8" width="172.3" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="856.6" y="124.3" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">SAP Business Data Cloud</text>
+    <rect x="950.8" y="106.8" width="94.9" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="998.2" y="124.3" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Palantir AIP</text>
+    <rect x="1053.6" y="106.8" width="141.4" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="1124.3" y="124.3" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Workday Data Cloud</text>
+  </g>
+  <g id="value-migration">
+    <line x1="1312" y1="888" x2="1312" y2="102" stroke="#666666" stroke-width="10"/>
+    <polygon points="1312,80 1294,108 1330,108" fill="#666666"/>
+    <text x="1312" y="130" text-anchor="middle" font-size="12" font-weight="bold" fill="#000000"></text>
+    <text x="1342" y="486.0" font-size="15" font-weight="bold" fill="#000000" text-anchor="middle" transform="rotate(-90 1342 486.0)">Value migrating up: bytes → formats → meaning → action</text>
+    <text x="1284" y="486.0" font-size="12" fill="#444444" text-anchor="middle" transform="rotate(-90 1284 486.0)">Commoditising below, control points above (catalogs, semantics, agents)</text>
+  </g>
+  <g id="legend">
+    <rect x="16" y="912" width="1368" height="78" rx="6" fill="#FFFFFF" stroke="#666666" stroke-width="1"/>
+    <text x="30" y="934" font-size="13" font-weight="bold" fill="#000000">Legend</text>
+    <rect x="100" y="921" width="34" height="18" rx="4" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="142" y="934" font-size="12.5" fill="#000000">Public company or product of one</text>
+    <rect x="343.0800000000001" y="921" width="34" height="18" rx="4" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="385.0800000000001" y="934" font-size="12.5" fill="#000000">Private company or product of one</text>
+    <rect x="594.9600000000003" y="921" width="34" height="18" rx="4" fill="#EDEDED" stroke="#888888" stroke-width="1.2"/>
+    <text x="636.9600000000003" y="934" font-size="12.5" fill="#000000">Open-source project or open standard</text>
+    <rect x="867.1900000000004" y="921" width="34" height="18" rx="4" fill="#FFFFFF" stroke="#D55E00" stroke-width="2.6"/>
+    <text x="909.1900000000004" y="934" font-size="12.5" fill="#000000">Everpure (formerly Pure Storage)</text>
+    <text x="1115.8800000000006" y="934" font-size="12.5" fill="#000000"><tspan font-weight="bold">A → B</tspan> acquired by / agreed to sell to B</text>
+    <text x="30" y="968" font-size="13" font-weight="bold" fill="#000000">Layer colour</text>
+    <rect x="130" y="956" width="18" height="16" rx="3" fill="#0072B2"/>
+    <text x="154" y="969" font-size="12.5" fill="#000000">Storage</text>
+    <rect x="219.78" y="956" width="18" height="16" rx="3" fill="#56B4E9"/>
+    <text x="243.78" y="969" font-size="12.5" fill="#000000">Formats</text>
+    <rect x="312.86" y="956" width="18" height="16" rx="3" fill="#CC79A7"/>
+    <text x="336.86" y="969" font-size="12.5" fill="#000000">Metadata and meaning (control points)</text>
+    <rect x="564.5600000000002" y="956" width="18" height="16" rx="3" fill="#E69F00"/>
+    <text x="588.5600000000002" y="969" font-size="12.5" fill="#000000">Engines and databases</text>
+    <rect x="730.7900000000002" y="956" width="18" height="16" rx="3" fill="#F0E442"/>
+    <text x="754.7900000000002" y="969" font-size="12.5" fill="#000000">Data movement</text>
+    <rect x="860.7200000000003" y="956" width="18" height="16" rx="3" fill="#009E73"/>
+    <text x="884.7200000000003" y="969" font-size="12.5" fill="#000000">AI data and agents</text>
+    <text x="1370" y="969" text-anchor="end" font-size="12" fill="#666666">Sources: data/*.csv and Atlas chapters; public information only.</text>
+  </g>
+</svg>

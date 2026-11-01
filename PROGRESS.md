@@ -22,7 +22,7 @@
 
 Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + comparison tables (`scripts/qa_report.py`).
 
-**Totals:** 49/52 chapters drafted · 191,452 prose words · 442 visuals · 471 [VERIFY] markers.
+**Totals:** 49/52 chapters drafted · 190,625 prose words · 456 visuals · 450 [VERIFY] markers.
 
 | Ch | File | Status | Words | Budget | Visuals | VERIFY | Reviewed |
 |---|---|---|---|---|---|---|---|
@@ -69,12 +69,12 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 39 | ch39-ma-history.md | QA pass | 4,745 | 3500 | 11 | 2 | no |
 | 40 | ch40-gtm-partnerships.md | QA pass | 2,915 | 2000 | 9 | 6 | no |
 | 41 | ch41-market-sizing.md | QA pass | 1,762 | 1000 | 7 | 6 | no |
-| 42 | ch42-history-of-databases.md | QA pass | 4,565 | 3000 | 7 | 31 | no |
+| 42 | ch42-history-of-databases.md | QA pass | 4,723 | 3000 | 7 | 10 | no |
 | 43 | ch43-modern-data-stack.md | QA pass | 2,284 | 2000 | 6 | 5 | no |
 | 44 | ch44-future-trends.md | QA pass | 4,204 | 3000 | 9 | 12 | no |
 | 45 | ch45-storage-moving-up-the-stack.md | QA pass | 2,707 | 2000 | 8 | 17 | no |
 | 46 | ch46-talking-with-data-people.md | QA pass | 3,846 | 2200 | 7 | 0 | no |
 | 47 | ch47-diligence-checklist.md | QA pass | 3,616 | 2000 | 6 | 1 | no |
-| 48 | ch48-question-bank.md | QA pass | 8,230 | 2000 | 4 | 0 | no |
-| 49 | ch49-explain-in-30-seconds.md | QA pass | 5,635 | 1500 | 4 | 0 | no |
+| 48 | ch48-question-bank.md | QA pass | 8,274 | 2000 | 15 | 0 | no |
+| 49 | ch49-explain-in-30-seconds.md | QA pass | 4,606 | 1500 | 7 | 0 | no |
 | 50 | ch50-self-test-cheat-sheets.md | not started | 0 | 1300 | 0 | 0 | no |
