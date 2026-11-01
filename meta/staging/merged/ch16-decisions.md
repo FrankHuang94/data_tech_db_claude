@@ -1,0 +1,4 @@
+- ch16: Scoped the chapter as the map of all eight lifecycle stages; deep treatment deferred to ch17 (parsing), ch18 (embeddings), ch19 (retrieval), ch20 (supply chain/labeling vendors), ch21 (LLMOps), ch22 (agents), ch24 (compute/storage). Vendor lists in the tools-by-stage table are illustrative.
+- ch16: Checkpoint size (~6.5 TB for 405B params) and "15T tokens ≈ 60 TB" are labelled estimates derived from rules of thumb (16 bytes/param mixed-precision Adam; ~4 bytes/token), not sourced figures.
+- ch16: Used Google's Apr 2026 rename (Vertex AI → Gemini Enterprise Agent Platform) based on multiple trade-press reports (HPCwire, Virtualization Review); resolves the briefing's [VERIFY: Vertex AI rename].
+- ch16: Prose ~3,600 words vs 2,200 budget; kept because the stage-by-stage worked examples (curation yield, checkpoint sizing) are reference material for Part 3.

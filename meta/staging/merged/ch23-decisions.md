@@ -1,0 +1,6 @@
+- ch23: Exceeded word budget (~3,360 vs 2,000) to cover both real-time OLAP and HTAP plus the AWS–DuckLabs development (Aug 2026), which post-dates research-briefing.md and is material to Ch 31/Ch 29.
+- ch23: Used ClickHouse ">$250M ARR" (company-stated, 2026-05-27) and ignored Sacra's ~$350M Aug 2026 estimate (third-party).
+- ch23: Treated OpenAI–Rockset as verified (Rockset blog + TechCrunch 2024-06-21) and staged a source correction for the existing ma_deals row.
+- ch23: Framed "small data" figures as MotherDuck's (vendor) analysis of Amazon's public Redset data, not as Amazon's own conclusion; Redset paper cited for its qualitative findings only.
+- ch23: Agent-latency and cost-per-query examples are explicitly illustrative (author assumptions: $1/node-hour, 2 s x 8 nodes vs 50 ms x 2 nodes, 167 QPS).
+- ch23: Quadrant chart placements are author judgment of typical deployments, labelled as such.

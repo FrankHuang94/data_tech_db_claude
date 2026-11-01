@@ -1,0 +1,11 @@
+- ch23: Oracle Database In-Memory GA date (believed July 2014, 12.1.0.2) and SAP HANA GA date (believed 2011) — not verified (search budget exhausted); also in timeline.
+- ch23: ClickHouse acquisitions of LibreChat (Nov 2025) and RunReveal (Sep 2026) — single aggregator sources only.
+- ch23: PingCAP/TiDB latest funding round and valuation — aggregator claims of a 2024 $300M round at ~$3B unconfirmed.
+- ch23: Apache Pinot top-level-project month (August vs December 2021).
+- ch23: Exact publication date of MotherDuck "Redshift Files: The Hunt for Big Data" (2024); figures (0.03% >10 TB; ~6% of execution time) taken from search summaries, page not fetched.
+- ch23: ClickHouse blog "SharedMergeTree and lightweight updates" exact date (2023).
+- ch23: Google Cloud AlloyDB columnar engine blog exact date (2022).
+- ch23: pg_duckdb 1.0 release date (reported ~Sep 2025).
+- ch23: AWS News Blog date for Aurora PostgreSQL Iceberg/Parquet (DuckDB-powered) querying (Sep–Oct 2026).
+- ch23: AWS–DuckLabs closing status (agreement signed 2026-08-26; later Amazon/InfoQ items say "acquired").
+- ch23: SingleStore–Vector Capital close date (secondary sources say Oct 2025) and ~$500M (Bloomberg, press-reported).

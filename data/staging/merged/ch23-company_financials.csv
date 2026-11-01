@@ -1,0 +1,2 @@
+company,ticker,fiscal_period,period_end,fy_definition,metric,value,unit,basis,source,as_of
+ClickHouse,private,ARR milestone May 2026,2026-05-27,private company; point-in-time ARR,ARR,250,USD_M (lower bound: >$250M),company-stated,"Business Wire 2026-05-27 https://www.businesswire.com/news/home/20260527813115/en/ (more than tripled YoY; >4,000 customers)",2026-11-01

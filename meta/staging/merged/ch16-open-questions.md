@@ -1,0 +1,5 @@
+- ch16: [VERIFY: current status of the Mosaic AI brand] — whether Databricks still markets "Mosaic AI" or has folded it fully into Agent Bricks (footnote mosaic).
+- ch16: Llama 4 ">30T tokens" is company-stated in Meta's 2025-04-05 blog but was confirmed only via secondary summaries this sweep (WebFetch blocked).
+- ch16: Menlo Ventures 2024 RAG 51% / fine-tuning 9% figures came via secondary summaries; menlovc.com URL and exact publication date (Nov 2024) not opened directly.
+- ch16: Bartz v. Anthropic final-approval exact day (July 2026) and covered-work count (~465k vs ~500k) differ across reports.
+- ch16: Snowflake Cortex Training (Summit 2026) status and supported models rest on secondary sources (Flexera, Atlan); confirm against Snowflake docs/newsroom.

@@ -83,3 +83,19 @@ Every `[VERIFY: …]` left in the text is listed here with its chapter. Resolve 
 | ch15 | ch15: US Census Bureau differential-privacy page URL not re-fetched. | open |
 | ch15 | ch15: EDPB Meta €1.2B fine press-release URL not re-fetched. | open |
 | ch15 | ch15: Stanford DigiChina PIPL translation URL not re-fetched. | open |
+| ch16 | ch16: [VERIFY: current status of the Mosaic AI brand] — whether Databricks still markets "Mosaic AI" or has folded it fully into Agent Bricks (footnote mosaic). | open |
+| ch16 | ch16: Llama 4 ">30T tokens" is company-stated in Meta's 2025-04-05 blog but was confirmed only via secondary summaries this sweep (WebFetch blocked). | open |
+| ch16 | ch16: Menlo Ventures 2024 RAG 51% / fine-tuning 9% figures came via secondary summaries; menlovc.com URL and exact publication date (Nov 2024) not opened directly. | open |
+| ch16 | ch16: Bartz v. Anthropic final-approval exact day (July 2026) and covered-work count (~465k vs ~500k) differ across reports. | open |
+| ch16 | ch16: Snowflake Cortex Training (Summit 2026) status and supported models rest on secondary sources (Flexera, Atlan); confirm against Snowflake docs/newsroom. | open |
+| ch23 | ch23: Oracle Database In-Memory GA date (believed July 2014, 12.1.0.2) and SAP HANA GA date (believed 2011) — not verified (search budget exhausted); also in timeline. | open |
+| ch23 | ch23: ClickHouse acquisitions of LibreChat (Nov 2025) and RunReveal (Sep 2026) — single aggregator sources only. | open |
+| ch23 | ch23: PingCAP/TiDB latest funding round and valuation — aggregator claims of a 2024 $300M round at ~$3B unconfirmed. | open |
+| ch23 | ch23: Apache Pinot top-level-project month (August vs December 2021). | open |
+| ch23 | ch23: Exact publication date of MotherDuck "Redshift Files: The Hunt for Big Data" (2024); figures (0.03% >10 TB; ~6% of execution time) taken from search summaries, page not fetched. | open |
+| ch23 | ch23: ClickHouse blog "SharedMergeTree and lightweight updates" exact date (2023). | open |
+| ch23 | ch23: Google Cloud AlloyDB columnar engine blog exact date (2022). | open |
+| ch23 | ch23: pg_duckdb 1.0 release date (reported ~Sep 2025). | open |
+| ch23 | ch23: AWS News Blog date for Aurora PostgreSQL Iceberg/Parquet (DuckDB-powered) querying (Sep–Oct 2026). | open |
+| ch23 | ch23: AWS–DuckLabs closing status (agreement signed 2026-08-26; later Amazon/InfoQ items say "acquired"). | open |
+| ch23 | ch23: SingleStore–Vector Capital close date (secondary sources say Oct 2025) and ~$500M (Bloomberg, press-reported). | open |

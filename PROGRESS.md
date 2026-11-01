@@ -21,7 +21,7 @@
 
 Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + comparison tables (`scripts/qa_report.py`).
 
-**Totals:** 16/52 chapters drafted · 56,805 prose words · 138 visuals · 77 [VERIFY] markers.
+**Totals:** 22/52 chapters drafted · 77,749 prose words · 194 visuals · 114 [VERIFY] markers.
 
 | Ch | File | Status | Words | Budget | Visuals | VERIFY | Reviewed |
 |---|---|---|---|---|---|---|---|
@@ -42,15 +42,15 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 13 | ch13-data-quality-observability-lineage.md | QA pass | 3,395 | 1800 | 8 | 6 | no |
 | 14 | ch14-semantic-layers-and-bi.md | QA pass | 2,857 | 2000 | 7 | 4 | no |
 | 15 | ch15-governance-security-privacy.md | QA pass | 4,343 | 2200 | 8 | 9 | no |
-| 16 | ch16-ai-data-lifecycle.md | not started | 0 | 2200 | 0 | 0 | no |
-| 17 | ch17-unstructured-data-processing.md | not started | 0 | 2100 | 0 | 0 | no |
+| 16 | ch16-ai-data-lifecycle.md | QA pass | 3,600 | 2200 | 6 | 1 | no |
+| 17 | ch17-unstructured-data-processing.md | QA pass | 3,144 | 2100 | 10 | 11 | no |
 | 18 | ch18-embeddings-and-vector-search.md | not started | 0 | 2600 | 0 | 0 | no |
-| 19 | ch19-retrieval-architectures.md | not started | 0 | 2200 | 0 | 0 | no |
+| 19 | ch19-retrieval-architectures.md | QA pass | 3,781 | 2200 | 11 | 7 | no |
 | 20 | ch20-training-data-supply-chain.md | not started | 0 | 2200 | 0 | 0 | no |
-| 21 | ch21-ml-platforms-feature-stores-llmops.md | not started | 0 | 2100 | 0 | 0 | no |
+| 21 | ch21-ml-platforms-feature-stores-llmops.md | QA pass | 3,426 | 2100 | 9 | 0 | no |
 | 22 | ch22-agents-and-data.md | not started | 0 | 2400 | 0 | 0 | no |
-| 23 | ch23-real-time-analytics-htap.md | not started | 0 | 2000 | 0 | 0 | no |
-| 24 | ch24-data-meets-compute-and-storage.md | not started | 0 | 2200 | 0 | 0 | no |
+| 23 | ch23-real-time-analytics-htap.md | QA pass | 3,360 | 2000 | 9 | 13 | no |
+| 24 | ch24-data-meets-compute-and-storage.md | QA pass | 3,633 | 2200 | 11 | 5 | no |
 | 25 | ch25-databricks.md | QA pass | 5,237 | 4500 | 13 | 6 | no |
 | 26 | ch26-snowflake.md | not started | 0 | 4500 | 0 | 0 | no |
 | 27 | ch27-databricks-vs-snowflake.md | not started | 0 | 2500 | 0 | 0 | no |
