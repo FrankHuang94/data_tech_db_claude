@@ -190,7 +190,7 @@ The pricing shift runs from **seats** to **agent actions** and **data consumptio
 
 | Vendor | Old unit | New units (company-stated where shown) | Notes |
 |---|---|---|---|
-| Salesforce | Per user per month by edition | Agentforce at $2 per conversation (2024 list); Flex Credits at $0.10 per action, sold as $500 per 100,000 credits (2025); Data Cloud credits for ingestion and processing | Per-action pricing ties revenue to agent work, not headcount[^af-price] |
+| Salesforce | Per user per month by edition | Agentforce at $2 per conversation (2024 list); Flex Credits at $0.10 per action, sold as $500 per 100,000 credits (2025); Data 360 (formerly Data Cloud) credits for ingestion and processing | Per-action pricing ties revenue to agent work, not headcount[^af-price] |
 | ServiceNow | Per fulfiller seat, by tier | Pro Plus and Enterprise Plus tiers bundle Now Assist at a premium; assist-pack consumption | Premium-tier upsell rather than pure metering [VERIFY][^now-proplus] |
 | SAP | Named users and full-use equivalents (FUE) | BDC capacity units; AI units for Joule [VERIFY] | RISE with SAP subscription is the main cloud contract |
 | Workday | Per employee per year (HCM) | AI and agent add-ons; Flex Credits reported [VERIFY] | Employee-count pricing is less directly exposed to agents than service seats |

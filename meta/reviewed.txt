@@ -10,3 +10,11 @@ ch26-snowflake.md
 ch27-databricks-vs-snowflake.md
 ch28-hyperscaler-data-platforms.md
 ch29-operational-database-vendors.md
+ch01-data-stack-map.md
+ch02-data-models.md
+ch03-database-internals.md
+ch04-distributed-databases.md
+ch05-analytical-engines.md
+ch06-file-formats.md
+ch07-open-table-formats.md
+ch08-catalogs-and-metastores.md

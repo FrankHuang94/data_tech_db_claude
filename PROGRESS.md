@@ -28,14 +28,14 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 |---|---|---|---|---|---|---|---|
 | 0.1 | ch00-1-how-to-use.md | not started | 0 | 1200 | 0 | 0 | no |
 | 0.2 | ch00-2-market-map.md | not started | 0 | 1800 | 0 | 0 | no |
-| 1 | ch01-data-stack-map.md | QA pass | 3,429 | 2200 | 10 | 4 | no |
-| 2 | ch02-data-models.md | QA pass | 3,230 | 1900 | 7 | 4 | no |
-| 3 | ch03-database-internals.md | QA pass | 4,485 | 2300 | 10 | 1 | no |
-| 4 | ch04-distributed-databases.md | QA pass | 4,408 | 2000 | 10 | 5 | no |
-| 5 | ch05-analytical-engines.md | QA pass | 3,437 | 2200 | 8 | 2 | no |
-| 6 | ch06-file-formats.md | QA pass | 2,993 | 1800 | 7 | 2 | no |
-| 7 | ch07-open-table-formats.md | QA pass | 3,634 | 2000 | 9 | 1 | no |
-| 8 | ch08-catalogs-and-metastores.md | QA pass | 2,660 | 1600 | 6 | 8 | no |
+| 1 | ch01-data-stack-map.md | reviewed | 3,429 | 2200 | 10 | 4 | yes |
+| 2 | ch02-data-models.md | reviewed | 3,230 | 1900 | 7 | 4 | yes |
+| 3 | ch03-database-internals.md | reviewed | 4,485 | 2300 | 10 | 1 | yes |
+| 4 | ch04-distributed-databases.md | reviewed | 4,408 | 2000 | 10 | 5 | yes |
+| 5 | ch05-analytical-engines.md | reviewed | 3,437 | 2200 | 8 | 2 | yes |
+| 6 | ch06-file-formats.md | reviewed | 2,993 | 1800 | 7 | 2 | yes |
+| 7 | ch07-open-table-formats.md | reviewed | 3,634 | 2000 | 9 | 1 | yes |
+| 8 | ch08-catalogs-and-metastores.md | reviewed | 2,660 | 1600 | 6 | 8 | yes |
 | 9 | ch09-pipeline-patterns.md | reviewed | 3,503 | 2000 | 10 | 3 | yes |
 | 10 | ch10-ingestion-and-integration.md | reviewed | 2,758 | 1900 | 8 | 8 | yes |
 | 11 | ch11-streaming-and-event-platforms.md | reviewed | 3,681 | 2200 | 10 | 5 | yes |
