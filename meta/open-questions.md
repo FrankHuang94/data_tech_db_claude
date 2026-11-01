@@ -132,3 +132,19 @@ Every `[VERIFY: …]` left in the text is listed here with its chapter. Resolve 
 | ch24 | ch24: RAPIDS launch date (believed GTC Europe, October 2018) used in the History timeline. | open |
 | ch24 | ch24: S3 request list prices ($0.005 per 1,000 PUT/LIST; $0.0004 per 1,000 GET) not re-confirmed on the live AWS pricing page. | open |
 | ch24 | ch24: EU Data Act dates (application 2025-09-12; switching charges to zero by 2027-01-12) not re-checked against EUR-Lex. | open |
+| ch20 | ch20: Scale AI 2026 fundraising talks at ~$20B valuation (single aggregator source) — confirm with Bloomberg/Reuters/The Information. | open |
+| ch20 | ch20: AP–OpenAI (Jul 2023), Shutterstock–OpenAI (Jul 2023), Axel Springer–OpenAI (Dec 2023) dates and terms — not re-verified (search budget exhausted); timeline Figure 20.3 depends on them. | open |
+| ch20 | ch20: Handshake AI latest valuation (Sacra lists $3.5B 2025; TechCrunch says $3.3B in 2022) — confirm. | open |
+| ch20 | ch20: Labelbox customers, last round and valuation (recollection: $110M Series D Jan 2022, SoftBank) and expert-network (Alignerr) status — confirm. | open |
+| ch20 | ch20: Toloka customers, valuation, day of $72M Bezos Expeditions round, and Nebius retained stake — confirm with primary release. | open |
+| ch20 | ch20: Turing and Invisible gross margins — no public data found. | open |
+| ch20 | ch20: Snorkel AI gross margin / revenue mix — no public data found. | open |
+| ch20 | ch20: Sacra "Scale: the $290M/year Mechanical Turk" publication date (gross-margin estimates for Scale/Appen/TELUS). | open |
+| ch20 | ch20: Original outlet and date of report that Surge told staff $1B 2024 revenue vs Scale $870M (cited via Ben's Bites). | open |
+| ch20 | ch20: Mercor $20B talks — month (Jul 2026?) and whether closed; Crypto Briefing article date. | open |
+| ch20 | ch20: Search Engine Land "OpenAI may pay Reddit $70M" publication date. | open |
+| ch20 | ch20: Wiley FY2026 AI licensing revenue ($49M) — verify against Wiley 10-K (FY ends Apr 30, 2026). | open |
+| ch20 | ch20: Thomson Reuters v. Ross Third Circuit (No. 25-02153) — outcome after June 2026 argument. | open |
+| ch20 | ch20: NVIDIA NeMo Data Curator blog publication date (20x/5x dedup claim). | open |
+| ch20 | ch20: SemDeDup ~50% LAION removal with minimal loss — confirm figure against arXiv:2303.09540. | open |
+| ch20 | ch20: Snorkel AI Series D exact day (late May 2025) for staging row. | open |
