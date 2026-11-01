@@ -1,5 +1,5 @@
 # 41. Market Sizing and Growth Drivers
-> **Depth:** L2 · **Reading time:** ~7 min · **Last verified:** 2026-11-01 · **Prerequisites:** [Ch 37 — Public comps and valuation](ch37-public-comps-valuation.md)
+> **Depth:** L2 · **Reading time:** ~8 min · **Last verified:** 2026-11-01 · **Prerequisites:** [Ch 37 — Public comps and valuation](ch37-public-comps-valuation.md)
 
 ## TL;DR
 
@@ -22,7 +22,7 @@ For Everpure, the question is concrete. The company renamed itself in February 2
 A market-size figure has a **basis**, and the basis decides the number more than the market itself does.
 
 1. **Vendor revenue (market share).** Gartner's market-share series adds up what vendors book in a category. The DBMS figure is one of these. Open-source software counts only through paid services, so free PostgreSQL usage is invisible.[^reg]
-2. **[End-user spending](../glossary.md#end-user-spending).** This counts what buyers pay, including hardware, services and devices. Gartner's AI spending forecast ($2.67T for 2026) is an end-user figure, and most of it is servers and devices.[^g-ai26]
+2. **[End-user spending](../glossary.md#end-user-spending).** This counts what buyers pay, including hardware, services and devices. Gartner's AI spending forecast ($2.67T for 2026) is an end-user figure, and more than half of it (~$1.48T) is AI infrastructure.[^g-ai26]
 3. **Company-stated TAM.** This is the vendor's estimate of the wallet it could address, often including adjacent categories and the labor that its software could replace. It is not audited and it is not an observed market.
 4. **Syndicated estimate.** These come from report houses such as MarketsandMarkets or Grand View, sold per report, with opaque methods. For DSPM, vector databases and training data, these are the only public numbers available.
 
@@ -90,7 +90,7 @@ flowchart LR
 
 *Figure 41.4 — Company TAMs run ahead of analyst markets. Snowflake's 2026 figure exceeds Gartner's whole DBMS forecast, and Confluent's is roughly three times Gartner's broad integration-software market. Low revenue/TAM ratios are what investor-day slides are built to show.*
 
-TAM inflation follows a pattern. Each investor day adds adjacent categories: applications, AI, data engineering and security. Snowflake's stated TAM for 2026 has moved from $248B (a 2022-era projection, weak source) to ~$225B, while its time horizon keeps extending outward.[^sf-fool][^sf-id26] Confluent's TAM doubled from $50B to $100B+ in four years, while its revenue grew about threefold.[^cflt-ipo][^cflt-q1] A TAM that grows with each presentation is evidence of a broader definition, not of a bigger market.
+TAM inflation follows a pattern. Each investor day adds adjacent categories: applications, AI, data engineering and security. The horizon also rolls forward. Around 2022, Snowflake projected a $248B TAM for 2026 (weak, secondary source). When 2026 arrived, the reported "current" figure was ~$225B, below the old projection. Yet the headline number still rose, from $355B for 2029 to more than $460B five years out.[^sf-fool][^sf-id26][^sf-id25] Confluent's TAM doubled from ~$50B (2021) to $100B+ (2025), while Gartner's data-integration market was growing at about 10% a year.[^cflt-ipo][^cflt-q1][^bf-di] A TAM that grows with each presentation is evidence of a broader definition, not of a bigger market.
 
 > **Bridge: semiconductors.** A company-stated TAM is the data-industry version of the startup slide that claims "SAM: every 3nm wafer start". It sums the whole node, not the sockets the product can win. The disciplined version is a [serviceable addressable market](../glossary.md#serviceable-addressable-market) built socket by socket: named workloads, current spend per workload, and a share the product can realistically take.
 
@@ -140,7 +140,7 @@ flowchart LR
 | What does management think it can reach? | Company TAM | Shows strategic intent and adjacency map | Unaudited, inflates each year |
 | Is a new niche real? | Syndicated estimate plus funding and revenue disclosures | Often the only number available | 4–10x spreads; vendor-sponsored |
 
-*Figure 41.6 — Match the basis to the question. The strongest counter-argument to this skepticism is that TAMs are meant to describe a direction, not a forecast, and that Snowflake's 2020 TAM looked inflated before consumption growth caught up. Even so, a revenue/TAM ratio of 1–3% says little about which share is winnable.*
+*Figure 41.6 — Match the basis to the question. The strongest counter-argument to this skepticism is that a company TAM is meant to show direction and adjacency, not to forecast revenue, and that category creators often grow into markets analysts had not yet defined. Even so, a revenue/TAM ratio of 1–3% says little about which share is winnable.*
 
 ## Who's who
 
@@ -148,10 +148,10 @@ flowchart LR
 
 ## History and trajectory
 
-- **2021:** Cloud passed about half of DBMS spending, with cloud DBMS at $39.2B of a market of about $80B (press-reported Gartner figures).[^techrep] Confluent's IPO TAM was ~$50B.[^cflt-ipo]
+- **2021:** Cloud reached nearly half of DBMS spending, with cloud DBMS at $39.2B of a market of about $80B (press-reported Gartner figures).[^techrep] Confluent's IPO TAM was ~$50B.[^cflt-ipo]
 - **2024:** DBMS reached $119.7B, 64% of it cloud. Data and analytics software reached $175.17B.[^g-dbms24][^g-da]
 - **2025:** Snowflake's TAM was $170B, projected to reach $355B by 2029.[^sf-id25] Gartner forecast $644B of generative-AI spending, about 80% of it hardware.[^g-genai] Public cloud spending was forecast at $723.4B.[^g-cloud]
-- **2026:** Gartner raised its AI spending forecast three times, to $2.67T. IDC put 2029 AI infrastructure above $1T. Everpure published its first segmented TAM, with Modern Data Software at $22B by FY2030.[^g-ai26][^idc-apr26][^ep-fam] Trajectory: the analyst totals keep rising, which pushes company TAMs up too. See [Ch 44](../06-history-and-future/ch44-future-trends.md).
+- **2026:** Gartner's 2026 AI spending forecast rose in each of three editions, from $2.52T to $2.67T. IDC put 2029 AI infrastructure above $1T. Everpure published its first segmented TAM, with Modern Data Software at $22B by FY2030.[^g-ai26][^idc-apr26][^ep-fam] Trajectory: the analyst totals keep rising, which pushes company TAMs up too. See [Ch 44](../06-history-and-future/ch44-future-trends.md).
 
 ## Numbers that matter
 
