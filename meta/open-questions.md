@@ -32,3 +32,7 @@ Every `[VERIFY: …]` left in the text is listed here with its chapter. Resolve 
 | ch06 | ch06 / Avro origin date (~2009, Hadoop subproject, Doug Cutting) / not re-verified | open |
 | ch06 | ch06 / Parquet Apache top-level project date (believed April 2015) / not re-verified | open |
 | ch03 | ch03: [VERIFY: confirm 20–30x wording in RocksDB blog 2022-10-31] — "leveled compaction write amplification typically 20–30x user data" was surfaced via a search summary attributed to rocksdb.org/blog/2022/10/31/align-compaction-output-file.html; page could not be fetched. Also used in "Numbers that matter". | open |
+| ch04 | ch04 / Spanner PostgreSQL-dialect interface: confirm current feature coverage/GA status (Who's who table). / Search budget exhausted. | open |
+| ch04 | ch04 / Aurora DSQL: confirm the AWS-documented replication protocol of the journal (third-party sources say Paxos-based). / Only third-party descriptions found. | open |
+| ch04 | ch04 / Aurora DSQL: find a named public production reference customer. / None surfaced. | open |
+| ch04 | ch04 / Stack Overflow 2025 survey PostgreSQL usage (~55.6%): check against survey.stackoverflow.co; secondary sources disagree whether figure is all respondents or professionals (other figure 58.2%). / Secondary sources only. | open |
