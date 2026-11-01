@@ -109,3 +109,9 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 48 | ch48-question-bank.md | reviewed | 8,292 | 2000 | 15 | 0 | yes |
 | 49 | ch49-explain-in-30-seconds.md | reviewed | 4,676 | 1500 | 7 | 0 | yes |
 | 50 | ch50-self-test-cheat-sheets.md | reviewed | 13,286 | 1300 | 19 | 2 | yes |
+
+## Simplified Chinese edition (2026-11-01)
+
+- `Chinese translation/` mirrors the atlas: README, glossary (712 terms), `docs/index.md` and all 52 chapters, with identical file names. Data, scripts, meta and chart images are shared with the English edition.
+- Checks: 4,587 internal links, 0 broken (English anchors injected by `scripts/zh_postprocess.py`); 193 translated Mermaid diagrams, 0 render failures.
+- Print edition: `Chinese translation/AI-Data-Atlas-zh.pdf` (A4, 903 pages, 40 MB; cover, translator's note, contents with page numbers, Part dividers, bookmarks). Rebuild with `python3 scripts/zh_build_pdf.py --fonts <node_modules/@fontsource>` (needs mmdc, Playwright/Chromium, markdown, pypdf; optional @fontsource/noto-serif-sc and noto-sans-sc for typography).

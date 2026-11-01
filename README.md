@@ -4,7 +4,7 @@
 
 This atlas is a GitHub-hosted knowledge base of 50 chapters plus a two-chapter Part 0 orientation, written for a corporate-development and strategy professional (CFA, MBA, legal background, semiconductor and AI-infrastructure M&A experience) joining **Everpure** (formerly Pure Storage; NYSE: P, formerly PSTG) as the company moves up the stack from storage into data management and data intelligence. A companion repo, the *Everpure Tech Atlas*, covers storage hardware and protocols, so this atlas does not re-teach storage; where storage matters, chapters include a short **Storage bridge** box.
 
-**简体中文参考译本 (Simplified Chinese reference translation):** [`Chinese translation/`](Chinese%20translation/README.md), same structure as this repo, plus a print-ready PDF.
+**简体中文参考译本 (Simplified Chinese reference translation):** [`Chinese translation/`](Chinese%20translation/README.md), same structure as this repo, plus a print-ready PDF: [`AI-Data-Atlas-zh.pdf`](Chinese%20translation/AI-Data-Atlas-zh.pdf) (A4, 903 pages).
 
 It reads on github.com (Mermaid renders natively) and as an MkDocs Material site (`mkdocs serve`, or the GitHub Pages workflow in `.github/workflows/deploy.yml`).
 
