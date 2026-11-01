@@ -366,3 +366,63 @@ Snowflake 在四条战线上竞争。**Databricks** 是争夺企业分析与 AI 
 
 更广泛的"存储向上层栈延伸"模式见[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)，数据引力（data gravity）与出口流量费见[第 24 章](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)。
 
+## 对话手册
+
+**向 Snowflake 产品经理、高管或合作伙伴团队提出的三个问题**
+
+1. "目前有多大比例的 credit 来自 AI（Cortex 函数、智能体、CoWork），与 SQL 仓库相比，这部分用量的毛利率如何？" *好的回答*会给出方向和机制，例如模型托管成本、GPU 利用率以及自有模型与第三方模型的组合，并承认 AI 会稀释毛利率百分比，但会增加毛利金额。
+2. "当客户把表从托管存储迁移到其自有卷上的 Iceberg 后，一年后他们的用量会怎样？" *好的回答*会引用同期群证据（计算上升、存储收入下降），而不是空泛地断言开放终将胜出。
+3. "你们如何决定是否推出像 Gen2 这样会削减客户账单的性能改进？" *好的回答*会谈到价格弹性、竞争赢单率和工作负载迁移，而不仅仅是客户好感。
+
+**向 Snowflake 工程师或解决方案架构师提出的三个问题**
+
+1. "对于位于 AWS、Azure 和 GCP 之外的 S3 兼容外部卷上的 Iceberg 表，支持哪些操作（读、写、Snowflake 托管目录），以及适用哪些端点、TLS 和签名要求？" *好的回答：* 具体的支持状态，以及一份点名的已测试存储厂商列表。
+2. "Iceberg 表上的剪枝与原生微分区相比如何运作：Snowflake 使用的是 Iceberg manifest 统计信息、自身元数据，还是两者兼用？" *好的回答：* 清楚说明统计信息存放在哪里，以及聚簇和压缩合并（compaction）如何维护。
+3. "当外部引擎通过 Iceberg REST 端点读取受 Horizon 治理的表时，脱敏和行访问策略是否会被执行，还是只执行表级授权？" *好的回答：* 坦诚说明哪些策略会传递到第三方引擎、哪些不会。
+
+**好的回答听起来是什么样。** 他们使用 Snowflake 自己的单位（credit、仓库规格、版本、产品收入、NRR、RPO）。他们把托管存储与 Iceberg 区分开，把目录（Horizon、Polaris）与格式区分开。他们把效率视为一项带有收入权衡的定价决策。他们无需提示就能区分 GAAP 与非 GAAP。
+
+**不要这样说**
+
+- "Snowflake 的收入是订阅（subscription）收入。" *它是按 credit 使用确认的按用量计费收入；容量合同是承诺，而非订阅。*
+- "Snowflake 是盈利的。" *仅在非 GAAP 口径下（营业利润率 15.3%，Q2 FY2027）；GAAP 营业利润率为 −17%。*
+- "Snowflake 靠存储赚钱。" *存储几乎是转手业务；计算 credit 才是核心业务。*
+- "Polaris 是 Snowflake 的目录。" *Polaris 是 Apache 顶级项目；Snowflake 的专有目录是 Horizon。*
+- 把"Snowflake Intelligence"或"Cortex Code"当作现用名称。*自 2026-06-02 起，它们分别叫 Snowflake CoWork 和 CoCo。*
+- "Snowflake 可以本地部署运行。" *不能；它可以从云区域读取本地的 S3 兼容存储。*
+- "Snowflake 花 $1B 收购了 Observe。" *那是媒体数字；10-K 显示初步对价为 $596.2M。*
+
+## 关键术语
+
+- [存算分离（separation of storage and compute）](../glossary.md#separation-of-storage-and-compute) — 持久数据存放在对象存储中，由独立、弹性的计算集群读取。
+- [虚拟仓库（virtual warehouse）](../glossary.md#virtual-warehouse) — Snowflake 的计算集群，按翻倍阶梯定规格，按秒以 credit 计费。
+- [云服务层（cloud services layer）](../glossary.md#cloud-services-layer) — Snowflake 负责元数据、优化、安全和事务的共享层。
+- [微分区（micro-partition）](../glossary.md#micro-partition) — Snowflake 不可变的 50–500 MB 列式存储单元，带有逐列 min/max 元数据。
+- [剪枝（pruning）](../glossary.md#pruning) — 跳过那些元数据表明不可能匹配查询过滤条件的数据文件。
+- [区域映射（zone map）](../glossary.md#zone-map) — 用于跳过数据的逐块 min/max 摘要；微分区元数据的通用形式。
+- [结果缓存（result cache）](../glossary.md#result-cache) — Snowflake 存储近期查询结果的地方，在数据未变化时无需计算即可复用。
+- [时间旅行（time travel）](../glossary.md#time-travel) — 查询或恢复表在较早某一时间点的状态。
+- [Fail-safe](../glossary.md#fail-safe) — Time Travel 到期后，Snowflake 为期七天、仅限支持团队操作的恢复期。
+- [零拷贝克隆（zero-copy cloning）](../glossary.md#zero-copy-cloning) — 通过复制元数据指针而非数据来创建表或数据库的副本。
+- [零拷贝数据共享（zero-copy data sharing）](../glossary.md#zero-copy-data-sharing) — 授予另一账户对数据的实时查询权限而无需复制数据。
+- [数据洁净室（data clean room）](../glossary.md#data-clean-room) — 各方在看不到彼此原始记录的情况下分析合并数据的环境。
+- [Snowflake credit](../glossary.md#snowflake-credit) — Snowflake 的计算用量单位；每 credit 价格取决于版本和区域。
+- [容量合同（capacity contract）](../glossary.md#capacity-contract) — 在一定期限内消耗一定金额 credit 的预付承诺。
+- [剩余履约义务（remaining performance obligations）](../glossary.md#remaining-performance-obligations) — 已签约但尚未确认的收入；对 Snowflake 而言即未消耗的容量承诺。
+- [净收入留存率（net revenue retention）](../glossary.md#net-revenue-retention) — 去年客户同期群今年的支出 ÷ 其一年前的支出。
+- [效率逆风（efficiency headwind）](../glossary.md#efficiency-headwind) — 按用量计费厂商的性能提升削减了客户同等工作的账单而损失的收入。
+- [股权激励费用（stock-based compensation）](../glossary.md#stock-based-compensation) — 以股权形式支付的员工薪酬，在 GAAP 下计为费用，在非 GAAP 结果中剔除。
+- [Snowpark](../glossary.md#snowpark) — Snowflake 在平台内运行 Python、Java 和 Scala 代码的运行时。
+- [混合表（hybrid table）](../glossary.md#hybrid-table) — Snowflake 面向低延迟事务访问的行式表类型（Unistore）。
+- [Apache Iceberg](../glossary.md#apache-iceberg) — Snowflake 通过 Iceberg 表支持的开放表格式。
+- [外部卷（external volume）](../glossary.md#external-volume) — 将 Iceberg 表指向客户自有对象存储的 Snowflake 对象。
+- [Apache Polaris](../glossary.md#apache-polaris) — 由 Snowflake 创建并捐赠给 Apache 的开源 Iceberg REST 目录。
+- [Horizon Catalog](../glossary.md#horizon-catalog) — Snowflake 专有的数据治理、发现与目录层。
+- [Iceberg REST 目录（Iceberg REST catalog）](../glossary.md#iceberg-rest-catalog) — 引擎用于查找和提交 Iceberg 表的标准 API。
+- [Cortex AI](../glossary.md#cortex-ai) — Snowflake 托管的 LLM 函数、搜索和智能体服务。
+- [Snowflake CoWork](../glossary.md#snowflake-cowork) — Snowflake 面向业务用户的智能体助手（原 Snowflake Intelligence）。
+- [Openflow](../glossary.md#openflow) — Snowflake 基于 Apache NiFi 的数据摄取服务，来自对 Datavolo 的收购。
+- [Gen2 仓库（Gen2 warehouse）](../glossary.md#gen2-warehouse) — Snowflake 新一代仓库，硬件和软件都更快。
+- [语义视图（semantic view）](../glossary.md#semantic-view) — 保存业务指标和维度定义的数据库对象。
+- [Open Semantic Interchange](../glossary.md#open-semantic-interchange) — 用于交换语义层定义的多厂商规范。
+
