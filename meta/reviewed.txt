@@ -36,3 +36,10 @@ ch42-history-of-databases.md
 ch43-modern-data-stack.md
 ch44-future-trends.md
 ch45-storage-moving-up-the-stack.md
+ch35-business-models.md
+ch36-unit-economics-kpis.md
+ch37-public-comps-valuation.md
+ch38-open-source-strategy.md
+ch39-ma-history.md
+ch40-gtm-partnerships.md
+ch41-market-sizing.md

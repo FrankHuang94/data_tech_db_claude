@@ -22,12 +22,12 @@
 
 Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + comparison tables (`scripts/qa_report.py`).
 
-**Totals:** 51/52 chapters drafted · 194,864 prose words · 465 visuals · 445 [VERIFY] markers.
+**Totals:** 51/52 chapters drafted · 194,887 prose words · 465 visuals · 445 [VERIFY] markers.
 
 | Ch | File | Status | Words | Budget | Visuals | VERIFY | Reviewed |
 |---|---|---|---|---|---|---|---|
 | 0.1 | ch00-1-how-to-use.md | QA pass | 1,736 | 1200 | 5 | 0 | no |
-| 0.2 | ch00-2-market-map.md | QA pass | 1,976 | 1800 | 4 | 0 | no |
+| 0.2 | ch00-2-market-map.md | QA pass | 1,999 | 1800 | 4 | 0 | no |
 | 1 | ch01-data-stack-map.md | reviewed | 3,429 | 2200 | 10 | 4 | yes |
 | 2 | ch02-data-models.md | reviewed | 3,230 | 1900 | 7 | 4 | yes |
 | 3 | ch03-database-internals.md | reviewed | 4,485 | 2300 | 10 | 1 | yes |
@@ -62,13 +62,13 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 32 | ch32-ai-native-data-companies.md | reviewed | 4,760 | 3500 | 11 | 24 | yes |
 | 33 | ch33-governance-catalog-security-companies.md | reviewed | 3,647 | 2500 | 9 | 15 | yes |
 | 34 | ch34-application-giants-data-platforms.md | reviewed | 3,817 | 2000 | 12 | 38 | yes |
-| 35 | ch35-business-models.md | QA pass | 3,881 | 2500 | 9 | 1 | no |
-| 36 | ch36-unit-economics-kpis.md | QA pass | 4,124 | 2500 | 11 | 9 | no |
-| 37 | ch37-public-comps-valuation.md | QA pass | 3,412 | 2500 | 15 | 6 | no |
-| 38 | ch38-open-source-strategy.md | QA pass | 3,316 | 2000 | 8 | 6 | no |
-| 39 | ch39-ma-history.md | QA pass | 4,774 | 3500 | 11 | 1 | no |
-| 40 | ch40-gtm-partnerships.md | QA pass | 2,915 | 2000 | 9 | 6 | no |
-| 41 | ch41-market-sizing.md | QA pass | 1,782 | 1000 | 7 | 6 | no |
+| 35 | ch35-business-models.md | reviewed | 3,881 | 2500 | 9 | 1 | yes |
+| 36 | ch36-unit-economics-kpis.md | reviewed | 4,124 | 2500 | 11 | 9 | yes |
+| 37 | ch37-public-comps-valuation.md | reviewed | 3,412 | 2500 | 15 | 6 | yes |
+| 38 | ch38-open-source-strategy.md | reviewed | 3,316 | 2000 | 8 | 6 | yes |
+| 39 | ch39-ma-history.md | reviewed | 4,774 | 3500 | 11 | 1 | yes |
+| 40 | ch40-gtm-partnerships.md | reviewed | 2,915 | 2000 | 9 | 6 | yes |
+| 41 | ch41-market-sizing.md | reviewed | 1,782 | 1000 | 7 | 6 | yes |
 | 42 | ch42-history-of-databases.md | reviewed | 4,723 | 3000 | 7 | 10 | yes |
 | 43 | ch43-modern-data-stack.md | reviewed | 2,296 | 2000 | 6 | 5 | yes |
 | 44 | ch44-future-trends.md | reviewed | 4,325 | 3000 | 9 | 11 | yes |
