@@ -22,7 +22,7 @@
 
 Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + comparison tables (`scripts/qa_report.py`).
 
-**Totals:** 46/52 chapters drafted · 173,971 prose words · 428 visuals · 470 [VERIFY] markers.
+**Totals:** 47/52 chapters drafted · 177,587 prose words · 433 visuals · 471 [VERIFY] markers.
 
 | Ch | File | Status | Words | Budget | Visuals | VERIFY | Reviewed |
 |---|---|---|---|---|---|---|---|
@@ -74,7 +74,7 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 44 | ch44-future-trends.md | QA pass | 4,204 | 3000 | 9 | 12 | no |
 | 45 | ch45-storage-moving-up-the-stack.md | QA pass | 2,707 | 2000 | 8 | 17 | no |
 | 46 | ch46-talking-with-data-people.md | QA pass | 3,846 | 2200 | 7 | 0 | no |
-| 47 | ch47-diligence-checklist.md | not started | 0 | 2000 | 0 | 0 | no |
+| 47 | ch47-diligence-checklist.md | QA pass | 3,616 | 2000 | 5 | 1 | no |
 | 48 | ch48-question-bank.md | not started | 0 | 2000 | 0 | 0 | no |
 | 49 | ch49-explain-in-30-seconds.md | not started | 0 | 1500 | 0 | 0 | no |
 | 50 | ch50-self-test-cheat-sheets.md | not started | 0 | 1300 | 0 | 0 | no |
