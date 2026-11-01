@@ -1,0 +1,4 @@
+- (ch00-2) Market map uses nine layers in the order given by the Part 0 brief (operational databases drawn below analytical platforms, pipelines above them) rather than strict data-flow order; the SVG notes "bottom = closest to the bytes". Hyperscaler products are placed in the layer of the product, not a separate hyperscaler band.
+- (ch00-2) Layer table uses only marks present in data/*.csv; ThoughtSpot, Cube, AtScale, MinIO, Dell, Redis valuations omitted (not in dataset or rows flagged [VERIFY]). Stale 2021–22 private marks are shown with dates and called out as stale.
+- (ch00-2) Unity Catalog drawn as a private-company product (Databricks), Polaris/Horizon as public (Snowflake), MCP as open standard; Scale AI chip labelled "49% Meta".
+- (ch00-1) Literal bracketed VERIFY tokens avoided in explanatory text so qa_report's VERIFY counter is not inflated; the chapter has 0 open VERIFY markers.
