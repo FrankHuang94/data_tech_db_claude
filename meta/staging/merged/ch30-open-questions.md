@@ -1,0 +1,21 @@
+- ch30: Confluent GAAP revenue FY2019–FY2024 ($149.8M, $236.6M, $388.0M, $585.9M, $777.0M, $963.6M) recalled from S-1/10-K filings; re-check against EDGAR (data/ch30_confluent_financials.csv).
+- ch30: Confluent FY2025 revenue $1,167M and Confluent Cloud $624M (+27%) still rest on a secondary summary; verify vs FY2025 10-K. FY2024 Cloud revenue ($491M) is derived, replace with reported figure.
+- ch30: Confluent IPO details (June 2021, Nasdaq CFLT, pricing) — re-open 424B4.
+- ch30: Confluent first non-GAAP operating-profitable quarter.
+- ch30: Confluent pre-built connector count (120+?) and Confluent Cloud pricing-unit names (eCKU, CFU) and Platform licensing basis.
+- ch30: Informatica FY2024 GAAP revenue (~$1.6B), net debt at deal (EV vs $8B equity), Oct 2021 re-IPO details, CEO post-close role.
+- ch30: Informatica FY2014 revenue (~$1.05B) for 2015 take-private multiple.
+- ch30: Salesforce–Informatica April 2024 talks (WSJ/Reuters) — primary URLs.
+- ch30: Salesforce post-close disclosure of Informatica (segment, leadership, integration milestones, IDMC neutrality).
+- ch30: MuleSoft FY2017 revenue (~$297M) for 2018 multiple.
+- ch30: IBM–HashiCorp ~$6.4B (announced 2024-04, closed 2025-02) and HashiCorp FY2024 revenue (~$583M).
+- ch30: Boomi sale by Dell to Francisco Partners/TPG (~$4B, 2021) — primary source.
+- ch30: Matillion Series E ($150M at ~$1.5B, 2021), current CEO, Maia launch date.
+- ch30: Redpanda–Benthos acquisition (2024) date and terms.
+- ch30: Estuary Series A $17M vs $14M; founding year, HQ and CEO.
+- ch30: Airbyte current agent-facing product names (2025–26).
+- ch30: dbt platform 2026 pricing (seats plus models-built meter).
+- ch30: Qlik Open Lakehouse product status.
+- ch30: Any Fivetran + dbt Labs IPO filing/timetable reports.
+- ch30: Post-close attrition/integration reports for Confluent (IBM) and Informatica (Salesforce).
+- ch30: S3-compatible on-prem support for WarpStream BYOC, Redpanda Cloud Topics, AutoMQ, Bufstream; Fivetran hybrid deployment S3-compatible destinations.

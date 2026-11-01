@@ -1,0 +1,5 @@
+- (ch34) Web search unavailable (session budget exhausted on first query). Drafted from data/*.csv, meta/research-briefing.md and other drafted chapters; pre-mid-2025 product facts used from training knowledge with footnotes pointing to the publisher newsroom root and explicit [VERIFY] flags rather than guessed deep URLs.
+- (ch34) Used EV/revenue on mixed bases (TTM for CRM, NOW, SAP, PLTR; FY2027 guide midpoint for WDAY) exactly as in data/public_comps.csv; flagged as indicative in captions.
+- (ch34) Treated Microsoft Dynamics/Fabric and Oracle Fusion as brief sub-sections (comparison-table rows only), per assignment; Palantir Ontology detail deferred to Ch 31.
+- (ch34) Salesforce data-layer M&A total ">$32B" = MuleSoft 6.5 + Tableau 15.7 + Own 1.9 + Informatica ~8 + Datorama ~0.8 (press-reported), our sum.
+- (ch34) Reused glossary term "Ontology" (ch19) and "Zero-copy data sharing", "Semantic layer", "Reverse ETL" (earlier chapters); staged only new terms.

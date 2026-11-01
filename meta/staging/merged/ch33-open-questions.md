@@ -1,0 +1,11 @@
+- ch33: CEO changes since mid-2025 at Collibra, Alation, Atlan, BigID, Cyera, Varonis (snapshot table uses pre-2025 public record; web search budget exhausted).
+- ch33: Atlan founding year (2019 assumed), Sentra founding year (c. 2021), 1touch founding year and HQ.
+- ch33: Alation–Numbers Station acquisition (2025) — date and terms.
+- ch33: Reports of headcount reductions at Collibra and Alation, 2023–2026; any Collibra priced round or secondary mark since 2021.
+- ch33: Vendor pricing units for Collibra, Alation, Atlan, Cyera, BigID (business-model table uses author's summary).
+- ch33: Reconciliation of Proofpoint–Varonis $6.3B headline value to ~$5.71B equity value (convertible notes / dilutive securities?).
+- ch33: Informatica CY2024 GAAP revenue (~$1.64B, pre-2025 knowledge) used for ~4.9x Salesforce–Informatica multiple.
+- ch33: Zscaler DSPM acquisitions (none in data/ma_deals.csv).
+- ch33: Commvault–Satori Cyber acquisition (believed 2025) — date and terms.
+- ch33: Rubrik–Laminar primary release (Aug 2023); Palo Alto–Dig announcement day; Veeam–Securiti announcement date (Oct 2025); Cyera Series D/E leads and days.
+- ch33: ServiceNow–data.world closing confirmation.

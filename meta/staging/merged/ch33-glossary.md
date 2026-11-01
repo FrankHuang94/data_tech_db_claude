@@ -1,0 +1,5 @@
+- **Active metadata** — Metadata that triggers actions such as alerts, policy changes or agent context instead of only being displayed in a catalog portal. (ch33)
+- **Data access governance** — Analysing and right-sizing who can access which data, especially file shares, Microsoft 365 and SaaS content. (ch33)
+- **Agentless scanning** — Scanning cloud data through provider APIs and snapshots without installing software on hosts, the default DSPM deployment model. (ch33)
+- **Precedent transaction** — A past acquisition used as a valuation benchmark through its implied multiple of revenue, ARR or earnings. (ch33)
+- **Take-private** — The acquisition of a public company, often by a private-equity-backed buyer, that delists its shares. (ch33)

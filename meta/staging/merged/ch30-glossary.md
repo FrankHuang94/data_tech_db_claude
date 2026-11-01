@@ -1,0 +1,8 @@
+- **Master data management** — Software and process that resolves duplicate records about the same customer, product or supplier into one trusted "golden record". (ch30)
+- **Tableflow** — A Confluent feature that materializes Kafka topics as Apache Iceberg (or Delta Lake) tables in object storage, removing a separate ETL job. (ch30)
+- **Take-private** — A buyout, usually by private equity, that delists a public company so it can be restructured away from quarterly markets. (ch30)
+- **All-stock merger** — A combination in which one company's shareholders receive the other's shares, so no cash price or new valuation is set. (ch30)
+- **Precedent transaction** — A past acquisition whose price multiples (e.g., EV/revenue) are used as a benchmark for valuing a comparable company. (ch30)
+- **Open core** — A business model that gives away an open-source core product and sells proprietary features, support or a hosted service around it. (ch30)
+- **Freight cluster** — Confluent Cloud cluster type that writes directly to object storage, trading higher latency for much lower cost. (ch30)
+- **eCKU** — Elastic Confluent Unit for Kafka, Confluent Cloud's capacity unit for metering cluster usage. (ch30)

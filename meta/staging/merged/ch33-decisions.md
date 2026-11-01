@@ -1,0 +1,7 @@
+- ch33: Web search budget was exhausted before any ch33 search ran (shared per-turn limit); chapter built only from data/*.csv, meta/research-*.md and finished chapters ch08/ch15/ch10/ch13/ch25. Uncertain background facts (founding years, CEOs, Numbers Station, Satori, Zscaler) marked [VERIFY].
+- ch33: Scope boundary — mechanisms (classification pipeline, ABAC, credential vending) left to ch08/ch15; ch33 covers companies, pricing, buyers and multiples.
+- ch33: Everpure–1touch sized at ~0.3% of market cap ($125.0M / $43.79B, public_comps as of 2026-10-01) and ~20% of FY2026 non-GAAP FCF ($616M).
+- ch33: Varonis ~8.5x (headline $6.3B / $737M CY2026 guide midpoint) consistent with ch15; added ~8.7x SaaS ARR ($726.0M). Cyera: no ARR stated (consistent with ch15 decision); ~80x shown as press-reported and disputed.
+- ch33: Cyera cumulative raised ">$2.3B" = CSV note ">$1.7B through Series F" + $600M Series G (our sum).
+- ch33: Quadrant placements (Figure 33.8) and "AI positioning" column are author judgment, labelled as such.
+- ch33: Bridges kept generic (no named semiconductor equipment/EDA deals) to avoid unverified deal facts.

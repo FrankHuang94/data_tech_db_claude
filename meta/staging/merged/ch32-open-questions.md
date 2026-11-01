@@ -1,0 +1,21 @@
+- ch32: Search budget exhausted during drafting; all items below rest on datasets or training knowledge (pre-mid-2025) and need live re-checking.
+- ch32: Pinecone reported 2025 sale exploration — publisher, date and current status (any transaction in 2025–2026?).
+- ch32: Pinecone serverless launch date (Jan 2024) and pricing units (read/write units, GB-month).
+- ch32: Weaviate Series B day/lead (Apr 2023, Index Ventures) — only aggregator source (Clay).
+- ch32: Milvus LF AI & Data graduation date; Zilliz total funding and any post-2022 round.
+- ch32: Chroma seed (~$18M, 2023) and Chroma Cloud launch.
+- ch32: turbopuffer funding rounds and customer list (company-stated).
+- ch32: LlamaIndex Series A (~$19M, 2025) details; Vectara and Contextual AI Series A sizes.
+- ch32: Scale AI Series F day; Scale permanent CEO after Jason Droege's interim appointment; July 2025 layoff (~14%) primary source; post-Meta customer exits.
+- ch32: Surge AI 2024 revenue (>$1B, press-reported) and whether the 2025 round at up to $25B closed.
+- ch32: Mercor valuations ($2B Feb 2025; ~$10B Oct 2025).
+- ch32: Snorkel AI Series D (~$100M at ~$1.3B, May 2025) and Turing Series E (~$111M at ~$2.2B, Mar 2025).
+- ch32: VAST Data product timeline (DataBase 2023, InsightEngine Oct 2024, AI Operating System 2025); VAST company-stated ARR/bookings at Series E and Series F; Series E/F leads; OEM partner list; CoreWeave agreement (~$1.17B, late 2025).
+- ch32: Hammerspace founding year and pNFS v4.2 technical claims.
+- ch32: WEKA Series E and NeuralMesh rebrand; DDN–Blackstone investment (Jan 2025, ~$300M at ~$5B).
+- ch32: NetApp AFX and AI Data Engine announcement (INSIGHT, Oct 2025) and GA status.
+- ch32: S3 Standard list price (~$0.023/GB-month) used in the worked example.
+- ch32: OpenAI–Rockset details; Nscale–Anyscale (~$1.65B) close status and primary source.
+- ch32: Glean ~$300M ARR (May 2026) — find the primary company release (dataset cites Wikipedia).
+- ch32: ASML Customer Co-Investment Program (2012) stakes — primary source.
+- ch32: Gross margins of labeling vendors (no audited figures disclosed).

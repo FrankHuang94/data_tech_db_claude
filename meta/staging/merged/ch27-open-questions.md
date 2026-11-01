@@ -1,0 +1,8 @@
+- ch27: Snowflake list prices per credit by edition ($2/$3/$4 Standard/Enterprise/Business Critical, AWS US East on-demand) and warehouse credits/hour (XS 1, S 2, M 4, L 8) are pre-2025 knowledge; confirm against snowflake.com/en/pricing-options and the Service Consumption Table (Nov 2026). Used in Fig 27.5/27.6 and worked example.
+- ch27: Databricks Serverless SQL warehouse DBU/hour by size (2X-Small 4, Small 12) are pre-2025 knowledge; confirm against Databricks docs/pricing. Used in Fig 27.6 and worked example B.
+- ch27: Customer overlap — find a primary analyst/survey figure (ETR, Gartner, Battery, company commentary) for the share of large enterprises running both Databricks and Snowflake.
+- ch27: Snowflake S3-compatible storage — current documented vendor list; whether Pure Storage/Everpure is listed; whether Iceberg tables on S3-compatible external volumes are GA; whether Snowflake has any named storage-partner program comparable to the Databricks Storage Ecosystem.
+- ch27: Horizon Catalog Iceberg REST interoperability (read/write by external engines; catalog-linked databases) — current status as of Nov 2026.
+- ch27: Databricks serverless share of DBUs / revenue (undisclosed) — needed to size the infrastructure-inclusion effect on reported growth.
+- ch27: TPC-DS dispute (Nov 2021) blog URLs (Databricks 2021-11-02; Snowflake "Industry Benchmarks and Competing with Integrity") taken from pre-2025 knowledge; re-open to confirm.
+- ch27: Snowflake SIGMOD 2016 DOI URL and Bozeman, MT principal office per SEC filings — pre-2025 knowledge; confirm.

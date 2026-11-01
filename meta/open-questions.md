@@ -148,3 +148,83 @@ Every `[VERIFY: …]` left in the text is listed here with its chapter. Resolve 
 | ch20 | ch20: NVIDIA NeMo Data Curator blog publication date (20x/5x dedup claim). | open |
 | ch20 | ch20: SemDeDup ~50% LAION removal with minimal loss — confirm figure against arXiv:2303.09540. | open |
 | ch20 | ch20: Snorkel AI Series D exact day (late May 2025) for staging row. | open |
+| ch27 | ch27: Snowflake list prices per credit by edition ($2/$3/$4 Standard/Enterprise/Business Critical, AWS US East on-demand) and warehouse credits/hour (XS 1, S 2, M 4, L 8) are pre-2025 knowledge; confirm against snowflake.com/en/pricing-options and the Service Consumption Table (Nov 2026). Used in Fig 27.5/27.6 and worked example. | open |
+| ch27 | ch27: Databricks Serverless SQL warehouse DBU/hour by size (2X-Small 4, Small 12) are pre-2025 knowledge; confirm against Databricks docs/pricing. Used in Fig 27.6 and worked example B. | open |
+| ch27 | ch27: Customer overlap — find a primary analyst/survey figure (ETR, Gartner, Battery, company commentary) for the share of large enterprises running both Databricks and Snowflake. | open |
+| ch27 | ch27: Snowflake S3-compatible storage — current documented vendor list; whether Pure Storage/Everpure is listed; whether Iceberg tables on S3-compatible external volumes are GA; whether Snowflake has any named storage-partner program comparable to the Databricks Storage Ecosystem. | open |
+| ch27 | ch27: Horizon Catalog Iceberg REST interoperability (read/write by external engines; catalog-linked databases) — current status as of Nov 2026. | open |
+| ch27 | ch27: Databricks serverless share of DBUs / revenue (undisclosed) — needed to size the infrastructure-inclusion effect on reported growth. | open |
+| ch27 | ch27: TPC-DS dispute (Nov 2021) blog URLs (Databricks 2021-11-02; Snowflake "Industry Benchmarks and Competing with Integrity") taken from pre-2025 knowledge; re-open to confirm. | open |
+| ch27 | ch27: Snowflake SIGMOD 2016 DOI URL and Bozeman, MT principal office per SEC filings — pre-2025 knowledge; confirm. | open |
+| ch30 | ch30: Confluent GAAP revenue FY2019–FY2024 ($149.8M, $236.6M, $388.0M, $585.9M, $777.0M, $963.6M) recalled from S-1/10-K filings; re-check against EDGAR (data/ch30_confluent_financials.csv). | open |
+| ch30 | ch30: Confluent FY2025 revenue $1,167M and Confluent Cloud $624M (+27%) still rest on a secondary summary; verify vs FY2025 10-K. FY2024 Cloud revenue ($491M) is derived, replace with reported figure. | open |
+| ch30 | ch30: Confluent IPO details (June 2021, Nasdaq CFLT, pricing) — re-open 424B4. | open |
+| ch30 | ch30: Confluent first non-GAAP operating-profitable quarter. | open |
+| ch30 | ch30: Confluent pre-built connector count (120+?) and Confluent Cloud pricing-unit names (eCKU, CFU) and Platform licensing basis. | open |
+| ch30 | ch30: Informatica FY2024 GAAP revenue (~$1.6B), net debt at deal (EV vs $8B equity), Oct 2021 re-IPO details, CEO post-close role. | open |
+| ch30 | ch30: Informatica FY2014 revenue (~$1.05B) for 2015 take-private multiple. | open |
+| ch30 | ch30: Salesforce–Informatica April 2024 talks (WSJ/Reuters) — primary URLs. | open |
+| ch30 | ch30: Salesforce post-close disclosure of Informatica (segment, leadership, integration milestones, IDMC neutrality). | open |
+| ch30 | ch30: MuleSoft FY2017 revenue (~$297M) for 2018 multiple. | open |
+| ch30 | ch30: IBM–HashiCorp ~$6.4B (announced 2024-04, closed 2025-02) and HashiCorp FY2024 revenue (~$583M). | open |
+| ch30 | ch30: Boomi sale by Dell to Francisco Partners/TPG (~$4B, 2021) — primary source. | open |
+| ch30 | ch30: Matillion Series E ($150M at ~$1.5B, 2021), current CEO, Maia launch date. | open |
+| ch30 | ch30: Redpanda–Benthos acquisition (2024) date and terms. | open |
+| ch30 | ch30: Estuary Series A $17M vs $14M; founding year, HQ and CEO. | open |
+| ch30 | ch30: Airbyte current agent-facing product names (2025–26). | open |
+| ch30 | ch30: dbt platform 2026 pricing (seats plus models-built meter). | open |
+| ch30 | ch30: Qlik Open Lakehouse product status. | open |
+| ch30 | ch30: Any Fivetran + dbt Labs IPO filing/timetable reports. | open |
+| ch30 | ch30: Post-close attrition/integration reports for Confluent (IBM) and Informatica (Salesforce). | open |
+| ch30 | ch30: S3-compatible on-prem support for WarpStream BYOC, Redpanda Cloud Topics, AutoMQ, Bufstream; Fivetran hybrid deployment S3-compatible destinations. | open |
+| ch32 | ch32: Search budget exhausted during drafting; all items below rest on datasets or training knowledge (pre-mid-2025) and need live re-checking. | open |
+| ch32 | ch32: Pinecone reported 2025 sale exploration — publisher, date and current status (any transaction in 2025–2026?). | open |
+| ch32 | ch32: Pinecone serverless launch date (Jan 2024) and pricing units (read/write units, GB-month). | open |
+| ch32 | ch32: Weaviate Series B day/lead (Apr 2023, Index Ventures) — only aggregator source (Clay). | open |
+| ch32 | ch32: Milvus LF AI & Data graduation date; Zilliz total funding and any post-2022 round. | open |
+| ch32 | ch32: Chroma seed (~$18M, 2023) and Chroma Cloud launch. | open |
+| ch32 | ch32: turbopuffer funding rounds and customer list (company-stated). | open |
+| ch32 | ch32: LlamaIndex Series A (~$19M, 2025) details; Vectara and Contextual AI Series A sizes. | open |
+| ch32 | ch32: Scale AI Series F day; Scale permanent CEO after Jason Droege's interim appointment; July 2025 layoff (~14%) primary source; post-Meta customer exits. | open |
+| ch32 | ch32: Surge AI 2024 revenue (>$1B, press-reported) and whether the 2025 round at up to $25B closed. | open |
+| ch32 | ch32: Mercor valuations ($2B Feb 2025; ~$10B Oct 2025). | open |
+| ch32 | ch32: Snorkel AI Series D (~$100M at ~$1.3B, May 2025) and Turing Series E (~$111M at ~$2.2B, Mar 2025). | open |
+| ch32 | ch32: VAST Data product timeline (DataBase 2023, InsightEngine Oct 2024, AI Operating System 2025); VAST company-stated ARR/bookings at Series E and Series F; Series E/F leads; OEM partner list; CoreWeave agreement (~$1.17B, late 2025). | open |
+| ch32 | ch32: Hammerspace founding year and pNFS v4.2 technical claims. | open |
+| ch32 | ch32: WEKA Series E and NeuralMesh rebrand; DDN–Blackstone investment (Jan 2025, ~$300M at ~$5B). | open |
+| ch32 | ch32: NetApp AFX and AI Data Engine announcement (INSIGHT, Oct 2025) and GA status. | open |
+| ch32 | ch32: S3 Standard list price (~$0.023/GB-month) used in the worked example. | open |
+| ch32 | ch32: OpenAI–Rockset details; Nscale–Anyscale (~$1.65B) close status and primary source. | open |
+| ch32 | ch32: Glean ~$300M ARR (May 2026) — find the primary company release (dataset cites Wikipedia). | open |
+| ch32 | ch32: ASML Customer Co-Investment Program (2012) stakes — primary source. | open |
+| ch32 | ch32: Gross margins of labeling vendors (no audited figures disclosed). | open |
+| ch33 | ch33: CEO changes since mid-2025 at Collibra, Alation, Atlan, BigID, Cyera, Varonis (snapshot table uses pre-2025 public record; web search budget exhausted). | open |
+| ch33 | ch33: Atlan founding year (2019 assumed), Sentra founding year (c. 2021), 1touch founding year and HQ. | open |
+| ch33 | ch33: Alation–Numbers Station acquisition (2025) — date and terms. | open |
+| ch33 | ch33: Reports of headcount reductions at Collibra and Alation, 2023–2026; any Collibra priced round or secondary mark since 2021. | open |
+| ch33 | ch33: Vendor pricing units for Collibra, Alation, Atlan, Cyera, BigID (business-model table uses author's summary). | open |
+| ch33 | ch33: Reconciliation of Proofpoint–Varonis $6.3B headline value to ~$5.71B equity value (convertible notes / dilutive securities?). | open |
+| ch33 | ch33: Informatica CY2024 GAAP revenue (~$1.64B, pre-2025 knowledge) used for ~4.9x Salesforce–Informatica multiple. | open |
+| ch33 | ch33: Zscaler DSPM acquisitions (none in data/ma_deals.csv). | open |
+| ch33 | ch33: Commvault–Satori Cyber acquisition (believed 2025) — date and terms. | open |
+| ch33 | ch33: Rubrik–Laminar primary release (Aug 2023); Palo Alto–Dig announcement day; Veeam–Securiti announcement date (Oct 2025); Cyera Series D/E leads and days. | open |
+| ch33 | ch33: ServiceNow–data.world closing confirmation. | open |
+| ch34 | (ch34) Session web-search budget was exhausted before research began; all items below rest on Atlas datasets or pre-mid-2025 training knowledge. | open |
+| ch34 | (ch34) Salesforce Data Cloud renamed "Data 360" (and "Agentforce 360") at Dreamforce Oct 2025 — confirm name and date. | open |
+| ch34 | (ch34) Latest Salesforce Data Cloud/Data 360 and AI ARR and any Agentforce ARR (FY2026/FY2027 disclosures); confirm FY2025 ~$900M, ~120% figure and Q4 FY2025 release URL. | open |
+| ch34 | (ch34) Agentforce pricing: $2/conversation (2024) and Flex Credits $0.10/action, $500 per 100k credits (May 2025) — confirm URLs and current list prices. | open |
+| ch34 | (ch34) Salesforce Zero Copy Partner Network current partner list (Snowflake, Databricks, BigQuery, Redshift; Fabric?) and Snowflake bidirectional GA blog date. | open |
+| ch34 | (ch34) Salesforce Genie/Data Cloud Dreamforce 2022 launch URL; Agentforce GA announcement URL. | open |
+| ch34 | (ch34) Salesforce–Own ($1.9B, 2024-09) value and closing — CSV row is training knowledge. | open |
+| ch34 | (ch34) ServiceNow Workflow Data Fabric announcement date, RaptorDB origin, zero-copy connector list (Databricks, Snowflake, BigQuery). | open |
+| ch34 | (ch34) ServiceNow AI Control Tower status; Now Assist Pro Plus/Enterprise Plus packaging and pricing; latest Now Assist ACV. | open |
+| ch34 | (ch34) ServiceNow–data.world closing confirmation. | open |
+| ch34 | (ch34) SAP Business Data Cloud announcement URL (2025-02-13); "SAP Snowflake" announcement and status; BigQuery BDC Connect; BDC pricing units (capacity units, AI units). | open |
+| ch34 | (ch34) SAP–Dremio closing date (~Jul 2026) and SAP plans for Dremio OSS and partner channel. | open |
+| ch34 | (ch34) SAP sovereign-cloud scope in 2026 (Delos Cloud, EU sovereign offerings). | open |
+| ch34 | (ch34) Workday Agent System of Record (Feb 2025), Paradox (Aug 2025) and Sana (~$1.1B, Sep 2025) deals — dates, values, closings; HiredScore and Evisort (2024). | open |
+| ch34 | (ch34) "Workday Data Cloud" name, zero-copy partners (Databricks, Snowflake, Salesforce) and GA status; Workday agent pricing/Flex Credits. | open |
+| ch34 | (ch34) Workday and SAP BDC hosting infrastructure (which hyperscalers). | open |
+| ch34 | (ch34) Palantir–Databricks partnership (2025) date/scope; Palantir–Snowflake partnership; AIP page. | open |
+| ch34 | (ch34) Microsoft Copilot Studio agent pricing meters; Oracle Fusion Data Intelligence, AI Agent Studio names and pricing, Oracle semantic models. | open |
+| ch34 | (ch34) ServiceNow self-hosted deployment options and own data centres (Everpure section). | open |

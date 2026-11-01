@@ -1,0 +1,19 @@
+- (ch34) Session web-search budget was exhausted before research began; all items below rest on Atlas datasets or pre-mid-2025 training knowledge.
+- (ch34) Salesforce Data Cloud renamed "Data 360" (and "Agentforce 360") at Dreamforce Oct 2025 — confirm name and date.
+- (ch34) Latest Salesforce Data Cloud/Data 360 and AI ARR and any Agentforce ARR (FY2026/FY2027 disclosures); confirm FY2025 ~$900M, ~120% figure and Q4 FY2025 release URL.
+- (ch34) Agentforce pricing: $2/conversation (2024) and Flex Credits $0.10/action, $500 per 100k credits (May 2025) — confirm URLs and current list prices.
+- (ch34) Salesforce Zero Copy Partner Network current partner list (Snowflake, Databricks, BigQuery, Redshift; Fabric?) and Snowflake bidirectional GA blog date.
+- (ch34) Salesforce Genie/Data Cloud Dreamforce 2022 launch URL; Agentforce GA announcement URL.
+- (ch34) Salesforce–Own ($1.9B, 2024-09) value and closing — CSV row is training knowledge.
+- (ch34) ServiceNow Workflow Data Fabric announcement date, RaptorDB origin, zero-copy connector list (Databricks, Snowflake, BigQuery).
+- (ch34) ServiceNow AI Control Tower status; Now Assist Pro Plus/Enterprise Plus packaging and pricing; latest Now Assist ACV.
+- (ch34) ServiceNow–data.world closing confirmation.
+- (ch34) SAP Business Data Cloud announcement URL (2025-02-13); "SAP Snowflake" announcement and status; BigQuery BDC Connect; BDC pricing units (capacity units, AI units).
+- (ch34) SAP–Dremio closing date (~Jul 2026) and SAP plans for Dremio OSS and partner channel.
+- (ch34) SAP sovereign-cloud scope in 2026 (Delos Cloud, EU sovereign offerings).
+- (ch34) Workday Agent System of Record (Feb 2025), Paradox (Aug 2025) and Sana (~$1.1B, Sep 2025) deals — dates, values, closings; HiredScore and Evisort (2024).
+- (ch34) "Workday Data Cloud" name, zero-copy partners (Databricks, Snowflake, Salesforce) and GA status; Workday agent pricing/Flex Credits.
+- (ch34) Workday and SAP BDC hosting infrastructure (which hyperscalers).
+- (ch34) Palantir–Databricks partnership (2025) date/scope; Palantir–Snowflake partnership; AIP page.
+- (ch34) Microsoft Copilot Studio agent pricing meters; Oracle Fusion Data Intelligence, AI Agent Studio names and pricing, Oracle semantic models.
+- (ch34) ServiceNow self-hosted deployment options and own data centres (Everpure section).

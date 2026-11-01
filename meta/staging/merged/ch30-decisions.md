@@ -1,0 +1,6 @@
+- ch30: Web search budget was exhausted at the start of drafting (shared 200-call limit), so no live research was possible. The chapter relies on repo CSVs, research notes and Ch 10/11/12 footnotes; facts recalled from pre-2025 filings (Confluent annual revenue 2019–2024, Informatica/MuleSoft/HashiCorp revenue bases, Boomi sale) are used with explicit [VERIFY] flags rather than omitted, because the brief requires a Confluent financials chart and deal-multiples table.
+- ch30: Confluent revenue series checked for internal consistency (each year's stated growth matches the ratio of consecutive values; FY2024 $963.6M x 1.21 ≈ FY2025 $1,167M).
+- ch30: FY2024 Confluent Cloud revenue derived as $624M / 1.27 = $491M and labelled an estimate; earlier Cloud-share years omitted rather than guessed.
+- ch30: Salesforce–Informatica multiple shown on equity value / trailing revenue (~5x) because EV (net debt) could not be verified; flagged.
+- ch30: Growth-adjusted comparison (Confluent ~0.45x per growth point vs Snowflake ~0.48x) uses trailing basis for Confluent and NTM basis for Snowflake; noted as crude.
+- ch30: Bridges chosen: IP-block/EDA portfolio (connectors), NVIDIA–Mellanox (Salesforce–Informatica supply security), Broadcom–Brocade Fibre Channel (IBM–Confluent protocol standard-bearer); stated without deal figures to avoid unverified numbers.

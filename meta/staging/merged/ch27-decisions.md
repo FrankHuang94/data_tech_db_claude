@@ -1,0 +1,6 @@
+- ch27: Web search budget was exhausted before this chapter's research began (shared per-turn limit); chapter built from data/*.csv, meta/research-briefing.md and Ch 25 sources. Pre-2025 facts (Snowflake list prices, DBU sizes, SIGMOD 2016, TPC-DS dispute, 2020–2023 timeline items such as Snowpark 2021, Iceberg tables/Unistore preview 2022, Cortex 2023) used from prior knowledge and flagged [VERIFY] where numeric.
+- ch27: Growth chart (ch27_growth_compare) annualizes Snowflake quarterly GAAP product revenue (4x) for the three quarters in data/company_financials.csv (Q4 FY2026–Q2 FY2027) and adds FY product revenue points; earlier quarterly Snowflake rows not added because they could not be verified live.
+- ch27: Growth-adjusted multiple uses Snowflake total-revenue growth (35%) to stay consistent with Ch 25 (0.48x); using product growth (37%) gives 0.46x.
+- ch27: Worked pricing example uses explicit sizing assumptions (18 DBU/hour cluster; $0.50 per EC2 instance-hour) labelled as assumptions, not quotes; no discounting.
+- ch27: Illiquidity discount range "10–30%" presented as a practitioner estimate, not a sourced figure.
+- ch27: Word count (~3,870) exceeds the 2,500 budget; kept because the assignment scope (pricing worked example, valuation, M&A, workload table, bull/bear for both) required it and Part 4 benefits.
