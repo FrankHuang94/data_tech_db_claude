@@ -1,5 +1,5 @@
 # 28. Hyperscaler Data Platforms: AWS, Google, Microsoft and Oracle
-> **Status:** public (four groups): AWS (Amazon, NASDAQ: AMZN) · Google Cloud (Alphabet, NASDAQ: GOOGL) · Microsoft (NASDAQ: MSFT) · Oracle (NYSE: ORCL) · **HQ:** Seattle; Mountain View; Redmond; Austin · **Founded:** Amazon 1994 (AWS 2006); Google 1998; Microsoft 1975; Oracle 1977 · **Latest market cap:** ~$2.6T / ~$3.44T / ~$3.88T / ~$382B (stockanalysis.com, 2026-10-23 to 2026-10-30) · **Last verified:** 2026-11-01
+> **Status:** public (four groups): AWS (Amazon, NASDAQ: AMZN) · Google Cloud (Alphabet, NASDAQ: GOOGL) · Microsoft (NASDAQ: MSFT) · Oracle (NYSE: ORCL) · **HQ:** Seattle; Mountain View; Redmond; Austin [VERIFY: Oracle Nashville HQ move status] · **Founded:** Amazon 1994 (AWS 2006); Google 1998; Microsoft 1975; Oracle 1977 · **Latest market cap:** ~$2.6T / ~$3.44T / ~$3.88T / ~$382B (stockanalysis.com, 2026-10-23 to 2026-10-30) · **Last verified:** 2026-11-01
 
 ## TL;DR
 
@@ -41,7 +41,7 @@ Microsoft's data franchise rests on SQL Server and Excel, and later Power BI. Az
 
 ### Oracle: the incumbent turned AI landlord
 
-Oracle sold the first commercial SQL database in 1979 and still holds the deepest mission-critical OLTP installed base. Its hardware strategy (Exadata, 2008) and the **Autonomous Database** (announced 2017) aimed to keep that base on Oracle-engineered infrastructure.[^history] OCI's "Gen 2" cloud arrived late. Oracle then made two pivots. First, it stopped insisting that customers move to OCI and put Oracle Database hardware *inside* rival clouds: **Oracle Database@Azure** (announced 2023), **@Google Cloud** and **@AWS** (2024).[^history][^oracle-dbazure] Second, it became a capacity landlord for AI labs. That turned OCI into the fastest-growing cloud line in this chapter and filled its backlog. The October 2025 rebrand to **Oracle AI Database 26ai** puts vectors, agents and lakehouse access in the core database.[^oracle-aiworld]
+Oracle sold one of the first commercial SQL databases in 1979[^history] and still holds the deepest mission-critical OLTP installed base. Its hardware strategy (Exadata, 2008) and the **Autonomous Database** (announced 2017) aimed to keep that base on Oracle-engineered infrastructure.[^history] OCI's "Gen 2" cloud arrived late. Oracle then made two pivots. First, it stopped insisting that customers move to OCI and put Oracle Database hardware *inside* rival clouds: **Oracle Database@Azure** (announced 2023), **@Google Cloud** and **@AWS** (2024).[^history][^oracle-dbazure] Second, it became a capacity landlord for AI labs. That turned OCI into the fastest-growing cloud line in this chapter and filled its backlog. The October 2025 rebrand to **Oracle AI Database 26ai** puts vectors, agents and lakehouse access in the core database.[^oracle-aiworld]
 
 ```mermaid
 timeline

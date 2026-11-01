@@ -1,0 +1,18 @@
+- ch28: AWS Q3 2026 segment sales, YoY growth and operating income (Amazon 8-K, late Oct 2026) — not compiled; web search budget exhausted. Add to data/ch28_cloud_segments.csv and Figure 28.5/28.6, snapshot table and competitive matrix.
+- ch28: Re-verify drafter-compiled 2024–2025 quarterly rows in data/ch28_cloud_segments.csv (AWS, Google Cloud, Azure growth, OCI) against company releases; URLs for Alphabet and Oracle rows are IR landing pages.
+- ch28: Microsoft Q1 FY2027 figures ($92.3B revenue, Azure ~$33.2B +48%, Microsoft Cloud $63.9B) rest on Runtime Wire — confirm against Microsoft IR.
+- ch28: Gartner DBMS vendor ranking and shares for 2024/2025 (public summary) — chapter states top-four as Microsoft, AWS, Oracle, Google without order/shares.
+- ch28: Latest company-stated Fabric paid-customer count and revenue growth (only FabCon 2025 "19,000+" verified).
+- ch28: Company-stated AWS Marketplace sales figures for Snowflake and Databricks.
+- ch28: Current AWS and Google rules on the share of marketplace purchases counting toward committed spend; Microsoft MACC benefit page not re-fetched.
+- ch28: Current amount and term of Snowflake's AWS purchase commitment (latest 10-K).
+- ch28: WSJ OpenAI–Oracle ~$300B contract (2025-09-10): URL and terms.
+- ch28: HPCwire URL for Vertex AI → Gemini Enterprise Agent Platform rename (2026-04-23).
+- ch28: SQL Server 2025 GA date and vector features.
+- ch28: Aurora-to-Redshift zero-ETL pricing (no separate replication charge?) and Knowledge Catalog pricing.
+- ch28: Oracle Autonomous AI Lakehouse Iceberg write support.
+- ch28: AWS European Sovereign Cloud launch status.
+- ch28: AWS–DuckLabs close status (announced ~2026-08-26).
+- ch28: Databricks Series G participant list (AWS, CapitalG) in data/private_funding.csv.
+- ch28: History footnote URLs (S3 launch, DynamoDB, Cosmos DB, Exadata, Autonomous DB, Database@Google Cloud/AWS), Azure Databricks GA blog, Fabric launch/GA blog, AlloyDB docs, Bedrock Knowledge Bases docs — not re-fetched.
+- ch28: Oracle headquarters — Austin vs announced Nashville move (status as of 2026).

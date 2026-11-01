@@ -1,0 +1,5 @@
+- ch28: WebSearch budget for the run was exhausted at the start of drafting (0 searches available). Chapter was written from meta/research-*.md, data/*.csv, other chapters' footnotes, an integrator note (AWS–DuckLabs; Vertex AI rename) and drafter knowledge for pre-mid-2025 history; all drafter-knowledge facts are flagged "not re-fetched" in footnotes and listed in ch28-open-questions.
+- ch28: Cloud-growth chart (data/ch28_cloud_segments.csv) shows a deliberate gap for Q4 2025–Q2 2026 (not compiled) and plots AWS only through Q3 2025, hatched as stale, rather than estimating missing quarters.
+- ch28: Treated Oracle as a fourth "hyperscaler" for this chapter per outline; Oracle's RPO and negative FCF are presented as AI-infrastructure economics, not data-platform economics.
+- ch28: Used "DuckLabs" as the acquired company's name per Amazon's announcement and data/ma_deals.csv.
+- ch28: Fabric customer count limited to the verified FabCon 2025 "19,000+" (ch14 source); later higher figures flagged [VERIFY] rather than quoted.

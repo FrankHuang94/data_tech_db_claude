@@ -531,3 +531,7 @@
 - **Enterprise Advanced** — MongoDB's self-managed subscription offering with management tooling, security features and support. (ch29)
 - **Vitess** — The open-source MySQL sharding system built at YouTube, CNCF-graduated in 2019 and commercialised by PlanetScale. (ch29)
 - **Semantic cache** — A cache that returns a stored LLM answer when a new prompt is close in meaning to an earlier one, matched by embedding similarity. (ch29)
+- **Digital twin** — A live software model that mirrors physical or business entities and can push changes back to them. (ch31)
+- **Icehouse** — Starburst's name for a lakehouse built on the Trino engine and Apache Iceberg tables on object storage. (ch31)
+- **OEM** — Original equipment manufacturer arrangement: one vendor embeds and resells another vendor's product inside its own offering. (ch31)
+- **Hybrid data platform** — A single data software stack designed to run both on-premises and in public clouds with the same tools and governance. (ch31)
