@@ -1,0 +1,4 @@
+- ch01: Confirm DOI https://doi.org/10.1109/ICDE.2005.1 resolves to Stonebraker & Çetintemel, "One Size Fits All" (ICDE 2005); search confirmed citation (pp. 2–11) but not the DOI.
+- ch01: Exact publication date of a16z's updated "Emerging Architectures for Modern Data Infrastructure" (believed 2022; page metadata inconsistent).
+- ch01: Exact publication date of Confluent blog "Benchmarking Apache Kafka, Apache Pulsar, and RabbitMQ" (2020; Kafka 2.6 era).
+- ch01: Verify Stack Overflow Developer Survey 2025 PostgreSQL usage of 58.2% (all respondents) against survey.stackoverflow.co/2025; currently from a secondary summary (enstacked.com).

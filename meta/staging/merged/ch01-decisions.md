@@ -1,0 +1,5 @@
+- ch01: Used IDC's "~90% of organizational data unstructured (2022)" from the Box-sponsored IDC white paper *Untapped Value* (via StorageNewsletter 2023-09-07) rather than the older, widely repeated "80% by 2025" (IDC Data Age 2025), because no primary URL for the latter surfaced. Labelled analyst estimate, vendor-sponsored.
+- ch01: All hop latencies and copy counts in the worked retailer example are explicitly labelled illustrative estimates; only vendor-documented figures (Aurora replica lag, Snowpipe Streaming 5–10 s, Fivetran 1/5-min syncs, Confluent 2020 benchmark, S3 Vectors) carry footnotes.
+- ch01: Prose came in at ~3,400 words vs 2,200 budget; kept because the extra length is the hop-by-hop worked example and convergence analysis that later chapters link back to.
+- ch01: Added an extra "## How to read the rest of the atlas" section (Part-by-Part map with links) to satisfy the "link to every Part" requirement.
+- ch01: Data gravity attributed to Dave McCrory (2010 blog) via a 2012 InfoQ secondary source; his employer at the time is inconsistent across sources (VMware vs GE), so it is not stated.

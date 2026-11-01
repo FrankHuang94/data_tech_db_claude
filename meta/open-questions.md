@@ -19,3 +19,15 @@ Every `[VERIFY: …]` left in the text is listed here with its chapter. Resolve 
 | ch08 | ch08: Apache Gravitino Delta Lake support — confirm. | open |
 | ch08 | ch08: Project Nessie Delta Lake support — confirm (historically experimental). | open |
 | ch08 | ch08: Unity Catalog OSS maturity stage at LF AI & Data (sandbox vs incubation vs graduated) as of 2026-11; one wiki says sandbox, latest release v0.4.0 (2026-02) unconfirmed. | open |
+| ch01 | ch01: Confirm DOI https://doi.org/10.1109/ICDE.2005.1 resolves to Stonebraker & Çetintemel, "One Size Fits All" (ICDE 2005); search confirmed citation (pp. 2–11) but not the DOI. | open |
+| ch01 | ch01: Exact publication date of a16z's updated "Emerging Architectures for Modern Data Infrastructure" (believed 2022; page metadata inconsistent). | open |
+| ch01 | ch01: Exact publication date of Confluent blog "Benchmarking Apache Kafka, Apache Pulsar, and RabbitMQ" (2020; Kafka 2.6 era). | open |
+| ch01 | ch01: Verify Stack Overflow Developer Survey 2025 PostgreSQL usage of 58.2% (all respondents) against survey.stackoverflow.co/2025; currently from a secondary summary (enstacked.com). | open |
+| ch05 | ch05: Confirm Amazon Redshift's current query-compilation model (code-generated query segments) for the engine table. (ch05) | open |
+| ch05 | ch05: Confirm Vertica's current owner (OpenText, via its 2023 Micro Focus acquisition). (ch05) | open |
+| ch06 | ch06 / Arrow Flight introduction date (believed Oct 2019 Apache Arrow blog "Introducing Apache Arrow Flight") / search budget exhausted | open |
+| ch06 | ch06 / Nimble (Meta) release status and license as of 2026-11 (github.com/facebookincubator/nimble) / only third-party status table found | open |
+| ch06 | ch06 / S3 request-rate guidance: 5,500 GET/HEAD requests per second per partitioned prefix (AWS S3 performance docs) / from prior knowledge, not re-verified | open |
+| ch06 | ch06 / Wes McKinney's current affiliation (Voltron Data / Posit) / from prior knowledge | open |
+| ch06 | ch06 / Avro origin date (~2009, Hadoop subproject, Doug Cutting) / not re-verified | open |
+| ch06 | ch06 / Parquet Apache top-level project date (believed April 2015) / not re-verified | open |

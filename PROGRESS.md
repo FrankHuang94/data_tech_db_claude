@@ -21,7 +21,7 @@
 
 Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + comparison tables (`scripts/qa_report.py`).
 
-**Totals:** 7/52 chapters drafted · 23,578 prose words · 57 visuals · 27 [VERIFY] markers.
+**Totals:** 8/52 chapters drafted · 27,906 prose words · 67 visuals · 31 [VERIFY] markers.
 
 | Ch | File | Status | Words | Budget | Visuals | VERIFY | Reviewed |
 |---|---|---|---|---|---|---|---|
@@ -29,8 +29,8 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 0.2 | ch00-2-market-map.md | not started | 0 | 1800 | 0 | 0 | no |
 | 1 | ch01-data-stack-map.md | QA pass | 3,417 | 2200 | 10 | 4 | no |
 | 2 | ch02-data-models.md | QA pass | 3,201 | 1900 | 7 | 5 | no |
-| 3 | ch03-database-internals.md | QA pass | 4,351 | 2300 | 10 | 0 | no |
-| 4 | ch04-distributed-databases.md | not started | 0 | 2000 | 0 | 0 | no |
+| 3 | ch03-database-internals.md | QA pass | 4,368 | 2300 | 10 | 0 | no |
+| 4 | ch04-distributed-databases.md | QA pass | 4,311 | 2000 | 10 | 4 | no |
 | 5 | ch05-analytical-engines.md | QA pass | 3,400 | 2200 | 8 | 2 | no |
 | 6 | ch06-file-formats.md | QA pass | 2,967 | 1800 | 7 | 6 | no |
 | 7 | ch07-open-table-formats.md | QA pass | 3,602 | 2000 | 9 | 2 | no |

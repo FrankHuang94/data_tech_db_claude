@@ -1,5 +1,5 @@
 # 3. How a Database Works Inside
-> **Depth:** L2 · **Reading time:** ~13 min · **Last verified:** 2026-11-01 · **Prerequisites:** [Chapter 2 — Data models](ch02-data-models.md)
+> **Depth:** L2 · **Reading time:** ~19 min · **Last verified:** 2026-11-01 · **Prerequisites:** [Chapter 2 — Data models](ch02-data-models.md)
 
 ## TL;DR
 
@@ -66,7 +66,7 @@ flowchart TB
 
 *Figure 3.1 — A B+tree finds any key in three or four page reads; sibling links between leaves make range scans a sequential walk.*
 
-A lookup reads the root, follows one pointer per level, and lands on a leaf. Because each page holds hundreds of keys, the tree is extremely shallow. With an 8 kB page and roughly 16-byte entries, an internal page fans out to about 500 children (estimate); three levels then address about 125 million leaves' worth of keys, and four levels tens of billions. In practice the root and internal levels stay hot in the buffer pool, so a point lookup on a billion-row table costs about one storage read.
+A lookup reads the root, follows one pointer per level, and lands on a leaf. Because each page holds hundreds of keys, the tree is extremely shallow. With an 8 kB page and roughly 16-byte entries, an internal page fans out to about 500 children (estimate). A three-level tree (root, one internal level, leaves) then holds about 500 × 500 × 500 ≈ 125 million keys, and a four-level tree about 60 billion. In practice the root and internal levels stay hot in the buffer pool, so a point lookup on a billion-row table costs about one storage read.
 
 Writes are **in place**. Updating a row means finding its leaf page, modifying it in memory, and eventually writing the whole page back. An insert into a full leaf triggers a **page split**: half the entries move to a new page and a new separator key is pushed into the parent, which may split in turn. Splits keep the tree balanced but leave pages partly empty (often around two-thirds full on random inserts), and they turn a small logical change into one or more full-page writes. That is the B-tree's write tax.
 
@@ -133,7 +133,7 @@ Because every commit waits for an `fsync` (or equivalent) of the log, commit lat
 |---|---|---|---|---|---|
 | Read uncommitted | Possible | Possible | Possible | Possible | Rarely used; PostgreSQL silently treats it as read committed |
 | Read committed | Prevented | Possible | Possible | Possible | PostgreSQL, Oracle, SQL Server |
-| Repeatable read (ANSI, lock-based) | Prevented | Prevented | Possible | Write skew prevented by locks | MySQL InnoDB (implemented with MVCC read views plus locks) |
+| Repeatable read (ANSI, lock-based) | Prevented | Prevented | Possible | Write skew prevented by locks | MySQL InnoDB uses the name, but plain reads use an MVCC snapshot, so it behaves closer to snapshot isolation |
 | Snapshot isolation | Prevented | Prevented | Prevented | Lost update prevented; **write skew possible** | PostgreSQL "repeatable read"; Oracle "serializable" |
 | Serializable | Prevented | Prevented | Prevented | Prevented | CockroachDB; PostgreSQL via Serializable Snapshot Isolation when requested |
 
@@ -233,12 +233,12 @@ Three lessons. First, plan choice depends on facts the SQL does not contain, suc
 An `EXPLAIN` command shows the chosen plan. Read it inside-out: the most indented lines run first; compare estimated `rows` against actual rows (with `EXPLAIN ANALYZE`) to find where estimates go wrong.
 
 ```text
-HashAggregate  (cost=1150210..1150260 rows=5000)
-  ->  Hash Join  (cost=14500..1148960 rows=250000)
+HashAggregate  (cost=1153000..1153050 rows=5000)
+  ->  Hash Join  (cost=25060..1151000 rows=250000)
         Hash Cond: (o.customer_id = c.id)
         ->  Seq Scan on orders o  (cost=0..1125000 rows=50000000)
-        ->  Hash  (cost=14400..14400 rows=5000)
-              ->  Seq Scan on customers c  (cost=0..14400 rows=5000)
+        ->  Hash  (cost=25000..25000 rows=5000)
+              ->  Seq Scan on customers c  (cost=0..25000 rows=5000)
                     Filter: (country = 'NO')
 ```
 
@@ -260,7 +260,7 @@ HashAggregate  (cost=1150210..1150260 rows=5000)
 
 *Figure 3.7 — B-trees and LSM-trees sit at different corners of the RUM triangle; the right choice follows the workload's read/write mix and how much write amplification the storage can absorb.*
 
-The steelman for each side matters. B-tree advocates point out that decades of tuning, predictable latency and excellent range scans explain why every major relational database still defaults to one, and that buffer-pool hit rates above 99% make the write tax tolerable. LSM advocates answer that at hyperscale, write volume and storage cost dominate, and MyRocks's halved footprint is real money. The hybrids are telling: PostgreSQL's BRIN indexes, InnoDB's change buffer and "Bw-tree" designs all borrow LSM-style batching, while LSM engines add B-tree-like caching of upper levels. The frontier is tunable engines that move along the RUM curve per workload.
+The steelman for each side matters. B-tree advocates point out that decades of tuning, predictable latency and excellent range scans explain why every major relational database still defaults to one, and that buffer-pool hit rates above 99% make the write tax tolerable. LSM advocates answer that at hyperscale, write volume and storage cost dominate, and MyRocks's halved footprint is real money. The hybrids are telling: InnoDB's change buffer defers secondary-index updates and applies them in batches, an LSM-style idea inside a B-tree engine, while LSM engines pin filters and indexes in memory to claw back read performance. The frontier is tunable engines that move along the RUM curve per workload.
 
 ## Who's who
 
@@ -314,6 +314,8 @@ The arc runs in three phases. From the 1970s to the mid-1990s, IBM and academic 
 | PostgreSQL 18 asynchronous I/O read speed-up | Up to 3x | Project-stated benchmark | PostgreSQL press release, 2025-09-25[^pg18] |
 | PostgreSQL planner `random_page_cost` / `seq_page_cost` defaults | 4.0 / 1.0 | Project documentation | PostgreSQL 18 docs[^pg-cost] |
 | Join Order Benchmark size | 113 queries, 3–16 joins each | Academic benchmark | Leis et al., PVLDB 2015[^leis15] |
+
+*Figure 3.10 — The numbers that matter are small and physical: page sizes, tree heights and amplification factors set the I/O bill.*
 
 ## Storage bridge
 
