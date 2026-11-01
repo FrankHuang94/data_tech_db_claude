@@ -206,13 +206,13 @@ The pricing shift runs from **seats** to **agent actions** and **data consumptio
 
 | Company | Revenue figure | Basis | Growth | EV/revenue (date) |
 |---|---|---|---|---|
-| Salesforce | $43.94B TTM | GAAP via stockanalysis | 11.2% TTM | 5.0x TTM (2026-10-30) |
+| Salesforce | $11.345B Q2 FY2027 (May–Jul 2026); $43.94B TTM; FY2027 guide $46.10–46.40B | GAAP; company guidance | +11% Q2; 11.2% TTM | 5.0x TTM (2026-10-30) |
 | ServiceNow | $3.99B Q2 2026 (Apr–Jun); $14.73B TTM | GAAP | 24.0% Q2 | 9.8x TTM (2026-10-01) |
 | SAP | €10.27B Q3 2026 (Jul–Sep); €38.19B TTM | IFRS | Cloud +26%; total ~13% | 6.3x TTM (2026-10-30) |
 | Workday | $2.649B Q2 FY2027 (May–Jul 2026); FY2027 guide $10.65–10.66B | GAAP; company guidance | Subscription +13.9% | 4.4x NTM proxy (2026-10-16) |
 | Palantir | $4.48B FY2025; $6.16B TTM | GAAP | 79% TTM | 70.3x TTM (2026-10-30) |
 
-*Figure 34.7 — Financial snapshot from `data/public_comps.csv` and `data/company_financials.csv`. SAP FY2026 guidance covers cloud and software only (€36.3–36.8B at constant currency).[^comps-crm][^now-fin][^sap-q3][^wday-q2][^pltr-fin]*
+*Figure 34.7 — Financial snapshot from `data/public_comps.csv` and `data/company_financials.csv`. SAP FY2026 guidance covers cloud and software only (€36.3–36.8B at constant currency).[^comps-crm][^crm-q2fy27][^now-fin][^sap-q3][^wday-q2][^pltr-fin]*
 
 ```mermaid
 xychart-beta
@@ -239,9 +239,9 @@ The weakness is the mirror image. Chief data officers have spent a decade consol
 | Date | Acquirer | Target | Value | Rationale | Outcome |
 |---|---|---|---|---|---|
 | 2016-07 | Workday | Platfora | n/d | Analytics on HR and finance data | Became Prism Analytics[^ma-csv] |
-| 2018-03 | Salesforce | MuleSoft | $6.5B (disclosed) | API-led integration | Integration Cloud; feeds Data Cloud[^ma-csv] |
+| 2018-03 | Salesforce | MuleSoft | $6.5B (disclosed) | API-led integration | Integration Cloud; feeds Data 360[^ma-csv] |
 | 2018-07 | Salesforce | Datorama | ~$800M (press-reported) | Marketing data integration | Marketing Cloud Intelligence[^ma-csv] |
-| 2019-06 | Salesforce | Tableau | $15.7B (disclosed, all-stock) | BI and analytics | Tableau Next on Data Cloud[^ma-csv][^tableau-next] |
+| 2019-06 | Salesforce | Tableau | $15.7B (disclosed, all-stock) | BI and analytics | Tableau Next on Data 360[^ma-csv][^tableau-next] |
 | 2024-09 | Salesforce | Own Company | $1.9B (disclosed, cash) | SaaS backup, recovery, archiving | Salesforce Backup offering[^ma-csv] |
 | 2025-03 | ServiceNow | Moveworks | $2.85B (disclosed) | Agent and enterprise-search front door | Closed 2025-12-15[^moveworks] |
 | 2025-05 | ServiceNow | data.world | n/d | Knowledge-graph catalog | Agreed; explicit closing date not found[^dataworld] |
@@ -301,7 +301,7 @@ quadrantChart
 2. **Seat erosion may outrun agent revenue.** Unit prices fell from $2 per conversation to $0.10 per action within a year. If AI cuts seats faster than agent volume grows, revenue shrinks.
 3. **Integration risk on large deals, and flattering metrics.** Informatica is Salesforce's largest data deal since Tableau. Tableau's post-deal record, and the market cap decline, temper confidence. The headline Data 360 growth (+>200%) is mostly the acquisition: about $1.1B of the $2.4B is Informatica Cloud ARR, and Agentforce ARR was redefined in Q2 FY2027. Investors cannot yet see organic data-cloud growth on a like-for-like basis.[^comps-crm][^crm-q2fy27]
 4. **Margins on consumption.** Data clouds running on hyperscalers carry infrastructure cost in COGS, which dilutes gross margin the way serverless does at Databricks ([Ch 25](ch25-databricks.md)).
-5. **Open questions.** What is organic Data 360 ARR growth once Informatica laps (from Q3 FY2027, November 2026 onward)? Has ServiceNow formally closed data.world? Did SAP Snowflake reach GA on schedule? What does SAP do with Dremio's open-source engine and its partner channel, including storage partners? Will Workday's data sharing stay bidirectional?
+5. **Open questions.** What is organic Data 360 ARR growth once Informatica laps its 2025-11-18 close (from Q4 FY2027, Nov 2026–Jan 2027)? Has ServiceNow formally closed data.world? Did SAP Snowflake reach GA on schedule? What does SAP do with Dremio's open-source engine and its partner channel, including storage partners? Will Workday's data sharing stay bidirectional?
 
 ## Relevance to Everpure
 

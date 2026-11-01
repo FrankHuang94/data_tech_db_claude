@@ -1,0 +1,12 @@
+ch09-pipeline-patterns.md
+ch10-ingestion-and-integration.md
+ch11-streaming-and-event-platforms.md
+ch12-transformation-and-orchestration.md
+ch13-data-quality-observability-lineage.md
+ch14-semantic-layers-and-bi.md
+ch15-governance-security-privacy.md
+ch25-databricks.md
+ch26-snowflake.md
+ch27-databricks-vs-snowflake.md
+ch28-hyperscaler-data-platforms.md
+ch29-operational-database-vendors.md

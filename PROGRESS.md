@@ -22,7 +22,7 @@
 
 Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + comparison tables (`scripts/qa_report.py`).
 
-**Totals:** 45/52 chapters drafted · 170,122 prose words · 421 visuals · 470 [VERIFY] markers.
+**Totals:** 45/52 chapters drafted · 170,125 prose words · 421 visuals · 470 [VERIFY] markers.
 
 | Ch | File | Status | Words | Budget | Visuals | VERIFY | Reviewed |
 |---|---|---|---|---|---|---|---|
@@ -36,13 +36,13 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 6 | ch06-file-formats.md | QA pass | 2,993 | 1800 | 7 | 2 | no |
 | 7 | ch07-open-table-formats.md | QA pass | 3,634 | 2000 | 9 | 1 | no |
 | 8 | ch08-catalogs-and-metastores.md | QA pass | 2,660 | 1600 | 6 | 8 | no |
-| 9 | ch09-pipeline-patterns.md | QA pass | 3,503 | 2000 | 10 | 3 | no |
-| 10 | ch10-ingestion-and-integration.md | QA pass | 2,758 | 1900 | 8 | 8 | no |
-| 11 | ch11-streaming-and-event-platforms.md | QA pass | 3,681 | 2200 | 10 | 5 | no |
-| 12 | ch12-transformation-and-orchestration.md | QA pass | 3,319 | 1900 | 7 | 3 | no |
-| 13 | ch13-data-quality-observability-lineage.md | QA pass | 3,448 | 1800 | 8 | 5 | no |
-| 14 | ch14-semantic-layers-and-bi.md | QA pass | 2,900 | 2000 | 7 | 5 | no |
-| 15 | ch15-governance-security-privacy.md | QA pass | 4,434 | 2200 | 8 | 10 | no |
+| 9 | ch09-pipeline-patterns.md | reviewed | 3,503 | 2000 | 10 | 3 | yes |
+| 10 | ch10-ingestion-and-integration.md | reviewed | 2,758 | 1900 | 8 | 8 | yes |
+| 11 | ch11-streaming-and-event-platforms.md | reviewed | 3,681 | 2200 | 10 | 5 | yes |
+| 12 | ch12-transformation-and-orchestration.md | reviewed | 3,319 | 1900 | 7 | 3 | yes |
+| 13 | ch13-data-quality-observability-lineage.md | reviewed | 3,448 | 1800 | 8 | 5 | yes |
+| 14 | ch14-semantic-layers-and-bi.md | reviewed | 2,900 | 2000 | 7 | 5 | yes |
+| 15 | ch15-governance-security-privacy.md | reviewed | 4,434 | 2200 | 8 | 10 | yes |
 | 16 | ch16-ai-data-lifecycle.md | QA pass | 3,660 | 2200 | 6 | 1 | no |
 | 17 | ch17-unstructured-data-processing.md | QA pass | 3,160 | 2100 | 10 | 11 | no |
 | 18 | ch18-embeddings-and-vector-search.md | QA pass | 4,467 | 2600 | 11 | 6 | no |
@@ -52,16 +52,16 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 22 | ch22-agents-and-data.md | QA pass | 4,328 | 2400 | 10 | 4 | no |
 | 23 | ch23-real-time-analytics-htap.md | QA pass | 3,366 | 2000 | 9 | 10 | no |
 | 24 | ch24-data-meets-compute-and-storage.md | QA pass | 3,641 | 2200 | 11 | 3 | no |
-| 25 | ch25-databricks.md | QA pass | 5,339 | 4500 | 13 | 6 | no |
-| 26 | ch26-snowflake.md | QA pass | 6,449 | 4500 | 16 | 29 | no |
-| 27 | ch27-databricks-vs-snowflake.md | QA pass | 3,918 | 2500 | 11 | 17 | no |
-| 28 | ch28-hyperscaler-data-platforms.md | QA pass | 5,371 | 3500 | 10 | 26 | no |
-| 29 | ch29-operational-database-vendors.md | QA pass | 4,557 | 3000 | 11 | 40 | no |
+| 25 | ch25-databricks.md | reviewed | 5,339 | 4500 | 13 | 6 | yes |
+| 26 | ch26-snowflake.md | reviewed | 6,449 | 4500 | 16 | 29 | yes |
+| 27 | ch27-databricks-vs-snowflake.md | reviewed | 3,918 | 2500 | 11 | 17 | yes |
+| 28 | ch28-hyperscaler-data-platforms.md | reviewed | 5,371 | 3500 | 10 | 26 | yes |
+| 29 | ch29-operational-database-vendors.md | reviewed | 4,557 | 3000 | 11 | 40 | yes |
 | 30 | ch30-data-movement-streaming-companies.md | QA pass | 4,365 | 3000 | 10 | 25 | no |
 | 31 | ch31-analytical-engine-challengers-legacy.md | QA pass | 4,460 | 3000 | 8 | 21 | no |
 | 32 | ch32-ai-native-data-companies.md | QA pass | 4,760 | 3500 | 11 | 24 | no |
 | 33 | ch33-governance-catalog-security-companies.md | QA pass | 3,647 | 2500 | 9 | 15 | no |
-| 34 | ch34-application-giants-data-platforms.md | QA pass | 3,814 | 2000 | 12 | 38 | no |
+| 34 | ch34-application-giants-data-platforms.md | QA pass | 3,817 | 2000 | 12 | 38 | no |
 | 35 | ch35-business-models.md | QA pass | 3,881 | 2500 | 9 | 1 | no |
 | 36 | ch36-unit-economics-kpis.md | QA pass | 4,083 | 2500 | 11 | 10 | no |
 | 37 | ch37-public-comps-valuation.md | QA pass | 3,199 | 2500 | 15 | 6 | no |
