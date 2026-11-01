@@ -1,0 +1,1 @@
+- ch03: [VERIFY: confirm 20–30x wording in RocksDB blog 2022-10-31] — "leveled compaction write amplification typically 20–30x user data" was surfaced via a search summary attributed to rocksdb.org/blog/2022/10/31/align-compaction-output-file.html; page could not be fetched. Also used in "Numbers that matter".
