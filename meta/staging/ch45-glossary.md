@@ -1,0 +1,8 @@
+- **Moving up the stack** — Expanding from a lower technology layer, such as storage, into the higher-value software layers that sit above it. (ch45)
+- **Data intelligence** — Software that discovers, classifies and adds semantic context to data so catalogs, policy engines and agents can use it; also Everpure's product name for the former 1touch technology. (ch45)
+- **Cyber resilience** — The ability to detect, withstand and recover from attacks such as ransomware, mainly through protected, immutable copies and anomaly detection. (ch45)
+- **KV-cache offload** — Moving a model's KV-cache blocks from GPU memory to CPU memory, local flash or networked storage so they can be reused instead of recomputed. (ch45)
+- **Channel conflict** — Friction that arises when a vendor's own product competes with the partners that resell, embed or integrate it. (ch45)
+- **Attach rate** — The share of customers or deals that also buy a given add-on product. (ch45)
+- **Subscription ARR** — Everpure's company-defined annualised recurring revenue from its subscription offerings, including storage-as-a-service and software. (ch45)
+- **Software mix** — The share of a company's revenue that comes from software and subscriptions rather than hardware. (ch45)

@@ -21,7 +21,7 @@ The Everpure angle is the third question. Training corpora and curated datasets 
 
 ### Four channels into one refinery
 
-Think of a model's training data as a bill of materials. Pre-training consumes trillions of tokens, mostly crawled web text plus code, books and papers. Post-training consumes far fewer tokens, but they are far more expensive per token. They include supervised demonstrations, preference rankings for [reinforcement learning from human feedback](../glossary.md#reinforcement-learning-from-human-feedback) (RLHF), expert-graded rubrics and, increasingly, [RL environments](../glossary.md#rl-environment): simulated tasks in which a model's attempts can be scored automatically. The InstructGPT paper (2022) established the RLHF recipe that made this human-data market possible.[^instructgpt]
+Think of a model's training data as a bill of materials. Pre-training consumes trillions of tokens, mostly crawled web text plus code, books and papers. Post-training consumes far fewer tokens, but they are far more expensive per token. They include supervised demonstrations, preference rankings for [reinforcement learning from human feedback](../glossary.md#reinforcement-learning-from-human-feedback) (RLHF), expert-graded rubrics and, increasingly, [RL environments](../glossary.md#rl-environment): simulated tasks in which a model's attempts can be scored automatically. The InstructGPT paper (2022) popularized the RLHF recipe, building on earlier preference-learning work, that made this human-data market possible.[^instructgpt]
 
 ```mermaid
 flowchart LR
@@ -77,7 +77,7 @@ What did Meta actually buy? A useful way to break it down:
 
 | Component | What Meta got | What it cost Scale |
 |---|---|---|
-| Talent | Wang and a small team to run its lab (an acquihire in effect) | Founder-CEO; replaced by an outside CEO (Francis deSouza, effective August 2026)[^scale-ceo] |
+| Talent | Wang and a small team to run its lab (an acquihire in effect) | Founder-CEO; Jason Droege served as interim CEO, then an outside CEO was named (Francis deSouza, effective August 2026, company-announced)[^scale-ceo] [VERIFY: deSouza appointment is not in the integrator's verified-facts register] |
 | Supply insight | A large stakeholder's view of the leading data vendor | Neutrality: Google and OpenAI reported winding down work[^scale-customers] |
 | Structure | A non-control stake, widely read as limiting merger-review exposure (analyst judgment) | About 14% of staff and 500 contractors cut in July 2025[^scale-layoffs] |
 | Financial | An equity stake marked at ~$29B | Later talks reportedly at a lower ~$20B mark `[VERIFY: Scale AI 2026 round at ~$20B]` |
@@ -94,7 +94,7 @@ The appeal is economic. GPU time is cheaper than expert time and scales without 
 
 ### Licensed content and the legal backdrop
 
-Licensing deals began in 2023 and spread through 2024. Reddit licensed its posts to Google for a reported ~$60M a year (February 2024, press-reported)[^reddit-google] and to OpenAI (May 2024; ~$70M a year is an outside estimate).[^reddit-openai] News Corp signed with OpenAI for a reported ~$250M over five years (May 2024, press-reported).[^newscorp] Earlier deals with the Associated Press, Shutterstock and Axel Springer set the template `[VERIFY: AP–OpenAI Jul 2023, Shutterstock–OpenAI Jul 2023, Axel Springer–OpenAI Dec 2023 dates and terms]`. Scholarly publishers became meaningful sellers too. Wiley reported about $49M of AI licensing revenue in its FY2026 (May 2025–April 2026, as reported by a secondary source).[^wiley]
+Licensing deals began in 2023 and spread through 2024. Reddit licensed its posts to Google for a reported ~$60M a year (February 2024, press-reported)[^reddit-google] and to OpenAI (May 2024; ~$70M a year is an outside estimate).[^reddit-openai] News Corp signed with OpenAI for a reported ~$250M over five years (May 2024, press-reported).[^newscorp] Earlier deals with the Associated Press (July 2023), Shutterstock (July 2023) and Axel Springer (December 2023) set the template. Their financial terms were not disclosed by the parties.[^early-deals] Scholarly publishers became meaningful sellers too. Wiley reported about $49M of AI licensing revenue in its FY2026 (May 2025–April 2026, as reported by a secondary source).[^wiley]
 
 ```mermaid
 timeline
@@ -114,7 +114,7 @@ timeline
          : Anthropic settlement wins final approval
 ```
 
-*Figure 20.3 — Deals came first, then the rulings. The 2025 decisions protected training as a use but not piracy as a way of acquiring data. Some 2023 deal dates are pending verification.*
+*Figure 20.3 — Deals came first, then the rulings. The 2025 decisions protected training as a use but not piracy as a way of acquiring data.*
 
 The rulings split along a clear line. In *Bartz v. Anthropic* (June 2025), Judge Alsup held that training on books was fair use. He sent the claims about downloading millions of pirated copies, and about keeping a permanent library, toward trial. In *Kadrey v. Meta*, decided days later, Judge Chhabria also ruled for Meta. His reasoning was narrow: he suggested that evidence of "market dilution" (AI-generated books crowding out human ones) could win a future case.[^fairuse] In February 2025, *Thomson Reuters v. Ross* went the other way for a non-generative legal-research tool that competed with its source. That case was on appeal to the Third Circuit, with argument scheduled for June 2026.[^ross] Anthropic settled the piracy exposure for $1.5B, about $3,000 per work across roughly 480,000 works. Final approval came on July 20, 2026, and the settlement releases only conduct through August 25, 2025.[^bartz-final] *New York Times v. OpenAI* survived dismissal in March 2025 and remained in discovery in 2026, with no trial date found.[^nyt]
 
@@ -146,14 +146,14 @@ The output feeds a [data mixture](../glossary.md#data-mixture): the weights give
 
 > **Bridge: defect screening.** A dedup pipeline is **wafer inspection** for text. Exact hashing is die-to-database comparison: cheap, run on everything, and it only catches perfect matches. MinHash-LSH is sampling inspection: a probabilistic check tuned to a false-positive budget. The quality classifier is **yield binning**: every document passes, but it lands in a grade bucket, and the mixture decides how much of each bin to use. As in a fab, screening is cheap relative to what it protects. A training run that wastes 20% of its GPU-hours on duplicated tokens is like running a lithography tool on known-bad wafers.
 
-> **Going deeper (L3).** With *b* LSH bands of *r* rows each, two documents with Jaccard similarity *s* collide in at least one band with probability 1 − (1 − s^r)^b. That S-curve lets engineers set the threshold (commonly around 0.7–0.8) and trade recall against compute. NVIDIA's NeMo Curator runs MinHash, LSH and connected-components grouping on GPUs with RAPIDS. NVIDIA claims a 4.5 TB RedPajama dedup dropped from 37 hours on CPUs to 3 hours on four DGX A100 nodes, 20x faster and 5x cheaper (vendor claim).[^curator] FineWeb's open-source `datatrove` library and Spark, Ray or Daft jobs do the same work on CPUs.
+> **Going deeper (L3).** With *b* LSH bands of *r* rows each, two documents with Jaccard similarity *s* collide in at least one band with probability 1 − (1 − s^r)^b. That S-curve lets engineers set the threshold (commonly around 0.7–0.8) and trade recall against compute. NVIDIA's NeMo Curator runs MinHash, LSH and connected-components grouping on GPUs with RAPIDS. NVIDIA claims a 4.5 TB RedPajama fuzzy dedup dropped from 37 hours on CPUs to 3 hours on four DGX A100 nodes, and headlines the result as 20x faster and 5x cheaper (vendor claim). Note that 37 to 3 hours is about 12x, so the 20x headline presumably rests on a different baseline or configuration.[^curator] `[VERIFY: NeMo Curator benchmark baseline behind the 20x figure]` FineWeb's open-source `datatrove` library and Spark, Ray or Daft jobs do the same work on CPUs.
 
 ## Design choices and trade-offs
 
 | Channel | Unit cost | Scales with | Legal / ethical risk | Quality ceiling | Who controls supply |
 |---|---|---|---|---|---|
 | Crawled web | Lowest (crawl plus curation compute) | Compute and storage | Fair use favorable for training (2025 rulings), but robots.txt and output claims are still live | Limited by the web's average; needs heavy filtering | Nobody, though sites increasingly block crawlers |
-| Licensed content | Fixed fees; ~$50M–$60M a year for the largest reported deals (press-reported) | Number of rights holders signed | Low once signed; license scope matters | High for fresh, structured content | Rights holders with access control (Reddit, news, publishers) |
+| Licensed content | Fixed fees; ~$50M–$70M a year for the largest reported deals (press-reported or outside estimates) | Number of rights holders signed | Low once signed; license scope matters | High for fresh, structured content | Rights holders with access control (Reddit, news, publishers) |
 | Human / expert data | Highest per token; hourly expert rates | Recruiting | Contractor classification, data security (Mercor breach) | Highest for frontier reasoning | Few vendors; workforce is the moat |
 | Synthetic / distilled | GPU time | Compute | Terms-of-service limits on training with rivals' outputs; collapse risk | Bounded by the teacher plus the verifier | Whoever has the best teacher model and graders |
 
@@ -212,7 +212,7 @@ The steelman for buying less human data is that synthetic generation plus automa
 | News Corp–OpenAI | ~$250M over 5 years | press-reported | May 2024[^newscorp] |
 | FineWeb / FineWeb-Edu | 15T tokens / 1.3T tokens | paper | Jun 2024[^fineweb] |
 | Nemotron-4 340B alignment data | >98% synthetic | vendor technical report | Jun 2024[^nemotron] |
-| NeMo Curator GPU dedup | 20x faster, 5x cheaper than CPU | vendor claim | NVIDIA blog[^curator] |
+| NeMo Curator GPU dedup | 20x faster, 5x cheaper than CPU (headline; the quoted 37 h → 3 h is ~12x) | vendor claim | NVIDIA blog[^curator] |
 
 *Figure 20.8 — The figures to remember. Note how few are audited: this market runs on press reports and company-stated run-rates, mostly gross of contractor pay.*
 
@@ -302,6 +302,7 @@ The steelman for buying less human data is that synthetic generation plus automa
 [^reddit-openai]: Search Engine Land, "OpenAI may pay Reddit $70M for licensing deal," https://searchengineland.com/openai-may-pay-reddit-70m-for-licensing-deal-451882, published 2025 `[VERIFY: date]`; retrieved 2026-11-01. Estimate, not a disclosed term.
 [^reddit-next]: Bloomberg, "Reddit Seeks to Strike Next AI Content Pact With Google, OpenAI," https://www.bloomberg.com/news/articles/2025-09-17/reddit-seeks-to-strike-next-ai-content-pact-with-google-openai, published 2025-09-17; retrieved 2026-11-01.
 [^newscorp]: SiliconANGLE, "OpenAI strikes deal with News Corp to access Wall Street Journal content," https://siliconangle.com/2024/05/22/openai-strikes-deal-news-corp-access-wall-street-journal-content/, published 2024-05-22; retrieved 2026-11-01. ~$250M over five years first reported by the WSJ; press-reported.
+[^early-deals]: Pre-2025 announcements, not re-opened in this session (reviewer, pre-2025 knowledge): Associated Press and OpenAI content-licensing and technology agreement, announced 2023-07-13; Shutterstock and OpenAI six-year training-data agreement, announced 2023-07-11; Axel Springer and OpenAI partnership, announced 2023-12-13. Terms undisclosed by the parties; any figures in later press coverage are press-reported estimates.
 [^wiley]: CASRAI, "Scholarly publisher AI licensing deals 2026," https://www.casrai.org/news/scholarly-publisher-ai-licensing-deals-2026, published 2026; retrieved 2026-11-01. Secondary summary of Wiley FY2026 results `[VERIFY: against Wiley 10-K]`.
 [^bartz-final]: JURIST, "Judge approves record $1.5 billion AI copyright settlement involving Anthropic," https://www.jurist.org/news/2026/07/judge-approves-record-1-5-billion-settlement-involving-anthropic/, published 2026-07; Authors Guild, "Court grants final approval to Anthropic copyright settlement," https://authorsguild.org/news/court-grants-final-approval-anthropic-copyright-settlement/, published 2026-07; retrieved 2026-11-01.
 [^fairuse]: McKool Smith, "AI Infringement Case Updates" (Kadrey v. Meta; Bartz v. Anthropic), https://www.mckoolsmith.com/newsroom-ailitigation-14, published 2025-07; ChatGPT Is Eating the World, "The fair use triangle: state of fair use in AI training 2025," https://chatgptiseatingtheworld.com/2025/10/06/the-fair-use-triangle-state-of-fair-use-in-ai-training-2025-no-more-decisions-until-mid-to-late-2026/, published 2025-10-06; retrieved 2026-11-01.
@@ -310,7 +311,7 @@ The steelman for buying less human data is that synthetic generation plus automa
 [^fineweb]: G. Penedo et al., "The FineWeb Datasets: Decanting the Web for the Finest Text Data at Scale," arXiv:2406.17557, https://arxiv.org/abs/2406.17557, published 2024-06-25; NeurIPS 2024 Datasets and Benchmarks, https://proceedings.neurips.cc/paper_files/paper/2024/hash/370df50ccfdf8bde18f8f9c2d9151bda-Abstract-Datasets_and_Benchmarks_Track.html; retrieved 2026-11-01.
 [^curator]: NVIDIA Technical Blog, "Curating Trillion-Token Datasets: Introducing NVIDIA NeMo Data Curator," https://developer.nvidia.com/blog/curating-trillion-token-datasets-introducing-nemo-data-curator/, published 2023 `[VERIFY: date]`; retrieved 2026-11-01. Speed and cost figures are vendor claims.
 [^lee-dedup]: K. Lee et al., "Deduplicating Training Data Makes Language Models Better," arXiv:2107.06499, https://arxiv.org/abs/2107.06499, published 2021-07; retrieved 2026-11-01 (from prior knowledge; not re-fetched because the search budget was exhausted).
-[^semdedup]: A. Abbas et al., "SemDeDup: Data-efficient learning at web-scale through semantic deduplication," arXiv:2303.09540, https://arxiv.org/abs/2303.09540, published 2023-03; retrieved 2026-11-01 (not re-fetched). `[VERIFY: ~50% LAION removal figure]`
+[^semdedup]: A. Abbas et al., "SemDeDup: Data-efficient learning at web-scale through semantic deduplication," arXiv:2303.09540, https://arxiv.org/abs/2303.09540, published 2023-03; retrieved 2026-11-01 (not re-fetched). The paper's abstract reports removing 50% of LAION-440M with minimal performance loss (pre-2025 source; reviewer-confirmed from the published abstract).
 [^datacomp]: S. Y. Gadre et al., "DataComp: In search of the next generation of multimodal datasets," arXiv:2304.14108, https://arxiv.org/abs/2304.14108, published 2023-04; retrieved 2026-11-01 (not re-fetched).
 [^everpure-1touch]: World Wide Technology (reposting Pure Storage release), "Pure Storage rebrands to Everpure and announces intent to acquire 1touch," https://www.wwt.com/news/pure-storage-rebrands-to-everpure-and-announces-intent-to-acquire-1touch, published 2026-02-23; Cleary Gottlieb, "Everpure Completes Acquisition of 1touch," https://www.clearygottlieb.com/news-and-insights/news-listing/everpure-completes-acquisition-of-1touch, published 2026-05-11; retrieved 2026-11-01.
 [^instructgpt]: L. Ouyang et al., "Training language models to follow instructions with human feedback," arXiv:2203.02155, https://arxiv.org/abs/2203.02155, published 2022-03; retrieved 2026-11-01 (not re-fetched).

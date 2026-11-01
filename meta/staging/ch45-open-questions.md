@@ -1,0 +1,10 @@
+- ch45: Confirm Everpure's "Modern Data Software" TAM ($22B by FY2030, 26% CAGR) on the 2026-09-23 Financial Analyst Meeting deck; currently second-hand via NAND Research.
+- ch45: Everpure OpenSharing connector for the Databricks Storage Ecosystem: confirm general-availability status (private preview from 2026-06-09).
+- ch45: Everpure Key-Value Accelerator (KVA) integration with NVIDIA Dynamo: confirm GA date (reported for Feb–Apr 2026).
+- ch45: Rubrik–Laminar (2023): find the primary press release and exact date.
+- ch45: VAST Data product details (VAST DataBase 2023, DataEngine, "AI operating system" positioning) rest on training knowledge; re-verify.
+- ch45: WEKA NeuralMesh (2025) and DDN Infinia details rest on training knowledge; re-verify.
+- ch45: Hammerspace technical claims (global namespace, metadata-driven placement, standard pNFS client) rest on training knowledge; re-verify.
+- ch45: Cohesity Gaia and Rubrik AI data-access features: confirm current product names and status.
+- ch45: Bridge facts: Samsung HBM-PIM (2021), SK hynix GDDR6-AiM (2022), Arm Neoverse Compute Subsystems (2023), and 2025 reports that Arm is designing its own chips; find primary announcements.
+- ch45: Pure Storage–Portworx price (~$370M, 2020) rests on training knowledge in data/ma_deals.csv; confirm against the company announcement.

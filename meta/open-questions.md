@@ -354,3 +354,18 @@ Every `[VERIFY: …]` left in the text is listed here with its chapter. Resolve 
 | ch44 | ch44: Primary Bloomberg TV source for Ghodsi "won't go public this year" remark; whether any Databricks confidential S-1 has been reported (one search on 2026-11-01 found only aggregator pages saying no public S-1). | open |
 | ch44 | ch44: TechCrunch URL slug for Confluent–WarpStream (2024-09-09). | open |
 | ch44 | ch44: GA date of Everpure KVA's NVIDIA Dynamo integration. | open |
+| ch42 | ch42: IDMS (Cullinane) first commercial release year (~1973). | open |
+| ch42 | ch42: IMS pricing history after IBM's 1969 unbundling; IBM Heritage IMS page URL path and 1968 first-release date. | open |
+| ch42 | ch42: Dates of the Sybase SQL Server license to Microsoft (1988, with Ashton-Tate) and the Microsoft/Sybase code split (~1993–94). | open |
+| ch42 | ch42: Teradata DBC/1012 first customer shipment year (1984?) — confirm in Teradata 10-K history. | open |
+| ch42 | ch42: Codd, Codd & Salley 1993 OLAP white paper — exact title, Arbor Software sponsorship, stable URL. | open |
+| ch42 | ch42: 2007 BI consolidation deal values (Oracle–Hyperion ~$3.3B, SAP–Business Objects ~$6.8B, IBM–Cognos ~$5B; "roughly $15B combined") — add to data/ma_deals.csv with primary sources. | open |
+| ch42 | ch42: Redis first public release year (2009). | open |
+| ch42 | ch42: "NewSQL" coined by Matthew Aslett (451 Group), 2011. | open |
+| ch42 | ch42: Intel's 2014 investment in Cloudera (~$740M, ~18% stake) — primary source; not in data/private_funding.csv. | open |
+| ch42 | ch42: Hortonworks IPO (Dec 2014) and Cloudera IPO (Apr 2017) dates. | open |
+| ch42 | ch42: SQL standard feature years (object-relational SQL:1999, SQL/XML SQL:2003, JSON SQL:2016, SQL/PGQ SQL:2023 Part 16). | open |
+| ch42 | ch42: URL paths for Stonebraker & Hellerstein 2005 author copy, Oracle corporate history page, Gartner 2014 "data lake fallacy" release, ASF 2014 Spark TLP announcement. | open |
+| ch42 | ch42: Inmon *Building the Data Warehouse* (1992) publisher URL. | open |
+| ch42 | ch42: Cassandra open-source release month (2008); Hadoop 2006 Yahoo split-out and 2008 TLP dates; pgvector initial release year (2021). | open |
+| ch42 | ch42: Snowflake IPO price/proceeds (inherited from ch26 [VERIFY]); Cloudera take-private (inherited from data/ma_deals.csv [VERIFY]); Fivetran–dbt close date; Neon ">80% agent-created" wording; Pinecone sale-report date; MongoDB ARS date; Oracle ~22% support rate. | open |

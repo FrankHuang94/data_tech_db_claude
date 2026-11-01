@@ -16,6 +16,6 @@
 - **Data lake** — A store of raw files in many formats, kept cheaply and structured only when read. (ch42)
 - **Data swamp** — A data lake that has become unusable because it lacks metadata, quality controls and governance. (ch42)
 - **Modern data stack** — The 2016–2023 pattern of assembling single-purpose cloud tools (ingestion, transformation, BI) around a cloud data warehouse. (ch42)
-- **Perpetual licence** — A one-time software licence fee that grants indefinite use, usually followed by annual maintenance payments. (ch42)
-- **Consumption pricing** — Billing by measured usage, such as credits, compute-seconds or terabytes scanned, instead of seats or licences. (ch42)
+- **Perpetual license** — A one-time software license fee that grants indefinite use, usually followed by annual maintenance payments. (ch42)
+- **Consumption pricing** — Billing by measured usage, such as credits, compute-seconds or terabytes scanned, instead of seats or licenses. (ch42)
 - **What Goes Around Comes Around** — Stonebraker and Hellerstein's 2005 essay (with a 2024 sequel by Stonebraker and Pavlo) arguing that the relational model repeatedly absorbs challenger data models. (ch42)

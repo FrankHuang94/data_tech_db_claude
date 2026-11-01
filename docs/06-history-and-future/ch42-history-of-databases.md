@@ -6,7 +6,7 @@
 - Database history runs in nine eras. Each began when hardware or workload changed faster than the incumbents' architecture could follow: mainframes, minicomputers, client-server, web-scale clusters, cloud object storage and now GPUs and agents.
 - The [relational model](../glossary.md#relational-model) and SQL keep winning the long game. Object, XML, document, key-value and vector databases each opened a niche, and then SQL engines absorbed the useful idea. Stonebraker's "What Goes Around Comes Around" (2005) and its 2024 sequel with Andy Pavlo make this argument in detail.[^wgaca05][^wgaca24]
 - The interface lasts and the implementation turns over. SQL has survived about 50 years, while storage layouts, hardware targets and deployment models have each been replaced several times. That is close to how the x86 instruction set outlived the many microarchitectures built underneath it.
-- Business models shifted more than technology did: bundled mainframe software, then perpetual licence plus maintenance, then hardware appliances, then open source with subscriptions, then cloud consumption. Each shift moved the profit pool. Incumbents that kept the technology but missed the model (Teradata, Cloudera) lost the most value.
+- Business models shifted more than technology did: bundled mainframe software, then perpetual license plus maintenance, then hardware appliances, then open source with subscriptions, then cloud consumption. Each shift moved the profit pool. Incumbents that kept the technology but missed the model (Teradata, Cloudera) lost the most value.
 - For a strategist the main lesson is that a new data model is rarely a durable moat. Durable positions come from owning where data lives and who is allowed to read it: the storage layer, the table format, the catalog and the billing relationship. Storage has co-evolved with every era, which is why Everpure should read this history as its own.
 
 ## Why this matters (business + Everpure lens)
@@ -66,7 +66,7 @@ The first database systems answered a mainframe-era question: how do many progra
 
 IBM took a hierarchical route. IMS was built with North American Rockwell to track the bill of materials for the Apollo program's Saturn V. Every part sat under a parent, so a tree was the natural shape, and IBM shipped the first release in 1968.[^ims] IMS is still sold and still processes large volumes of banking and airline transactions, which says something about switching costs.
 
-*Lesson:* navigational systems were fast because they hard-wired the access path into the data. That was also their weakness. Every new question needed a programmer and often a reorganisation of the database. The business model was the mainframe's: software tied to IBM hardware, and after IBM's 1969 unbundling, a separately priced monthly licence [VERIFY: IMS pricing history after unbundling]. Data independence, meaning the ability to change storage without rewriting applications, was the unmet need the next era addressed.
+*Lesson:* navigational systems were fast because they hard-wired the access path into the data. That was also their weakness. Every new question needed a programmer and often a reorganisation of the database. The business model was the mainframe's: software tied to IBM hardware, and after IBM's 1969 unbundling, a separately priced monthly license [VERIFY: IMS pricing history after unbundling]. Data independence, meaning the ability to change storage without rewriting applications, was the unmet need the next era addressed.
 
 ### Era 2: The relational revolution (1970–1990s)
 
@@ -75,11 +75,11 @@ In 1970 Edgar F. Codd, an IBM researcher, proposed that data be presented to use
 - **System R** (IBM San Jose, 1974–79) built a full relational system and invented SEQUEL, later renamed SQL. Its cost-based optimiser, described by Selinger and colleagues in 1979, is still the template for query planners.[^systemr][^selinger79][^sequel]
 - **Ingres** (UC Berkeley, from 1973) was led by Michael Stonebraker and Eugene Wong. It used its own language, QUEL. Its graduates and code seeded Ingres Corp., Sybase and, through Stonebraker's next project, Postgres (1986).[^ingres][^postgres]
 
-IBM published System R openly but moved slowly to ship it. Larry Ellison, Bob Miner and Ed Oates founded Software Development Laboratories in 1977. They read the IBM papers and in 1979 shipped Oracle V2, generally cited as the first commercially available SQL relational database management system (RDBMS).[^oracle-hist] IBM followed with SQL/DS (1981) and DB2 (1983). Sybase, founded in 1984, built a client-server database. Microsoft licensed it in 1988 for OS/2 and later forked it into Microsoft SQL Server [VERIFY: dates of the Sybase–Microsoft licence and split].[^chamberlin12] ANSI published the first SQL standard in 1986, with ISO following in 1987. Once SQL was standardised, it became the shared interface that tools, skills and applications were written against.[^chamberlin12]
+IBM published System R openly but moved slowly to ship it. Larry Ellison, Bob Miner and Ed Oates founded Software Development Laboratories in 1977. They read the IBM papers and in 1979 shipped Oracle V2, generally cited as the first commercially available SQL relational database management system (RDBMS).[^oracle-hist] IBM followed with SQL/DS (1981) and DB2 (1983). Sybase, founded in 1984, built a client-server database. Microsoft licensed it in 1988 for OS/2 and later forked it into Microsoft SQL Server [VERIFY: dates of the Sybase–Microsoft license and split].[^chamberlin12] ANSI published the first SQL standard in 1986, with ISO following in 1987. Once SQL was standardised, it became the shared interface that tools, skills and applications were written against.[^chamberlin12]
 
 > **Bridge: computing eras.** Each database era rode a computing era. IMS and IDMS were mainframe software. Oracle and Ingres grew up on minicomputers (DEC PDP-11 and VAX) running Unix and VMS. Sybase and SQL Server were built for client-server networks of PCs. Google, Hadoop and NoSQL ran on racks of commodity x86 servers. Snowflake and BigQuery were built for cloud object storage, and the AI era is organised around GPUs. The semiconductor parallel is close. Bipolar logic powered mainframes. CMOS microprocessors made minicomputers and then commodity servers cheap enough that software, rather than hardware, became the scarce asset. Today's systems-on-chip and accelerators are pulling data processing toward the GPU (see [Ch 24](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)).
 
-*Lesson:* the winner of the relational era was the company that commercialised fastest, not the one that invented the technology. IBM did the research. Oracle captured most of the value through aggressive selling, portability across hardware and the **perpetual licence plus annual maintenance** model. Under that model a customer paid upfront and then paid a support fee each year, which the industry commonly puts at about 22% of the licence price.[^orcl-sig] Maintenance turned an installed base into an annuity. It is the main reason Oracle could later fund its cloud pivot from a position of strength.
+*Lesson:* the winner of the relational era was the company that commercialised fastest, not the one that invented the technology. IBM did the research. Oracle captured most of the value through aggressive selling, portability across hardware and the **perpetual license plus annual maintenance** model. Under that model a customer paid upfront and then paid a support fee each year, which the industry commonly puts at about 22% of the license price.[^orcl-sig] Maintenance turned an installed base into an annuity. It is the main reason Oracle could later fund its cloud pivot from a position of strength.
 
 ### Era 3: Data warehousing (1979–2010s)
 
@@ -114,7 +114,7 @@ flowchart LR
 
 Around the warehouse grew a tools industry. **OLAP cubes** pre-aggregated data along dimensions for fast slicing. Codd lent his name to a 1993 white paper defining OLAP, sponsored by Arbor Software, maker of the Essbase cube [VERIFY: paper sponsorship and title].[^olap] **Extract-transform-load ([ETL](../glossary.md#etl))** tools such as Informatica, founded in 1993, moved data in. **Business intelligence** suites such as Business Objects, Cognos and Hyperion sat on top. The tools layer consolidated in a single year. Oracle bought Hyperion, SAP bought Business Objects and IBM bought Cognos, all in 2007, for a combined value of roughly $15B (press-reported) [VERIFY: individual deal values].
 
-*Lesson:* the warehouse era made money from **appliances and per-seat tool licences**, and it rewarded vendors whose customers had big, stable, centralised budgets. It also trained a generation of strategists to treat the data platform as a capital expenditure. That habit made the later move to consumption pricing feel like a shock rather than a trend.
+*Lesson:* the warehouse era made money from **appliances and per-seat tool licenses**, and it rewarded vendors whose customers had big, stable, centralised budgets. It also trained a generation of strategists to treat the data platform as a capital expenditure. That habit made the later move to consumption pricing feel like a shock rather than a trend.
 
 ### Era 4: The web and the NoSQL wave (2003–2012)
 
@@ -124,7 +124,7 @@ Open-source projects copied these ideas within a few years. Facebook built Cassa
 
 The counter-move came quickly. Google's own Spanner paper (2012) showed a globally distributed database with SQL and strong transactions.[^spanner] The analyst Matthew Aslett had already coined "[NewSQL](../glossary.md#newsql)" in 2011 for systems that kept SQL and ACID while scaling out [VERIFY: Aslett 451 Group coinage]. MongoDB added multi-document transactions in version 4.0 and later a SQL-like query interface. NoSQL went from meaning "no SQL" to "not only SQL".[^mdb-10k]
 
-*Lesson:* the NoSQL vendors that survived were the ones that sold a **managed cloud service** and a developer experience, not a data model. MongoDB reached about $2.46B of GAAP revenue in FY2026 (Feb 2025–Jan 2026), and its Atlas cloud service is now about three-quarters of revenue.[^mdb-q4][^mdb-ars] Open-source NoSQL vendors without a cloud service faced competition from hyperscalers hosting their own code. MongoDB (2018, SSPL) and Redis (2024) responded by moving to more restrictive licences.[^mdb-sspl][^redis-2024]
+*Lesson:* the NoSQL vendors that survived were the ones that sold a **managed cloud service** and a developer experience, not a data model. MongoDB reached about $2.46B of GAAP revenue in FY2026 (Feb 2025–Jan 2026), and its Atlas cloud service is now about three-quarters of revenue.[^mdb-q4][^mdb-ars] Open-source NoSQL vendors without a cloud service faced competition from hyperscalers hosting their own code. MongoDB (2018, SSPL) and Redis (2024) responded by moving to more restrictive licenses.[^mdb-sspl][^redis-2024]
 
 ### Era 5: The Hadoop era (2006–2019)
 
@@ -203,9 +203,9 @@ The two tables below sum up the strategic history. The first gives each era's le
 
 | Era | Technology shift | Winners | Losers or absorbed | Dominant business model | What it teaches a strategist |
 |---|---|---|---|---|---|
-| 1. Navigational (1960s–70s) | Pointer-linked records on mainframe disk | IBM (IMS), Cullinet (IDMS) | Most network-model vendors once relational arrived | Software bundled with hardware, then monthly licence | Hard-wired access paths are fast but cannot answer new questions |
-| 2. Relational (1970s–90s) | Declarative SQL, cost-based optimiser | Oracle, IBM DB2, Microsoft SQL Server, Sybase | Network/hierarchical vendors; Ingres Corp. | Perpetual licence + ~22% annual maintenance | The fastest commercialiser beats the inventor; standards create lock-in to skills and tools |
-| 3. Warehousing (1980s–2010s) | MPP shared-nothing; star schema; OLAP cubes | Teradata, Informatica, Business Objects, Cognos, Hyperion | Most appliance start-ups sold out 2007–11 | Hardware appliance + per-seat tool licences | Capex-shaped platforms are exposed when compute becomes rentable |
+| 1. Navigational (1960s–70s) | Pointer-linked records on mainframe disk | IBM (IMS), Cullinet (IDMS) | Most network-model vendors once relational arrived | Software bundled with hardware, then monthly license | Hard-wired access paths are fast but cannot answer new questions |
+| 2. Relational (1970s–90s) | Declarative SQL, cost-based optimiser | Oracle, IBM DB2, Microsoft SQL Server, Sybase | Network/hierarchical vendors; Ingres Corp. | Perpetual license + ~22% annual maintenance | The fastest commercialiser beats the inventor; standards create lock-in to skills and tools |
+| 3. Warehousing (1980s–2010s) | MPP shared-nothing; star schema; OLAP cubes | Teradata, Informatica, Business Objects, Cognos, Hyperion | Most appliance start-ups sold out 2007–11 | Hardware appliance + per-seat tool licenses | Capex-shaped platforms are exposed when compute becomes rentable |
 | 4. Web and NoSQL (2003–12) | Scale-out, relaxed consistency, flexible schema | MongoDB (via Atlas), DynamoDB, Redis | Many NoSQL start-ups; "no SQL" as a slogan | Open source + support, then managed service | Data model is not a moat; delivery and developer experience are |
 | 5. Hadoop (2006–19) | Distributed file system + MapReduce on commodity servers | Cloud object stores; Parquet; Spark | Cloudera, Hortonworks, MapR | Open-source subscription, on-premises | Several vendors distributing one free project compete on price; on-premises lost to rented services |
 | 6. Spark (2009–) | In-memory distributed compute | Databricks | Hadoop MapReduce | Cloud consumption service | Same code, different delivery model, very different equity value |
@@ -217,10 +217,10 @@ The two tables below sum up the strategic history. The first gives each era's le
 
 | Business model | Peak era | How revenue is recognised | Who captured margin | Typical failure mode |
 |---|---|---|---|---|
-| Bundled or monthly mainframe licence | 1960s–80s | Recurring lease/licence tied to hardware | IBM | Locked to one hardware family |
-| Perpetual licence + maintenance | 1980s–2010s | Upfront licence, then ~22% annual support[^orcl-sig] | Oracle, IBM, Microsoft, SAP | Customers resent audits and support fees; growth stalls when new licences slow |
+| Bundled or monthly mainframe license | 1960s–80s | Recurring lease/license tied to hardware | IBM | Locked to one hardware family |
+| Perpetual license + maintenance | 1980s–2010s | Upfront license, then ~22% annual support[^orcl-sig] | Oracle, IBM, Microsoft, SAP | Customers resent audits and support fees; growth stalls when new licenses slow |
 | Appliance (hardware + software) | 1984–2015 | Upfront system sale + support | Teradata, Netezza, Exadata | Capacity bought in lumps; cannot be metered or rented elastically |
-| Open source + subscription | 2008–2019 | Annual subscription for support and enterprise features | Red Hat (outside data); weakly Cloudera, Hortonworks | Free substitutes; hyperscalers host the code; licence changes follow |
+| Open source + subscription | 2008–2019 | Annual subscription for support and enterprise features | Red Hat (outside data); weakly Cloudera, Hortonworks | Free substitutes; hyperscalers host the code; license changes follow |
 | Cloud consumption | 2012–present | Usage (credits, TB scanned, compute-seconds) against commitments | Snowflake, Databricks, hyperscalers | Revenue volatility when customers optimise (2022–23) |
 
 *Figure 42.5 — Business models by era. Each shift moved more of the infrastructure risk to the vendor and more of the volatility into revenue. [Ch 35](../05-business-and-economics/ch35-business-models.md) covers the economics of each model.*
@@ -234,12 +234,12 @@ The incumbents that lasted did so by changing business model or by becoming the 
 | Company or project | Era of origin | Status in 2026 | How it lasted, or why it didn't |
 |---|---|---|---|
 | IBM (IMS, DB2) | 1, 2 | Public; databases a mature line inside software | Mainframe installed base; bought Confluent (~$11B EV, closed March 2026) and DataStax to stay relevant[^ma-confluent][^ma-datastax] |
-| Oracle | 2 | Public; FY2027 revenue guided to at least $90B | Maintenance annuity funded Exadata, Autonomous DB and OCI; database now also sold inside AWS, Azure and Google Cloud[^comps-orcl][^oracle-dbazure] |
+| Oracle | 2 | Public; FY2027 revenue guided to at least $90B | Maintenance annuity funded Exadata, Autonomous DB and OCI; database now also sold inside Azure and Google Cloud data centres[^comps-orcl][^oracle-dbazure] |
 | Microsoft SQL Server | 2 | Inside Microsoft | Bundled with the Windows Server and Azure estate |
 | Sybase | 2 | Acquired by SAP, $5.8B (2010) | Lost the client-server war to Microsoft; value was in its installed base[^ma-sybase] |
 | Teradata | 3 | Public; ~$3.19B market cap | Appliance model was slow to move to cloud; a value stock today[^comps-tdc] |
-| PostgreSQL | 2 (Postgres 1986) | Open source, the default for new applications | Licence permissive enough for every cloud to host it; extensions absorb new data types[^postgres][^pgvector] |
-| MongoDB | 4 | Public; ~$2.46B FY2026 revenue | Moved to Atlas managed service and SSPL licence[^mdb-q4][^mdb-sspl] |
+| PostgreSQL | 2 (Postgres 1986) | Open source, the default for new applications | License permissive enough for every cloud to host it; extensions absorb new data types[^postgres][^pgvector] |
+| MongoDB | 4 | Public; ~$2.46B FY2026 revenue | Moved to Atlas managed service and SSPL license[^mdb-q4][^mdb-sspl] |
 | Cloudera / Hortonworks / MapR | 5 | Merged, taken private, or sold for assets | On-premises subscriptions on shared free code[^ma-hortonworks][^ma-mapr][^ma-cloudera] |
 | Databricks | 6 | Private; >$7B run-rate, $190B valuation | Cloud-only delivery from day one[^constellation] |
 | Snowflake | 7 | Public; $4.47B FY2026 product revenue | Separation of storage and compute plus consumption pricing[^sf-fy26] |
@@ -278,7 +278,7 @@ Three long-run trends connect the nine eras, and each points to the next few yea
 | Databricks–Neon | ~$1B | Press-reported | 2025-05-15[^neon-deal] |
 | Supabase valuation | $10.5B | Press-reported | 2026-06[^supabase-f] |
 
-*Figure 42.7 — The relational incumbent (Oracle) is still the largest company in this table by revenue. The appliance-era leader (Teradata) now has a market value below that of several private vector and Postgres start-ups. Author arithmetic on the cited figures.*
+*Figure 42.7 — The relational incumbent (Oracle) is still the largest company in this table by revenue. The appliance-era leader (Teradata) now has a market value about a third of the latest private mark for Supabase, a Postgres start-up. Comparison across bases (public market cap vs. private post-money) is indicative only.*
 
 ## Storage bridge
 
@@ -339,8 +339,8 @@ For a strategy team, the pattern suggests one option to evaluate, based on publi
 - [Separation of storage and compute](../glossary.md#separation-of-storage-and-compute) — keeping durable data in shared storage while compute scales independently.
 - [Lakehouse](../glossary.md#lakehouse) — open table formats on object storage plus a warehouse-grade engine and governance.
 - [Modern data stack](../glossary.md#modern-data-stack) — the 2016–2023 pattern of single-purpose cloud tools around a cloud warehouse.
-- [Perpetual licence](../glossary.md#perpetual-licence) — a one-time software licence fee, usually followed by annual maintenance payments.
-- [Consumption pricing](../glossary.md#consumption-pricing) — billing by measured usage, such as credits or terabytes scanned, rather than seats or licences.
+- [Perpetual license](../glossary.md#perpetual-license) — a one-time software license fee, usually followed by annual maintenance payments.
+- [Consumption pricing](../glossary.md#consumption-pricing) — billing by measured usage, such as credits or terabytes scanned, rather than seats or licenses.
 
 ## Sources
 

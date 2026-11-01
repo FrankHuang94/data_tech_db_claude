@@ -1,6 +1,6 @@
 - ch42: IDMS (Cullinane) first commercial release year (~1973).
 - ch42: IMS pricing history after IBM's 1969 unbundling; IBM Heritage IMS page URL path and 1968 first-release date.
-- ch42: Dates of the Sybase SQL Server licence to Microsoft (1988, with Ashton-Tate) and the Microsoft/Sybase code split (~1993–94).
+- ch42: Dates of the Sybase SQL Server license to Microsoft (1988, with Ashton-Tate) and the Microsoft/Sybase code split (~1993–94).
 - ch42: Teradata DBC/1012 first customer shipment year (1984?) — confirm in Teradata 10-K history.
 - ch42: Codd, Codd & Salley 1993 OLAP white paper — exact title, Arbor Software sponsorship, stable URL.
 - ch42: 2007 BI consolidation deal values (Oracle–Hyperion ~$3.3B, SAP–Business Objects ~$6.8B, IBM–Cognos ~$5B; "roughly $15B combined") — add to data/ma_deals.csv with primary sources.
