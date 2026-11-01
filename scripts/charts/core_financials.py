@@ -31,7 +31,7 @@ def make():
     # Snowflake NRR (all periods)
     n = f[(f["company"] == "Snowflake") & (f["metric"] == "nrr_pct")].copy()
     n["v"] = num(n["value"])
-    n = n.drop_duplicates("fiscal_period").sort_values("period_end")
+    n = n.sort_values(["period_end", "fiscal_period"]).drop_duplicates("period_end", keep="last").sort_values("period_end")
     if len(n):
         fig, ax = plt.subplots(figsize=(9, 4.5))
         ax.plot(n["fiscal_period"], n["v"], marker="o", color=PALETTE["blue"])
@@ -46,7 +46,7 @@ def make():
     # Snowflake RPO
     r = f[(f["company"] == "Snowflake") & (f["metric"] == "rpo")].copy()
     r["v"] = num(r["value"])
-    r = r.drop_duplicates("fiscal_period").sort_values("period_end")
+    r = r.sort_values(["period_end", "fiscal_period"]).drop_duplicates("period_end", keep="last").sort_values("period_end")
     if len(r):
         fig, ax = plt.subplots(figsize=(9, 4.5))
         div = 1000 if r["v"].max() > 200 else 1

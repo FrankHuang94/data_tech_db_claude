@@ -284,3 +284,5 @@
 > **Integrator notes (Part 3 cont., 2026-11-01):** (1) **Lakebase GA:** Feb 2026 on AWS, Mar 2026 on Azure (Databricks blog; Azure Updates) — earlier than "GA at DAIS 2026". (2) Tecton's "$900M" figure is its 2022 valuation, not the Databricks deal price. (3) Neptune–OpenAI: "<$400M in stock" per The Information (press-reported). (4) Nscale–Anyscale deal staged. (5) SQL Server 2025: VECTOR type GA; DiskANN index still preview on-premises. (6) Milvus 2.6 coverage names Pure Storage as a tiered-storage partner (useful for Ch 32/45).
 
 > **Integrator note (2026-11-01):** Salesforce renamed **Data Cloud → Data 360** at Dreamforce 2025 (effective ~2025-10-14) under the Agentforce 360 umbrella (Salesforce product page; salesforceben.com; Tableau help). **Search constraint:** the subagent web-search pool is exhausted as of Part 4; later drafters must rely on these research files and `data/*.csv`.
+
+> **Integrator note (Ch 26/31, 2026-11-01):** Snowflake **Openflow GA 2025-05-30** (Snowflake docs), not Summit 2026. Palantir's 70.3x in `public_comps.csv` is on a trailing-revenue basis (EV/TTM), not NTM — use EV/TTM wording.
