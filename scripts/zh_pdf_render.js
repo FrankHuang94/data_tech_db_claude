@@ -14,7 +14,7 @@ const { chromium } = require('playwright');
     format: 'A4',
     printBackground: true,
     outline: true,
-    tagged: true,
+    tagged: false,
     displayHeaderFooter: true,
     margin: { top: '20mm', bottom: '18mm', left: '18mm', right: '18mm' },
     headerTemplate: '<div style="width:100%;font-size:7.5px;color:#888;padding:0 18mm;font-family:\'Noto Sans SC\',\'WenQuanYi Zen Hei\',sans-serif;text-align:right;">AI 数据图谱（AI Data Atlas）· 简体中文参考译本</div>',

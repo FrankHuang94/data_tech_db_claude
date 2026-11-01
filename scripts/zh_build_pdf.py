@@ -27,7 +27,7 @@ import tempfile
 from pathlib import Path
 
 import markdown
-from pypdf import PdfReader
+from pypdf import PdfReader, PdfWriter
 
 ROOT = Path(__file__).resolve().parent.parent
 ZH = ROOT / "Chinese translation"
@@ -58,7 +58,7 @@ def render_mermaid(src: Path, build: Path, cfg: Path, mcfg: Path) -> Path:
         shutil.copy(src, out)
         return out
     r = subprocess.run(["mmdc", "-q", "-p", str(cfg), "-c", str(mcfg), "-i", str(src), "-o", str(out),
-                        "-e", "png", "-s", "2.2", "-b", "white"],
+                        "-e", "png", "-s", "1.8", "-b", "white"],
                        capture_output=True, text=True)
     if r.returncode != 0 or not out.exists():
         print(f"  mmdc failed for {src.name}; keeping Mermaid as code: {r.stderr[:200]}")
@@ -104,6 +104,7 @@ def to_html(text: str, key: str) -> tuple[str, str]:
     body = re.sub(r'<a id="([^"]+)"></a>', lambda m: f'<a id="{key}--{m.group(1)}"></a>', body)
     body = re.sub(r'<(h[1-6]) id="[^"]*"', r"<\1", body)
     body = body.replace("<details", "<details open")
+    body = re.sub(r"<p><em>(图\s*[0-9]|Figure\s*[0-9])", r'<p class="cap"><em>\1', body)
     m = re.search(r"<h1>(.*?)</h1>", body, flags=re.S)
     title = re.sub(r"<[^>]+>", "", m.group(1)).strip() if m else key
     return body, title
@@ -133,7 +134,7 @@ th, td { border: 1px solid #b9c7d6; padding: 3px 5px; vertical-align: top; word-
 tr { break-inside: avoid; }
 thead { display: table-header-group; }
 img { max-width: 100%; max-height: 210mm; display: block; margin: 8px auto; break-inside: avoid; }
-p > img + em, p > em:only-child { display: block; text-align: center; }
+p.cap { text-align: center; font-size: 9pt; color: #333; }
 code { font-family: 'DejaVu Sans Mono', monospace; font-size: 8.6pt; background: #f4f4f4; padding: 0 2px; border-radius: 2px; }
 pre { background: #f6f8fa; border: 1px solid #ddd; padding: 8px; font-size: 8pt; white-space: pre-wrap; word-break: break-all; break-inside: avoid; }
 pre code { background: none; padding: 0; }
@@ -269,6 +270,23 @@ def main() -> int:
     html2.write_text(assemble(pages), encoding="utf-8")
     print("Chromium pass 2 …")
     subprocess.run(["node", str(renderer), str(html2), str(a.out)], check=True, cwd=str(build))
+    # bookmarks: Part > chapter, from the chapter start pages detected in the final PDF
+    final_pages = find_pages(a.out)
+    w = PdfWriter(clone_from=str(a.out))
+    w.add_outline_item("封面", 0)
+    w.add_outline_item("目录", 2)
+    parent = None
+    for k, key, _, t2 in entries:
+        if k == "part":
+            parent = None
+            nxt = next((e for e in entries[entries.index((k, key, _, t2)) + 1:] if e[0] == "chapter"), None)
+            if nxt and nxt[1] in final_pages:
+                parent = w.add_outline_item(t2, max(final_pages[nxt[1]] - 2, 0))
+        elif key in final_pages:
+            w.add_outline_item(t2, final_pages[key] - 1, parent=parent)
+    w.page_mode = "/UseOutlines"
+    with open(a.out, "wb") as fh:
+        w.write(fh)
     n = len(PdfReader(str(a.out)).pages)
     print(f"PDF written: {a.out} ({n} pages, {a.out.stat().st_size/1e6:.1f} MB)")
     return 0
