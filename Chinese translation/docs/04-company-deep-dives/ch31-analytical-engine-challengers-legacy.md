@@ -100,3 +100,96 @@ Dremio 基于 [Apache Arrow](../glossary.md#apache-arrow)（它在 2016 年参�
 - **SAP** 在 S/4HANA 之下运行其内存列式存储 **HANA**。Datasphere 是其数据仓库服务；**Business Data Cloud**（BDC）于 2025 年 2 月推出，并与 Databricks 合作（"SAP Databricks"），是将 SAP 应用数据作为受治理数据产品对外开放的总体框架 [VERIFY: Databricks 合作的商业条款]。[^sap-bdc] 随后 SAP 加入了 Google BigQuery（2025 年 10 月），并在 2025 年 11 月 4 日加入 Snowflake：**SAP Snowflake**（BDC 内由 SAP 托管的 Snowflake，计划于 Q1 2026 正式可用）和 **SAP BDC Connect for Snowflake**（零拷贝共享，计划于 H1 2026 推出）[VERIFY: 两者在 2026 年的交付状态]。[^sap-snow] 如今，Dremio 成为 SAP 在这一框架内处理非 SAP 数据的自有引擎，与三家合作伙伴平台并列。
 - **IBM** 销售 Db2、Netezza Performance Server（复活的一体机）和 **watsonx.data**——一个于 2023 年推出、基于 Iceberg 之上的 Presto 和 Spark 的湖仓 [VERIFY: 当前引擎组合]。IBM 在 2025–26 年对 DataStax 和 Confluent 的收购表明，它是在为 watsonx 买入数据层，而不是自建。[^ibm-datastax][^ibm-confluent]
 - **Vertica** 是源自 C-Store 研究脉络的列式存储，先后从 HP 转到 HPE、Micro Focus（2017 年），并随 OpenText 收购 Micro Focus（2023 年 1 月完成）归入 OpenText [VERIFY: 2025–26 年是否有剥离]。[^ma-vertica]
+
+### Palantir 的本体
+
+Palantir 不是分析引擎，但它争夺的是同一笔高管预算："让我们的数据能为 AI 所用。"Foundry 通过数据管道（pipeline）整合来自源系统的数据，再将其映射为一个**本体**。本体包含带属性的**对象类型**（Customer、Aircraft、Purchase Order）、对象之间的**链接类型**，以及**动作类型**——即可以修改数据并回写至源系统的受治理操作。[^palantir-ontology] 应用程序、分析师以及自 2023 年起的 AIP 智能体，面对的是对象和动作，而不是表和 SQL。
+
+```mermaid
+flowchart LR
+    subgraph SRC["源系统"]
+        ERP["ERP，例如 SAP"]
+        MES["工厂与传感器数据"]
+        CRM["CRM 与工单"]
+        DOCS["文档"]
+    end
+    subgraph INT["集成层"]
+        PIPE["数据管道与转换<br/>版本化数据集"]
+    end
+    subgraph ONT["本体"]
+        OBJ["对象类型<br/>客户、订单、机器"]
+        LNK["链接类型<br/>订单属于客户"]
+        ACT["动作类型<br/>重排订单、创建工单"]
+        FN["函数与逻辑"]
+    end
+    subgraph USE["使用方"]
+        APPS["运营应用<br/>Workshop、Quiver"]
+        AIP["AIP 智能体与 LLM 工具"]
+        HUM["人工审批"]
+    end
+    ERP --> PIPE
+    MES --> PIPE
+    CRM --> PIPE
+    DOCS --> PIPE
+    PIPE --> OBJ
+    OBJ --> LNK
+    OBJ --> FN
+    LNK --> APPS
+    FN --> AIP
+    APPS --> ACT
+    AIP --> HUM
+    HUM --> ACT
+    ACT -->|"回写"| ERP
+    ACT -->|"回写"| CRM
+```
+
+*图 31.4 — Palantir 的本体模型（重新绘制的概念图，并非 Palantir 原图）。数据经由数据管道流入，成为带类型的对象和链接，再以受治理动作的形式流出并回写至源系统。正是这个回写闭环，使它区别于只读的语义层。*
+
+> **类比：数字孪生。** 本体是企业的数字孪生（digital twin），而不是喷气发动机的数字孪生。在晶圆厂里，孪生体映射每一台设备、每一个批次和每一套工艺配方，制造执行系统可以把配方变更推送回设备。Palantir 对订单、货运和机器做的是同样的事：对象映射现实中的实体，链接映射它们之间的关系，动作则是流回 ERP 的受控"配方变更"。普通的[语义层（semantic layer）](../glossary.md#semantic-layer)（[第 14 章](../02-pipelines-and-governance/ch14-semantic-layers-and-bi.md)）是一个只读的孪生体：它定义"收入"的含义，却无法修改一笔订单。
+
+### 厂商对比
+
+| 厂商 | 引擎类型 | 存储模型 | 部署方式 | 许可 / 开放程度 | 最佳工作负载 | 表格式 | 所有权趋势 |
+|---|---|---|---|---|---|---|---|
+| ClickHouse | 向量化列式，MergeTree | 本地 NVMe 或对象存储（SharedMergeTree） | 自管、ClickHouse Cloud | 核心为 Apache 2.0 | 实时分析、可观测性、AI 遥测 | 原生；可读取 Iceberg 和 Delta | 独立，$15B |
+| DuckDB / MotherDuck | 进程内向量化 | 文件；DuckLake；MotherDuck 服务 | 库、浏览器、托管云 | MIT（Foundation） | 单节点分析、嵌入式、智能体 | Parquet、Iceberg、Delta、DuckLake | DuckLabs 并入 AWS |
+| Trino / Starburst | 分布式 SQL，无自有存储 | 任意数据湖或联邦数据源 | 自管、Galaxy SaaS、OEM | Trino 为 Apache 2.0；专有附加组件 | 联邦查询、Iceberg 湖仓 | Iceberg、Delta、Hudi、Hive | 独立 |
+| Dremio | 基于 Arrow 的湖仓引擎 | 对象存储上的 Iceberg | 云、本地部署 | 开放核心 | 自助式湖仓 SQL | 以 Iceberg 为先 | 归 SAP 所有 |
+| Firebolt | 带稀疏索引的云数据仓库 | 托管存储 | SaaS | 专有 [VERIFY] | 高并发仪表盘 | 托管 | 独立 |
+| Druid / Imply、Pinot / StarTree | 基于数据段并带索引 | 本地数据段加深层存储 | 自管、SaaS | 核心为 Apache 2.0 | 面向用户的亚秒级分析 | 原生数据段 | 独立 |
+| Teradata Vantage | 无共享 MPP | 本地或对象存储（Lake） | 本地部署、超大规模云 | 专有 | 高并发下的混合工作负载 | 原生；支持 Iceberg [VERIFY] | 上市，低估值倍数 |
+| Cloudera | Spark、Impala、Hive、NiFi | HDFS 或对象存储 | 本地部署、公有云、混合 | 开源组件，订阅制 | 混合湖仓、受监管数据 | Iceberg | 私募股权持有 |
+| SAP HANA / BDC | 内存列式存储加数据湖 | 内存；BDC 中为对象存储 | SAP 云、本地 HANA | 专有 | SAP 应用分析 | 经 Databricks 支持 Delta；经 Dremio 和 Snowflake 支持 Iceberg；BigQuery 连接器 | 外购与合作 |
+| IBM Db2 / Netezza / watsonx.data | 行式与 MPP；Presto 和 Spark | 本地；对象存储上的 Iceberg | 本地部署、IBM Cloud、混合 | 专有加开放引擎 | 大型机周边及受监管场景 | Iceberg | 外购 |
+| Vertica（OpenText） | 列式 MPP | 本地或对象存储（Eon 模式） | 本地部署、云 | 专有 | 电信、广告技术分析 | 原生；Parquet 外部表 | 组合中的资产 |
+| Palantir Foundry | 基于集成数据的本体 | Foundry 数据集加已连接数据源 | 云、本地部署、涉密环境 | 专有 | 运营决策、AI 智能体 | 兼容 Iceberg 的数据集 [VERIFY] | 上市，约 70 倍 EV/过去 12 个月收入（约 53 倍 EV/未来 12 个月收入，FY2026 指引） |
+
+*图 31.3 — 厂商对比表（12 家厂商 × 8 个维度）。开放引擎的差别主要在于所处的位置（笔记本电脑、集群、联邦层）；传统厂商的差别主要在于它们变现的是谁的存量客户。*
+
+## 盈利模式
+
+**开放核心加云服务。** ClickHouse、Starburst 和 Dremio 采用[开放核心（open core）](../glossary.md#open-core)打法：引擎免费，公司对托管服务（计算与存储按用量计费）或带安全、治理和支持的企业版收费。ClickHouse Cloud 对计算和存储按用量分别计费。Starburst 同时销售 Galaxy 用量和 Enterprise 订阅。这种经济模式取决于能否把庞大开源用户群中的一小部分转化为付费客户。只有当大规模、高质量地运行引擎本身很难时，这一模式才行得通——分布式的 ClickHouse 和 Trino 确实如此，单节点的 DuckDB 则远非如此。
+
+**DuckDB 的例外。** DuckDB 很容易运行，因此在运维上几乎没有可变现的空间。DuckLabs 的收入来自支持和工程合同，MotherDuck 销售协作与混合执行能力，而 AWS 可以通过 S3 和 Aurora 的用量间接变现 DuckDB。[^duck-history][^aurora-duck] 这就是为什么超大规模云厂商是天然的买家。
+
+**传统厂商的维护年金。** Teradata、Cloudera、IBM 和 Vertica 从长期部署的客户那里获得经常性的订阅和维护收入。这类收入像一只缓慢摊还的债券：毛利率高、增长低，续约风险集中在几百个大客户身上。Teradata 的战略指标是云 ARR 的增速能否足以抵消本地部署业务的流失。
+
+**Palantir 的大合同模式。** Palantir 销售企业和政府合同，通常先通过短期付费"训练营（bootcamp）"在几天内做出一个可用的用例 [VERIFY: 训练营项目细节]。其过去 12 个月的 GAAP 毛利率约为 85%。[^comps-pltr] 收入随构建在本体之上的用例数量增长，这使净扩张成为关键驱动因素。
+
+> **类比：授权费与存量客户。** 开源引擎就像开放指令集：采用免费，所以传播很广，但所有者只能靠在其之上增加的东西赚钱。Teradata 则相反，更接近一座运行成熟制程节点的老旧晶圆厂。它的客户黏性强，因为重新认证工艺成本高昂；产量缓慢萎缩，剩余晶圆的利润率不错；战略问题在于是再投资还是收割。
+
+## 财务数据
+
+只有上市公司公布经审计的数据。以下非上市公司数据均为公司披露或媒体报道。
+
+- **ClickHouse。** 截至 2026 年 5 月 27 日，ARR 超过 $250M，客户超过 4,000 家，ARR 同比增长超过两倍（公司披露）。[^ch-arr] 按 2026 年 1 月 $15B 的估值计算，相当于约 **60 倍**的过往 ARR，尚未计入 5 月以来的任何增长（我们的计算，估算）。[^ch-seriesd]
+- **Teradata**（财年 = 日历年）。过去 12 个月收入约 **$1.69B**（GAAP），增长约 1%（stockanalysis 过去 12 个月数据，2026-10-23/28）。市值 $3.19B，企业价值 $2.88B（净现金），因此约为 **1.7 倍 EV/过去 12 个月收入**。[^fin-tdc][^comps-tdc] Q3 2026 的总 ARR 和公有云 ARR 本次未能核实 [VERIFY: Q3 2026 总 ARR、云 ARR 及 FY2026 指引]。
+- **Palantir**（财年 = 日历年）。FY2025 收入 **$4.48B**（GAAP）。截至 Q2 2026 过去 12 个月收入 **$6.16B**，同比增长约 79%（GAAP）。截至 2026-10-30，市值 $442.4B，EV $433.2B，约为 **70 倍 EV/过去 12 个月收入**。截至数据日期，Q3 2026 业绩尚未发布。[^fin-pltr][^comps-pltr] 投资者最关注的美国商业业务增速不在我们的数据文件中 [VERIFY: Q2 2026 美国商业收入增速]。
+- **SAP**（财年 = 日历年）。Q3 2026 总收入 **€10.27B**（IFRS），云收入 +26%，当期云业务积压订单 €24.14B（+28%）。市值约 $274B（2026-10-30）。[^comps-sap]
+- **IBM**（财年 = 日历年）。Q3 2026 收入 **$17.1B**（GAAP，按固定汇率计 +6%），其中 Data 业务线增长 19%，受 Confluent 收购（2026 年 3 月 17 日完成）推高。[^comps-ibm][^ibm-confluent]
+
+![对数刻度的水平条形图，比较最新估值或市值：Palantir $442B、SAP $274B 和 IBM $244B 市值；ClickHouse $15B 非上市投后估值（2026 年 1 月）；Teradata $3.2B 市值；Dremio $2.0B 最近一次非上市估值（2022 年 1 月，被 SAP 收购前）；MotherDuck $0.4B 非上市投后估值（2023 年 9 月）](../assets/charts/ch31_valuations.png)
+
+*图 31.5 — 最新估值或市值，口径不一。非上市挑战者 ClickHouse 的估值约为 Teradata 市值的 5 倍，而收入约只有后者的七分之一（ClickHouse 为公司披露的 ARR，Teradata 为 GAAP 过去 12 个月收入，口径不同）。Starburst（约 $3.35B）和 Firebolt（约 $1.4B）只有媒体报道的 2022 年估值，尚未纳入图表数据文件；StarTree 没有披露估值。来源：`scripts/charts/ch31_valuations.py`，数据取自 `data/private_funding.csv` 和 `data/public_comps.csv`。*
+
+**为什么 Palantir 是异类：一个算例。** 在 70 倍 EV/过去 12 个月收入的水平上，假设 Palantir 的 EV 维持在 $433B，而市场最终给出仍然慷慨的 15 倍收入倍数，那么收入需要达到约 $28.9B，即过去 12 个月 $6.16B 基数的 4.7 倍。按 50% 的年增速需要约 3.8 年，按 30% 则需要约 5.9 年（我们的计算；仅作说明，并非预测）。相比之下，Snowflake 的估值约为 16.9 倍 EV/未来 12 个月收入（2026-10-30；见[第 26 章](ch26-snowflake.md)）。市场是在为 Palantir 多年保持高增长以及经营杠杆买单，而不是在为一个数据库买单。注意，`data/public_comps.csv` 中的 70 倍是 EV/过去 12 个月收入的代理指标，而非 EV/未来 12 个月收入；按远期收入计算，倍数会更低。

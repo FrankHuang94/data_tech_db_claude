@@ -206,3 +206,156 @@ GROUP BY 1, 2;
 ```
 
 这个例子的要点在于智能所在的位置。LLM 负责选择工具并组织答案；而定义、财务日历、区域过滤和脱敏都来自受治理的层级——它们为仪表盘提供的也会是同样的结果。
+
+### 智能体作为数据库构建者：Postgres 的复兴
+
+智能体与数据的第二个故事关乎创建数据库，而非查询数据库。AI 编码工具和应用构建器会为每一个原型、每一次测试运行或每一条工作分支启动一个新的 Postgres 数据库。Neon 的架构恰好适合这种需求。它将 Postgres 计算与存储服务分离，后者由"safekeeper"（持久化的预写日志）和一个将数据页保存在对象存储上的 page server 组成。[^neon-arch] 这使得创建新数据库或[数据库分支（database branch）](../glossary.md#database-branching)成为一次元数据操作——一个只需数秒的写时复制分叉。空闲的计算资源可以[缩容至零（scale to zero）](../glossary.md#scale-to-zero)，因此一个被遗忘的原型几乎不产生成本。Databricks 在 2025 年 5 月同意收购 Neon 时援引了 Neon 的遥测数据：该平台上超过 80% 的数据库是由 AI 智能体创建的（公司披露）。[^neon-dbx]
+
+为什么是 Postgres，而不是某种新东西？原因有四。其生态系统极其庞大（驱动程序、ORM、托管服务、人才）。pgvector 等扩展让一个引擎就能处理事务、JSON 和向量。LLM 写出的 Postgres SQL 质量很高，因为这种方言在公开代码和文档中占主导地位。而宽松的许可证意味着任何人都可以基于它构建服务，无需与厂商谈判。反方观点是：Postgres 单写入者、每连接一个进程的设计，并不是为成千上万个微小、突发的租户而构建的。下表中的每一家厂商都对 Postgres 之下的各层进行了重新设计，以解决这一问题。
+
+| 产品 | 所有者 | 架构 | 分支 | 缩容至零 | 计价单位 | 现状（2026 年 11 月） |
+|---|---|---|---|---|---|---|
+| Neon | Databricks（2025 年收购，媒体报道约 $1B） | Postgres 计算层，位于 safekeeper 加对象存储上的 page server 之上 | 支持，写时复制，数秒 | 支持 | 计算小时数加存储 | GA；Lakebase 的技术基础 |
+| Databricks Lakebase | Databricks | 平台内的 Neon 架构，由 Unity Catalog 治理 | 支持，零拷贝 | 支持（高可用模式下不支持） | Databricks 消费单位（n.v.） | 2026 年 2 月在 AWS 上 GA，2026 年 3 月在 Azure 上 GA；年化运行率 >$100M（公司披露） |
+| Snowflake Postgres | Snowflake（Crunchy Data，据 10-Q 为现金 $164.5M） | 托管 Postgres，镜像同步至 Snowflake | n.v. | n.v. | Snowflake credits（n.v.） | 2026 年 6 月 Summit 上 GA |
+| Supabase | 独立（投后估值 $10.5B，2026 年 6 月） | 每个项目一个 Postgres，外加认证、存储、函数、实时功能 | 支持，与 Git 关联的预览分支（n.v.） | 免费项目空闲时暂停（n.v.） | 按项目计算档位加用量 | GA；正在收购 Turso |
+| Amazon Aurora DSQL | AWS | 分布式、多区域双活、兼容 Postgres | 不支持 | 无服务器；按使用付费 | 分布式处理单元加存储 | 2025 年 5 月 GA |
+| Google AlloyDB | Google | 兼容 Postgres，分离式存储，列式引擎 | 克隆（n.v.） | 不支持 | vCPU 小时数加存储 | GA（2022 年）；向 BigQuery 的实时复制于 2026 年 4 月 GA |
+| Azure HorizonDB | Microsoft | 横向扩展、兼容 Postgres，分离式存储；最高 3,072 vCores、128 TB | n.v. | n.v. | n.v. | 自 2025 年 11 月起预览 |
+| PlanetScale Postgres | 独立 | 基于本地 NVMe（"Metal"）并带副本的 Postgres | Postgres 版本 n.v. | 不支持 | 按集群按月（Metal 起价 $50） | 2025 年 GA |
+| Xata | 独立（核心采用 Apache 2.0） | 在写时复制存储卷上运行的未经修改的 Postgres | 支持，并带 PII 匿名化 | n.v. | n.v. | GA；开源核心 |
+| Prisma Postgres | Prisma | 运行在 unikernel 和 microVM 上的 Postgres | n.v. | 按用量计费，无空闲计算（n.v.） | 按操作计费（n.v.） | 已可用于生产（2024 年 10 月抢先体验） |
+| Turso | 正被 Supabase 收购 | 兼容 SQLite，每租户一个数据库，嵌入式副本 | n.v. | n.v. | n.v. | 交易于 2026 年 10 月宣布 |
+
+*图 22.7 — 面向智能体的 Postgres：差异化要素在于分支、缩容至零和按使用计费，而这些都依赖于存算分离。"n.v." = 本版未核实 [VERIFY: 标记为 n.v. 的单元格]。[^neon-dbx][^lakebase-ga][^dbx-q2][^ma-csv][^sf-postgres][^supabase-f][^dsql][^alloydb][^horizondb][^planetscale][^xata][^prisma][^turso]*
+
+## 设计选择与权衡
+
+| 方法 | 灵活性 | 企业数据上的准确率 | 数据治理 | 每个问题的成本 | 最适用于 |
+|---|---|---|---|---|---|
+| 直接基于数据库模式的原始文本转 SQL | 最高 | 低（Spider 2.0 类任务：约 20–50%） | 弱，除非传递了身份 | 中等；重试多 | 由能读懂 SQL 的专家进行探索 |
+| 带目录上下文、示例和修复循环的文本转 SQL | 高 | 中 | 若以用户身份运行则良好 | 较高（多次 LLM 和试运行调用） | 长尾分析问题 |
+| 语义层工具（指标 API） | 仅限已建模指标 | 范围内高；范围外拒绝回答 | 强；定义与策略集中管理 | 低 | 反复出现的 KPI、高管问题 |
+| 专用任务工具（`get_account_health`） | 最低 | 对该任务最高 | 最强；代码路径经过审查 | 最低 | 高频、高风险工作流 |
+| 基于文档和记忆的检索 | 中 | 取决于分块和排序（见第 19 章） | 需要按文档设置权限 | 低至中等 | 政策、合同、工单 |
+
+*图 22.8 — 准确率与灵活性的权衡：智能体自己编写的越多，它能回答的就越多，但可信度就越低；生产设计会将每个问题路由到能回答它的最窄工具。*
+
+原始文本转 SQL 的最强版本论证是：模型在不断进步。从论文发表到 2026 年的快照，Spider 2.0-Lite 的得分大约翻了一番；而语义层只能覆盖已有人建模的内容。这一点说得没错。但准确率并不是唯一的约束。即使模型能写出 SQL，数据治理和可审计性也更青睐范围窄的工具，因为经过审查的工具会以可预测的方式失败。可能的终局是分层的：前一百个问题用窄工具，指标用语义层访问，其余一切用受监督的文本转 SQL。
+
+在数据库方面，权衡在于托管平台的引力与独立性之间。Lakebase 和 Snowflake Postgres 承诺运营数据无需数据管道即可落入分析平台。Databricks 将统一后的版本称为 LTAP，并称其即将推出（见[第 23 章](ch23-real-time-analytics-htap.md)）。Supabase 和 Neon 式的独立厂商承诺的是开发者体验和可移植性。超大规模云厂商承诺的是规模和采购的简便性。
+
+## 主要参与者
+
+- **智能体宿主与模型厂商：** Anthropic（MCP 发起者）、OpenAI、Google（Gemini Enterprise，A2A 发起者）、Microsoft（Copilot、Entra Agent ID）。全部支持 MCP。
+- **提供 MCP 服务器的数据平台：** Snowflake（托管 MCP 于 2025 年 11 月 GA；CoWork 智能体）、Databricks（托管 MCP 服务器、Genie、Agent Bricks、Unity AI Gateway）、Google BigQuery（远程 MCP 服务器 GA）、AWS（覆盖多种数据库的 MCP 服务器，包括 Aurora DSQL）、MongoDB 以及 Postgres 社区服务器。见[第 25 章](../04-company-deep-dives/ch25-databricks.md)和[第 29 章](../04-company-deep-dives/ch29-operational-database-vendors.md)。
+- **语义层与上下文层：** dbt/Fivetran、Cube、AtScale、ThoughtSpot、Looker，以及各平台原生的语义层（见[第 14 章](../02-pipelines-and-governance/ch14-semantic-layers-and-bi.md)）。
+- **智能体记忆：** Mem0、Zep（Graphiti）、Letta，以及各大助手内置的记忆功能。
+- **面向智能体的 Postgres：** Neon/Lakebase、Snowflake Postgres、Supabase（含 Turso）、Aurora DSQL、AlloyDB、Azure HorizonDB、PlanetScale、Xata、Prisma Postgres；Databricks 还收购了 Mooncake Labs（Postgres 转列式），并宣布收购 Electric（PGlite，供智能体沙箱使用的本地 Postgres）。[^ma-csv]
+
+## 历史与发展轨迹
+
+```mermaid
+timeline
+  title Postgres 圈地运动，2024 至 2026 年
+  2024 : ClickHouse 收购 PeerDB 以获取 Postgres CDC
+       : Prisma Postgres 进入抢先体验
+       : Anthropic 推出 MCP
+  2025 : Databricks 同意收购 Neon，媒体报道约 10 亿美元
+       : AWS Aurora DSQL 正式可用
+       : Snowflake 收购 Crunchy Data
+       : PlanetScale Postgres 正式可用
+       : Databricks 收购 Mooncake Labs
+       : Microsoft 预览 Azure HorizonDB
+  2026 : Databricks Lakebase 先后在 AWS 和 Azure 上正式可用
+       : Snowflake Postgres 正式可用，Supabase 估值达 105 亿美元
+       : Databricks 宣布收购 Electric，Lakebase 年化运行率突破 1 亿美元
+       : Supabase 融资 1.5 亿美元并同意收购 Turso
+```
+
+*图 22.9 — 在 24 个月内，每一家主要数据平台都收购或自建了 Postgres 服务，其定价依据是这样一种论断：如今创建大多数新数据库的是智能体，而不是人。资料来源：data/ma_deals.csv 及本章脚注；交易背景见[第 39 章](../05-business-and-economics/ch39-ma-history.md)。*
+
+文本转 SQL 的研究可以追溯到 20 世纪 70 年代，但现代时期始于 2018 年的 Spider 1.0。到 2023 年，LLM 已将 Spider 1.0 的准确率推高到 90% 以上，这促使了更难基准测试的出现：2023 年的 BIRD 和 Spider 2.0（2024 年 11 月预印本，ICLR 2025）。[^spider2] 与此同时，厂商从"与你的数据对话"演示（2023 年），发展到以语义层为基础的助手（2024–2025 年），再到有正式命名的智能体产品：Databricks 的 Genie One、Snowflake 的 CoWork（在 Summit 2026 上由 Snowflake Intelligence 更名而来），以及 Google 的 Gemini Enterprise。[^dbx-q2]
+
+MCP 的发展轨迹是：2024 年 11 月发布，2025 年春季被 OpenAI、Google 和 Microsoft 采用，2025 年 6 月重构授权机制，2025 年 12 月转入 Linux Foundation 实行中立治理。[^mcp-launch][^mcp-adopt][^mcp-auth][^mcp-donate] 2026 年的主线是智能体治理向数据平台集中（Unity AI Gateway、Snowflake–Natoma），以及针对提示词注入事件的安全加固。
+
+未来两年的三个判断。(1) 在主要平台上，智能体流量将超过人类查询流量，定价将跟随智能体（按任务或按受治理调用计费），而非按席位计费。(2) MCP 服务器将在每个企业内部整合为少数几个受治理的网关，因为安全团队不会批准数百个未经审查的服务器。(3) 运营型与分析型 Postgres 将在共享存储上融合，分支将被视为基本预期。看空逻辑是：智能体在杂乱数据上的准确率陷入停滞，企业将智能体限制在只读仪表盘范围内，而 Postgres 圈地运动最终被证明是为那些永远不会成为生产工作负载的"氛围编程"（vibe-coding）原型付了高价。
+
+## 关键数字
+
+| 指标 | 数值 | 口径 | 来源 / 日期 |
+|---|---|---|---|
+| Spider 1.0 / BIRD / Spider 2.0 最佳报告结果（Spider 2.0：o1-preview 搭配智能体框架） | 91.2% / 73.0% / 21.3% | 学术论文（前两项为其引用的排行榜结果） | Lei 等，arXiv v2，2025-03[^spider2] |
+| BIRD 最高提交系统 | 执行准确率 82.39%（Huawei DataGallery） | 厂商报告的排行榜结果 | Technology Magazine，2026-09[^bird-huawei] |
+| BIRD 人类基线 | 92.96% | 排行榜参考值 | BIRD 排行榜[^bird-huawei] |
+| GPT-4 基于 SQL 与基于语义表示 | 16.7% 对 54.2% | 厂商开展的研究 | data.world，2023-11[^dw-bench] |
+| 捐赠时 MCP SDK 月下载量 | >97M | 公司披露 | Anthropic，2025-12-09[^mcp-donate] |
+| 捐赠时活跃 MCP 服务器数 | >10,000 | 公司披露 | Anthropic，2025-12-09[^mcp-donate] |
+| Neon 上由智能体创建的数据库占比 | >80% | 公司披露的遥测数据 | Databricks/Neon，2025-05[^neon-dbx] |
+| Databricks–Neon 价格 | 约 $1B | 媒体报道 | TechRepublic，2025-05[^neon-dbx] |
+| Snowflake–Crunchy Data | 现金 $164.5M（媒体报道约 $250M） | GAAP（10-Q 披露） | Snowflake 10-Q，2025-12[^ma-csv] |
+| Lakebase 收入年化运行率 | >$100M | 公司披露的年化运行率 | Databricks，2026-08-13[^dbx-q2] |
+| Supabase 估值 | 投后估值 $10.5B（$500M F 轮） | 媒体报道 | Orrick，2026-06[^supabase-f] |
+| Mem0 融资 | $24M（种子轮 + A 轮） | 媒体报道 | TechCrunch，2025-10-28[^mem0] |
+| Azure HorizonDB 规模 | 最高 3,072 vCores、128 TB；吞吐量"最高可达"开源 Postgres 的 3 倍 | 公司披露（预览版） | Microsoft，2025-11[^horizondb] |
+
+*图 22.10 — 关键数字：干净基准与企业基准之间约 70 个百分点的准确率差距，一个月下载量约 100M 的协议，以及以智能体创建的数据库为定价依据的 Postgres 交易。*
+
+## 存储桥接
+
+> **存储桥接。** 由智能体构建的应用，将数据库分支变成了一项存储功能。Neon 通过在 page server（将数据页保存在对象存储上）中分叉元数据来创建分支。Xata 则对底层存储卷做写时复制快照，并在其上启动一个全新的 Postgres，完全不修改 Postgres 本身。[^neon-arch][^xata] 无论哪种方式，分支的速度和成本都取决于快照与克隆路径，以及在成千上万个短生命周期租户下的元数据性能。这与企业级存储阵列用于即时克隆的能力是同一种能力。与此同时，受治理的智能体查询以大量小型、随机且对延迟敏感的读取形式到达。快照与克隆机制参见配套的 *Everpure Tech Atlas*。战略选项见[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)。
+
+## 对话手册
+
+**向产品经理提出的三个问题**
+
+1. "当智能体查询您的平台时，查询是以谁的身份运行的？审计日志是否同时显示用户和智能体？"好的回答会描述一个代表用户（on-behalf-of）的令牌，执行用户的行过滤器，并在日志中有单独的行为者字段。弱的回答会提到每个智能体一个服务账号。
+2. "智能体的问题中有多大比例经由语义层，又有多大比例是自由形式的 SQL？您如何衡量在*您自己*的问题上的准确率？"好的回答会提到一个基于真实问题和已验证答案构建的内部评估集，而不是 Spider 或 BIRD 的分数。
+3. "您的环境中批准了多少个 MCP 服务器？谁来审查新的服务器？"好的回答会描述一个注册表或网关、锁定的版本以及安全审查。"开发者需要什么就装什么"是一个危险信号。
+
+**向工程师提出的三个问题**
+
+1. "您的 MCP 工具中，哪些可以写入、发送或从互联网抓取内容？是否有任何会话能将这些工具与不可信输入结合在一起？"好的回答：团队能说出致命三要素，并展示每种配置移除了哪一个要素。
+2. "您的文本转 SQL 数据管道如何进行模式链接和修复？"好的回答：基于目录描述和查询日志的检索、试运行验证、结果合理性检查，以及向用户展示 SQL。
+3. "对于由智能体创建的数据库，分支创建时间是多少？一个空闲分支的成本是多少？"好的回答会给出以秒计的时间和接近于零的空闲计算成本，并清楚分支是在 page server 层还是在存储卷层完成的。
+
+**好的回答听起来是什么样的：**对身份流程的描述具体，对自身数据上的准确率坦诚，并专注于收窄而非放宽工具权限。
+
+**"不要这样说"**
+
+- "文本转 SQL 已经解决了；模型得分超过 90%。"那是 Spider 1.0。在企业风格的 Spider 2.0 上，论文中最好的系统得分约为 21%。
+- "MCP 是安全的"或"MCP 是不安全的"。MCP 是一项连接标准。安全性取决于服务器权限范围、身份和策略。
+- "智能体有自己的管理员账号，所以它什么都能回答。"这恰恰是会击穿行级安全的混淆代理模式。
+- "智能体记忆会取代数据仓库。"记忆缓存的是上下文。受治理的事实应当从记录系统重新读取。
+- "智能体创建了所有数据库中的 80%。"那是 Neon 在 2025 年针对其自身平台的公司披露数字，而不是行业统计数据。
+
+## 深入阅读
+
+- 阅读 Spider 2.0 论文的错误分析；模式链接和方言错误是失败的主要原因。[^spider2]
+- 阅读 MCP 授权规范，追踪远程服务器如何验证受众绑定的令牌。[^mcp-auth]
+- Simon Willison 关于致命三要素的文章，是从业者对智能体数据外泄问题最清晰的论述。[^willison]
+- Neon 的架构文档解释了 safekeeper、page server 和写时复制分支。[^neon-arch]
+
+## 关键术语
+
+- [文本转 SQL](../glossary.md#text-to-sql) — 由 LLM 将自然语言问题翻译为 SQL 查询。
+- [模式链接](../glossary.md#schema-linking) — 在生成 SQL 之前，从大型数据库模式中选出相关的表、列和关联关系。
+- [自我修正循环](../glossary.md#self-correction-loop) — 执行或试运行生成的 SQL，并将错误反馈给模型以进行修复。
+- [执行准确率（execution accuracy）](../glossary.md#execution-accuracy) — 基准测试指标：生成的 SQL 返回结果与参考查询相同的问题所占比例。
+- [Spider 2.0](../glossary.md#spider-2-0) — 2024–2025 年的文本转 SQL 基准测试，包含基于大型云端数据库模式的 632 个真实企业工作流任务。
+- [BIRD 基准测试](../glossary.md#bird-benchmark) — 采用大型、杂乱数据库并附带外部知识提示的文本转 SQL 基准测试。
+- [模型上下文协议](../glossary.md#model-context-protocol) — 将 AI 智能体连接到工具和数据的开放标准，现由 Agentic AI Foundation 治理。
+- [MCP 服务器](../glossary.md#mcp-server) — 封装单一系统，并向 MCP 客户端暴露工具、资源和提示词的服务。
+- [Agentic AI Foundation](../glossary.md#agentic-ai-foundation) — 自 2025 年 12 月起治理 MCP 的 Linux Foundation 定向基金。
+- [Agent2Agent 协议](../glossary.md#agent2agent-protocol) — 源自 Google、现归 Linux Foundation 的开放协议，用于智能体将任务委托给其他智能体。
+- [提示词注入](../glossary.md#prompt-injection) — 嵌入在 LLM 所读取内容中的恶意指令，导致其做出违背用户利益的行为。
+- [致命三要素](../glossary.md#lethal-trifecta) — 单个智能体同时具备私有数据访问、不可信输入和外发渠道这一危险组合。
+- [身份传递](../glossary.md#identity-propagation) — 在每一跳中传递最终用户的身份，使下游系统执行该用户的权限。
+- [代表用户流程](../glossary.md#on-behalf-of-flow) — 一种 OAuth 令牌交换，服务借此获取代表特定用户行事的令牌。
+- [智能体身份](../glossary.md#agentic-identity) — 将 AI 智能体视为一个独立、可审计的主体，其权限永远不超过它所服务的用户。
+- [基于属性的访问控制](../glossary.md#attribute-based-access-control) — 依据用户和数据的属性及标签进行评估的访问规则。
+- [行级安全](../glossary.md#row-level-security) — 过滤特定用户可见行的策略。
+- [智能体记忆（agent memory）](../glossary.md#agent-memory) — 智能体存储在上下文窗口之外、并在后续步骤或会话中调回的信息。
+- [数据库分支](../glossary.md#database-branching) — 为测试或智能体工作即时创建数据库的写时复制分叉。
+- [缩容至零](../glossary.md#scale-to-zero) — 释放空闲数据库的全部计算资源，使其在下一次请求之前只产生存储成本。
+- [写时复制](../glossary.md#copy-on-write) — 在版本之间共享未修改的数据，只写入被修改的块或文件。

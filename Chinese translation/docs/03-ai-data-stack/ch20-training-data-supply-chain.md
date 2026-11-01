@@ -102,14 +102,14 @@ timeline
     2023 : AP 与 Shutterstock 向 OpenAI 授权档案
          : Axel Springer 与 OpenAI 签约
          : NYT 起诉 OpenAI 与 Microsoft
-    2024 : Reddit 授权给 Google，每年约 6000 万美元
+    2024 : Reddit 授权给 Google，每年约 60M USD
          : Reddit 与 News Corp 与 OpenAI 签约
          : Shumailov 模型崩溃论文发表于 Nature
     2025 : Thomson Reuters v Ross 否定非生成式工具的合理使用
          : NYT 的诉求挺过驳回动议
          : Bartz 与 Kadrey 案裁定训练可构成合理使用
-         : Anthropic 同意与作者达成 15 亿美元和解
-    2026 : NYT 案法院下令提交 2000 万条 ChatGPT 日志
+         : Anthropic 同意与作者达成 1.5B USD 和解
+    2026 : NYT 案法院下令提交 20M 条 ChatGPT 日志
          : 第三巡回上诉法院审理 Ross 上诉
          : Anthropic 和解获得最终批准
 ```
@@ -183,3 +183,89 @@ flowchart LR
 *图 20.7 — 已定价的估值集中在 $2B 到 $10B 之间，Scale 是一个一次性的战略性估值。最大的数字（Surge、Mercor 的下一轮）是洽谈，而非已完成的融资。资料来源：`data/private_funding.csv`、本章暂存数据行及 `data/ch20_valuation_talks.csv`。*
 
 **数据整理与合成工具。** NVIDIA 覆盖 GPU 一端：用于文本和视频整理的 NeMo Curator、用于合成生成的 Nemotron 和 Cosmos，以及负责表格数据合成的 Gretel 团队。[^curator][^nemotron][^cosmos][^gretel] Hugging Face 托管开放数据集（FineWeb 等）以及 `datatrove` 工具。[^fineweb] Databricks 和 Anyscale（Ray）是通用的 CPU 和 GPU 批处理引擎。Daft 是一个较新的多模态数据框引擎。实验室内部的数据管道仍是所有"供应商"中最大的一个。对这些数据集进行版本管理和服务的 MLOps 平台见[第 21 章](ch21-ml-platforms-feature-stores-llmops.md)，AI 原生数据公司见[第 32 章](../04-company-deep-dives/ch32-ai-native-data-companies.md)。
+
+## 历史与发展轨迹
+
+- **2009–2019：众包时代。** ImageNet 式的标注让众包标注成为一门生意。Appen 和 Scale（成立于 2016 年）依靠计算机视觉和自动驾驶业务成长起来。
+- **2022：RLHF 创造了新产品。** InstructGPT 表明，少量人类偏好数据就能显著改变模型行为。实验室开始购买排序和示范数据，而不再是边界框。[^instructgpt]
+- **2023–2024：授权与诉讼同时开始。** 继 OpenAI 的首批档案交易和 NYT 诉讼（2023 年 12 月）之后，Reddit、News Corp 等在 2024 年相继跟进。[^reddit-google][^newscorp] Scale 以 $13.8B 估值融资（2024 年 5 月）。[^scale-f] Google 终止了与 Appen 的合同（2024 年 3 月）。[^appen]
+- **2025：专家化转向与 Meta–Scale 冲击。** Turing（$2.2B，3 月）、Snorkel（$1.3B，5 月）、Toloka（$72M，5 月）、Invisible（超过 $2B，9 月）和 Mercor（$10B，10 月）均完成融资。[^turing][^snorkel-d][^toloka][^invisible][^mercor-c] Meta 在 6 月入股 Scale，将客户推向了 Surge、Mercor 等公司。[^meta-scale][^scale-customers] NVIDIA 收购了 Gretel（3 月）。[^gretel] 合理使用判决于 6 月作出，Anthropic 与作者达成和解。[^fairuse][^bartz-final]
+- **2026：规模扩张及其压力。** Handshake 报告年化运行率约 $1B（4 月）。[^handshake] Mercor 安全漏洞暴露了供应商集中带来的安全风险（4 月）。[^mercor-breach] Anthropic 和解获得最终批准（7 月）。Scale 聘请了一位外部 CEO，并向企业应用倾斜（7 月）。[^scale-ceo] Snorkel 估值增至三倍，达到 $3.5B（9 月）。[^snorkel-e]
+
+**发展轨迹。** 预计会出现三个转变。第一，从出售劳动力转向出售可复用资产：可以授权给多家实验室的环境、评估和评分器。第二，买方在多家供应商之间分散采购，并把专家网络内化，从而压缩抽成比例。第三，行业整合，模型和云厂商收购数据整理与合成数据能力，正如 NVIDIA 收购 Gretel 那样。并购视角见[第 39 章](../05-business-and-economics/ch39-ma-history.md)。
+
+## 关键数字
+
+| 指标 | 数值 | 口径 | 来源 / 日期 |
+|---|---|---|---|
+| Meta 入股 Scale AI | 约 $14.3B 购入 49%，无投票权；隐含约 $29B | 媒体报道 | 2025 年 6 月[^meta-scale] |
+| Scale AI F 轮 | $1B，估值 $13.8B | 公司披露 | 2024 年 5 月[^scale-f] |
+| 交易后 Scale AI 裁员 | 约 14% 的员工（约 200 人）加 500 名承包商 | 媒体报道 | 2025 年 7 月[^scale-layoffs] |
+| Surge AI 2024 年收入 | 超过 $1B，自有资金发展 | 媒体报道 | 2025 年 7 月[^surge-reuters] |
+| Mercor C 轮 | $350M，估值 $10B | 公司确认 | 2025 年 10 月[^mercor-c] |
+| Mercor 年化运行率 | 约 $450M（2025 年 9 月）至声称超过 $2B（2026 年年中） | 媒体报道，总额 | 2025–2026[^mercor-rr][^mercor-2026] |
+| Snorkel AI E 轮 | $350M，估值 $3.5B；年化运行率约 $375M | 公司披露 | 2026 年 9 月[^snorkel-e] |
+| Handshake AI 年化运行率 | 约 $1B；每月向 30K 多名专家支付约 $60M | 公司披露，总额 | 2026 年 4 月[^handshake] |
+| Appen FY2025 收入 | $230.8M（FY2024 为 $234.3M）；净亏损 $21.8M | 公司报告，自然年财年 | 2026 年 2 月[^appen] |
+| Anthropic 作者和解 | $1.5B；每部作品约 $3,000；约 480K 部作品 | 法院批准 | 2026 年 7 月 20 日最终批准[^bartz-final] |
+| Reddit–Google 授权 | 每年约 $60M | 媒体报道 | 2024 年 2 月[^reddit-google] |
+| News Corp–OpenAI | 5 年约 $250M | 媒体报道 | 2024 年 5 月[^newscorp] |
+| FineWeb / FineWeb-Edu | 15T token / 1.3T token | 论文 | 2024 年 6 月[^fineweb] |
+| Nemotron-4 340B 对齐数据 | 超过 98% 为合成数据 | 厂商技术报告 | 2024 年 6 月[^nemotron] |
+| NeMo Curator GPU 去重 | 比 CPU 快 20 倍、便宜 5 倍（标题数字；所引 37 小时 → 3 小时约为 12 倍） | 厂商声明 | NVIDIA 博客[^curator] |
+
+*图 20.8 — 需要记住的数字。注意其中经过审计的寥寥无几：这个市场依靠媒体报道和公司披露的年化运行率运转，而且大多是未扣除承包商报酬的总额。*
+
+## 存储桥接
+
+> **存储桥接。** 训练语料是一个有特殊要求的数据湖。它达到 PB 级规模、一次写入，但在每次训练运行中会被多次重读。每个衍生版本（去重后、过滤后、配比后）都必须保留，并与其所供给的模型检查点绑定，既为了可复现性，也为了诉讼保全。Anthropic 和解协议中销毁盗版文件的要求表明，删除也必须是可证明的。快照、不可变版本管理、数据血缘元数据和快速并行读取是其中涉及的存储层能力。Everpure 基于 1touch 的数据智能（数据发现、数据分类、敏感数据上下文）可以对应企业微调数据集的 PII 清除和溯源阶段。这是基于公开信息、战略团队可能评估的一个选项。AI 存储细节请参阅姊妹篇 *Everpure Tech Atlas*。
+
+## 对话手册
+
+**向产品经理提问**
+
+1. "贵司训练数据支出中，人工数据、授权和合成生成各占多大比例？自 2024 年以来这一构成发生了怎样的变化？"
+2. "每条工作流你们认证了多少家数据供应商？如果最大的供应商接受了一家竞争实验室的战略投资，你们会怎么做？"
+3. "对于授权内容，你们是在为训练权付费、为检索和引用付费，还是两者兼有？是否有交易按使用次数定价？"
+
+**向工程师提问**
+
+1. "你们运行什么样的去重技术栈（精确、MinHash-LSH、语义）？最终确定的 Jaccard 阈值和频带配置是什么？"
+2. "你们如何构建和验证质量分类器？如何针对所报告的基准进行去污染？"
+3. "你们如何对语料和配比做版本管理，以便复现某个检查点，或证明某项下架请求已被执行？"
+
+**好的回答听起来是什么样的。** 它们会给出大致百分比的构成和多供应商政策（"任何供应商在一个项目中的占比都不超过约 30%"）。在引用供应商规模时，它们会区分总账单额与净抽成。在数据整理方面，它们会说出阈值和消融实验（"我们在 1B token 的代理模型上测试了分类器的截断值"），并把数据血缘视为必需品，而非锦上添花。
+
+**不要这样说**
+
+- "Meta 收购了 Scale AI。"它买的是 49% 的无投票权股份。这一区别既解释了交易结构，也解释了客户的出走。
+- "Mercor 的收入有 $2B。"那是声称的总额年化运行率，尚未扣除 60–70% 的承包商报酬（估算）。
+- "法院说了 AI 训练属于合理使用，就这么定了。"是两家地区法院基于具体事实这样认定的。盗版并未被豁免，*NYT v. OpenAI* 案悬而未决，而 *Ross* 案的判决方向相反。
+- "合成数据会让人工数据过时。"模型崩溃和对验证器的需求使人类仍留在环路中。工作转向了更难的任务，而不是消失了。
+- "数据越多越好。"FineWeb-Edu 表明，语料库中 9% 的切片就能胜过整体。
+
+## 深入阅读
+
+- Penedo 等人，*The FineWeb Datasets*（NeurIPS 2024），对去重和质量过滤最清晰的公开消融研究。[^fineweb]
+- Lee 等人，*Deduplicating Training Data Makes Language Models Better*（2021），[^lee-dedup] 以及 Abbas 等人，*SemDeDup*（2023）。[^semdedup]
+- Gadre 等人，*DataComp*（2023），以数据为中心的基准测试。[^datacomp]
+- Shumailov 等人，*Nature*（2024），关于模型崩溃。[^collapse]
+- NVIDIA，*Nemotron-4 340B Technical Report*（2024），关于合成对齐数据管道。[^nemotron]
+
+## 关键术语
+
+- [人类反馈强化学习](../glossary.md#reinforcement-learning-from-human-feedback) — 利用从人类偏好排序中学习到的奖励信号来调优模型。
+- [RL 环境](../glossary.md#rl-environment) — 带有自动评分器的沙箱化任务，供模型在强化学习中练习。
+- [专家网络](../glossary.md#expert-network) — 按小时出租具备资质的专家来编写或评判训练数据的供应商。
+- [合成数据](../glossary.md#synthetic-data) — 由模型生成、而非从人或现实世界采集的训练数据。
+- [蒸馏](../glossary.md#distillation) — 在较大教师模型的输出上训练较小的学生模型。
+- [模型崩溃](../glossary.md#model-collapse) — 模型在模型生成的数据上递归训练、丢失真实分布尾部后出现的退化。
+- [MinHash](../glossary.md#minhash) — 一种紧凑签名，其重合度可估算两个文档的 Jaccard 相似度。
+- [Jaccard 相似度](../glossary.md#jaccard-similarity) — 两个集合交集的大小除以并集的大小。
+- [局部敏感哈希](../glossary.md#locality-sensitive-hashing) — 把相似项放入同一个桶的哈希方法，使得只需比较可能匹配的项。
+- [语义去重](../glossary.md#semantic-deduplication) — 利用嵌入聚类移除含义几乎相同的文档。
+- [质量分类器](../glossary.md#quality-classifier) — 为文档有用性打分的小模型，用于过滤语料库。
+- [数据配比](../glossary.md#data-mixture) — 训练每个阶段所用各数据源的比例。
+- [基准去污染](../glossary.md#benchmark-decontamination) — 从训练数据中移除评估题目，以免分数虚高。
+- [合理使用](../glossary.md#fair-use) — 美国版权法中的抗辩事由，综合权衡使用的目的、作品性质、使用数量和市场影响。
+- [人才收购](../glossary.md#acquihire) — 主要目的是招揽团队而非收购业务的交易。

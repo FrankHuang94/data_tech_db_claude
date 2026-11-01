@@ -299,3 +299,62 @@ timeline
 > **深入（L3）。** 阅读 Airflow 3.0 的发布说明，了解 Task SDK 和 Task Execution API，它们使 worker 不再直接访问元数据库。[^airflow3] 阅读 SQLMesh 关于变更分类和虚拟环境的文档。[^sqlmesh-docs] dbt 的物化方式和增量策略页面解释了 `merge`、`delete+insert` 与 `microbatch` 的区别。[^dbt-mat] GitHub 上的 ODCS v3 规范提供了一个完整的契约示例。[^odcs] Temporal 关于事件历史重放的文档解释了为什么工作流代码必须是确定性的。
 
 相关章节：[第 9 章](ch09-pipeline-patterns.md)（ELT 与 CDC 模式）、[第 10 章](ch10-ingestion-and-integration.md)（让源数据落地的连接器）、[第 13 章](ch13-data-quality-observability-lineage.md)（测试、可观测性、数据血缘）、[第 14 章](ch14-semantic-layers-and-bi.md)（集市之上的指标）、[第 30 章](../04-company-deep-dives/ch30-data-movement-streaming-companies.md)（作为企业的 Fivetran、dbt Labs 及同业）、[第 43 章](../06-history-and-future/ch43-modern-data-stack.md)（现代数据栈的兴起与再捆绑）。
+
+## 关键术语
+
+- [dbt](../glossary.md#dbt) — 开源框架，把 SQL 加 Jinja 模型编译成依赖图，并在数据仓库中运行它们。
+- [分析工程（Analytics engineering）](../glossary.md#analytics-engineering) — 把软件实践（Git、CI、测试、代码评审）应用于 SQL 数据转换。
+- [有向无环图（Directed acyclic graph）](../glossary.md#directed-acyclic-graph) — 由带依赖边且无环的任务或模型组成的图；决定运行顺序。
+- [物化方式（Materialization）](../glossary.md#materialization) — dbt 模型的持久化方式：视图、表、增量或临时。
+- [增量模型（Incremental model）](../glossary.md#incremental-model) — 只处理新增或变更的行并将其合并到现有表中的模型。
+- [Exposure（暴露）](../glossary.md#exposure) — dbt 模型已声明的下游消费者（仪表盘、机器学习模型、应用）。
+- [列级数据血缘（Column-level lineage）](../glossary.md#column-level-lineage) — 追踪哪些源列为每个输出列提供数据。
+- [虚拟数据环境（Virtual data environment）](../glossary.md#virtual-data-environment) — SQLMesh 在带版本物理表之上的视图层，可提供低成本的开发/CI 环境。
+- [数据契约（Data contract）](../glossary.md#data-contract) — 由生产者拥有并强制执行的、关于数据集模式、含义、质量和 SLA 的协议。
+- [编排器（Orchestrator）](../glossary.md#orchestrator) — 调度、运行、重试并记录工作流的软件。
+- [软件定义资产（Software-defined asset）](../glossary.md#software-defined-asset) — Dagster 的基本单位：在代码中连同其上游依赖一起声明的数据资产。
+- [回填（Backfill）](../glossary.md#backfill) — 对历史时段重新运行数据管道。
+- [幂等性（Idempotency）](../glossary.md#idempotency) — 重新运行一个任务与只运行一次得到相同结果的性质。
+- [传感器（Sensor）](../glossary.md#sensor) — 在下游工作开始之前等待某个外部条件的任务。
+- [持久化执行（Durable execution）](../glossary.md#durable-execution) — 保存每个工作流步骤的运行时，使代码在故障后能从停止处精确恢复。
+- [动态表（Dynamic table）](../glossary.md#dynamic-table) — Snowflake 的声明式表，会自动刷新以满足目标延迟。
+- [声明式数据管道（Declarative pipeline）](../glossary.md#declarative-pipeline) — 按其应产出的表而非步骤来定义的数据管道；例如 Lakeflow Spark Declarative Pipelines。
+- [Jinja](../glossary.md#jinja) — dbt 用于宏和 `ref()` 的 Python 模板语言。
+- [ELT](../glossary.md#elt) — 抽取、加载，然后在目标引擎内部进行转换。
+
+## 资料来源
+
+[^airflow-hist]: Apache Airflow, "Project" (history section), https://airflow.apache.org/docs/apache-airflow/1.10.4/project.html, n.d.（文档 v1.10.4，2019）；检索 2026-11-01。
+[^airflow3]: Apache Airflow, "Release Notes — Airflow 3.0.0," https://airflow.apache.org/docs/apache-airflow/3.0.0/release_notes.html, 发布 2025-04-22；检索 2026-11-01。
+[^airflow31]: Apache Airflow blog, "Apache Airflow 3.1.0: Human-Centered Workflows," https://airflow.apache.org/blog/airflow-3.1.0/, 发布 2025-09-25；Astronomer, "Introducing Apache Airflow 3.1," https://www.astronomer.io/blog/introducing-apache-airflow-3-1/, 2025-09；检索 2026-11-01。
+[^mwaa]: AWS What's New, "Announcing Apache Airflow 3.0 support in Amazon Managed Workflows for Apache Airflow," https://aws.amazon.com/about-aws/whats-new/2025/10/apache-airflow-3-amazon-mwaa, 发布 2025-10-01；检索 2026-11-01。
+[^soa]: Astronomer, "State of Apache Airflow 2025," https://www.astronomer.io/airflow/state-of-airflow/2025/, 2025；Astronomer press release, "Astronomer Releases 2025 State of Airflow Report," https://www.astronomer.io/press-releases/astronomer-releases-2025-state-of-airflow-report/, 2025；Astronomer blog, "How we track the growth of Apache Airflow," https://www.astronomer.io/blog/how-we-track-the-growth-of-apache-airflow/, n.d.；检索 2026-11-01。
+[^astro-about]: Astronomer, "About us," https://www.astronomer.io/about-us/, n.d.；检索 2026-11-01。
+[^astro-d]: Contrary Research, "Astronomer," https://research.contrary.com/company/astronomer, 2025（已记录于 `data/private_funding.csv`）；检索 2026-11-01。
+[^dbt-mat]: dbt Labs documentation, "Materializations," https://docs.getdbt.com/docs/build/materializations, n.d.；检索 2026-11-01。
+[^dbt-100m]: dbt Labs blog, "dbt Labs surpasses $100M ARR," https://getdbt.com/blog/dbt-labs-100m-arr-milestone, 发布 2025-02-05；BigDATAwire, "dbt Labs Surpasses $100M ARR," https://www.hpcwire.com/bigdatawire/this-just-in/dbt-labs-surpasses-100m-arr-expands-global-customer-base/, 2025-02；检索 2026-11-01。
+[^sdf]: dbt Labs blog, "dbt Labs acquires SDF Labs," https://getdbt.com/blog/dbt-labs-acquires-sdf-labs, 发布 2025-01-14；SiliconANGLE, https://siliconangle.com/2025/01/14/big-data-company-dbt-labs-buys-sdf-labs-improve-sql-code-comprehension/, 2025-01-14；检索 2026-11-01。
+[^fusion]: dbt Labs blog, "dbt Labs redefines dbt with new Fusion engine," https://www.getdbt.com/blog/dbt-labs-redefines-dbt-with-new-fusion-engine, 发布 2025-05-28；BigDATAwire, "dbt Labs Cranks the Performance Dial with New Fusion Engine," https://www.bigdatawire.com/2025/05/28/dbt-labs-cranks-the-performance-dial-with-new-fusion-engine, 2025-05-28；检索 2026-11-01。
+[^fusion-lic]: dbt Labs blog, "New code, new license: understanding the new license for the dbt Fusion engine," https://www.getdbt.com/blog/new-code-new-license-understanding-the-new-license-for-the-dbt-fusion-engine, 发布 2025-05；Tobiko Data blog, "dbt Fusion: the death of dbt Core?," https://tobikodata.com/blog/dbt-fusion-death-of-dbt-core, 2025；检索 2026-11-01。
+[^core-v2]: dbt Labs developer blog, "dbt Core v2 is here," https://docs.getdbt.com/blog/dbt-core-v2-is-here, 2026（具体日期未核实；每周摘要将其置于 2026 年 7 月）；dbt Labs, "Licensing FAQ," https://www.getdbt.com/licenses-faq, n.d.；检索 2026-11-01。
+[^fusion-avail]: dbt Labs documentation, "About the dbt Fusion engine" 与 "Fusion readiness checklist," https://docs.getdbt.com/docs/fusion/about-fusion 与 https://docs.getdbt.com/docs/fusion/fusion-readiness, n.d.；检索 2026-11-01。
+[^merger-ann]: dbt Labs blog, "dbt Labs and Fivetran merge announcement," https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement, 发布 2025-10-13；Reuters via TradingView, "a16z-backed data firms Fivetran, dbt Labs to merge in all-stock deal," https://de.tradingview.com/news/reuters.com%2C2025%3Anewsml_L6N3VU00K%3A0-a16z-backed-data-firms-fivetran-dbt-labs-to-merge-in-all-stock-deal, 2025-10-13；检索 2026-11-01。
+[^merger-close]: Fivetran press release, "Fivetran & dbt Labs Complete Merger to Create the Data Infrastructure for Trusted AI Agents," https://www.fivetran.com/press/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents, 发布 2026-06-01；Pulse2, https://pulse2.com/fivetran-and-dbt-labs-complete-merger-to-build-trusted-ai-data-infrastructure/, 2026-06-05；检索 2026-11-01。
+[^tobiko]: Fivetran press release, "Fivetran Acquires Tobiko Data to Power the Next Generation of Advanced, AI-Ready Data Transformation," https://www.fivetran.com/press/fivetran-acquires-tobiko-data-to-power-the-next-generation-of-advanced-ai-ready-data-transformation, 发布 2025-09-03；Business Wire, https://www.businesswire.com/news/home/20250903275106/en/, 2025-09-03；检索 2026-11-01。
+[^sqlmesh-lf]: Fivetran press release, "Fivetran Contributes SQLMesh to the Linux Foundation to Advance Open Data Infrastructure," https://www.fivetran.com/press/fivetran-contributes-sqlmesh-to-the-linux-foundation-to-advance-open-data-infrastructure, 发布 2026-03-25；Linux Foundation, "Linux Foundation Welcomes SQLMesh Project," https://www.linuxfoundation.org/press/linux-foundation-welcomes-sqlmesh-project, 2026-03-25；检索 2026-11-01。
+[^sqlmesh-docs]: SQLMesh documentation, "FAQ," https://sqlmesh.readthedocs.io/en/latest/faq/faq/, n.d.；SQLMesh GitHub README, https://github.com/SQLMesh/sqlmesh, n.d.；检索 2026-11-01。
+[^coalesce]: TechCrunch, "Coalesce raises more cash to transform data for Snowflake customers," https://techcrunch.com/2024/04/04/coalesce-raises-more-cash-to-transform-data-for-snowflake-customers/, 发布 2024-04-04；Coalesce blog, "Let's Talk About Our Series B," https://coalesce.io/company-news/lets-talk-about-our-series-b/, 2024-04；检索 2026-11-01。
+[^dataform]: Google Cloud blog, "Welcoming Dataform to BigQuery," https://cloud.google.com/blog/products/data-analytics/welcoming-dataform-to-bigquery, 发布 2020-12-08；TechCrunch, "Google quietly acquires Dataform," https://techcrunch.com/2020/12/09/google-quietly-acquires-dataform/, 2020-12-09；Google Cloud blog (Japan), "Introducing Dataform in GA," https://cloud.google.com/blog/ja/products/data-analytics/introducing-dataform-in-ga, 2023-06；检索 2026-11-01。
+[^dt]: Snowflake documentation, "Dynamic tables," https://docs.snowflake.com/en/user-guide/dynamic-tables-intro, 以及 "Understanding dynamic table initialization and refresh," https://docs.snowflake.com/en/user-guide/dynamic-tables/refresh-modes, n.d.；检索 2026-11-01。GA 日期（第三方报道为 2024 年 4 月）未从 Snowflake 来源得到确认。
+[^dbt-sf]: Snowflake release notes, "Nov 06, 2025: dbt Projects on Snowflake (General availability)," https://docs.snowflake.com/en/release-notes/2025/other/2025-11-06-dbt-projects-on-snowflake-ga, 发布 2025-11-06；"May 19, 2026: dbt Projects on Snowflake updates," https://docs.snowflake.com/release-notes/2026/other/2026-05-19-dbt-projects-on-snowflake-updates, 2026-05-19；检索 2026-11-01。
+[^ldp]: Databricks documentation, "What happened to Delta Live Tables (DLT)?," https://docs.databricks.com/aws/en/ldp/where-is-dlt, n.d.；Databricks release notes, "November 2025," https://docs.databricks.com/aws/en/release-notes/product/2025/november, 2025-11；检索 2026-11-01。
+[^lakeflow-jobs]: Databricks blog, "What's new in Workflows," https://www.databricks.com/blog/whats-new-workflows, 2025；Flexera, "Databricks Data + AI Summit 2025 recap," https://www.flexera.com/blog/finops/databricks-data-ai-summit-2025/, 2025-06；检索 2026-11-01。
+[^dagster-docs]: Dagster documentation, "Software-defined assets," https://docs.dagster.io/concepts/assets/software-defined-assets, n.d.；Dagster API reference, "Assets," https://docs.dagster.io/api/python-api/assets, n.d.；检索 2026-11-01。
+[^prefect-dagster]: Dagster blog, "Prefect is acquiring Dagster," https://dagster.io/blog/prefect-is-acquiring-dagster, 发布 2026-07-13；Dagster, "Customer FAQ: Prefect Acquisition," https://dagster.io/dagster-customer-faq, 2026-07；Techstrong.ai, "Prefect to acquire Dagster Labs to drive AI workflow automation," https://techstrong.ai/features/prefect-to-acquire-dagster-labs-to-drive-ai-workflow-automation/, 2026-07；检索 2026-11-01。
+[^temporal]: Temporal, "Temporal raises $550M at a $12.55B valuation," https://temporal.io/news/temporal-raises-550m-at-a-12-55b-valuation, 发布 2026-09-14；GeekWire, https://www.geekwire.com/2026/temporal-raises-550m-hits-12-55b-valuation-as-agentic-ai-wave-fuels-massive-growth/, 2026-09；The Next Web, "Temporal raises $550m at $12.55bn," https://thenextweb.com/news/temporal-550m-series-e-12-55bn-valuation-lightspeed, 2026-09-14（>$250M 年化收入数字的来源，媒体报道）；检索 2026-11-01。
+[^temporal-d]: Business Wire, "Temporal Raises $300M Series D to Make Agentic AI Real for Companies," https://www.businesswire.com/news/home/20260217453156/en/, 发布 2026-02-17；检索 2026-11-01。
+[^jones]: Andrew Jones, *Driving Data Quality with Data Contracts*, Packt, 发布 2023-06, https://oreilly.com/library/view/driving-data-quality/9781837635009（前言将该术语追溯至 2020 年 8 月，首次公开撰文为 2021 年 4 月）；检索 2026-11-01。
+[^odcs]: Bitol (Linux Foundation AI & Data), "Open Data Contract Standard," https://github.com/bitol-io/open-data-contract-standard, n.d.；Bitol, "Bitol Announces ODCS v3.1.0," https://bitol.io/?p=302, 2025-12；检索 2026-11-01。
+[^fishtown]: Newswire, "Fishtown Analytics Rebrands as dbt Labs; Closes $150M to Develop Open-Source Analytics Engineering Software," https://www.newswire.com/view/content/fishtown-analytics-rebrands-as-dbt-labs-closes-150m-to-develop-open-21427433, 2021-06；Technical.ly, "dbt Labs Series C," https://technical.ly/philly/2021/06/30/dbt-labs-series-c/, 2021-06-30；Philadelphia Inquirer, https://www.inquirer.com/business/dbt-labs-fishtown-analytics-tristan-handy-fivetran-acquisition-20251218.html, 2025-12-18；检索 2026-11-01。
+[^funding-csv]: `data/private_funding.csv` 中 dbt Labs D 轮（2022-02-24，$222M，$4.2B，公司披露，来源 Sacra https://sacra.com/c/dbt/）与 Fivetran D 轮（2021-09-20，$565M，$5.6B，公司披露，来源 Sacra https://sacra.com/c/fivetran/）的记录行；检索 2026-11-01。
+[^transform]: Technical.ly, "dbt Labs acquiring Transform," https://technical.ly/startups/dbt-labs-acquiring-transform/, 2023-02-08（已记录于 `data/ma_deals.csv`）；检索 2026-11-01。
