@@ -18,17 +18,17 @@ def make():
     fig, (ax, ax2) = plt.subplots(1, 2, figsize=(12, 5.4), gridspec_kw={"width_ratios": [2.2, 1]})
     gap_start, gap_end = pd.Timestamp("2025-10-15"), pd.Timestamp("2026-08-15")
     ax.axvspan(gap_start, gap_end, color=PALETTE["grey"], alpha=0.08)
-    ax.text(gap_start + (gap_end - gap_start) / 2, 128, "quarters not compiled\n(see chapter text)", ha="center",
+    ax.text(gap_start + (gap_end - gap_start) / 2, 128, "most quarters not compiled\n(see chapter text)", ha="center",
             va="top", fontsize=7.5, color=PALETTE["grey"])
     for prov, color, marker in SPEC:
         s = d[(d["provider"] == prov) & d["g"].notna()].sort_values("dt")
         if s.empty:
             continue
         early = s[s["dt"] < gap_start]
-        late = s[s["dt"] > gap_end]
+        late = s[s["dt"] >= gap_start]
         ax.plot(early["dt"], early["g"], marker=marker, color=color, linewidth=2, label=prov)
         if not late.empty and not early.empty:
-            ax.plot([early["dt"].iloc[-1], late["dt"].iloc[0]], [early["g"].iloc[-1], late["g"].iloc[0]],
+            ax.plot([early["dt"].iloc[-1]] + list(late["dt"]), [early["g"].iloc[-1]] + list(late["g"]),
                     color=color, linewidth=1.2, linestyle=":")
             ax.scatter(late["dt"], late["g"], marker=marker, color=color, s=55, zorder=3)
             r = late.iloc[-1]
@@ -60,9 +60,9 @@ def make():
     ax2.set_ylabel("Quarterly revenue, US$ billions")
     ax2.set_title("Latest compiled quarter")
     ax2.tick_params(axis="x", labelsize=7.5)
-    ax2.set_ylim(0, 38)
+    ax2.set_ylim(0, 52)
     source_note(ax, "Source: data/ch28_cloud_segments.csv (Amazon, Alphabet, Microsoft, Oracle releases; Q3 2026 Google Cloud from "
-                    "Alphabet 8-K; Azure Q1 FY2027 and OCI Q1 FY2027 press-reported). AWS latest quarter not compiled [VERIFY]. "
+                    "Alphabet 8-K; Q3 2026 AWS from Amazon 8-K; Azure Q1 FY2027 and OCI Q1 FY2027 press-reported). AWS Q2 2026 is growth only. "
                     "Segments differ: Google Cloud includes Workspace and TPU sales; Azure growth is 'Azure and other cloud services'; "
                     "OCI is Oracle's IaaS line. Microsoft FY ends Jun 30, Oracle FY ends May 31. Retrieved 2026-11-01.")
     return [save(fig, "ch28_cloud_growth")]

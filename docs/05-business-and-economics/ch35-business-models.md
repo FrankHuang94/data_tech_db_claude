@@ -1,5 +1,5 @@
 # 35. Business Models: Consumption, Subscription, Open Core and Managed Cloud
-> **Depth:** L2 · **Reading time:** ~14 min · **Last verified:** 2026-11-01 · **Prerequisites:** [Ch 25 — Databricks](../04-company-deep-dives/ch25-databricks.md), [Ch 26 — Snowflake](../04-company-deep-dives/ch26-snowflake.md)
+> **Depth:** L2 · **Reading time:** ~17 min · **Last verified:** 2026-11-01 · **Prerequisites:** [Ch 25 — Databricks](../04-company-deep-dives/ch25-databricks.md), [Ch 26 — Snowflake](../04-company-deep-dives/ch26-snowflake.md)
 
 ## TL;DR
 
@@ -80,7 +80,7 @@ flowchart LR
 
 *Figure 35.2 — A consumption contract is a prepaid account that drains as the customer works. Rollover lets the vendor turn an under-consumption problem into a larger renewal. Overage and early renewal are the expansion engine that net revenue retention measures.*
 
-Rollover is the critical clause. Snowflake's 10-K says that in many contracts unused capacity can roll into a subsequent order, generally when the customer buys more.[^sf-10k26] That converts a customer's over-commitment, which would otherwise be a reason to shrink at renewal, into a reason to renew larger. Cloud marketplaces add one more layer. Snowflake lets capacity drawn through its own marketplace terms pay for third-party listings.[^sf-mp-terms] AWS, Azure and Google let customers retire their cloud commitments by buying vendor software through [private offers](../glossary.md#private-offer). AWS added "express" private offers in November 2025 to shorten that negotiation.[^aws-mp] Customers like these marketplace deals because they spend budget already committed to the cloud. Vendors accept a marketplace fee for faster procurement (see [Ch 40](ch40-gtm-partnerships.md)).
+Rollover is the critical clause. Snowflake's 10-K says that in many contracts unused capacity can roll into a subsequent order, generally when the customer buys more.[^sf-10k26] That converts a customer's over-commitment, which would otherwise be a reason to shrink at renewal, into a reason to renew larger. Cloud marketplaces add one more layer. Snowflake's marketplace terms let customers spend their Snowflake capacity on some third-party listings.[^sf-mp-terms] AWS, Azure and Google let customers retire their cloud commitments by buying vendor software through [private offers](../glossary.md#private-offer). AWS added "express" private offers in November 2025 to shorten that negotiation.[^aws-mp] Customers like these marketplace deals because they spend budget already committed to the cloud. Vendors accept a marketplace fee for faster procurement (see [Ch 40](ch40-gtm-partnerships.md)).
 
 > **Bridge: capacity commits as take-or-pay wafer agreements.** A multi-year capacity commit is the software version of a foundry **long-term agreement (LTA)**. In 2021–22 chip designers signed take-or-pay wafer contracts with prepayments to secure supply. Cirrus Logic's 10-K describes a GlobalFoundries agreement obliging it to buy a set number of wafers each quarter, with prepayments at risk.[^gf-lta] GlobalFoundries said in 2022 that LTAs covered about $27B of future revenue backed by about $3.6B of prepayments and access fees (company-stated, press-reported via call summary).[^gf-lta] The parallel is direct. The prepayment shows up as RPO, the minimum purchase is the commitment, and the risk is what happens at renewal if the customer has over-bought. Foundries renegotiated in 2023 when demand fell. Software vendors use rollover to do the same thing more gently.
 
@@ -173,7 +173,7 @@ flowchart TB
 | Google BigQuery | Consumption | $/TiB scanned or slot-hours | Edition commitments | [Ch 28](../04-company-deep-dives/ch28-hyperscaler-data-platforms.md) |
 | MongoDB | Open core + managed cloud | Atlas cluster hours; EA term licences | Annual Atlas commits; self-serve billed monthly in arrears | [Ch 29](../04-company-deep-dives/ch29-operational-database-vendors.md) |
 | Confluent (IBM) | Open core + managed cloud | eCKUs, GB; Platform subscription | WarpStream BYOC | [Ch 30](../04-company-deep-dives/ch30-data-movement-streaming-companies.md) |
-| Elastic | Open core + managed cloud | Resource-based cloud; self-managed subscription | Serverless projects; AGPL option | [Ch 31](../04-company-deep-dives/ch31-analytical-engine-challengers-legacy.md) |
+| Elastic | Open core + managed cloud | Resource-based cloud; self-managed subscription | Serverless projects; AGPL option | [Ch 38](ch38-open-source-strategy.md) |
 | Fivetran + dbt Labs | Consumption + seats | MAR per connection; dbt seats + model builds | dbt Core open source | [Ch 10](../02-pipelines-and-governance/ch10-ingestion-and-integration.md) |
 | Airbyte | Open core | Credits or Data Workers | ELv2 connectors | [Ch 10](../02-pipelines-and-governance/ch10-ingestion-and-integration.md) |
 | Salesforce (Agentforce, Informatica) | Seats + consumption | Seats; conversations; Flex Credits; IPUs | Three agent meters in parallel | [Ch 34](../04-company-deep-dives/ch34-application-giants-data-platforms.md) |
@@ -186,7 +186,7 @@ flowchart TB
 ```mermaid
 timeline
     title Data infrastructure pricing, 1990s to 2026
-    1990s to 2000s : Perpetual licence plus 20 percent support annuity : Per core and per named user
+    1990s to 2000s : Perpetual licence plus about 22 percent support annuity : Per core and per named user
     2006 to 2012 : AWS popularises per hour compute : BigQuery launches pay per byte scanned
     2014 to 2016 : Snowflake sells credits on separated storage and compute : Databricks DBUs on customer clouds
     2016 to 2018 : MongoDB Atlas and Confluent Cloud : Open core vendors build managed services

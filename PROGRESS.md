@@ -22,7 +22,7 @@
 
 Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + comparison tables (`scripts/qa_report.py`).
 
-**Totals:** 38/52 chapters drafted · 142,174 prose words · 354 visuals · 442 [VERIFY] markers.
+**Totals:** 41/52 chapters drafted · 153,522 prose words · 382 visuals · 447 [VERIFY] markers.
 
 | Ch | File | Status | Words | Budget | Visuals | VERIFY | Reviewed |
 |---|---|---|---|---|---|---|---|
@@ -55,22 +55,22 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 25 | ch25-databricks.md | QA pass | 5,329 | 4500 | 13 | 6 | no |
 | 26 | ch26-snowflake.md | QA pass | 6,449 | 4500 | 16 | 29 | no |
 | 27 | ch27-databricks-vs-snowflake.md | QA pass | 3,918 | 2500 | 11 | 17 | no |
-| 28 | ch28-hyperscaler-data-platforms.md | QA pass | 5,206 | 3500 | 10 | 29 | no |
+| 28 | ch28-hyperscaler-data-platforms.md | QA pass | 5,371 | 3500 | 10 | 26 | no |
 | 29 | ch29-operational-database-vendors.md | QA pass | 4,383 | 3000 | 11 | 46 | no |
 | 30 | ch30-data-movement-streaming-companies.md | QA pass | 4,365 | 3000 | 10 | 25 | no |
-| 31 | ch31-analytical-engine-challengers-legacy.md | QA pass | 4,389 | 3000 | 8 | 30 | no |
+| 31 | ch31-analytical-engine-challengers-legacy.md | QA pass | 4,460 | 3000 | 8 | 21 | no |
 | 32 | ch32-ai-native-data-companies.md | QA pass | 4,637 | 3500 | 11 | 36 | no |
 | 33 | ch33-governance-catalog-security-companies.md | QA pass | 3,495 | 2500 | 9 | 18 | no |
 | 34 | ch34-application-giants-data-platforms.md | QA pass | 3,419 | 2000 | 12 | 50 | no |
 | 35 | ch35-business-models.md | QA pass | 3,881 | 2500 | 9 | 1 | no |
-| 36 | ch36-unit-economics-kpis.md | not started | 0 | 2500 | 0 | 0 | no |
+| 36 | ch36-unit-economics-kpis.md | QA pass | 4,083 | 2500 | 11 | 10 | no |
 | 37 | ch37-public-comps-valuation.md | not started | 0 | 2500 | 0 | 0 | no |
 | 38 | ch38-open-source-strategy.md | QA pass | 3,283 | 2000 | 8 | 6 | no |
-| 39 | ch39-ma-history.md | not started | 0 | 3500 | 0 | 0 | no |
+| 39 | ch39-ma-history.md | QA pass | 4,745 | 3500 | 11 | 2 | no |
 | 40 | ch40-gtm-partnerships.md | QA pass | 2,915 | 2000 | 9 | 6 | no |
 | 41 | ch41-market-sizing.md | QA pass | 1,762 | 1000 | 7 | 6 | no |
 | 42 | ch42-history-of-databases.md | not started | 0 | 3000 | 0 | 0 | no |
-| 43 | ch43-modern-data-stack.md | not started | 0 | 2000 | 0 | 0 | no |
+| 43 | ch43-modern-data-stack.md | QA pass | 2,284 | 2000 | 6 | 5 | no |
 | 44 | ch44-future-trends.md | not started | 0 | 3000 | 0 | 0 | no |
 | 45 | ch45-storage-moving-up-the-stack.md | not started | 0 | 2000 | 0 | 0 | no |
 | 46 | ch46-talking-with-data-people.md | not started | 0 | 2200 | 0 | 0 | no |

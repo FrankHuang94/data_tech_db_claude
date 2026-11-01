@@ -1,0 +1,1 @@
+- ch35: [VERIFY: current Snowflake and Databricks sales-compensation design (quota credit on consumption vs bookings); text relies on public commentary before 2025, not a 2026 primary source.]

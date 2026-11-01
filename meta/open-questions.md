@@ -325,3 +325,4 @@ Every `[VERIFY: …]` left in the text is listed here with its chapter. Resolve 
 | ch41 | ch41: Verify Everpure Financial Analyst Meeting (2026-09-23) TAM figures ($108B FY2026 to $207B FY2030; Modern Data Software $22B; Scale AI $9B; enterprise storage $79B; all-flash SAM $34B to $69B) on Financial-Analyst-Meeting-Slide-Deck.pdf; currently from NAND Research write-up. | open |
 | ch41 | ch41: Verify the 2021 DBMS total (~$80B) in TechRepublic/Gartner (carried from data/market_sizes.csv). | open |
 | ch41 | ch41 (not in text, in data): Gartner 2025 DBMS actual (market-share 2025 report, Ronthal) not public; $136.0B row is derived from the 2026 forecast. | open |
+| ch35 | ch35: [VERIFY: current Snowflake and Databricks sales-compensation design (quota credit on consumption vs bookings); text relies on public commentary before 2025, not a 2026 primary source.] | open |
