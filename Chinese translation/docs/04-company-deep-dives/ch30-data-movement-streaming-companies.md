@@ -1,6 +1,7 @@
 # 30. 数据移动与流处理公司
 > **状态：** 混合：已被收购 / 私营 · **总部：** 多地（美国、英国） · **成立：** 1993–2020 年 · **最新估值/市值：** IBM–Confluent 约 $11B EV（公告交易价值，2026-03-17 完成）；Salesforce–Informatica 约 $8B 股权价值（2025-11-18 完成）；Fivetran + dbt Labs 未定价（全股票合并，2026-06-01 完成） · **最后核实：** 2026-11-01
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - **这一层在 18 个月内被"卖光"。** 2025 年 5 月至 2026 年 6 月间，三家最知名的独立数据移动企业或易主、或合并。Salesforce 收购 Informatica（约 $8B 股权价值），IBM 收购 Confluent（约 $11B 企业价值），Fivetran 则以全股票交易与 dbt Labs 合并。留下来的独立厂商（Airbyte、Redpanda、Matillion、Estuary）规模要小得多。[^infa-close][^ibm-close][^ft-dbt-close]
@@ -9,6 +10,7 @@
 - **为什么整合冲击了这一层。** 平台如今捆绑了"够用"的连接器。按连接计量和无盘（diskless）Kafka 设计给定价带来压力。智能体需要集成化、经过治理的上下文。买家厌倦了把十种工具拼接在一起。而 2021 年那一批私募估值也需要退出。
 - **Everpure 视角（仅基于公开信息）。** 流数据的保留正迁移到对象存储（object storage）上，而数据移动决定了湖仓一体（lakehouse）表最终落在哪里。这两个趋势都让兼容 S3 的本地存储有可能成为落地区。可行的选项包括：与无盘 Kafka 引擎做认证、与可自托管的摄取工具一起做落地区设计，以及关注 IBM——它既是潜在合作伙伴，也是存储领域的对手。
 
+<a id="snapshot-table"></a>
 ## 概览表
 
 | 公司 | 成立 / 总部 | 负责人（最新公开信息） | 所有者 / 状态（2026-11-01） | 规模指标（已标注） | 最近价格（口径、日期） |
@@ -23,6 +25,7 @@
 
 *图 30.1 — 概览。在三家收入或 ARR 达到约 $1B 及以上的公司中，两家如今隶属于更大的集团，第三家则是靠合并才达到这一规模。剩下的独立厂商属于风投体量，且它们最近一次定价融资大多在 2021 年。*
 
+<a id="origin-story-and-strategic-arc"></a>
 ## 起源与战略演进
 
 本章贯穿着两条谱系。**ETL 谱系**（Informatica，其后是 Talend、Matillion、Fivetran、Airbyte）起家于把数据从应用程序批量搬运到数据仓库。相关机制见[第 10 章](../02-pipelines-and-governance/ch10-ingestion-and-integration.md)。**日志谱系**（Kafka、Confluent、Redpanda）起家于在系统之间持续传送事件，其机制见[第 11 章](../02-pipelines-and-governance/ch11-streaming-and-event-platforms.md)。两者在 2025–26 年走到了同一个终点：被收购、被合并，或承受着捆绑相同功能的平台带来的压力。
@@ -58,6 +61,7 @@ Gaurav Dhillon 和 Diaz Nesamoney 于 1993 年创立 Informatica。它成为企�
 
 据报道，Salesforce 曾在 2024 年 4 月与 Informatica 洽谈收购，但谈判破裂（媒体报道）。[^infa-2024] 十三个月后，Salesforce 同意以每股 $25 现金、约 $8B 股权价值收购，交易于 2025 年 11 月 18 日完成。[^infa-close]
 
+<a id="fivetran-and-dbt-labs"></a>
 ### Fivetran 与 dbt Labs
 
 George Fraser 和 Taylor Brown 于 2012 年创立 Fivetran，并将其打造为领先的托管 ELT 服务，按[月活跃行数](../glossary.md#monthly-active-rows)（monthly active rows，MAR）计费。[^ft-300m] 2021 年 9 月，公司以 $5.6B 估值融资 $565M，并以 $700M 收购了企业级[变更数据捕获（CDC）](../glossary.md#change-data-capture)厂商 HVR。[^hvr][^funding] 公司于 2024 年 9 月突破 $300M ARR（公司披露）。[^ft-300m]
@@ -66,10 +70,12 @@ dbt 于 2016 年诞生于 Tristan Handy 的咨询公司 Fishtown Analytics。它
 
 随后 Fivetran 通过收购拼出了一个完整的技术栈。它同意收购用于反向 ETL（reverse ETL）的 **Census**（2025 年 5 月宣布；交割未单独确认），收购了拥有 SQLMesh——dbt 最有分量的挑战者——的 **Tobiko Data**（2025 年 9 月），随后又与 **dbt Labs** 达成全股票合并（2025 年 10 月 13 日宣布，2026 年 6 月 1 日完成）。2026 年 5 月，它还接手了 Great Expectations 开源项目的管理。[^census][^tobiko][^ft-dbt-close][^ma-csv] Fraser 任 CEO，Handy 任总裁。
 
+<a id="airbyte-and-redpanda"></a>
 ### Airbyte 与 Redpanda
 
 **Airbyte** 由 Michel Tricot 和 John Lafleur 于 2020 年创立，是 Fivetran 的开源对手。它可免费自托管，拥有由社区构建的长尾连接器，并提供付费云服务。它于 2021 年 12 月——现代数据栈周期的顶峰——以 $1.5B 估值完成 $150M B 轮融资。[^ab-seriesb] **Redpanda** 由 Alex Gallego 于 2019 年创立（最初名为 Vectorized）。它用 C++ 以每核一线程（thread-per-core）的设计重写了 Kafka broker，不依赖 JVM 或 ZooKeeper，保持与 Kafka API 的兼容，主打性能、简洁以及自带云（bring-your-own-cloud）部署模式。它于 2025 年 4 月以 $1B 估值融资 $100M，由 GV 领投。[^rp-fund]
 
+<a id="product-and-technology"></a>
 ## 产品与技术
 
 本节把产品映射到商业定位上。相关机制（日志、分区、MAR 计量、CDC）在第 [10](../02-pipelines-and-governance/ch10-ingestion-and-integration.md) 章和第 [11](../02-pipelines-and-governance/ch11-streaming-and-event-platforms.md) 章中讲解。
@@ -112,6 +118,7 @@ flowchart LR
 
 *图 30.3 — 数据移动层及其邻居。本章中的每个买家都买下了一个方框以及它旁边的部分箭头：IBM 买下了流处理方框外加处理能力，Salesforce 买下了数据治理外加集成，Fivetran 买下了摄取、转换外加反向 ETL。*
 
+<a id="confluent-1"></a>
 ### Confluent
 
 Confluent 的产品组合分四层。(1) **Kafka 本身**，形式为 Confluent Platform（自管理，定期许可）或 Confluent Cloud（托管，运行在其 Kora 引擎上）。(2) **Freight 集群与 WarpStream**，面向对延迟不敏感、数据量大的对象存储层级。WarpStream 采用自带云模式，数据平面位于客户自己的账户中。(3) 用于流处理的 **Flink**，外加 2025 年末推出、为 AI 智能体供数的"Streaming Agents"与"Real-Time Context Engine"功能。[^confluent-intel] (4) **Tableflow** 与连接器，把主题落地为 Iceberg 或 Delta 表。产品组合宽广是看多的理由。看空的理由在于第 2 层和第 4 层会蚕食第 1 层的收入：更便宜的层级和表的交接都会降低客户每 GB 的支出。
@@ -124,10 +131,12 @@ Redpanda 是一个支持 Kafka 协议的单一二进制程序。它主打更低�
 
 合并后的产品覆盖四个环节：连接器，包括基于 HVR 的数据库 CDC 以及用于自定义数据源的 Connector SDK；通过 dbt（Core、Fusion 引擎和 dbt platform，即原 dbt Cloud）和 SQLMesh 实现的数据转换；语义层（MetricFlow，2025 年 10 月开源）；以及通过 Census 反向 ETL 实现的数据激活。[^ft-sdk][^metricflow][^census] 其卖点是**中立性**：一条从数据源到指标定义、经过治理的数据管道（pipeline），在 Snowflake、Databricks、BigQuery 和 Fabric 上同样适用。这恰恰是这些平台无法可信地提供给彼此客户的东西。
 
+<a id="informatica-1"></a>
 ### Informatica
 
 IDMC 是这里覆盖面最广的套件。它涵盖集成（批量、CDC、API 与应用集成）、数据质量、MDM、数据目录（data catalog）和数据治理（governance），全部置于 CLAIRE AI 层之下。MDM 是战略上的"明珠"。把"Acme Corp"、"ACME Corporation"和"Acme Inc."匹配成一条黄金客户记录，是一项艰难且粘性很强的工作，摄取工具不做这件事。Salesforce 正需要这种能力，为 Agentforce 提供单一、可信的客户视图。
 
+<a id="airbyte-matillion-and-the-ipaas-vendors-brief"></a>
 ### Airbyte、Matillion 与 iPaaS 厂商（简述）
 
 - **Airbyte** 销售三样东西：Elastic License（ELv2）下的开源软件、按积分或容量（"Data Workers"）计价的云服务，以及自管理的企业许可。它的 AI 战略分两半。一半是更便宜的连接器：通过 AI 辅助的 Connector Builder 根据 API 文档起草连接器（2024 年）。另一半是把连接器定位为智能体的数据访问通道，借助 PyAirbyte 和面向智能体的工具 [VERIFY: 当前智能体产品名称]。[^ab-ai][^ab-license][^ab-pricing]
@@ -136,6 +145,7 @@ IDMC 是这里覆盖面最广的套件。它涵盖集成（批量、CDC、API �
 - **Boomi** 是一家 iPaaS 厂商，Dell 于 2021 年以约 $4B（公告交易价值）将其出售给 Francisco Partners 和 TPG。它通过 Rivery（约 $100M，媒体报道，2024 年 12 月）补充了 ELT 和 CDC，又通过 Elementary（2026 年 10 月）补充了可观测性。[^boomi-dell][^rivery][^elementary]
 - **MuleSoft** 是 Salesforce 以 API 为主导的应用集成业务，于 2018 年以 $6.5B 收购，如今与 Informatica 同处 Salesforce 旗下。[^mulesoft]
 
+<a id="how-it-makes-money"></a>
 ## 盈利模式
 
 | 厂商 | 主要计价单位 | 收入确认特征 | 利润率驱动因素 |
@@ -156,16 +166,19 @@ IDMC 是这里覆盖面最广的套件。它涵盖集成（批量、CDC、API �
 
 > **类比：半导体（IP 核）。** 连接器目录就像一个 **IP 核**库。每个 IP 核（USB PHY、DDR 控制器、Salesforce 连接器）都不起眼，每当标准或 API 变化时都必须重新验证，而且放在一个经过验证的组合里比单独存在更有价值。EDA 厂商花了二十年收购 IP 核和单点工具公司，直到客户购买的是一整套经过验证的流程而不是零件。Fivetran–dbt 合并和 Boomi 的补强收购遵循同样的逻辑。捆绑包之所以能获得溢价，是因为它承担了重新验证的负担，而一家只有一个更好 IP 核的初创公司很难被"设计导入"。
 
+<a id="financials"></a>
 ## 财务数据
 
+<a id="confluent-gaap-fiscal-year--calendar-year"></a>
 ### Confluent（GAAP，财年 = 自然年）
 
-![Confluent GAAP 收入柱状图：从 FY2019 的 $150M 增至 FY2025 的 $1,167M（由 $1,166.7M 四舍五入），Confluent Cloud 在 FY2024 占收入 51%、FY2025 占 53%，增速折线从 FY2021 的 64% 降至 FY2025 的 21%](../assets/charts/ch30_confluent.png)
+![Confluent GAAP 收入柱状图：从 FY2019 的 $150M 增至 FY2025 的 $1,167M（由 $1,166.7M 四舍五入），Confluent Cloud 在 FY2024 占收入 51%、FY2025 占 53%，增速折线从 FY2021 的 64% 降至 FY2025 的 21%](../../../docs/assets/charts/ch30_confluent.png)
 
 *图 30.5 — Confluent 的收入在六年内增长约 7.8x，但 FY2021 之后增速逐年下降。云业务在 FY2024 超过收入的一半（我们的数字，由 FY2025 增速推算）。FY2024（$963.6M）和 FY2025（$1,166.7M）已与 FY2025 10-K 及业绩公告核对确认；FY2019–FY2023 的总额凭记忆取自历年申报文件，已标记待复核。资料来源：`data/ch30_confluent_financials.csv`。[^cflt-fin]*
 
 收入从 $149.8M（FY2019）增至 $1,166.7M（FY2025）。增速在 FY2021 达到 64% 的峰值，随后依次放缓至 51%、33%、24% 和 21%。[^cflt-fin] FY2025 收入分为订阅 $1,119.7M 和服务 $47.0M；仅 Q4 就达 $314.8M（+21%），其中云业务 $169M（+23%），可见云业务的增速本身在出售前也在放缓。[^cflt-10k] Confluent Cloud 全年增长 27%，快于总收入，因此其余部分（主要是自管理的 Platform，加上服务）按我们的算法增长约 15%：($1,166.7M − $624M) ÷ ($963.6M − $491M) ≈ 15%（估算；FY2024 云业务基数为推算值）。公司在整个上市期间都报告 GAAP 营业亏损（FY2025：−$380.1M），主要由股权激励费用（SBC）驱动。按非 GAAP 口径，它只是略有盈利：营业利润率 FY2024 为 2.9%，FY2025 为 7.4%。[^cflt-10k] 因此买家支付的是增长和战略契合度，而不是当前盈利。
 
+<a id="deal-multiples"></a>
 ### 交易倍数
 
 | 交易（宣布时间） | 价格 | 收入基数 | 倍数 | 标注 |
@@ -195,10 +208,12 @@ xychart-beta
 
 > **类比：估值。** 用倍数除以增速。Confluent 以约 9.4x 成交，对应 21% 的增长，约合**每个增长百分点 0.45x**。2026-10-30，Snowflake 的 EV/未来 12 个月收入为 16.9x，对应 35% 的增长，约合每个百分点 0.48x。[^comps-sf] 两者口径并不一致：Confluent 的倍数是 2025 年 12 月交易日的 EV/*过去 12 个月*收入，Snowflake 的则是十个月后的 EV/*未来 12 个月*收入。若按未来 12 个月口径，Confluent 的倍数还会更低（若增速维持在 18–20% 左右，约为 8x；我们的估算），这反而强化而非削弱了上述论点。按这一粗略口径，IBM 支付的是市场价格，而不是相对于基本面的收购溢价。溢价是相对于 Confluent 宣布前低迷的股价而言的。剔除云业务占比和利润率的差异后，结论依然成立：在 2025–26 年，买家为增长和利润率买单，而不是为品类领导地位买单。
 
+<a id="fivetran--dbt-labs-airbyte-and-redpanda-private"></a>
 ### Fivetran + dbt Labs、Airbyte 与 Redpanda（私营）
 
 合并后的公司只披露 ARR "接近 $600M"（公司披露，2026 年 6 月），宣布时客户超过 10,000 家。[^ft-dbt-close][^merger-ann] 减去 dbt Labs 最近一次公布的数字（>$100M ARR，2025 年 2 月），意味着 Fivetran 加上 Census 和 Tobiko 贡献了约 $450–500M。这是我们的估算，并假设 dbt 在此期间增长了 20–40%。Airbyte 和 Redpanda 不披露收入。
 
+<a id="customers-and-go-to-market"></a>
 ## 客户与市场进入
 
 - **Confluent** 通过直销团队向平台工程团队销售，配合云市场联合销售（co-sell）以及拥有 120 多个预置连接器的合作伙伴生态 [VERIFY: 连接器数量]。在 IBM 交割时，公司称拥有 6,500 多家客户，约占《财富》500 强的 40%（公司披露、媒体报道）。[^ibm-close] 在 IBM 旗下，市场进入（GTM）方式发生变化：IBM Consulting、IBM Z 大型机客户群（大量交易数据的源头）以及 Red Hat OpenShift 成为新的渠道。
@@ -206,6 +221,7 @@ xychart-beta
 - **Fivetran + dbt Labs** 以产品主导的获客方式（Fivetran 的免费层和 dbt Core 的开源社区）导入企业销售，并大量通过 Snowflake 和 Databricks 云市场进行联合销售。
 - **Airbyte** 依赖开源漏斗。**Redpanda** 通过云市场向对延迟敏感和受监管的买家销售 BYOC。
 
+<a id="ma-and-investments"></a>
 ## 并购与投资
 
 ```mermaid
@@ -247,6 +263,7 @@ flowchart LR
 
 *图 30.8 — 各项被收购资产的去向。流处理归入一家基础设施综合集团，数据治理和 MDM 归入一家应用厂商，CDC 工具归入数据平台，而现代数据栈工具则彼此合并。资料来源：`data/ma_deals.csv`。*
 
+<a id="ibmconfluent-why-ibm-bought-it"></a>
 ### IBM–Confluent：IBM 为何收购
 
 自 2019 年以来，IBM 的软件战略读起来就像一摞收购清单。**Red Hat**（$34B，2019 年）提供混合云运行时（RHEL、OpenShift）。**HashiCorp**（约 $6.4B，2025 年 2 月完成）提供基础设施自动化（Terraform、Vault）。**StreamSets 与 webMethods**（€2.13B，2024 年 7 月完成）提供数据摄取和应用集成。**DataStax**（2025 年 5 月完成）提供向量和 NoSQL 数据。**watsonx** 作为 AI 与数据平台位于顶层。[^ma-csv][^hashicorp][^ibm-ss] 缺失的是这些产品都会触及的实时事件层。Confluent 填补了这一空白，同时带来了对事件传输事实标准协议的商业主导权。
@@ -255,6 +272,7 @@ flowchart LR
 
 > **类比：基础设施（协议的旗手）。** IBM 收购 Confluent，类似于一家基础设施综合集团收购某项**协议的商业旗手**，就像 Broadcom 收购光纤通道交换领域的领导者 Brocade。协议（Kafka、光纤通道）是开放的或标准化的，没有人能完全拥有它。能买下的是那家编写了大部分代码、运营一致性生态、支持最大存量装机基础的公司。买家得到的是客户掌控力和路线图影响力，而不是排他性。对手（Redpanda、MSK、AutoMQ）仍然使用同一协议，正如其他交换机厂商也使用光纤通道一样。
 
+<a id="salesforceinformatica-why-salesforce-bought-it"></a>
 ### Salesforce–Informatica：Salesforce 为何收购
 
 Salesforce 的智能体战略需要干净、统一、经过治理的数据。Agentforce 的回答好坏，完全取决于其下的客户记录。Data Cloud（2025 年 10 月在 Dreamforce 上更名为 Data 360）已经提供对 Snowflake 和 Databricks 的零拷贝（zero-copy）访问，MuleSoft 也已经提供 API。Salesforce 缺的是**工业级的数据管理工具箱**：用于实体解析的 MDM、用于修复记录的数据质量、显示数据来源的目录和数据血缘（lineage），以及来自非 Salesforce 系统的批量集成。[^infa-close] Informatica 正是向全球 2000 强提供这套工具箱最完整的供应商。
@@ -263,10 +281,12 @@ Salesforce 的智能体战略需要干净、统一、经过治理的数据。Age
 
 **交割后发生了什么。** Salesforce 不单独报告 Informatica 的收入，但会在一项 ARR 指标中披露 Informatica。在 Q2 FY2027（2026 年 5–7 月），它报告 Data 360 ARR 为 $2.4B（同比 +>200%），**其中包含 $1.1B 的 Informatica Cloud ARR**，合并后的 Agentforce + Data 360 ARR 约为 $3.9B（均为公司披露）。[^crm-q2fy27] 剔除 Informatica，内生的 Data 360 ARR 约为 $1.3B（我们的计算），因此标题中的三位数增长大部分来自这笔收购。Salesforce 还在 Q2 扩大了 Agentforce ARR 的定义，纳入 Slackbot 和"Headless 360"，使跨期比较更加困难。本轮核查未发现 IDMC 定价或第三方连接器支持有已确认的变化 [VERIFY: 领导层变动与整合里程碑]。市场方面，截至 2026-10-30，Salesforce 的企业价值高于其市值，反映了这笔现金交易后的净债务，其市值同比下跌约 21%（stockanalysis，2026-10-30）。[^comps-crm] 这一下跌既反映了这笔交易，也同样反映了市场对 AI 冲击应用软件席位的更广泛担忧。
 
+<a id="fivetran-merger-rationale-and-the-ipo-question"></a>
 ### Fivetran：合并逻辑与 IPO 问题
 
 Fivetran 的逻辑是以扩大范围代替降价。单纯的摄取正被平台捆绑掉。摄取加转换加语义加激活，则构成一个平台之间无法中立捆绑的"数据控制平面"。全股票结构避免了重新估值——当时两家公司 2021–22 年的估值（$5.6B 和 $4.2B）很可能高于一轮定价融资所能给出的水平。[^funding] 合并宣布后出现了 IPO 猜测，但截至 2026-11-01 尚无任何申报或时间表的报道 [VERIFY: 是否有秘密提交 S-1 的报道]。[^merger-ann] 尚存的风险包括 dbt 社区对许可证的焦虑（Fusion 引擎是专有的；dbt Core v2 采用 Apache 2.0）以及并购组合的整合负担（见[第 12 章](../02-pipelines-and-governance/ch12-transformation-and-orchestration.md)）。[^core-v2]
 
+<a id="why-consolidation-hit-this-layer"></a>
 ## 为什么整合冲击了这一层
 
 五股力量同时到来，其中任何一股单独出现都足以给一家独立的数据移动厂商带来压力。
@@ -277,6 +297,7 @@ Fivetran 的逻辑是以扩大范围代替降价。单纯的摄取正被平台�
 4. **买家厌倦了拼接工具。** 2020–21 年的"现代数据栈"要求客户从不同厂商处组装摄取、转换、编排（orchestration）、质量、目录和反向 ETL。采购和平台团队如今在整合供应商，这奖励套件而惩罚单点工具。
 5. **2021 年那一批需要退出。** Confluent 和 Informatica 于 2021 年上市，Fivetran、dbt Labs、Airbyte 和 Matillion 都在 2021–22 年完成了定价融资。随着增长放缓，公开市场倍数被压缩，私募估值变得过时。战略出售（Confluent、Informatica）或换股合并（Fivetran–dbt Labs）在避免降价融资的情况下解决了这一问题。十年前，私募股权为 TIBCO、Informatica 和 Qlik 做的也是同样的事。[^infa-pe][^ma-csv]
 
+<a id="competitive-position"></a>
 ## 竞争地位
 
 | 维度 | Confluent（IBM） | Redpanda | Fivetran + dbt Labs | Informatica（Salesforce） | Airbyte | Matillion | Qlik Talend | Boomi | MuleSoft |
@@ -294,6 +315,7 @@ Fivetran 的逻辑是以扩大范围代替降价。单纯的摄取正被平台�
 
 **平台才是真正的竞争者。** Databricks Lakeflow Connect（基于 Arcion）和 Snowflake Openflow（基于 Datavolo/NiFi）把摄取放到了平台自己的计费表上，而 AWS、Google 和 Microsoft 则捆绑了零 ETL、Datastream 和 Fabric 复制作业。[^lakeflow][^openflow] 在流处理领域，Amazon MSK、Google 的托管 Kafka 和 Azure Event Hubs 在各自云内默认胜出。AutoMQ、Bufstream 和 StreamNative Ursa 等无盘设计以价格竞争，而 Apache Kafka 自身已获接受的 KIP-1150 将把对象存储主题带到免费的 Kafka 中。[^kip1150] Redpanda 的独特优势是延迟加 BYOC，Airbyte 的独特优势则是开源加长尾。
 
+<a id="why-its-winning--bull-case"></a>
 ## 制胜原因 / 看多逻辑
 
 1. **智能体提升了新鲜、经过治理的上下文的价值。** 事件流（Confluent）、匹配后的主数据（Informatica）和语义定义（dbt）恰恰是智能体所需要的输入，这也是战略买家愿意支付战略价格的原因。
@@ -301,6 +323,7 @@ Fivetran 的逻辑是以扩大范围代替降价。单纯的摄取正被平台�
 3. **整合之后，中立性变得更稀缺。** 随着 Informatica 并入 Salesforce、Confluent 并入 IBM，Fivetran + dbt Labs、Redpanda 和 Airbyte 可以向多平台企业兜售"没有平台议程"。
 4. **协议护城河依然稳固。** Kafka 的 API 是行业通用接口，而 Confluent 仍雇用着大部分核心贡献者，从而保有对路线图的影响力。
 
+<a id="risks--bear-case-and-open-questions"></a>
 ## 风险 / 看空逻辑与待解问题
 
 1. **捆绑压缩了独立业务。** 每一个平台连接器或零 ETL 集成都会从独立厂商的计费表上拿走一个高流量数据源，只留下长尾，而 AI 生成的连接器接下来就会攻击长尾。
@@ -310,6 +333,7 @@ Fivetran 的逻辑是以扩大范围代替降价。单纯的摄取正被平台�
 5. **过时的私募估值。** Airbyte（$1.5B）和 Matillion（$1.5B）最近一次定价都在 2021 年。平价甚至折价退出是真实存在的可能，这使私募股权和平台仍是可能的买家。
 6. **待解问题。** 到 FY2026 年末，IBM 会披露多少 Confluent 收入？Salesforce 是否会让 Informatica 的连接器和定价对 SAP 和 Snowflake 保持中立？Fivetran + dbt Labs 是否会申请 IPO，又会以约 $600M ARR 的多少倍定价？
 
+<a id="relevance-to-everpure"></a>
 ## 与 Everpure 的相关性
 
 > **存储桥接。** 无盘 Kafka 和"由主题生成 Iceberg"把流数据保留变成了一种对象存储工作负载：大块顺序 PUT、回放突发以及数周的历史数据。能把开放格式写入任意兼容 S3 端点的摄取工具，可以把湖仓表落在本地。对象存储性能细节见姊妹篇 *Everpure Tech Atlas*，成本算例见[第 11 章](../02-pipelines-and-governance/ch11-streaming-and-event-platforms.md)。
@@ -327,6 +351,7 @@ Fivetran 的逻辑是以扩大范围代替降价。单纯的摄取正被平台�
 
 *图 30.10 — 选项矩阵（仅基于公开信息）。杠杆最大的抓手是流处理向对象存储的转移，因为它改变了字节在物理上存放的位置。*
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向这些公司的产品负责人或高管提出的三个问题**
@@ -351,6 +376,7 @@ Fivetran 的逻辑是以扩大范围代替降价。单纯的摄取正被平台�
 - "Kafka 现在属于 IBM 了。"Apache Kafka 是 Apache 软件基金会的项目；IBM 拥有的是 Confluent。
 - "Airbyte 的连接器是免费的，所以不花钱。"软件是免费的，运维却不是（[第 10 章](../02-pipelines-and-governance/ch10-ingestion-and-integration.md)）。
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [月活跃行数（Monthly active rows）](../glossary.md#monthly-active-rows) — Fivetran 的计费单位：每个连接每月发生变化的不同行数。
@@ -367,6 +393,7 @@ Fivetran 的逻辑是以扩大范围代替降价。单纯的摄取正被平台�
 - [先例交易（Precedent transaction）](../glossary.md#precedent-transaction) — 以其倍数作为估值基准的过往交易。
 - [开放核心（Open core）](../glossary.md#open-core) — 免费提供开源核心、销售专有功能或托管服务的模式。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^ibm-close]: IBM, "IBM Completes Acquisition of Confluent," via Stock Titan, https://www.stocktitan.net/news/IBM/ibm-completes-acquisition-of-confluent-making-real-time-data-the-lbuwdbharsqe.html，发布 2026-03-17；ChannelWeb UK, "IBM completes $11bn Confluent acquisition," https://www.channelweb.co.uk/news-network/2026/ibm-completes-11bn-confluent-acquisition，发布 2026-03；检索 2026-11-01。客户数量为公司披露、媒体报道。

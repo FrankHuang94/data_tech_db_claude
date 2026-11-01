@@ -1,6 +1,7 @@
 # 26. Snowflake
 > **状态：** 上市公司（NYSE: SNOW） · **总部：** 无正式总部；主要执行办公室位于蒙大拿州 Bozeman（据 SEC 文件）；主要工程中心位于旧金山湾区 · **成立：** 2012 · **最新估值/市值：** 市值约 $107.9B，企业价值约 $106.3B，**16.9x EV/未来 12 个月收入**（2026-10-30 收盘；未来 12 个月收入取自 FY2027 指引） · **最后核实：** 2026-11-01
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - **公司是什么。** Snowflake 销售全托管的云数据平台。它起步于一款基于公有云对象存储（object storage）、实现存算分离（separation of storage and compute）的 SQL 数据仓库（data warehouse）。如今它自我定位为"AI Data Cloud"：数据仓库、数据共享与云市场、Python 与应用运行时、Iceberg 湖仓一体（lakehouse）、Postgres、数据摄取（ingestion）、可观测性（observability）以及 AI 智能体（agent），全部通过同一个按用量计费的计量单位——**credit（积分）**——结算。
@@ -9,6 +10,7 @@
 - **战略转向：从"拥有存储"到"拥有计算与数据治理"。** Snowflake 最初的护城河是其专有托管存储。如今，Iceberg 表、其捐赠给 Apache 的 Polaris 目录（catalog），以及 Horizon 的 Iceberg REST 端点，使客户可以把数据保存在开放格式中。Snowflake 押注：赢得更多工作负载（尤其是 AI）所带来的收益，足以抵消其放弃的存储收入和锁定效应。[^polaris-tlp][^horizon-irc]
 - **Everpure 视角。** Snowflake 的计算只运行在公有云中，但它可以通过外部 stage 和 Iceberg 外部卷（external volume），读写 AWS、Azure、GCP 之外的 **S3 兼容存储**上的数据。这使本地部署的对象存储成为一个受支持、尽管相对小众的数据源。更具战略意义的交集在于元数据：Everpure 的 Data Intelligence（1touch）将 Snowflake 列为连接器目标，而 Snowflake 的 Horizon 目录希望成为分类标签的归属地。[^sf-s3compat][^1touch]
 
+<a id="snapshot-table"></a>
 ## 概览表
 
 | 项目 | 数值 | 口径 / 日期 |
@@ -35,6 +37,7 @@
 
 *图 26.1 — 概览。与 Databricks 不同，Snowflake 几乎所有数字都是经审计的 GAAP 数据或有明确定义的 KPI。悬而未决的问题在于方向（开放格式、AI 毛利率、股权激励），而非数字本身的含义。*
 
+<a id="origin-story-and-strategic-arc"></a>
 ## 起源与战略演进
 
 **创业洞见（2012）。** 2012 年，两位 Oracle 数据库架构师 Benoît Dageville 和 Thierry Cruanes 与 Marcin Żukowski 联手。Żukowski 合著了提出向量化执行（vectorized execution）的 MonetDB/X100 论文，并联合创办了 Vectorwise。[^x100] 他们的判断是：为云而生的数据仓库，应当与 Teradata 或 Oracle Exadata 截然不同。那些系统把数据绑定在每个节点内部的磁盘上，即所谓"无共享"（shared-nothing）架构。Snowflake 则把每张表的持久副本放在云对象存储中（最先是 Amazon S3），并按需启动计算集群来查询。公司由 **Sutter Hill Ventures** 孵化，其合伙人 **Mike Speiser** 出任创始 CEO。几年前，Sutter Hill 曾以同样的"孵化并委派 CEO"模式孵化了 Pure Storage（即现在的 Everpure）[VERIFY: Speiser 在 Pure Storage 的创始角色]。[^funding] Sutter Hill 于 2012 年 8 月领投了约 $5M 的 A 轮。[^funding]
@@ -63,14 +66,16 @@ timeline
 
 *图 26.2 — 每一幕都扩大了计量范围。Snowflake 从 SQL 分析扩展到共享、Python 与应用，再到 AI、Postgres、数据摄取和可观测性，全部以同样的 credit 计费。*
 
-![Snowflake IPO 前投后估值折线图：从 2018 年 1 月 E 轮的 $1.5B 升至 2018 年 10 月 F 轮的 $3.95B，再到 2020 年 2 月 G 轮的 $12.4B](../assets/charts/snowflake_preipo_valuation.png)
+![Snowflake IPO 前投后估值折线图：从 2018 年 1 月 E 轮的 $1.5B 升至 2018 年 10 月 F 轮的 $3.95B，再到 2020 年 2 月 G 轮的 $12.4B](../../../docs/assets/charts/snowflake_preipo_valuation.png)
 
 *图 26.3 — 在 2020 年 9 月 IPO 前的最后两轮融资中，私募估值每轮大约翻了三倍。IPO 定价超过 G 轮估值的两倍，而首笔成交价约为 IPO 价格的两倍。来源：`data/private_funding.csv`。*
 
 > **类比：估值。** 这次 IPO 是关于入场价格的一课。以 $120 发行价买入并持有至 $306（2026-10-30）的投资者获得约 2.6 倍回报，年化约 17%（作者计算）。以首日约 $245 开盘价买入的投资者，六年获得约 1.25 倍回报，年化约 4%。FY2021 至 FY2026 间，公司产品收入增长约 8 倍。股价却横盘，因为 IPO 当日的估值倍数已经提前透支了大部分增长。[^sf-ipo][^comps-sf][^sf-10k-hist]
 
+<a id="product-and-technology"></a>
 ## 产品与技术
 
+<a id="the-architecture-in-one-picture-sv-5"></a>
 ### 一张图看懂架构（SV-5）
 
 SIGMOD 2016 论文描述了三层架构，这一设计十年后依然成立。[^snowflake16]
@@ -121,12 +126,14 @@ flowchart TB
 
 *图 26.4 — Snowflake 的存算分离。服务层持有元数据并负责规划，仓库按需执行扫描，数据要么位于 Snowflake 托管的对象存储中，要么（自 2024 年起）位于客户自有卷上的开放 Iceberg 表中。*
 
+<a id="how-a-query-actually-runs-l2"></a>
 ### 一条查询如何实际运行（L2）
 
 假设一位分析师查询 2026 年 7 月各区域的销售额。查询到达云服务层，由其进行解析和优化。首先检查**结果缓存（result cache）**：如果最近运行过相同的查询且底层数据未变，Snowflake 直接返回已存储的结果，无需启动仓库。持久化结果保留 24 小时，每次复用都会重置计时。[^sf-cache] 否则，优化器会查阅微分区元数据。日期范围与 2026 年 7 月不重叠的微分区会被**剪枝（pruned）**，即根本不被读取。在聚簇良好的表上，选择性强的过滤条件可以跳过绝大多数文件。剩余的文件列表交给一个仓库。各节点通过一致性哈希分配文件，因此同一节点倾向于看到相同的文件，其**本地 SSD 缓存**保持"热"状态。空闲节点会从慢节点"窃取"文件以平衡负载。[^snowflake16] 引擎本身是列式、向量化的，承袭 Żukowski 的 X100 一脉，详见[第 5 章](../01-data-systems-foundations/ch05-analytical-engines.md)。
 
 > **类比：半导体（缓存标签与区域映射）。** 微分区剪枝相当于把 CPU 缓存的**标签比对（tag check）**应用到数据湖上。处理器在从 DRAM 取缓存行之前，总会先把地址与一个小而快的标签阵列比对。Snowflake 在从 S3 取微分区之前，也总会先把查询谓词与服务层中的 min/max 元数据比对。存储层次可以清晰对应：元数据存储是标签阵列，仓库的本地 SSD 是 L2/L3 缓存，S3 则是以 NAND 为后盾的 DRAM——便宜、海量但延迟高。与芯片设计一样，性能主要来自命中率和"不去取"，而不是更快的后端存储。这一通用技术称为**[区域映射（zone map）](../glossary.md#zone-map)**，详见[第 5 章](../01-data-systems-foundations/ch05-analytical-engines.md)。
 
+<a id="features-that-fall-out-of-immutability"></a>
 ### 不可变性衍生出的功能
 
 由于微分区从不原地修改，一个表版本就只是元数据存储中的一组微分区指针。三项标志性功能几乎由此"免费"获得。
@@ -137,6 +144,7 @@ flowchart TB
 
 > **存储桥接。** Snowflake 的托管存储本身就是构建在对象存储之上的日志结构、写时复制设计，与存储工程师熟悉的阵列快照和克隆机制非常接近。区别在于，"阵列控制器"是一个多租户元数据服务，而"介质"是 S3。关于阵列快照与对象存储在持久性和性能上的差异，参见配套的 *Everpure Tech Atlas*。
 
+<a id="from-warehouse-to-ai-data-cloud-what-was-added-and-why"></a>
 ### 从数据仓库到"AI Data Cloud"：新增了什么，为什么
 
 | 层级 | 产品（截至 2026 年 11 月状态） | 功能 | 战略目的 |
@@ -158,8 +166,10 @@ flowchart TB
 
 > **深入（L3）。** 对于 Snowflake 托管的 Iceberg 表，Snowflake 充当目录。它将 Parquet 数据文件和 Iceberg 元数据（metadata JSON、manifest list、manifest）写入外部卷，并通过更新自身指针完成提交。外部引擎通过 Horizon Iceberg REST 端点读取，该端点下发限定范围的存储凭证。对于外部管理的表（例如在 Polaris 或 AWS Glue 中编目的表），Snowflake 是读取方，负责刷新其对元数据的视图。双方都要写入时，需要一个唯一的权威目录，这就是为什么真正的设计决策是目录选择而非文件格式（[第 8 章](../01-data-systems-foundations/ch08-catalogs-and-metastores.md)）。[^horizon-irc]
 
+<a id="how-it-makes-money"></a>
 ## 盈利模式
 
+<a id="credits-storage-and-transfer"></a>
 ### Credit、存储与数据传输
 
 Snowflake 对三类项目计费。[^sf-cost]
@@ -180,6 +190,7 @@ Snowflake 对三类项目计费。[^sf-cost]
 
 *图 26.6 — credit 阶梯（标价示意，作者计算；协议价格更低）。每升一级，节点数和 credit 都翻倍，因此一条并行良好的查询在高一级规格上快一倍完成，成本不变。客户购买的是时间，而不是容量。*
 
+<a id="how-a-query-becomes-revenue"></a>
 ### 一条查询如何变成收入
 
 ```mermaid
@@ -202,37 +213,40 @@ flowchart LR
 
 > **类比：金融（预付公用事业与特许权使用费）。** 容量合同的运作方式类似带有"电量储存"的**照付不议（take-or-pay）公用事业费率**。客户以协商费率预付一整块电量，公用事业公司只在电表转动时确认收入，若客户以更大规模续约，未用电量可以结转。对分析师而言，产品收入就像对客户自身分析活动收取的**使用量特许权使用费**。它在下行期（2022–2023）比按席位计费的 SaaS 波动更大，在上行期也更陡峭，因为没有席位数来限制它。应当像公用事业一样建模：存量客户 × 使用强度 × 价格，而不是看新签订单。
 
+<a id="gross-margin-and-the-cloud-bill"></a>
 ### 毛利率与云账单
 
 Snowflake 在其于 AWS、Azure 和 Google 开设的自有账户中运行每个仓库。因此，云基础设施是其最大的收入成本，它与每家云厂商都签订了多年期承诺消费额度（committed spend）协议 [VERIFY: 10-K 附注中当前的云采购承诺]。[^sf-10k26] Q2 FY2027 非 GAAP 产品毛利率（gross margin）为 **74.7%**，低于一年前的 76.4%。GAAP 产品毛利率为 70.9%。管理层将 FY2027 指引定为 **74%**，低于年初水平，理由是工作负载结构向 AI 转移。这些工作负载带有更高的 GPU 和第三方模型成本。[^sf-q2] 毛利率的驱动因素包括：来自云厂商的规模折扣、仓库利用率（空闲时间是客户的成本，但服务层是 Snowflake 的成本）、引擎效率以及 AI 占比。
 
+<a id="the-efficiency-headwind"></a>
 ### 效率逆风
 
 Snowflake 不断推出让客户现有查询更便宜的改进。更快的引擎、更好的剪枝、压缩优化和更新的云实例，都会减少每条查询消耗的 credit。**Gen2 仓库**（2025）是最新的例子，厂商宣称核心分析快约 2.1 倍。[^sf-summit25] 短期内，每一项此类改进都会减少不变工作负载所产生的收入。Snowflake 过去也公开承认过这一点，曾在 FY2023 指引中量化了性能改进带来的预期收入逆风 [VERIFY: 管理层 2022 年 3 月提到的约 $97M FY2023 数字]。在 **2022–2023 年优化周期**中，客户自己走得更远：缩短数据保留期、设置激进的自动挂起、调整仓库规格，并将部分数据转换移到别处。叠加宏观放缓，年度产品收入增速在两年内从 106% 降至 38%。[^sf-10k-hist]
 
 > **类比：摩尔定律与价格弹性。** 几十年来 DRAM 和 NAND 的每比特成本持续下降，但存储器收入却在增长，因为更便宜的比特解锁了新用途：需求是价格弹性的。Snowflake 的效率提升也是同样的押注。如果一条查询的成本减半，客户会不会运行两倍以上的查询、保留更多历史数据、并让 AI 智能体指向这些数据？弹性大于 1 意味着效率会滞后地推动收入增长；小于 1 则会使收入萎缩。2022–2023 年体现了这种滞后。2025–2026 年随着 AI 智能体和新工作负载到来的重新加速，是 Snowflake 在当前价格水平下弹性大于 1 的第一个有力证据。发出大量机器生成查询的智能体，是能想象到的弹性最高的客户。
 
+<a id="financials"></a>
 ## 财务数据
 
 除标注为非 GAAP 或公司披露 KPI 者外，所有数字均为 GAAP。Snowflake 将**产品收入**（按用量计费部分，Q2 FY2027 约占总收入的 96%）与**专业服务及其他收入**分开披露。产品收入是投资者建模的那一行。[^sf-q2]
 
-![Snowflake 各财年产品收入柱状图：从 FY2020 的 $0.25B 增至 FY2026 的 $4.47B，同比增速从 FY2021 的 +120% 降至 FY2026 的 +29%](../assets/charts/snowflake_product_revenue.png)
+![Snowflake 各财年产品收入柱状图：从 FY2020 的 $0.25B 增至 FY2026 的 $4.47B，同比增速从 FY2021 的 +120% 降至 FY2026 的 +29%](../../../docs/assets/charts/snowflake_product_revenue.png)
 
 *图 26.8 — FY2020 至 FY2026 产品收入增长约 18 倍（GAAP）。增速从三位数放缓至 FY2025 的约 30%，随后保持在该水平。财年截至 1 月 31 日；FY2026 = 2025 年 2 月–2026 年 1 月。来源：`data/company_financials.csv`。*
 
 **重新加速。** 季度产品收入增速从约 30%（Q4 FY2026，2025 年 11 月–2026 年 1 月）升至 34%（Q1 FY2027）和 **37%**（Q2 FY2027）。Q3 指引为 37–38%。[^sf-q4][^sf-q1][^sf-q2] FY2027 产品收入指引从 $5.66B（2 月）上调至 $5.84B（5 月），再到 **$6.07B**（9 月），+36%。该指引意味着下半年产品收入约 $3.25B，因此在 Q3 中值 $1.59B 之后，Q4 FY2027 约为 $1.66B。这相对 Q4 FY2026 约 $1.23B 的增速约为 35%，即出现放缓——鉴于当前趋势，这一假设显得保守（作者计算）。[^sf-q2][^sf-q4] Snowflake 的指引历来基于当季观察到的用量趋势编制，因此在用量加速时往往会被超越。
 
-![Snowflake 净收入留存率折线图：从 FY2020 的 158% 升至 FY2022 的 178%，FY2024 降至 131%，FY2025 降至 126%，并在 Q2 FY2027 前保持在 125–126%](../assets/charts/snowflake_nrr.png)
+![Snowflake 净收入留存率折线图：从 FY2020 的 158% 升至 FY2022 的 178%，FY2024 降至 131%，FY2025 降至 126%，并在 Q2 FY2027 前保持在 125–126%](../../../docs/assets/charts/snowflake_nrr.png)
 
 *图 26.9 — 净收入留存率在 FY2022 达到 178% 的峰值，在 2022–2023 年优化周期中大幅下滑，过去两年稳定在 125–126%。NRR 是公司披露的过去 12 个月 KPI。来源：`data/company_financials.csv`。*
 
 **把 NRR 当作同期群分析来读。** Snowflake 将 NRR 定义为：一年前即为客户者在过去 12 个月的产品收入，除以这些客户在此前 12 个月的产品收入。它是一个按金额计算的同期群比率，且由于是滚动口径，变化较慢。NRR 稳定在 126% 而增长加速，意味着以下两种情况之一或兼而有之：新客户贡献更多（新客户收入），和/或最近几个季度的扩张尚未完全进入滚动窗口。下图将产品收入增速与 NRR 减 100 进行比较。在 FY2021–FY2022，新客户在扩张之上额外贡献了约 30–50 个百分点。从 FY2024 到 Q4 FY2026，差距缩小至 4–7 个百分点。Q2 FY2027 差距再次扩大到约 11 个百分点，这是新工作负载和新客户正在推动加速的最清晰信号（作者计算）。[^sf-q2]
 
-![Snowflake 产品收入增速与净收入留存率减 100 的柱线组合图（FY2021 至 Q2 FY2027）：增速从 120% 降至约 30%，随后在 Q2 FY2027 回升至 37%；NRR 减 100 从 78 个百分点降至约 26 个百分点并保持平稳](../assets/charts/ch26_snowflake_growth_vs_nrr.png)
+![Snowflake 产品收入增速与净收入留存率减 100 的柱线组合图（FY2021 至 Q2 FY2027）：增速从 120% 降至约 30%，随后在 Q2 FY2027 回升至 37%；NRR 减 100 从 78 个百分点降至约 26 个百分点并保持平稳](../../../docs/assets/charts/ch26_snowflake_growth_vs_nrr.png)
 
 *图 26.10 — 增长与留存同步。自 FY2024 起，存量客户扩张（NRR − 100）解释了 Snowflake 的大部分增长，而 2026 年的加速在其之上拉开了更大差距，与新工作负载和新客户的贡献相符。来源：`data/company_financials.csv`（作者图表）。*
 
-![Snowflake 剩余履约义务柱状图：从 FY2021 的 $1.3B 增至 FY2026 年末的 $9.77B，随后在 Q1 FY2027 回落至 $9.21B，Q2 FY2027 约为 $9.0B](../assets/charts/snowflake_rpo.png)
+![Snowflake 剩余履约义务柱状图：从 FY2021 的 $1.3B 增至 FY2026 年末的 $9.77B，随后在 Q1 FY2027 回落至 $9.21B，Q2 FY2027 约为 $9.0B](../../../docs/assets/charts/snowflake_rpo.png)
 
 *图 26.11 — RPO 从 FY2021 到 FY2026 增长约 7.5 倍，随后在用量加速的同时连续两个季度回落。客户消耗大额承诺的速度快于签署新承诺的速度，这对近期收入是利好，对日后的续约周期则是一个问题。注意"FY2026"与"Q4 FY2026"两根柱是同一个数据点。来源：`data/company_financials.csv`。*
 
@@ -240,7 +254,7 @@ Snowflake 不断推出让客户现有查询更便宜的改进。更快的引擎�
 
 **GAAP 与非 GAAP。** Snowflake 在非 GAAP 口径下稳健盈利，在 GAAP 口径下仍然亏损。两者差异几乎全部来自**股权激励费用（SBC）**，另有收购无形资产摊销和股权奖励相关的雇主薪资税。
 
-![FY2025、FY2026 与 Q2 FY2027 分组柱状图：GAAP 营业利润率分别为 -40.0%、-30.6% 和 -17.0%；非 GAAP 营业利润率 FY2026 为 10.5%、Q2 FY2027 为 15.3%；非 GAAP 调整后自由现金流利润率 FY2026 为 25.5%、Q2 FY2027 为 6.0%；股权激励费用占收入比例 FY2025 为 40.8%、FY2026 为 34.1%](../assets/charts/ch26_snowflake_margin_bridge.png)
+![FY2025、FY2026 与 Q2 FY2027 分组柱状图：GAAP 营业利润率分别为 -40.0%、-30.6% 和 -17.0%；非 GAAP 营业利润率 FY2026 为 10.5%、Q2 FY2027 为 15.3%；非 GAAP 调整后自由现金流利润率 FY2026 为 25.5%、Q2 FY2027 为 6.0%；股权激励费用占收入比例 FY2025 为 40.8%、FY2026 为 34.1%](../../../docs/assets/charts/ch26_snowflake_margin_bridge.png)
 
 *图 26.12 — GAAP 与非 GAAP 营业利润率差距在 FY2026 约为 41 个百分点，在 Q2 FY2027 约为 32 个百分点，其中大部分来自股权激励。SBC 占收入比重正在下降（40.8% → 34.1%），因为收入增速快于 SBC（+29% 对 +8%），但它仍超过年度自由现金流。来源：`data/company_financials.csv`（作者图表）。*
 
@@ -253,6 +267,7 @@ Snowflake 不断推出让客户现有查询更便宜的改进。更快的引擎�
 
 > **类比：估值。** 按 **16.9x EV/未来 12 个月收入**（EV $106.31B ÷ $6.30B，2026-10-30，未来 12 个月收入以 FY2027 指引代替）计算，Snowflake 每个增长百分点的成本约为 0.48x（16.9 ÷ 35）。Databricks 的私募估值按其自身披露口径约为 0.34x（[第 25 章](ch25-databricks.md)），但该数字是投后*股权*价值除以未经审计、由公司自行定义的*年化运行率*，而 Snowflake 的是*企业价值*除以基于指引的 GAAP 收入，因此这一比较只是参考性的，并非同口径。此处的未来 12 个月分母是 FY2027 指引（2026 年 2 月–2027 年 1 月），这一替代值低估了真正的前瞻收入，因而略微高估了倍数。按 FCF 计，FY2027 指引（约 $6.3B 的 23% ≈ $1.45B）使 EV/FCF 接近 **73x**，若按 SBC 调整则为无穷大（作者估算）。[^comps-sf][^sf-q2] 因此，看多逻辑取决于 SBC 强度下降带来的利润率扩张。在 FY2027 规模下，SBC 每让出 5 个百分点的收入占比，每年价值约 $0.3B。
 
+<a id="customers-and-go-to-market"></a>
 ## 客户与市场进入
 
 **谁在购买。** Snowflake 的客户集中于大型企业。截至 Q2 FY2027，过去 12 个月产品收入超过 $1M 的客户有 **828** 家（同比 +27%），而 FY2021 年末为 77 家（公司披露 KPI）。[^sf-q2][^sf-10k-hist] 公司每季度还会披露客户中福布斯全球 2000 强企业的数量，并表示这些客户贡献了很大一部分收入 [VERIFY: Q2 FY2027 福布斯全球 2000 强客户数及客户总数]。传统上，其核心买家是 **SQL 分析与财务/BI** 部门，恰好是 Databricks 数据工程和数据科学客户群的镜像。整个 2020 年代，两家公司都在侵入对方的买家阵地（[第 27 章](ch27-databricks-vs-snowflake.md)）。
@@ -265,6 +280,7 @@ Snowflake 不断推出让客户现有查询更便宜的改进。更快的引擎�
 
 **活动与 TAM。** 一年一度的 Summit（6 月，旧金山）同时也是产品发布会和投资者日。据报道，在 2026 年投资者日上，管理层将其总可服务市场（TAM）测算为目前约 $225B、未来增长至超过 $460B（公司披露，来自一份质量较弱的电话会纪要摘要）[VERIFY: Snowflake IR 演示材料中的数字]。[^tam]
 
+<a id="ma-and-investments"></a>
 ## 并购与投资
 
 Snowflake 的并购规模比 Databricks 小，且更多由人才和功能驱动。它收购过一个大品牌（Streamlit），以及一连串补强型交易，每一笔都为平台增加一个计量点。请注意最近两笔交易中的**"媒体报道与文件披露差异"**：10-Q 和 10-K 中的数字是购买会计法下的对价，低于媒体报道。
@@ -303,6 +319,7 @@ timeline
 
 **投资。** Snowflake Ventures 在其生态系统中持有少数股权（Atlas 融资数据集记录了 Coalesce 和 Hex 的融资轮次）。[^coalesce][^hex] 大部分大额投资投向那些产品能带动 Snowflake 用量的公司。
 
+<a id="competitive-position"></a>
 ## 竞争地位
 
 Snowflake 在四条战线上竞争。**Databricks** 是争夺企业分析与 AI 平台预算的正面对手（[第 25 章](ch25-databricks.md)、[第 27 章](ch27-databricks-vs-snowflake.md)）。**超大规模云厂商**（BigQuery、Redshift、Microsoft Fabric）把替代品捆绑进云账单。ClickHouse 等**专业引擎**凭借性价比赢得实时和可观测性工作负载。每当数据存放在 Iceberg 中，**开放引擎**（Trino、DuckDB、Spark）就会获得议价能力。
@@ -327,6 +344,7 @@ Snowflake 在四条战线上竞争。**Databricks** 是争夺企业分析与 AI 
 
 **对比专业厂商。** ClickHouse（估值 $15B，2026 年 1 月，媒体报道）在亚秒级、高并发和可观测性工作负载上胜出，而在这些场景中 Snowflake 的仓库模式成本高昂。[^clickhouse] Observe 交易和 Snowpipe Streaming 是 Snowflake 的回应。DuckDB 等嵌入式引擎是长尾威胁：大量中小型工作负载根本不再需要云数据仓库。
 
+<a id="why-its-winning--bull-case"></a>
 ## 制胜原因 / 看多逻辑
 
 1. **增长在大体量上重新加速。** 在约 $6B 的基数上，产品收入增速从 29%（FY2026）升至 37%（Q2 FY2027），指引两次上调。收入超过 $5B 后还能重新加速的软件公司寥寥无几。在 126% 的稳定 NRR 之上，AI 工作负载、Postgres 和新数据类型似乎正在增加用量。[^sf-q2]
@@ -335,6 +353,7 @@ Snowflake 在四条战线上竞争。**Databricks** 是争夺企业分析与 AI 
 4. **经营杠杆真实可见。** 非 GAAP 营业利润率从 10.5%（FY2026）升至 15.3%（Q2 FY2027）。SBC 占收入比重在一年内从 41% 降至 34%。如果 SBC 继续降至 20–25%，而毛利率维持在 75% 左右，GAAP 盈利将在几年内到来（作者判断）。[^sf-q2][^sf-10k26]
 5. **相对增长而言估值并不苛刻。** 以约 17x EV/未来 12 个月收入（2026-10-30）对应 35% 以上的增长，Snowflake 在标题口径上明显低于 Databricks 约 27x 的私募估值，更远低于 Palantir（70.3x EV/*过去 12 个月*收入，2026-10-30），而且其数字经过审计。但按增长调整后，它*并不*比 Databricks 便宜（每个增长百分点约 0.48x 对约 0.34x，口径不可比），因此看多逻辑依赖的是经审计的质量与持久性，而非折价。[^comps-sf][^comps-pltr]
 
+<a id="risks--bear-case-and-open-questions"></a>
 ## 风险 / 看空逻辑与待解问题
 
 1. **开放格式让客户可以自带引擎。** 一旦客户数据以 Iceberg 格式存放在其自有存储桶中、由中立目录治理，每个工作负载都可以被竞标。Trino、DuckDB、Spark、Databricks 和各家超大规模云厂商都能查询同一批表。Snowflake 过去的锁定来自存储。未来的锁定必须来自 Horizon 数据治理（governance）、语义视图和智能体，这些更具黏性，但意志坚定的买家也更容易复制。全部影响要到下一轮大客户续约时才会显现。
@@ -345,6 +364,7 @@ Snowflake 在四条战线上竞争。**Databricks** 是争夺企业分析与 AI 
 6. **Databricks 的势头。** 一个增速超过其两倍、拥有 $190B 估值作为收购"货币"的私营竞争对手，正在争夺同一份平台预算（[第 25 章](ch25-databricks.md)）。
 7. **待解问题。** AI 占用量的比例是多少，其毛利率又是多少？重新加速中有多少来自少数超大客户？随着 FY2026 那份创纪录的合同被消耗，cRPO 会重新加速吗？Observe 多快能产生贡献？经历 2025–2026 年的高管变动后，领导层梯队如何 [VERIFY: CRO 与产品领导层变动]？
 
+<a id="relevance-to-everpure"></a>
 ## 与 Everpure 的相关性
 
 > **存储桥接。** Snowflake 把存储视为其元数据层之下的商品。托管存储是由 Snowflake 运营的云对象存储，而 Iceberg 表则位于指向客户自有存储桶的"外部卷"上。性能来自剪枝和仓库的 SSD 缓存，而不是存储阵列，因此存储厂商的筹码在于位置（本地部署、主权、靠近 GPU）和元数据，而非原始吞吐量。关于 S3 语义和 FlashBlade 对象存储性能，参见配套的 *Everpure Tech Atlas*。
@@ -366,6 +386,7 @@ Snowflake 在四条战线上竞争。**Databricks** 是争夺企业分析与 AI 
 
 更广泛的"存储向上层栈延伸"模式见[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)，数据引力（data gravity）与出口流量费见[第 24 章](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向 Snowflake 产品经理、高管或合作伙伴团队提出的三个问题**
@@ -392,6 +413,7 @@ Snowflake 在四条战线上竞争。**Databricks** 是争夺企业分析与 AI 
 - "Snowflake 可以本地部署运行。" *不能；它可以从云区域读取本地的 S3 兼容存储。*
 - "Snowflake 花 $1B 收购了 Observe。" *那是媒体数字；10-K 显示初步对价为 $596.2M。*
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [存算分离（separation of storage and compute）](../glossary.md#separation-of-storage-and-compute) — 持久数据存放在对象存储中，由独立、弹性的计算集群读取。
@@ -426,6 +448,7 @@ Snowflake 在四条战线上竞争。**Databricks** 是争夺企业分析与 AI 
 - [语义视图（semantic view）](../glossary.md#semantic-view) — 保存业务指标和维度定义的数据库对象。
 - [Open Semantic Interchange](../glossary.md#open-semantic-interchange) — 用于交换语义层定义的多厂商规范。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^sf-q2]: Snowflake via Business Wire, "Snowflake Reports Financial Results for the Second Quarter of Fiscal 2027," https://secure.businesswire.com/news/home/20260902386235/en/Snowflake-Reports-Financial-Results-for-the-Second-Quarter-of-Fiscal-2027，发布 2026-09-02（另见 Nasdaq 转载，https://www.nasdaq.com/press-release/snowflake-reports-financial-results-second-quarter-fiscal-2027-2026-09-02）；与 Pulse 2.0 交叉核对，https://pulse2.com/snowflake-q2-fiscal-2027-revenue-rises-35-to-1-55-billion-as-product-revenue-guidance-is-raised/，2026-09；检索 2026-11-01（搜索结果摘录；经 `data/company_financials.csv`）。收入和利润率为 GAAP；产品毛利率、营业利润率和调整后 FCF 为非 GAAP；NRR 和 $1M 客户数为公司 KPI；指引为公司披露。FY2027 = 2026 年 2 月–2027 年 1 月。

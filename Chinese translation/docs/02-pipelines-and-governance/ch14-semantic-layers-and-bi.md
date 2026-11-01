@@ -1,6 +1,7 @@
 # 14. 语义层与商业智能（BI）
 > **深度：** L2 · **阅读时间：** 约 12 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 12 章 — 数据转换与编排](ch12-transformation-and-orchestration.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - [语义层（semantic layer）](../glossary.md#semantic-layer)是一部受治理的业务含义词典（包括实体、[度量（measure）](../glossary.md#measure)、[维度（dimension）](../glossary.md#dimension)、关联路径和访问规则），它能把"按区域的净收入"这类请求编译成正确的 SQL。"收入"只需定义一次，即可处处复用。
@@ -9,6 +10,7 @@
 - BI 前端正在商品化。Gartner 的领导者名单保持稳定，Microsoft 把 Power BI 捆绑进 Fabric，风险资本则流向更新的数据仓库原生工具（2026 年 Sigma 估值 $3B、Omni 估值 $1.5B）。[^sigma-e][^omni-c] 控制点（control point）正从仪表板转移到其底层的定义上。
 - 对 Everpure 而言：语义上下文是数据智能（数据分类、业务含义）转化为智能体可用之物的地方。这把 1touch 的投资逻辑与这一层联系在一起（见[第 15 章](ch15-governance-security-privacy.md)和[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)）。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业 + Everpure 视角）
 
 每家大公司都有"三个收入数字"问题。财务、销售和董事会材料对同一季度各报一个不同的数字，因为每个团队的仪表板都编码了自己关于退款、汇率换算以及采用哪种日历的逻辑。代价不止是尴尬。花在核对数字上的会议会拖延决策，而审计师和监管机构期望的是唯一的数字。
@@ -17,8 +19,10 @@ LLM 抬高了风险。写出错误关联的人类分析师通常会注意到总�
 
 对 Everpure 的战略读者而言，关键在于*含义*处于技术栈的哪个位置。Everpure 2026 年收购 1touch，明确就是为了发现和分类数据，并围绕数据"是什么"构建语义上下文。[^1touch] 本章讨论的语义层是同一理念面向分析的版本。数据分类告诉你某一列包含客户 PII；指标定义告诉你，按销售辖区分组的 `SUM(amount) - SUM(refunds)` 就是"按区域的净收入"的含义。智能体两者都需要。基于公开信息，战略团队可以评估的选项包括：把分类和敏感度标签输送到客户已在运行的语义层中（通过 OSI 或目录集成），而不是自建一个与之竞争的指标层。[第 15 章](ch15-governance-security-privacy.md)介绍分类引擎，[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)介绍更广泛的"向技术栈上层移动"。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="the-four-ingredients"></a>
 ### 四种要素
 
 一个语义模型由四种要素构成：
@@ -71,6 +75,7 @@ flowchart LR
 
 > **类比：金融（GAAP 定义）。** 一个指标定义就是一份微型会计政策。GAAP 规定了收入如何确认，使两位阅读同一份 10-K 的分析师得到相同的数字，审计师也依据这唯一的定义进行测试。受治理的指标层在公司内部做的是同样的事：一个定义，在 Git 中做版本控制，归财务部门所有，只能经评审后变更，并用数据血缘显示哪些报表在使用它。而当每个团队都在电子表格里保留自己的定义时，你得到的就是"非 GAAP 调整后 EBITDA"。
 
+<a id="worked-example-what-was-q3-net-revenue-by-region"></a>
 ### 实例演练："第三季度各区域净收入是多少？"
 
 以一家使用 Snowflake 的中型 SaaS 公司为例。它的表包括 `orders`（每个订单一行，含 `order_total`）、`order_lines`（每个 SKU 一行）、`refunds`、`customers`（同时含 `billing_country` 和 `sales_territory_id`）以及 `territories`。财年从 2 月 1 日开始。
@@ -115,6 +120,7 @@ sequenceDiagram
 
 证据怎么说？最知名的研究是 data.world 2023 年的基准测试。在一个保险业模式上，GPT-4 在 SQL 表上以零样本方式正确回答了 16.7% 的企业问题，而在同一数据的知识图谱（语义）表示上正确回答了 54.2%。在最难的问题上，SQL 的准确率为 0%。[^dw-bench] AtScale 2024 年由厂商主导、基于 40 个 TPC-DS 问题的测试报告称，不使用其语义层时准确率为 20%，使用后为 92.5%。[^atscale-bench] dbt Labs 2026 年 4 月的更新报告称，在其 Semantic Layer *建模范围内*的问题上，前沿模型达到 98–100%，而在同样建模良好的数据上，文本转 SQL 为 84–90%。[^dbt-bench] Google 表示，在内部测试中，LookML 将自然语言查询的错误减少了最多三分之二。[^looker-twothirds] 解读这些数字需谨慎。除学术预印本外，其余均由厂商主导，问题集很小（11–40 个问题），而且语义层得分高的部分原因是它拒绝回答无法回答的问题。不过方向是一致的。模型每年都在进步，但它们无法推断出你的财务日历或你对"区域"的定义。只有受治理的上下文才能提供这些。
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 主要的架构选择是*定义放在哪里*。有三种选项。**BI 内嵌式**语义层（LookML、Power BI semantic models、Tableau Semantics）成熟且集成紧密，但会把定义绑定在单一前端上。**通用 / 无头式（headless）**语义层（dbt Semantic Layer、Cube、AtScale）可服务任何消费者，但需要额外运行一项服务，并依赖 BI 厂商与之集成。**平台原生**语义层（Snowflake semantic views、Databricks metric views）没有额外许可费，并紧邻数据治理引擎，但会把定义绑定在单一数据平台上。OSI 试图让定义在这三者之间可移植。
@@ -133,6 +139,7 @@ sequenceDiagram
 
 *反对*单独设立语义层的观点也值得一听。许多团队发现，一组建模良好的 dbt "marts" 表，加上描述完善的数据目录，就能获得大部分收益，同时省去一次额外的运行时跳转和又一张厂商账单。语义层在临时分析方面也有困难：探索新问题的数据科学家往往需要原始表，而过于严格的语义层会逼他们导出 CSV。此外，"只定义一次"的承诺只有在财务部门真正拥有这些定义时才能兑现，否则语义层只会变成又一个存放三个版本收入的地方。实事求是的立场是：在问题重复出现、数据治理重要且涉及智能体的场景中，语义层物有所值；对于一次性探索，它并无必要。
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 语义层厂商已在图 14.3 中介绍。BI 前端市场的格局如下：
@@ -183,6 +190,7 @@ quadrantChart
 
 > **类比：EDA 许可（按席位定价）。** BI 席位类似于 Synopsys 和 Cadence 按席位计费的 EDA 许可：按具名工程师定价；由于工作流程和培训围绕工具不断积累而具有黏性；并通过捆绑销售来防守。与 EDA 一样，席位面临的压力来自无法对应到具体个人的使用量。EDA 厂商曾面对云端突发许可和基于令牌的许可池；BI 厂商则面对代表成千上万名无许可员工发起查询的 AI 智能体。预计 BI 定价将逐步转向按用量计费（Fabric 容量、Databricks 计算、Snowflake AI credits），就像 EDA 转向令牌和订阅池一样。
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 ```mermaid
@@ -216,6 +224,7 @@ timeline
 
 **发展轨迹。** 有三个押注看起来是合理的。（1）定义将越来越多地只编写一次，并通过 OSI 式格式在各工具间*同步*，就像 Iceberg 让表格式变得可移植一样（目录方面的类比见[第 8 章](../01-data-systems-foundations/ch08-catalogs-and-metastores.md)）。（2）语义层将与目录和数据治理层融合，因为智能体需要在一次调用中同时获得含义、权限和数据血缘。（3）BI 仪表板不会消失，但其在分析预算中的占比将相对于智能体和平台消耗而缩小。反方观点是：OSI 可能停滞为一份"最小公分母"式规范，而各平台继续把最丰富的功能保留为专有。由单一厂商召集的标准组织常常落得如此结局。预期情况会有所不同的主要理由是：Databricks 于 2026 年 1 月加入，把 Snowflake 的头号对手拉了进来；以及已公布的将治理移交中立基金会的计划。
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源 / 日期 |
@@ -234,10 +243,12 @@ timeline
 
 *图 14.7 — 基准测试显示，原始文本转 SQL 与受治理语义之间存在巨大的准确率差距；而即便定价模式正向按用量计费转变，席位价格仍在上涨。*
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 本章无需存储桥接：语义层编译 SQL，并不改变字节的存储方式。与 Everpure 的关联在于元数据路径，它从数据分类（[第 15 章](ch15-governance-security-privacy.md)）延伸到语义上下文，再到智能体。见[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理提的问题**
@@ -261,10 +272,12 @@ timeline
 - "OSI 意味着定义现在已完全可移植。"v1.0 涵盖核心指标、维度和关系，厂商特有的功能仍无法转换。
 - "dbt 被收购了，所以无头 BI 已死。"这些理念已进入平台和标准，淡出的只是独立初创公司的模式。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 > **深入（L3）。** 阅读 MetricFlow 源代码（Apache 2.0），了解一个指标请求如何变成数据流计划，再变成特定方言的 SQL。将其与 Snowflake 的 `SEMANTIC_VIEW()` 查询语法以及 Databricks 在 metric views 上使用的 `MEASURE()` 函数进行比较。研究 GitHub 上 OSI v1.0 的 YAML 模式。关于准确率评估方法，阅读 data.world 的论文（arXiv:2311.07509）和开放的 `dbt-llm-sl-bench` 代码库，并留意各自如何判定"正确"。
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [语义层（Semantic layer）](../glossary.md#semantic-layer) — 受治理的业务定义（指标、维度、关联、策略），可将请求编译为 SQL。
@@ -285,6 +298,7 @@ timeline
 - [对话式分析（Conversational analytics）](../glossary.md#conversational-analytics) — 在 BI 或数据平台中，基于受治理数据进行的自然语言问答。
 - [模型上下文协议（Model Context Protocol）](../glossary.md#model-context-protocol) — 向 LLM 智能体暴露工具和数据的开放标准。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^dw-bench]: Juan Sequeda, Dean Allemang, Bryon Jacob (data.world), "A Benchmark to Understand the Role of Knowledge Graphs on Large Language Model's Accuracy for Question Answering on Enterprise SQL Databases," arXiv:2311.07509, https://arxiv.org/abs/2311.07509，2023-11-13 发布；完整报告 https://data.world/mstatic/assets/pdf/kg_llm_accuracy_benchmark_11132023_public.pdf；2026-11-01 检索。

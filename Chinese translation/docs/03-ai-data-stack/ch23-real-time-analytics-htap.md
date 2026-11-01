@@ -1,6 +1,7 @@
 # 23. 实时分析与 HTAP
 > **深度：** L2 · **阅读时间：** 约 15 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 5 章 — 分析引擎](../01-data-systems-foundations/ch05-analytical-engines.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - **[实时分析（real-time analytics）](../glossary.md#real-time-analytics)** 指的是对仅产生数秒的数据执行亚秒级查询，并同时服务数千个并发调用方。这些调用方包括面向客户的仪表盘、可观测性控制台、广告技术竞价系统，以及越来越多的 AI 智能体（agent）。而数据仓库上的一条商业智能（BI）查询需要数秒到数分钟，服务的是数十名分析师。工作不同，引擎也不同。
@@ -9,6 +10,7 @@
 - **大多数查询都很小。** MotherDuck 对 Amazon 公开的 Redshift 集群数据进行解读后发现，只有约 0.03% 的查询扫描超过 10 TB。[^md-redshift][^redset] 这正是 DuckDB 这类进程内引擎的立论依据；2026 年 8 月，AWS 同意收购 DuckDB 的母公司 DuckLabs（条款未披露）。[^aws-duck]
 - 智能体让延迟和单次查询成本变得更加重要。一个发出八条相互依赖查询的智能体，要承受八次引擎延迟；而且智能体以机器速率产生流量。这有利于那些为"大量低成本查询"而定价和设计的引擎，而不是为"少量昂贵查询"设计的引擎。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业视角 + Everpure 视角）
 
 分析市场已经按工作负载形态分化。云数据仓库（[第 5 章](../01-data-systems-foundations/ch05-analytical-engines.md)、[第 26 章](../04-company-deep-dives/ch26-snowflake.md)）针对少数人类用户的灵活查询进行了优化。围绕 **[面向用户的分析（user-facing analytics）](../glossary.md#user-facing-analytics)**，另一个市场已经成长起来："谁看过你的主页"面板、支付应用里的商户仪表盘、可观测性工具里的日志搜索框。这些产品在每次页面加载背后都放了一条分析查询。ClickHouse 的收入轨迹是这种分化最清晰的财务信号。该公司表示，2026 年 5 月其 ARR 突破 $250M，同比增长超过两倍，并且自 1 月 D 轮融资以来新增了 1,000 多家客户（公司披露）。[^ch-arr] 其估值从 2025 年 5 月的 $6.35B 升至八个月后的 $15B（均为媒体报道）。[^ch-seriesc][^ch-seriesd]
@@ -17,8 +19,10 @@ AI 智能体带来了第三类消费者。当智能体回答"上周东北地区�
 
 对 Everpure 而言，这些引擎的存储画像很有特点。它们**受延迟约束，而不仅仅受吞吐量约束**：热数据集放在本地 NVMe 上以实现毫秒级读取，而大部分数据放在对象存储（object storage）上（ClickHouse Cloud 的 SharedMergeTree 将所有表数据保存在共享对象存储中）。[^ch-smt] 基于公开信息，战略团队可能评估的选项包括：验证兼容 S3 的本地部署对象存储作为自管 ClickHouse、Druid 或 Pinot 集群的共享层，以及将高速闪存定位为这些引擎所依赖的缓存层。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="two-very-different-query-budgets"></a>
 ### 两种截然不同的查询预算
 
 数据仓库 BI 查询与实时查询同时在四个维度上存在差异。这就是为什么一个引擎很少能同时把两者都服务好。
@@ -34,6 +38,7 @@ AI 智能体带来了第三类消费者。当智能体回答"上周东北地区�
 
 关键词是 **p99**。面向用户的产品是由其最慢的常见查询，即 **[尾延迟（tail latency）](../glossary.md#tail-latency)** 来评判的。一个平均 80 ms、但在冷缓存时飙升到 4 秒的仪表盘，用户会觉得它是坏的。实时引擎的设计目标是在负载下把尾部延迟压紧。
 
+<a id="the-pipeline-from-event-to-api"></a>
 ### 数据管道：从事件到 API
 
 ```mermaid
@@ -68,6 +73,7 @@ flowchart LR
 
 事件通过 Kafka 这样的日志（[第 11 章](../02-pipelines-and-governance/ch11-streaming-and-event-platforms.md)）到达，或者通过来自业务数据库的 **[变更数据捕获（change data capture，CDC）](../glossary.md#change-data-capture)** 到达。ClickHouse 在 2024 年 7 月收购 PeerDB，正是为了这条从 Postgres 到 ClickHouse 的路径。[^ch-peerdb] 引擎持续摄取数据，并在数秒内让新行可被查询。在它前面是一个 API 层，把经批准的 SQL 查询转换为端点。这就是 Tinybird 的全部产品，构建在托管 ClickHouse 之上。[^tinybird] 为仪表盘供数的同一组端点，也可以作为工具暴露给智能体。
 
+<a id="how-clickhouse-gets-to-sub-second-mergetree"></a>
 ### ClickHouse 如何做到亚秒级：MergeTree
 
 ClickHouse 起源于 Yandex 内部，最初是一个网站分析产品的引擎，2021 年成为独立公司。[^ch-paper][^ch-inc] 其核心表引擎 **[MergeTree](../glossary.md#mergetree)** 借鉴了 **[LSM 树（LSM-tree）](../glossary.md#lsm-tree)** 的写入路径。每个插入批次被写成一个不可变、有序、列式的"分片"（part）。后台线程把小分片合并成更大的分片，与 LSM 压缩（compaction）的做法完全相同。
@@ -80,12 +86,14 @@ ClickHouse 起源于 Yandex 内部，最初是一个网站分析产品的引擎�
 
 > **类比：在线量测。** 晶圆厂不会等到产线末端的电性测试才发现某个刻蚀工序发生了漂移。它会在工艺进行中在线测量关键尺寸，以便修正下一批次。数据仓库 BI 就像产线末端测试：准确、全面，但已来不及修正这一批。实时分析则是在线量测：一组范围更窄、预先选定的测量，在工艺运行时进行，成本低到可以对每片晶圆都做。
 
+<a id="segment-engines-druid-and-pinot"></a>
 ### 段式引擎：Druid 与 Pinot
 
 Apache Druid 源自 Metamarkets，用于广告技术报表。其 SIGMOD 2014 论文描述了两类节点：实时节点会立即为流数据建立索引，历史节点则提供从深度存储加载的不可变 **[段（segment）](../glossary.md#segment)**。[^druid-paper] Apache Pinot 由 LinkedIn 为面向会员的功能而构建，2015 年开源，后来被 Uber 采用，并于 2021 年成为 Apache 顶级项目。[^pinot-tlp] 两个引擎都按时间把数据分区成段，对每个维度建立位图索引和倒排索引，并把段推送到对象存储作为持久副本。Pinot 的标志性 **[星树索引（star-tree index）](../glossary.md#star-tree-index)** 为选定的维度组合预先计算聚合结果，以存储空间换取高度可预测的延迟。相应的商业厂商是 Imply（Druid）和 StarTree（Pinot）：前者于 2025 年 9 月围绕名为 Lumi 的"可观测性数据仓库"重新定位；后者最近一次披露定价的融资是 2022 年 $47M 的 B 轮。[^imply-lumi][^startree]
 
 Rockset 走了第三条路：**[融合索引（converged indexing）](../glossary.md#converged-index)**。每个文档的每个字段都以三种方式存储——行索引、列索引和搜索索引——构建在 RocksDB 之上，并把 SST 文件卸载到 S3。[^rockset-arch] 这种设计以写放大为代价换取了查询灵活性。OpenAI 于 2024 年 6 月 21 日宣布收购 Rockset，用于支撑其检索基础设施；按月付费的客户必须在 2024 年 9 月 30 日前迁出该服务。[^rockset] 对买方而言，教训很具体：一个实时引擎可能会消失在收购方体内，而开源是一个退出选项。
 
+<a id="htap-one-system-two-engines"></a>
 ### HTAP：一个系统，两个引擎
 
 HTAP 这一概念由 Gartner 于 2014 年命名，[^htap-gartner] 它彻底去掉了数据管道：直接在事务数据库本身上、针对仅有毫秒级时延的数据运行分析。实践中，每一个成功的 HTAP 设计都在一个逻辑数据库之下保留**两种物理格式**。
@@ -127,6 +135,7 @@ flowchart TB
 
 > **类比：统一内存。** 独立 GPU 与 CPU 隔着 PCIe，所以数据必须先复制，加速器才能处理。这就是硬件语境下的 ETL。统一内存芯片（Apple 的 M 系列、AMD 的 MI300A、NVIDIA 的一致性 Grace-Hopper 互联）让 CPU 和 GPU 寻址同一块内存，省去了复制，但迫使两者共享带宽。HTAP 做的是同样的权衡。复制步骤消失了，但 OLTP 和 OLAP 如今要争夺同一个系统的内存、CPU 和 I/O，一次繁重的扫描就可能抬高一笔支付写入的 p99。厂商的应对方式与芯片设计师一样：分区和服务质量（QoS）控制。
 
+<a id="duckdb-and-the-small-data-thesis"></a>
 ### DuckDB 与"小数据"论
 
 DuckDB 是一个 **[进程内数据库（in-process database）](../glossary.md#in-process-database)**：像 SQLite 一样作为库链接进应用，但拥有向量化列式引擎（[第 5 章](../01-data-systems-foundations/ch05-analytical-engines.md)）。没有服务器、没有网络跳转，也没有集群。它的前提是大多数分析数据都能放进一台机器，而 MotherDuck 已经把这一理念打造成了自己的品牌。
@@ -137,6 +146,7 @@ DuckDB 是一个 **[进程内数据库（in-process database）](../glossary.md#
 
 > **类比：嵌入式加速器。** 数据仓库是一台独立的设备：数据经过链路传到一个大型共享引擎，结果再传回来。DuckDB 则是集成在晶粒上的加速模块：更小，但传输成本为零，前面也没有排队。对于能放进本地内存的工作负载，片上模块胜过总线另一端更快的芯片，因为互联和调度延迟占了主导。
 
+<a id="why-agents-change-the-economics"></a>
 ### 智能体为何改变了经济性
 
 智能体同时抬高了延迟和成本两方面的赌注。
@@ -157,6 +167,7 @@ xychart-beta
 
 **单次查询成本决定了谁负担得起智能体流量。** 为便于说明，假设一个 SaaS 产品向 1,000 个并发用户开放分析功能，智能体每秒产生约 167 条查询，每月约 4.33 亿条查询。按名义上每节点小时 $1 计算计算成本。一条在 8 节点集群上运行 2 s 的数据仓库查询消耗 16 节点秒，约 $0.0044。一个实时引擎在 2 个节点上 50 ms 就给出答案（因为稀疏索引把扫描剪枝到只剩几个颗粒），消耗 0.1 节点秒，约 $0.00003。按月计算，大约是 **$1.9M 对 $12K**，比例约为 160 倍。结果缓存、预热资源池和最小计费增量会大幅改变实际数字，但方向不会改变：当查询数量多、规模小且重复时，按索引剪枝并在写入时预聚合的引擎会胜出——而这恰恰是 Redset 所揭示的真实工作负载的样子。[^redset]
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 实时领域的三角关系是**新鲜度、查询速度和成本：三者只能选其二**，并要选择在哪里付出代价。
@@ -174,6 +185,7 @@ xychart-beta
 
 更新插入值得特别强调，因为实时项目往往就卡在这里。列式分片是不可变的，所以更新一行意味着写入一个新版本、稍后再进行协调。ClickHouse 的 ReplacingMergeTree 只有在后台合并之后才会只保留最新版本。在此之前，查询必须在读取时去重，或者容忍重复。ClickHouse Cloud 此后增加了轻量更新。[^ch-smt-blog] 更新流量大的团队（例如订单状态或库存）通常把这类状态保存在 Postgres 中，再把变更流式传入分析引擎，这就是"通过数据管道实现的 HTAP"。
 
+<a id="engine-comparison"></a>
 ### 引擎比较
 
 | 引擎 | 架构 | 延迟目标 | 并发度 | 更新支持 | 开源 / 许可证 | 商业厂商及现状 |
@@ -191,6 +203,7 @@ xychart-beta
 
 *图 23.6 — 实时引擎用写入时索引换取速度；HTAP 引擎用双格式换取新鲜度；DuckDB 通过去掉服务器换取简单性。*
 
+<a id="positioning-map"></a>
 ### 定位图
 
 ```mermaid
@@ -216,6 +229,7 @@ quadrantChart
 
 *图 23.7 — 作者对典型部署的定位，并非基准测试结果：实时引擎占据右上角，DuckDB 占据低并发下的速度优势，数据仓库则通过增加集群来扩展并发，延迟停留在秒级。*
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 - **实时 OLAP：** ClickHouse 是规模领先者。它正通过收购构建一个更广泛的平台：PeerDB 用于 Postgres CDC（2024 年 7 月），HyperDX 用于其 ClickStack 可观测性界面（2025 年 3 月），Langfuse 用于 LLM 可观测性（2026 年 1 月）。[^ch-peerdb][^ch-hyperdx][^ch-langfuse] 一些信息汇总网站还列出了 LibreChat（2025 年 11 月）和 RunReveal（2026 年 9 月）[VERIFY: ClickHouse 收购 LibreChat 和 RunReveal 的交易]。Imply（Druid）和 StarTree（Pinot）是规模较小的专业厂商。Tinybird 销售面向开发者的 API 层。Firebolt 以自研引擎瞄准低延迟分析（见[第 31 章](../04-company-deep-dives/ch31-analytical-engine-challengers-legacy.md)）。
@@ -225,6 +239,7 @@ quadrantChart
 - **进程内：** DuckDB（DuckDB Foundation；DuckLabs 即将归入 AWS）、MotherDuck，以及基于 DataFusion 和 Polars 的替代方案。
 - **已退出：** Rockset（2024 年归入 OpenAI）。[^rockset]
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 ```mermaid
@@ -248,6 +263,7 @@ timeline
 
 发展轨迹指向**分析成为每个业务数据库的一项功能**：一个嵌入 Postgres 的列式引擎，镜像到对象存储上的开放表格式（open table format）。对独立实时厂商的看空逻辑是：Postgres 和湖仓内部"够用"的分析能力覆盖了大多数需求。看多逻辑则是：智能体流量恰恰是高并发、对延迟要求苛刻的工作负载，而在这类负载上，专业厂商在成本上仍能领先 10 倍甚至更多。
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源/日期 |
@@ -264,10 +280,12 @@ timeline
 | 示意性智能体循环 SQL 等待时间 | 32 s（冷数据仓库）对 0.8 s（实时引擎），8 步 | 估算（作者假设） | 本章，图 23.4 |
 | 示意性月度计算成本，167 QPS | 约 $1.9M 对约 $12K | 估算（作者假设） | 本章，算例 |
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** 实时引擎是对延迟最敏感的分析类存储租户。它们需要**本地 NVMe** 来存放热分片和索引，使 p99 保持在毫秒级；需要**对象存储**来存放持久的大部分数据，如 ClickHouse Cloud 的 SharedMergeTree 或 Druid 和 Pinot 的深度存储。[^ch-smt] 决定用户可见延迟的是分层策略和缓存命中率，而不是原始吞吐量。闪存和对象协议的细节见[第 24 章](ch24-data-meets-compute-and-storage.md)以及配套的 *Everpure Tech Atlas*。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理提的问题**
@@ -292,10 +310,12 @@ timeline
 - "Rockset 证明了实时分析是条死胡同。" 它证明的是：一家闭源厂商可能被收购，从而让客户失去依托。这个品类仍在增长（ClickHouse 的 ARR）。[^ch-arr]
 - "DuckDB 只是笔记本电脑上的玩具。" 它是一个嵌入式引擎，如今已进入多个 Postgres 服务，并有 AWS 收购协议作为背书。[^aws-duck][^aurora-duck]
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 > **深入（L3）。** 阅读 ClickHouse 的 VLDB 2024 论文以了解 MergeTree 和稀疏索引设计，阅读 TiDB 的 VLDB 2020 论文以了解 Raft-learner 列式副本，阅读 SingleStore 的 SIGMOD 2022 论文以了解单引擎双格式设计。[^ch-paper][^tidb-paper][^s2-paper] 关于"小数据"之争，可下载 Redset 自行复现扫描量分布，再与 MotherDuck 的解读进行比较。[^redset][^md-redshift]
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [实时分析（Real-time analytics）](../glossary.md#real-time-analytics) — 在高并发下对秒级新鲜度的数据执行亚秒级分析查询。
@@ -319,6 +339,7 @@ timeline
 - [LSM 树（LSM-tree）](../glossary.md#lsm-tree) — 一种写优化结构，先缓冲写入，再在后台合并有序数据段。
 - [删除向量（Deletion vector）](../glossary.md#deletion-vector) — 标记已删除行的位图，使文件无需立即重写。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^ch-arr]: ClickHouse via Business Wire, "ClickHouse Tops $250M ARR and 4,000 Customers, Launches Claude-Powered Agents at Open House 2026," https://www.businesswire.com/news/home/20260527813115/en/ （另见 https://clickhouse.com/blog/clickhouse-tops-250m-arr-and-4000-customers），发布 2026-05-27；检索 2026-11-01。公司披露的 ARR。Sacra 对 2026 年 8 月 ARR 约 $350M 的估算属于第三方估算，本文未采用。

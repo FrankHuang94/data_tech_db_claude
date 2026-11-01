@@ -1,6 +1,7 @@
 # 10. 数据摄取与集成
 > **深度：** L2 · **阅读时间：** 约 12 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 9 章 — 数据管道模式](ch09-pipeline-patterns.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - 数据摄取（ingestion）工具把数据从公司无法掌控的系统（SaaS API、运营数据库、文件、事件流）中复制出来，落地到数据仓库或湖仓（lakehouse）中。复制本身很简单，难的是围绕它的一切：增量同步、[模式漂移](../glossary.md#schema-drift)（schema drift）、限流、重试和类型映射，而且要在数百个各自按自己节奏变化的数据源上重复这些工作。
@@ -9,6 +10,7 @@
 - 独立厂商这一层正从三个方向受到挤压。平台捆绑了“够用”的连接器（Databricks Lakeflow Connect、Snowflake Openflow、AWS/Azure/Google 的工具）。AI 辅助的连接器构建工具降低了长尾连接器的成本。整合完成了剩下的部分：Fivetran 与 dbt Labs 合并（2026 年 6 月完成，合并后 ARR “接近 $600M”，公司披露），[^ft-dbt-close] Salesforce 于 2025 年 11 月完成了约 $8B 的 Informatica 收购。[^infa-close]
 - 对 Everpure 而言，数据摄取决定了数据落在哪里。托管 SaaS 管道默认写入云数据仓库和云对象存储；可自托管的工具则是本地 S3 得以成为落地区的途径。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业视角 + Everpure 视角）
 
 每一个分析或 AI 系统都始于一份副本。在模型能够回答关于销售管道收入的问题之前，必须有人把商机记录从 Salesforce 中拉出来、把发票从 NetSuite 中拉出来、把订单行从 Postgres 中拉出来，并保持这些副本的新鲜度。[第 9 章](ch09-pipeline-patterns.md)介绍了相关模式（[ELT](../glossary.md#elt)、[变更数据捕获](../glossary.md#change-data-capture)、批处理与流处理）。本章介绍实现这些模式的工具，以及围绕它们成长起来的业务。
@@ -17,8 +19,10 @@
 
 第三点正是 Everpure 的视角。一条把 Salesforce 数据直接写入云数据仓库的管道，不给本地存储留任何角色。一条把开放格式文件（Parquet、Iceberg）写入客户自选的 S3 兼容存储桶的管道，则让存储决策保持开放。下文的“存储桥接”部分介绍了相关选项。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="what-a-connector-actually-does"></a>
 ### 连接器究竟做什么
 
 连接器是一个职责狭窄的小程序：从某一类数据源读取数据，并以标准形态输出记录。在实践中，一个生产级连接器要处理七件事。
@@ -73,6 +77,7 @@ flowchart LR
 
 > **深入（L3）。** CDC 最难的问题是快照与日志之间的交接。连接器必须在日志持续推进的同时，对一张表做一致性快照，然后只重放快照日志位置之后的变更。Debezium 式的“增量快照”把分块读表与日志事件交错进行，并按主键去重。Postgres 还带来一个运维陷阱：未被读取的逻辑复制槽会无限期地把 WAL 保留在源端磁盘上，因此一个停滞的连接器可能写满生产数据库的存储卷。
 
+<a id="the-economics-of-the-long-tail"></a>
 ### 长尾的经济学
 
 连接器业务遵循幂律分布。少数几个数据源（Salesforce、Postgres、MySQL、SQL Server、Google Ads、NetSuite）占了移动行数的大部分。另外数百个（小众营销工具、HR 系统、垂直 SaaS）每个只对少数客户重要，但每个客户都会有那么几个。一个缺少客户那三个冷门数据源的厂商就会丢掉订单，哪怕它把大数据源处理得很好。
@@ -83,6 +88,7 @@ flowchart LR
 
 成本端是投资者容易低估的部分。一个 SaaS 厂商更改分页方案、弃用某个 API 版本或收紧限流，就会迫使所有连接器厂商同时按照该 SaaS 厂商的时间表进行修复。这项工作不会随使用量减少而缩减，因为一个只有十个客户的长尾连接器所需的维护量与热门连接器大致相同。这就是为什么两家领先者都试图把长尾推给别人。Airbyte 依靠社区贡献，以及一个低代码 Connector Builder，后者带有一个能根据 API 文档起草连接器的 AI 助手（随 Airbyte 1.0 于 2024 年 9 月推出）。[^ab-ai] Fivetran 的 Connector SDK 自 2025 年 6 月起正式可用，让客户编写 Python 连接器，由 Fivetran 像对待自有连接器一样托管、重试和计量。[^ft-sdk] dlt（dltHub）等 Python 原生库以及更早的 Singer/Meltano 生态走得更远，把连接器视为数据团队自己拥有的代码。
 
+<a id="pricing-units-what-is-actually-metered"></a>
 ### 计价单位：实际计量的是什么
 
 | 厂商 / 产品 | 计价单位 | 账单驱动因素 | 口径与来源 |
@@ -102,6 +108,7 @@ flowchart LR
 
 > **类比：金融。** MAR 定价是一种**按活跃订户收取的版权费**：Fivetran 对本月发生变化的每一行收费，而不是对所持有的行存量收费，就像内容授权方按活跃订户向分销商收费，而不是按覆盖的家庭户数收费。2025–2026 年的调整增加了**每条合同线的最低版权费**（$5 基础费），并停止在各条线之间合并计算用量。和任何按线计的最低收费一样，它们对小线路的“税负”最重。
 
+<a id="worked-example-salesforce-plus-postgres"></a>
 ### 实例演示：Salesforce 加 Postgres
 
 本例为示意。假设均已列明，仅使用目录价，不含任何协议折扣。
@@ -128,6 +135,7 @@ xychart-beta
 
 还有两点。第一，MAR **按连接呈累退性**：在同一分档表下，1B MAR 的单个 Postgres 连接每月约 $5,600，每千行不到一美分；而一个 50K MAR 的 SaaS 连接却要支付每百万 $500 的最高费率。高数据量的数据库复制按行计非常便宜，利润藏在长尾里。第二，团队自身的工程时间是“自建还是购买”电子表格中最常被遗漏的成本，而这正是托管数据摄取存在的理由。
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 | 选择 | 托管 SaaS（Fivetran、Airbyte Cloud） | 自托管开源（Airbyte OSS、dlt、Meltano） | 平台捆绑（Lakeflow Connect、Openflow、Glue、ADF） | 企业级 iPaaS/ETL 套件（Informatica、Boomi、MuleSoft、Talend） |
@@ -143,6 +151,7 @@ xychart-beta
 
 每种替代方案的最强版本论证都很有力。**平台捆绑**胜在简单：一个只需要 Salesforce、Workday 和 SQL Server 的 Databricks 客户，可以在 Unity Catalog 中获得受治理的这些数据，而无需第二家厂商。[^lakeflow] **自托管**胜在规模化后的成本和数据主权。**企业级套件**胜在以应用间集成为主的场景。这正是 [iPaaS](../glossary.md#ipaas)（MuleSoft、Boomi：通过 API 和事件让运营应用保持同步，往往是实时的）与数据集成（Fivetran、Airbyte：批量复制到分析系统）之间的关键区别。两者正在融合，Boomi 收购 Rivery 即是例证，[^rivery]但买方和预算仍然不同。
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 | 厂商 | 模式 | 计价单位 | 部署方式 | 开源 | 所有者 / 状态（2026 年 11 月） | 最佳适用场景 |
@@ -189,6 +198,7 @@ quadrantChart
 
 *图 10.6 — 左上象限在 2025 年被填满：Salesforce 如今同时拥有 MuleSoft 和 Informatica，两大数据平台也都推出了自己的连接器。独立厂商位于右下方，在那里它们要与免费代码竞争。位置为作者判断，并非测量数据。*
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 第一代厂商（Informatica、IBM DataStage、TIBCO、Talend）向 IT 部门销售本地 ETL 服务器，按 CPU 或按连接器授权。当增长放缓时，私募股权将其中几家私有化（take-private）：Vista 收购了 TIBCO（$4.3B，2014 年），Permira 和 CPPIB 收购了 Informatica（$5.3B，2015 年）。[^tibco][^infa-pe] 云数据仓库浪潮催生了基于 ELT 和 SaaS 的第二代。Fivetran（成立于 2012 年）和 Stitch 是领头者，Airbyte 则于 2020 年作为开源挑战者跟进。这一代厂商的估值在 2021 年达到顶峰：Fivetran 融资 $565M 并以 $700M 收购 HVR，Airbyte 以 $1.5B 估值融资 $150M。[^hvr][^ab-seriesb]
@@ -215,6 +225,7 @@ timeline
 
 **数据摄取为何受到挤压。** 三股力量压缩了独立业务的空间。(1) *捆绑：* Lakeflow Connect、Openflow、Glue 零 ETL 集成和 Fabric 复制作业覆盖了头部数据源，且不单独计费，因此独立厂商只剩下长尾和多平台买家。(2) *AI 辅助的连接器生成：* 如果模型能在几分钟内根据 API 文档起草出一个 REST 连接器，[^ab-ai]目录广度作为护城河的价值就会降低，不过维护和支持依然构成护城河。(3) *整合：* 买方希望厂商更少，Fivetran + dbt 的合并通过扩大范围而非降价来回应这一点。看空逻辑是：合并后的公司会变成一个夹在平台之间、增长放缓的拼凑式并购体。看多逻辑是：随着客户同时运行 Snowflake 和 Databricks，它的中立性会更有价值。公司详情见[第 30 章](../04-company-deep-dives/ch30-data-movement-streaming-companies.md)。
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源 / 日期 |
@@ -232,10 +243,12 @@ timeline
 
 *图 10.8 — 与其所服务的平台相比，独立数据摄取市场如今规模很小。最大的独立厂商加上 dbt Labs，ARR 接近 $0.6B（公司披露，2026 年 6 月）。*
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** 数据摄取决定落地区。托管 SaaS 摄取写入云数据仓库，或写入在云目录中注册的云对象存储。例如，Fivetran 在 2024 年为其数据湖目标端增加了 Unity Catalog 注册功能。[^ft-300m] 可自托管的工具（Airbyte OSS、dlt、NiFi 以及 Openflow 的自带云模式）可以把 Parquet 或 Iceberg 写入任何 S3 兼容端点，包括本地部署的 FlashBlade。基于公开信息，战略团队可能评估的选项包括：与可自托管的数据摄取工具一起提供经验证的落地区设计，以及把 Everpure 的 Data Intelligence 连接器（就地发现，而非移动）定位为对数据管道的补充。对象协议细节请参阅配套的 *Everpure Tech Atlas*。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理（PM）提问**
@@ -260,6 +273,7 @@ timeline
 - “开源是免费的。”软件是免费的，但工程师、值班轮换和 Kubernetes 集群都不是。
 - “Openflow 就是 Snowflake 版的 Fivetran。”它是一个带连接器、基于 NiFi 的数据流引擎，更接近一个可编程的管道运行时。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 - Fivetran 的按用量计费文档，包括 2025 年和 2026 年的更新页面，是对 MAR 如何计数最清晰的公开解释。[^ft-2025][^ft-2026]
@@ -268,6 +282,7 @@ timeline
 - Apache NiFi 的用户指南介绍了 Openflow 背后基于数据流的模型。[^datavolo]
 - 关于数据摄取下游的编排和数据转换，见[第 12 章](ch12-transformation-and-orchestration.md)。
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [连接器](../glossary.md#connector) — 从某一类数据源抽取数据并输出标准化记录的代码。
@@ -290,6 +305,7 @@ timeline
 - [ELT](../glossary.md#elt) — 抽取、加载，然后在目标端内部转换。
 - [反向 ETL](../glossary.md#reverse-etl) — 把数据仓库中建模后的数据同步回运营应用。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^ft-700]: Fivetran, "Fivetran vs. Airbyte" comparison page（700+ 个全托管连接器），https://www.fivetran.com/compare/fivetran-vs-airbyte，持续更新文档；检索 2026-11-01。公司披露。

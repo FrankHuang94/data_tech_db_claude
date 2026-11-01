@@ -1,6 +1,7 @@
 # 17. 非结构化数据处理
 > **深度：** L2 · **阅读时间：** 约 14 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 16 章 — AI 数据生命周期](ch16-ai-data-lifecycle.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - 企业的大部分知识存在于合同、演示文稿、电子邮件、扫描件和录音之中，而不在表格里。常被引用的"80–90% 为非结构化数据"只是一条经验法则。它可追溯到 1998 年的一项说法，其现代版本是一份由 Box 赞助的 IDC 报告（2023 年 8 月），该报告将这一比例定在约 90%。[^idc-box][^grimes] 应将其视为方向正确、但测量基础薄弱的数字。
@@ -9,6 +10,7 @@
 - 企业真正的难题不在解析，而在于 **[ACL 传播](../glossary.md#acl-propagation)**（即每个分块都携带源文件的权限）和 **[增量同步](../glossary.md#incremental-sync)**（即索引能追踪编辑、权限变更和删除，而无需重新处理全部内容）。Microsoft 自己发布的 Copilot 过度共享指南表明，当源头权限混乱时会出现什么问题。[^m365]
 - 有四类参与者在争夺这一层：独立初创公司（Unstructured、LlamaIndex、Reducto）、超大规模云厂商的文档 AI API、将解析作为 SQL 函数提供的数据平台（Databricks `ai_parse_document`、Snowflake `AI_PARSE_DOCUMENT`），以及内容与存储平台（Box、Glean、NetApp AIDE、VAST、Everpure Data Stream）。存储厂商基于数据引力（data gravity）的论据最强，但在交付数据处理软件方面的记录最短。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业 + Everpure 视角）
 
 结构化数据背后有五十年的工具积累：模式（schema）、SQL、数据仓库（data warehouse）和商业智能（BI）。非结构化数据则大多只有文件共享、搜索框和记录保留策略。实际上，它就是 **[暗数据](../glossary.md#dark-data)**。Veritas 在 2016 年对 2,550 名 IT 负责人开展的 Databerg 调查发现，受访者将 52% 的存储数据归为"暗"数据（即价值未知），另有 33% 被归为冗余、过时或无关紧要（ROT）。[^veritas] 唯一一次著名的大规模变现此类数据的尝试——HP 于 2011 年以 $10.3B 收购 Autonomy——最终以 $8.8B 的减值告终。[^hp-autonomy] 高管们由此学会把"释放你的非结构化数据"视为一个危险信号。
@@ -17,12 +19,15 @@
 
 对 Everpure 而言，要点很简单。这些文件大多已经存放在文件存储和对象存储（object storage）上，其中很多在本地部署，因此处理层是存储厂商天然的相邻领域。Everpure 在 2026 年的举措符合这一解读：它完成了对 1touch 的收购（披露的现金对价为 $125M），用于数据发现和数据分类，[^everpure-1touch] 并推出了 **Data Stream**，借助 NVIDIA GPU 在 FlashBlade 上对数据进行向量化，并在流层级实施访问控制。[^everpure-ds] 悬而未决的问题是：存储厂商能可信地拥有管道中的哪些步骤，又应把哪些留给合作伙伴。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="step-1--ingest-connectors-not-copies"></a>
 ### 第 1 步 — 数据摄取：连接器，而非副本
 
 数据管道始于连接 SharePoint 和 OneDrive、Box、Google Drive、Confluence、电子邮件和 Slack 的[连接器](../glossary.md#connector)，以及 NFS/SMB 共享和 S3 存储桶。每个连接器有三项任务：拉取内容；拉取**元数据**，例如所有者、路径、修改时间和版本；拉取**权限**，即源系统的[访问控制列表](../glossary.md#access-control-list)、组成员关系和共享链接。第三项任务是团队最容易低估的。Glean 正是在这一层上建立起业务的，它将每个应用的身份和权限同步到自己的索引中，并在查询时将每条结果过滤为用户在源系统中可见的内容。[^glean-docs]
 
+<a id="step-2--parse-from-bytes-to-structured-text"></a>
 ### 第 2 步 — 解析：从字节到结构化文本
 
 解析将文件转化为有序文本加结构。方法取决于输入。
@@ -36,6 +41,7 @@ VLM 解析有一种已知的失败模式。传统 OCR 引擎会把无法识别�
 
 > **类比：半导体。** 解析相当于晶圆厂的**晶圆 ID 读取**。当批次 ID 来自 MES 数据库时，它是精确的，就像原生数字文本层。当光学读取器必须识别被工艺过程磨损的激光刻印标记时，读取是概率性的，就像 OCR。晶圆厂通过置信度阈值、重复读取和操作员兜底来处理。版面分析对应自动光学检测，在那里，知道某个特征位于晶粒上的*哪个位置*与读出它同样重要。在这两种场景中，误读的代价都会在流程后段显现，而那时更难追溯。
 
+<a id="steps-34--clean-and-chunk"></a>
 ### 第 3–4 步 — 清洗与分块
 
 清洗会去除样板内容（每页重复出现的页眉、页脚、法律免责声明），对几乎相同的版本去重，并统一编码。随后，**分块**将文档切分为若干单元，每个单元都会得到一个嵌入向量，并争夺模型提示词中的一个位置。
@@ -46,6 +52,7 @@ VLM 解析有一种已知的失败模式。传统 OCR 引擎会把无法识别�
 
 关于哪种策略更优，证据很少且依赖于语料库。NVIDIA 公布的测试发现，在其数据集上，按页分块的平均端到端准确率最高（0.648），基于 token 的切分在 0.603 到 0.645 之间。该测试集主要是分页报告，且 NVIDIA 并未进行完整的网格搜索。[^nvidia-chunk] Jina AI 于 2024 年 9 月提出的 **[延迟分块](../glossary.md#late-chunking)**颠倒了操作顺序：它先用长上下文模型对整篇文档做嵌入，再将 token 向量池化为分块向量，从而使代词保留其指代对象。[^late-chunk]
 
+<a id="step-5--enrich-metadata-and-carry-the-acl"></a>
 ### 第 5 步 — 富化元数据，并携带 ACL
 
 每个分块在嵌入之前都需要附加元数据：文档标题、章节路径、页码、日期、作者、提取出的实体（当事方、金额、产品名称）、一个[数据分类](../glossary.md#data-classification)标签，以及针对个人身份信息的 [PII](../glossary.md#personally-identifiable-information) 标签（[第 15 章](../02-pipelines-and-governance/ch15-governance-security-privacy.md)）。最重要的是，它需要**源 ACL 以及稳定的文档 ID 和版本**。查询时，检索器在排序*之前*按调用者身份过滤候选项，这就是[权限感知检索](../glossary.md#permission-aware-retrieval)。在生成之后再过滤就太晚了，因为模型已经读过受限文本。
@@ -92,6 +99,7 @@ flowchart LR
 
 > **类比：内存层级。** ACL 传播就像**让每条缓存行都携带安全属性**。安全世界位或内存标签必须跟随数据从 DRAM 进入 L3、L2 和 L1。如果某一级在复制缓存行时丢掉了标签，即使其他每一级都正确执行，隔离也会悄无声息地失效。分块索引就是又一级副本，而 ACL 就是它的标签。
 
+<a id="steps-67--embed-and-index-then-keep-it-current"></a>
 ### 第 6–7 步 — 嵌入和索引，然后保持更新
 
 嵌入和索引在[第 18 章](ch18-embeddings-and-vector-search.md)中讨论。本章要讲的是**保持索引同步**。企业内容一直在变化：文件被编辑，文件夹被重新共享给新的组，员工离职，或文档依保留规则被删除。只追加新内容的数据管道最终会提供过时或已撤销权限的内容。好的数据管道会以不同方式处理四类事件，如图 17.2 所示。
@@ -113,6 +121,7 @@ stateDiagram-v2
 
 有两件事让这变得困难。第一是**权限频繁变动**。组成员关系的变化频率远高于文档本身，而许多数据源（SharePoint 共享链接、嵌套组、继承的文件夹权限）无法低成本地回答"自时间 T 以来发生了什么变化"。第二是**删除时的扇出**。一份被删除的 PDF 可能已产生 70 个分块、70 个向量、一份摘要和若干缓存答案，而隐私监管机构也会把其中每一个副本视为该数据本身。为每个文档计算[内容哈希](../glossary.md#content-hash)，以及从文档到分块的数据血缘（[第 13 章](../02-pipelines-and-governance/ch13-data-quality-observability-lineage.md)），是最低限度的机制。Microsoft 针对 Microsoft 365 Copilot 的过度共享蓝图给出了一个实用警示：其第一步是在上线*之前*修复 SharePoint 权限并限制对过度共享站点的发现，因为助手会忠实地遵循它找到的任何 ACL。[^m365]
 
+<a id="worked-example-a-40-page-supply-contract"></a>
 ## 实例演算：一份 40 页的供货合同
 
 以一份 40 页的原生数字 PDF 合同为例，其中包含六张定价表和一页扫描的签字页。以下假设为估算：密集法律文本每页约 550 词，每词约 1.33 个 token。
@@ -159,6 +168,7 @@ xychart-beta
 
 *图 17.5 — 按方法划分的每 1,000 页成本。数据平台函数以平台积分计费，这使直接比较变得困难。应要求按客户自身的文档组合给出每 1,000 页的实际价格。*
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 | 策略 | 切分方式 | 检索精确度 | 上下文保留 | 成本 / 复杂度 | 最适用于 | 主要失败模式 |
@@ -177,6 +187,7 @@ xychart-beta
 
 第二个权衡是**解析在哪里运行**。Databricks 或 Snowflake 内的 SQL 函数可将数据治理（governance）保持在同一个目录中，并按现有承诺消费额度计费，但它要求文件先暂存到该平台可读取的位置。独立 API 通常在难处理页面上的准确率领先，并支持任意目标，但它会增加一家供应商、一份数据处理协议和又一份数据副本。在存储层处理则完全避免了数据移动，但买方只能接受存储厂商选择嵌入的那个解析器。
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 | 供应商 / 项目 | 类型 | 解析方式 | 连接器与 ACL | 商业要点 |
@@ -234,6 +245,7 @@ quadrantChart
 
 初创公司的看多逻辑是：难处理文档正是价值所在，而准确率会在下游每一步中产生复利效应。看空逻辑是：一次模型升级（例如一个更好的 VLM）就可能抹去一年的数据管道工程投入，而买方会接受数据平台提供的"够用且已受治理"的方案。公司层面的细节见[第 32 章](../04-company-deep-dives/ch32-ai-native-data-companies.md)。
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 ```mermaid
@@ -254,6 +266,7 @@ timeline
 
 2024 年以来的发展轨迹有三条主线。第一，**解析从 OCR 引擎转向 VLM**，难处理文档的每页价格下降。Reducto 称其旧的智能体式模型每页成本为 3–6 美分，而 r-1 为 1 美分。[^reducto-r1] 第二，**数据平台吸收了解析**。Snowflake 的版面解析于 2025 年 8 月 GA，其页数上限于 2026 年 4 月提高到每个文件 2,000 页；Databricks 则在 2025 年末将解析加入 Agent Bricks。[^sf-parse][^dbx-parse] 第三，**存储厂商向数据管道靠拢**：先是 VAST InsightEngine（2024 年 10 月，基于 NVIDIA NIM 微服务构建），随后是 NetApp AIDE（2025 年 10 月）和 Everpure Data Stream（2026 年 6 月），后两者都引用了 NVIDIA 于 2025 年 3 月（InsightEngine 发布之后）公布的 AI Data Platform 参考设计。[^vast][^netapp-aide][^everpure-ds] 未来两年，预计权限感知索引将成为标准配置项，而且除最难处理的页面外，解析价格将逼近 OCR 价格。
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 依据 | 来源 / 日期 |
@@ -272,10 +285,12 @@ timeline
 
 *图 17.10 — 需要记住的数字：约 90%（赞助研究）；OCR 与版面解析分别为每 1,000 页 $1.50 与 $10；智能体式前沿方案为每页 1 美分。*
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** 非结构化数据处理会读取并重写整个文件资产：解析期间有数以百万计的小读取，派生分块和向量会产生写入突发，变更检测则以元数据为主。能够流式推送变更通知、并将权限作为可查询元数据暴露出来的存储，会让增量同步和 ACL 传播便宜得多。对 Everpure 而言，Data Intelligence（源自 1touch）提供数据发现、数据分类和上下文，Data Stream 提供带流级访问控制的向量化。[^everpure-1touch][^everpure-ds] 基于公开信息，战略团队可能评估的选项包括：在 Data Stream 背后嵌入 Docling 或 Unstructured 等开源解析器；与准确率专家合作处理难处理页面；让存储阵列成为 Databricks、Snowflake 和 Glean 连接器所使用的文档 ID、版本和 ACL 的权威来源；或上述方案的组合。FlashBlade 和协议细节参见配套的 *Everpure Tech Atlas*，战略框架参见[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理提问**
@@ -300,6 +315,7 @@ timeline
 - "分块越大越安全。"大分块浪费提示词预算并模糊嵌入向量。分块大小应遵循文档结构。
 - "解析一次就完事了。"模型升级、权限变动和删除让这成为一条持续运行的数据管道。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 - Günther 等，*Late Chunking*（arXiv 2409.04701），关于上下文化的分块嵌入。[^late-chunk]
@@ -307,6 +323,7 @@ timeline
 - Microsoft 的 Copilot 过度共享蓝图，关于实用的权限整改步骤。[^m365]
 - Snowflake `AI_PARSE_DOCUMENT` 和 Databricks `ai_parse_document` 的供应商文档，关于 SQL 函数模式。[^sf-parse][^dbx-parse]
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [非结构化数据](../glossary.md#unstructured-data) — 没有预定义模式的内容，例如文档、电子邮件、图像、音频和视频。
@@ -334,6 +351,7 @@ timeline
 - [嵌入（向量）](../glossary.md#embedding) — 表示语义的数值向量，用于相似度检索。
 - [检索增强生成](../glossary.md#retrieval-augmented-generation) — 在查询时将检索到的内容加入模型提示词。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^idc-box]: IDC (sponsored by Box), "Untapped Value: What Every Executive Needs to Know About Unstructured Data," IDC doc #US51128223, https://bitpipe.computerweekly.com/resource/1706846435_778 及 Box 落地页 https://www.boxenterprise.net/fr-fr/resources/unstructured-data-paper，发布 2023-08；检索 2026-11-01。厂商赞助；方法论未经审阅（页面未抓取）。

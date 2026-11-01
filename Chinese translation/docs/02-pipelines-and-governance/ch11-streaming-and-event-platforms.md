@@ -1,6 +1,7 @@
 # 11. 流处理与事件平台
 > **深度：** L2 · **阅读时间：** 约 12 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 9 章 — 数据管道模式](ch09-pipeline-patterns.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - **核心思想是日志。** Apache Kafka 把数据库内部的预写日志（write-ahead log, WAL）变成了一种共享的、只追加的、分区化的日志，任意数量的系统都可以按各自的节奏向其写入和从中读取。这一个抽象就让生产者与消费者解耦，这也是 Kafka 成为默认事件骨干的原因。[^kreps-log][^netdb]
@@ -9,6 +10,7 @@
 - **处理层正向 Flink 集中，Spark 正在追赶。** Apache Flink 是有状态、基于事件时间的流处理器的事实标准。Spark 4.1 增加了实时模式，而流式数据库（RisingWave、Materialize）则通过 SQL 物化视图提供同样的结果。[^flink-docs][^spark-rtm]
 - **这门生意如今具有战略意义。** IBM 于 2026 年 3 月 17 日完成了对 Confluent 约 $11B（企业价值，公告值）的收购，把这一品类定位为企业 AI 智能体的实时数据源。Redpanda 于 2025 年 4 月以 $1B 估值（公司披露）融资 $100M。[^ibm-close][^rp-fund]
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（业务 + Everpure 视角）
 
 批处理数据管道（[第 9 章](ch09-pipeline-patterns.md)）回答的问题是"昨天发生了什么？"。流处理回答的是"现在正在发生什么？"。在 AI 时代，这一点比在仪表盘时代更重要，具体有四个原因：
@@ -20,8 +22,10 @@
 
 对公司发展（corporate development）读者而言，市场本身也在讲述一个故事。IBM 为这一品类的领导者支付了约 9.4 倍于 Confluent 过去 12 个月 GAAP 收入的价格。Confluent 自己则收购了 WarpStream，以抵御在成本上压低它的对象存储方案。[^cflt-10q][^ibm-10q] 本章所讲的技术转变——从复制的 broker 磁盘转向对象存储——同时也是流数据字节物理落点的转变。这与 Everpure（原 Pure Storage；NYSE: P，原 PSTG）直接相关。其 2026 年 6 月推出的 **Data Stream** 产品已经把 FlashBlade 定位为为 AI 数据管道进行数据向量化和暂存的地方。[^everpure-ds]
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="the-log-abstraction"></a>
 ### 日志抽象
 
 Jay Kreps 2013 年的文章《The Log》认为，朴素的提交日志——每个数据库内部早已用于恢复的结构——正是在整个公司范围内做数据集成的正确统一抽象。[^kreps-log] 日志是一个有序的、只追加的记录序列。每条记录都会获得一个顺序编号，称为**偏移量（offset）**。记录永远不会被原地更新。读取者不会删除已读内容；每个读取者只需记住自己已到达的偏移量。
@@ -90,10 +94,12 @@ flowchart LR
 
 > **类比：多核调度。** 消费者组看起来像跨核的工作窃取（work-stealing），但更接近*静态*分区。每个分区被固定给一个消费者，直到再平衡（rebalance）把它移走。真正的队列式共享——空闲消费者从繁忙分区中领取单条记录——直到"共享组"（share groups，KIP-932）才出现，该特性在 2026 年 2 月的 Kafka 4.2 中被宣布可用于生产。[^kafka42]
 
+<a id="from-zookeeper-to-kraft"></a>
 ### 从 ZooKeeper 到 KRaft
 
 在最初的十年里，Kafka 把集群元数据（哪个 broker 领导哪个分区、topic 配置、ACL）保存在一个独立的 Apache ZooKeeper 集群中。这意味着要运维两套分布式系统。它还给分区数量设了上限，因为新的控制器在故障切换后必须从 ZooKeeper 重新加载全部元数据。**[KRaft](../glossary.md#kraft)**（Kafka Raft）把元数据移入 Kafka 的内部日志，由一个控制器 Raft 法定组（quorum）进行复制。2025 年 3 月发布的 Kafka 4.0 彻底移除了 ZooKeeper。集群必须先在 3.x 版本上迁移到 KRaft（3.9 是过渡版本），才能升级。[^kafka40] Redpanda 从一开始就走了类似的路线：一个按分区运行 Raft 的单一 C++ 二进制程序，没有外部协调器。[^rp-docs]
 
+<a id="exactly-once-idempotence-plus-transactions"></a>
 ### 精确一次：幂等性加事务
 
 默认情况下，网络重试可能导致生产者把同一条记录写两次（"至少一次"）。2017 年随 Kafka 0.11 发布的 KIP-98 增加了两种机制：[^kip98]
@@ -123,6 +129,7 @@ sequenceDiagram
 
 > **类比：半导体。** 幂等生产者就是幂等的 DMA 描述符：每个描述符都带有序列标签，因此重放的描述符会被识别并丢弃，而不会被写两次。事务提交标记扮演的是门铃（doorbell）写入的角色，让一批描述符一次性对设备可见。
 
+<a id="tiered-storage-then-diskless"></a>
 ### 先分层存储，再无盘化
 
 Kafka 的 broker 本地磁盘使长时间保留变得昂贵。历史数据的每个字节都位于三个块存储副本上。**[分层存储（tiered storage）](../glossary.md#tiered-storage)**（KIP-405）把已关闭的日志段移到对象存储，而最近的"热"段仍留在 broker 磁盘上。它在 Kafka 3.6（2023 年 10 月）以抢先体验形式发布，并在 Kafka 3.9（2024 年 11 月）被宣布可用于生产。[^kafka39] 分层存储降低的是*存储*成本。它不触及*网络*成本，因为热层仍然跨可用区复制三份。
@@ -150,6 +157,7 @@ flowchart TB
 
 WarpStream 的代理（agent）会把写入缓冲不到一秒，把合并后的文件上传到 S3，并在一个确定顺序的元数据服务中登记该文件的偏移量。任何代理都可以服务任何分区，因此扩容只需增加容器。这种设计的代价是延迟。WarpStream 自己的基准测试报告称，在低延迟的 S3 Express One Zone 层上 p99 生产延迟为 169 ms（厂商报告），而一份客户案例研究给出的数字是：在标准 S3 上生产延迟约 400 ms、端到端约 1 s。[^warpstream-bench] Confluent 将其采用同样直写对象存储方式的 Freight 集群描述为：把延迟从 100 ms 以下提高到最多一两秒，换来最高 90% 的成本降低（公司声称）。[^freight]
 
+<a id="worked-example-the-cross-az-bill-for-1-gbs"></a>
 ## 实例演算：1 GB/s 的跨可用区账单
 
 以下算术**仅为示意，并非报价**。假设：在一个 AWS 区域内基于 EC2 自建 Kafka；持续 1 GB/s 的已压缩生产流量；跨三个可用区的复制因子 3；生产者均匀分布在各可用区；一个消费者组；一个月按 30 天计（2,592,000 秒）；以及 AWS 公布的同区域跨可用区费率——每一侧收取 $0.01/GB，因此每跨越一次为 $0.02/GB。[^aws-xaz]
@@ -180,6 +188,7 @@ xychart-beta
 
 有三点保留意见，以保持结论客观。第一，Amazon MSK 不对集群内 broker 之间的复制流量计费，但跨可用区的客户端流量仍会计费。这就是"MSK 式"那一栏，它假设消费者启用了 follower 读取。[^msk-pricing] 第二，这里只比较了网络费用项。S3 存储、计算和厂商许可费仍然存在，而且真实的对象原生引擎还会为压缩（compaction）和元数据发出额外的 PUT 和 GET，本示意未计入。更快的刷写间隔（比如为降低延迟改为 50 ms）会使 PUT 成本变为五倍，但总额仍然很小。第三，这笔节省是用延迟换来的，因此适合日志、遥测、数据湖摄取和 CDC 扇出，而不适合 10 ms 以下的交易或支付授权。
 
+<a id="stream-processing"></a>
 ## 流处理
 
 日志负责搬运事件；流处理器负责在事件上做计算。难点在于**状态**（滚动计数、连接、窗口）、**时间**和**恢复**。
@@ -205,6 +214,7 @@ xychart-beta
 
 表格来源：Flink 和 Spark 文档、Databricks 的 Spark 4.1 公告，以及 RisingWave 和 Materialize 的公司材料。[^flink-docs][^spark-rtm][^streamdb] 延迟数据为厂商声称，且取决于具体负载。
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 | 设计 | 持久性来源 | 生产延迟 | 跨可用区网络 | 运维负担 | 最适合 |
@@ -223,6 +233,7 @@ xychart-beta
 
 **流变成表。** Tableflow（Iceberg 于 2025 年 3 月 GA；Delta Lake 最初为预览）和 Redpanda Iceberg Topics（于 2025 年 4 月随 Redpanda 25.1 GA）把 topic 数据写成 Parquet 文件加 Iceberg 元数据，并使用模式注册表（schema registry）来定义表结构。[^tableflow][^rp-iceberg] Bufstream 和 Ursa 原生做到了同样的事情。[^bufstream][^ursa] 这样一来，分析副本就不再需要单独的连接器集群，[开放表格式（open table format）](../01-data-systems-foundations/ch07-open-table-formats.md)成为流处理与湖仓一体（lakehouse）之间的交接点。关于在此之上的实时分析服务，参见[第 23 章](../03-ai-data-stack/ch23-real-time-analytics-htap.md)。
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 | 平台 | 所有者 / 状态 | 协议 | 存储架构 | 延迟档位 | 部署方式 | Iceberg 路径 |
@@ -249,6 +260,7 @@ xychart-beta
 
 公司层面的经济性与交易历史见[第 30 章](../04-company-deep-dives/ch30-data-movement-streaming-companies.md)。
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 ```mermaid
@@ -270,6 +282,7 @@ timeline
 
 展望未来，有三件事看起来很可能发生。对象存储将成为高流量 topic 的默认主存储（Kafka 自己的 KIP-1150 指向这一方向）。"topic"与"表"之间的边界将持续模糊。流处理将被作为 AI 智能体的事件与上下文层来销售，而不再是作为管道基础设施。
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源 / 日期 |
@@ -291,12 +304,14 @@ timeline
 
 *图 11.10 — 头条数字：$0.02/GB 的网络税、约 $11B 的退出，以及品类领导者 9.4 倍的收入倍数。*
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** 无盘流处理把事件平台变成了一种对象存储负载：每隔几百毫秒一次大块顺序 PUT，重放时突发的并行 GET，以及以周或月而不是以天计的保留期。这使需求从 broker 上复制的块存储卷转向廉价、高吞吐的 S3 兼容容量，也就是 FlashBlade 类系统的典型画像。AutoMQ 和 Bufstream 已在文档中说明支持自托管的 S3 兼容存储，因此本地部署的"基于对象存储的 Kafka"是一种真实存在的部署模式。关于对象存储吞吐量和纠删码的细节，参见配套的 *Everpure Tech Atlas*。[^automq][^bufstream]
 
 基于公开信息，战略团队可能评估的选项包括：将 Everpure 对象存储认证为 Kafka 兼容无盘引擎（WarpStream BYOC、AutoMQ、Bufstream、Redpanda Cloud Topics）的后端；把 Data Stream 定位为 Kafka 和 CDC topic 的消费者，以保持向量索引的新鲜；以及跟踪 IBM–Confluent 的整合进展，因为 IBM 既是存储领域的竞争对手，也是潜在的渠道。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理提问**
@@ -321,6 +336,7 @@ timeline
 - "Kafka 仍然需要 ZooKeeper。" 自 Kafka 4.0（2025）起就不需要了。
 - "基于对象存储的 Kafka 只是更便宜的 Kafka。" 它属于不同的延迟等级，因此要与负载相匹配。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 - 阅读 Kreps 的《The Log》了解其集成论点，阅读 2011 年 NetDB 论文了解最初的设计。[^kreps-log][^netdb]
@@ -328,6 +344,7 @@ timeline
 - VLDB 2025 关于 Flink 2.0 解耦状态和 StreamNative Ursa 的论文，从研究角度展示了向对象存储的转变。[^flink2][^ursa]
 - 上游模式见[第 9 章](ch09-pipeline-patterns.md)，表格式见[第 7 章](../01-data-systems-foundations/ch07-open-table-formats.md)，实时服务见[第 23 章](../03-ai-data-stack/ch23-real-time-analytics-htap.md)，相关公司见[第 30 章](../04-company-deep-dives/ch30-data-movement-streaming-companies.md)。
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [事件流（Event streaming）](../glossary.md#event-streaming) — 在记录发生时持续地搬运和处理它们，而不是按计划分批处理。
@@ -355,6 +372,7 @@ timeline
 - [流式数据库（Streaming database）](../glossary.md#streaming-database) — 根据数据流持续更新 SQL 物化视图的数据库。
 - [模式注册表（Schema registry）](../glossary.md#schema-registry) — 存储流记录模式并对其进行版本管理的服务。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^kreps-log]: Jay Kreps, "The Log: What every software engineer should know about real-time data's unifying abstraction," LinkedIn Engineering Blog, https://engineering.linkedin.com/distributed-systems/log-what-every-software-engineer-should-know-about-real-time-datas-unifying, 发布 2013-12-16；检索 2026-11-01。

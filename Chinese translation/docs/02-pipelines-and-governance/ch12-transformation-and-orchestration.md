@@ -1,6 +1,7 @@
 # 12. 数据转换与编排
 > **深度：** L2 · **阅读时间：** 约 14 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 9 章 — 数据管道模式](ch09-pipeline-patterns.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - **数据转换（transformation）是原始数据变成业务事实的地方。** 在 [ELT](../glossary.md#elt) 模式下，数据以原始形态落入数据仓库或湖仓一体（lakehouse）。随后由 SQL 模型对其进行清洗、连接和聚合，形成人们信任的表。[dbt](../glossary.md#dbt) 把这件事变成了一门软件工程学科：把版本控制、测试和依赖图应用到 SQL 上。
@@ -9,6 +10,7 @@
 - **平台正从下方吸收这一层。** Snowflake Dynamic Tables、Databricks Lakeflow Spark Declarative Pipelines（原 Delta Live Tables）和 Google Dataform 把数据转换内建到引擎中。Snowflake 还能原生运行 dbt 项目（2025 年 11 月 GA）。[^dbt-sf][^ldp][^dataform]
 - **对智能体（agent）而言，编排层正在变成控制平面。** Temporal 的 E 轮融资于 2026 年 9 月给出了 $12.55B 的估值（公司披露），其逻辑是长时间运行的 AI 智能体需要重试和保存的状态。[^temporal] [数据契约（data contract）](../glossary.md#data-contract)把同样的思路带到了数据生产者与消费者之间的接口上。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（业务 + Everpure 视角）
 
 每一个仪表盘数字、预测特征和 RAG 源表都经过了数据转换层。这一层编码了公司的业务逻辑：什么算"净收入"、哪些订单已取消、门店如何映射到区域。战略从业者应关注它，原因有三。
@@ -21,8 +23,10 @@
 
 对 Everpure（原 Pure Storage；NYSE: P）而言，要点很窄：每一层数据转换都会产生**派生副本**。一个"gold"集市（mart）是由 silver 和 bronze 表构建的一张新物理表，通常还附带若干用于开发和 CI 的环境副本。这会成倍放大容量，并使基于数据血缘（lineage）的保留策略成为一个真实的存储策略问题。Everpure 的数据智能抱负位于这一层的旁边，而不是其内部。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="transformation-from-raw-tables-to-a-model-graph"></a>
 ### 数据转换：从原始表到模型图
 
 一个 dbt 项目是一个装满 SQL `SELECT` 语句的文件夹，每条语句保存为一个称为*模型*的文件。模型代码把 SQL 与 [Jinja](../glossary.md#jinja) 模板混合使用。关键函数是 `ref('other_model')`。它承担两项工作：解析为当前环境中正确的物理表名，并记录一条依赖边。dbt 把每个 `ref()` 和 `source()` 调用解析成一个[有向无环图](../glossary.md#directed-acyclic-graph)（DAG）。然后按依赖顺序运行模型，并在图允许的地方并行运行。[^dbt-mat]
@@ -99,6 +103,7 @@ group by 1, 2
 
 > **类比：半导体。** dbt 的 `ref()` 图就像芯片流程中的构建系统。RTL 输入综合，综合输入布局布线，布局布线输入时序签核。Make 风格的依赖跟踪只重建下游发生变化的部分。dbt 的 `state:modified+` 选择器对 SQL 做同样的事：重建已变更的模型及其后代，跳过其余部分。增量模型类似于增量编译。它们很快，但你得相信缓存状态依然有效。
 
+<a id="sqlmesh-fusion-and-the-compiler-turn"></a>
 ### SQLMesh、Fusion 与"编译器"转向
 
 dbt Core 把 SQL 当作文本处理：Jinja 渲染出一个字符串，由数据仓库来发现错误。更新的工具会解析 SQL 本身。**SQLMesh**（由 Tobiko Data 基于其 SQLGlot 解析器构建）能理解每一条查询。这赋予它[列级数据血缘（column-level lineage）](../glossary.md#column-level-lineage)和变更分类能力：在任何东西运行之前，它就能区分破坏性变更和非破坏性变更。其 `plan` 命令会展示一项变更的影响、运行单元测试，并在应用之前请求审批。[^sqlmesh-docs] SQLMesh 还提供[虚拟数据环境（virtual data environment）](../glossary.md#virtual-data-environment)。用户面对的是一层指向带版本物理表的视图。因此，开发或 CI 环境可以复用未发生变化的生产表，而晋升（promotion）只是一次指针切换，而非重建。[^sqlmesh-docs]
@@ -107,16 +112,19 @@ dbt Labs 的回应是在 2025 年 1 月收购了 Rust SQL 编译器初创公司 
 
 合并改变了局面。此后 dbt Labs 发布了 **dbt Core v2**：一个 Apache 2.0 许可的 Rust 运行时，由此前承诺以 ELv2 发布的代码构建而成。功能更完整的 Fusion 二进制仍依据 dbt 的产品许可协议保持专有。[^core-v2] 截至本文撰写时，Core v2 处于 alpha/beta 阶段，Fusion 已在 Snowflake 上 GA，其他适配器处于预览阶段。[^core-v2][^fusion-avail] `[VERIFY: Core v2 发布日期及当前成熟度；Fusion 已 GA 的适配器]`
 
+<a id="analytics-engineering-as-a-discipline"></a>
 ### 作为一门学科的分析工程
 
 更大的转变发生在人身上，而不是工具上。大约 2016 年以前，SQL 业务逻辑存在于 BI 工具、存储过程或分析师的笔记本电脑里。它没有版本控制、没有代码评审，也没有测试。dbt 于 2016 年起源于费城咨询公司 Fishtown Analytics，它把软件工程方法应用到 SQL 上：Git、pull request、每次变更都运行的 CI，以及能阻止合并的测试。[^fishtown] [分析工程师（analytics engineer）](../glossary.md#analytics-engineering)这一职位名称在大约 2018 年至 2020 年间通过 dbt 社区的写作传播开来。它描述的是介于负责搬运数据的数据工程师与负责解读数据的分析师之间的角色。`[VERIFY: "analytics engineer" 一词最早有据可查的使用]` 云数据仓库让这在经济上可行。一旦计算变得弹性且按用量计费，在数据仓库内部用 SQL 重建一切就胜过了单独的 ETL 服务器。
 
+<a id="data-contracts-moving-quality-upstream"></a>
 ### 数据契约：把质量前移到上游
 
 数据转换代码依赖于源系统输出的任何内容。当应用团队重命名一列时，数据管道会在凌晨 2 点崩溃。**数据契约**是由生产者拥有的一份协议。它涵盖某个数据集的模式、含义、新鲜度和质量 SLA，并在变更发布之前于生产者的 CI 中强制执行。Andrew Jones 于 2020 年在 GoCardless 开始使用这一术语，2021 年公开撰文讨论，并于 2023 年就此出版了一本书。[^jones] O'Reilly《*Data Contracts*》一书的合著者 Chad Sanderson 为推广这一理念做了大量工作。标准化工作如今由 **Bitol** 承担，这是 Linux Foundation AI & Data 旗下的一个项目。其 Open Data Contract Standard（ODCS）是一份 YAML 规范，版本为 3.1.0（2025 年 12 月），涵盖模式、质量规则、SLA、所有权和定价。[^odcs] dbt 的"模型契约"是其在消费者一侧的近亲：如果模型的输出列和类型偏离了声明的形态，模型将构建失败。
 
 > **类比：半导体。** 数据契约就是 SoC 上各 IP 模块之间的接口规范。总线协议、信号位宽和时序预算在任何一方流片之前就已商定。IP 供应商不会擅自改变 AXI 端口位宽，然后让集成方在硅片上才发现问题。数据契约让应用团队对其下游的数据团队遵守同样的纪律。
 
+<a id="orchestration-scheduler-executor-memory"></a>
 ### 编排：调度器、执行器与记忆
 
 [编排器（orchestrator）](../glossary.md#orchestrator)把任务图转化为执行。各工具的架构相似：代码定义工作流，调度器决定哪些任务已就绪，执行器把工作分派给 worker，元数据库记录每一次尝试。
@@ -167,10 +175,12 @@ flowchart TB
 
 > **类比：晶圆厂运营。** 编排器就是晶圆厂的制造执行系统（MES）。MES 知道每个批次的工艺路线（DAG），把批次派往可用的机台（worker），在机台漂移出规格时扣留批次（测试失败），为谱系追溯记录每一步（元数据库），并从指定步骤返工一个批次而不是报废晶圆（清除并重跑下游）。以资产为中心的编排就像按晶圆状态而不是按工艺步骤来跟踪在制品。
 
+<a id="durable-execution-orchestration-for-agents"></a>
 ### 持久化执行：面向智能体的编排
 
 Temporal 来自另一种传统：应用工作流，而非数据。开发者编写普通代码，运行时把每一步的结果保存在事件历史中。崩溃之后，工作流会从停止的那一行精确恢复，即使是数周之后。这就是 AI 智能体开发者采用它的原因。"规划、调用工具、等待审批、重试"这样的智能体循环，就是一个必须在重启后存活的长时间运行工作流。[^temporal] Airflow 3.1（2025 年 9 月）朝同一方向迈进，推出了人在回路（human-in-the-loop）算子，可让任务暂停，直到有人在 UI 中批准。[^airflow31]
 
+<a id="worked-example-the-retailers-nightly-mart-under-failure"></a>
 ## 实例演算：零售商的夜间集市遭遇故障
 
 以图 12.1 的项目为例。它约有 40 个模型，每晚 02:00 运行，必须在 06:00 前为高管仪表盘准备就绪。某天夜里出了两处故障。02:20，一次数据仓库超时终止了 `int_order_lines_enriched`。随后在重跑时，`stg_pos_lines` 又失败了，因为 POS 团队把 `discount_amt` 重命名为 `discount_amount`。
@@ -191,6 +201,7 @@ Temporal 来自另一种传统：应用工作流，而非数据。开发者编�
 
 *图 12.3 — 同样的故障，在以任务为中心和以资产为中心的编排器看来并不相同。两者都无法靠重试越过语义破坏。*
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 | 工具 | 范式 | 运行位置 | 许可证 / 模式 | 优势 | 主要弱点 |
@@ -221,6 +232,7 @@ Temporal 来自另一种传统：应用工作流，而非数据。开发者编�
 
 *图 12.5 — Airflow 胜在无处不在，Dagster 胜在数据感知，Temporal 胜在持久性，平台原生作业胜在便利。选择主要取决于整体环境的异构程度。*
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 - **Fivetran + dbt Labs。** Fivetran 如今拥有默认的数据摄取连接器库、默认的数据转换框架（dbt）、其主要挑战者（SQLMesh，于 2026 年 3 月捐赠给 Linux Foundation）以及反向 ETL（Census，2025 年 5 月达成协议；交割未单独公告）。[^merger-close][^sqlmesh-lf] 它是一家横亘在数据仓库与其客户之间的完整 ELT 厂商。George Fraser 担任 CEO，Tristan Handy 担任总裁。参见[第 30 章](../04-company-deep-dives/ch30-data-movement-streaming-companies.md)。
@@ -230,6 +242,7 @@ Temporal 来自另一种传统：应用工作流，而非数据。开发者编�
 - **平台。** Snowflake（Dynamic Tables、dbt Projects on Snowflake）、Databricks（Lakeflow Spark Declarative Pipelines 和 Lakeflow Jobs，原 Delta Live Tables 和 Workflows）[^ldp][^lakeflow-jobs]以及 Google（Dataform、Cloud Composer）。
 - **其他。** Coalesce（可视化数据转换；2024 年 4 月完成 $50M B 轮）[^coalesce]、Kestra（开源声明式编排）和 Mage（笔记本风格的数据管道）。Spark/PySpark 作业仍是重型非 SQL 数据转换的默认选择，可由上述任一编排器调度。
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 ```mermaid
@@ -253,6 +266,7 @@ timeline
 
 下一步：数据转换将成为一个**编译器问题**，涉及经解析的 SQL、列级血缘和低成本虚拟环境；编排则将成为一个**智能体运行时问题**。智能体将编写更多的 dbt 模型。这会提升测试、契约和语义定义（[第 14 章](ch14-semantic-layers-and-bi.md)）以及可观测性（[第 13 章](ch13-data-quality-observability-lineage.md)）作为护栏的价值。
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源 / 日期 |
@@ -272,6 +286,7 @@ timeline
 
 *图 12.7 — 合并后的"数据摄取加数据转换"厂商 ARR 正接近 $0.6B，其中截至 2025 年初 dbt Labs 贡献了超过 $100M（两者均为公司披露）。编排的价值正在向智能体时代的持久化执行转移。*
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理提的三个问题**
@@ -294,12 +309,14 @@ timeline
 - 把"Delta Live Tables"当作当前的产品名称。它现在叫 Lakeflow Spark Declarative Pipelines。
 - "数据契约就是模式。" 它还涵盖所有权、含义、SLA 以及在生产者 CI 中的强制执行。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 > **深入（L3）。** 阅读 Airflow 3.0 的发布说明，了解 Task SDK 和 Task Execution API，它们使 worker 不再直接访问元数据库。[^airflow3] 阅读 SQLMesh 关于变更分类和虚拟环境的文档。[^sqlmesh-docs] dbt 的物化方式和增量策略页面解释了 `merge`、`delete+insert` 与 `microbatch` 的区别。[^dbt-mat] GitHub 上的 ODCS v3 规范提供了一个完整的契约示例。[^odcs] Temporal 关于事件历史重放的文档解释了为什么工作流代码必须是确定性的。
 
 相关章节：[第 9 章](ch09-pipeline-patterns.md)（ELT 与 CDC 模式）、[第 10 章](ch10-ingestion-and-integration.md)（让源数据落地的连接器）、[第 13 章](ch13-data-quality-observability-lineage.md)（测试、可观测性、数据血缘）、[第 14 章](ch14-semantic-layers-and-bi.md)（集市之上的指标）、[第 30 章](../04-company-deep-dives/ch30-data-movement-streaming-companies.md)（作为企业的 Fivetran、dbt Labs 及同业）、[第 43 章](../06-history-and-future/ch43-modern-data-stack.md)（现代数据栈的兴起与再捆绑）。
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [dbt](../glossary.md#dbt) — 开源框架，把 SQL 加 Jinja 模型编译成依赖图，并在数据仓库中运行它们。
@@ -322,6 +339,7 @@ timeline
 - [Jinja](../glossary.md#jinja) — dbt 用于宏和 `ref()` 的 Python 模板语言。
 - [ELT](../glossary.md#elt) — 抽取、加载，然后在目标引擎内部进行转换。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^airflow-hist]: Apache Airflow, "Project" (history section), https://airflow.apache.org/docs/apache-airflow/1.10.4/project.html, n.d.（文档 v1.10.4，2019）；检索 2026-11-01。

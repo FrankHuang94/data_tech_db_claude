@@ -1,6 +1,7 @@
 # 39. 数据行业并购史，2010–2026
 > **深度：** L2 · **阅读时间：** 约 21 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 37 章 上市可比公司与估值](ch37-public-comps-valuation.md)；有助理解：[第 38 章 开源战略](ch38-open-source-strategy.md)、[第 43 章 现代数据栈](../06-history-and-future/ch43-modern-data-stack.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - **五个时代，一个方向。** 数据行业的并购经历了以下演变：老牌厂商收购分析一体机（2010–2014）；私募股权将低增长厂商私有化，同时应用厂商收购 BI（2015–2019）；云时代的补强型收购（2020–2022）；AI 人才与格式控制权之争（2023–2024）；最终是大范围的整合浪潮（2025–2026）。在每个时代，买方都在为当时看起来最具战略意义的那一层的控制权付费。
@@ -9,6 +10,7 @@
 - **哪些奏效，哪些没有。** 买下一个*控制点（control point）*并将其接入分销引擎的交易创造了价值：Salesforce–MuleSoft 以及 Databricks–MosaicML（如今是一项年化运行率超过 $1.4B 的 AI 业务，公司披露）。买下*衰退架构中的收入*的交易则没有：HP–Autonomy 以 $8.8B 的减值告终，Cloudera–Hortonworks 三年后以大致相同的股权价值被私有化。
 - **Everpure 视角。** Everpure 以 $125M 收购 1touch（2026 年 5 月完成）符合一个早已确立的模式。存储与数据保护厂商正在收购数据发现、分类和数据治理，也就是紧贴字节之上的那一层。2010 年代的先例（EMC–Greenplum、Hitachi–Pentaho）是一个警示：收购数据*引擎*很少能带动硬件销售。收购数据*元数据*是更新、证据更充分的押注。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业 + Everpure 视角）
 
 并购是战略变得可见的地方。产品路线图带有理想色彩，财报电话会经过精心编排，但一份签署的合并协议能显示一家公司愿意花多少钱去拥有什么。按时间顺序阅读，本书数据集中的 143 笔交易构成了一张地图，标出了行业认为控制点在哪里。这张地图不断变化：从一体机，到发行版，到 BI 工具，到云数据仓库，到表格式，到目录，如今到了运营型数据库和智能体的上下文。
@@ -17,8 +19,10 @@
 
 Everpure 自身的交易史很短，也很好解读。Portworx（$370M，2020 年）买下了 Kubernetes 数据服务，1touch（$125M，2026 年）买下了数据发现、分类和语义上下文。[^portworx][^1touch] 两者都是阵列*之上*的层，能让阵列更有价值，又不与客户选定的数据平台竞争。这正是本章末尾"收购"一栏应有的框架，该栏仅使用公开信息。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="reading-the-dataset-honestly"></a>
 ### 诚实地解读数据集
 
 在讲历史之前，先说明一下这个工具。`data/ma_deals.csv` 是一份根据新闻稿、SEC 文件和一线媒体整理的**精选**清单。它偏重那些塑造了数据基础设施和 AI 数据的交易，并有意纳入了一些相邻领域的交易（IBM–Red Hat、IBM–HashiCorp，以及可观测性和安全领域的交易），因为它们设定了价格锚。它不是全量统计。数据工具并购的完整统计会包含数千笔小型交易。[^ma-csv]
@@ -29,18 +33,19 @@ Everpure 自身的交易史很短，也很好解读。Portworx（$370M，2020 �
 2. **金额口径混杂。** 有些行是股权价值（Splunk，$28B），有些是企业价值（Confluent，约 $11B），有些是合并后公司的数字（Cloudera–Hortonworks，$5.2B 合并股权价值），还有一行是少数股权投资（Meta–Scale AI）。像"按年份统计金额"图表那样将它们加总，只是衡量活跃度的粗略指标，而不是市场规模估算。
 3. **私有标的的媒体报道价格往往偏高。** Snowflake 的 10-Q 显示 Crunchy Data 的对价为 $164.5M，而媒体报道约为 $250M；其 10-K 显示 Observe 的对价为 $596.2M，而媒体报道约为 $1B。[^crunchy][^observe] 在相关文件出现之前，应将媒体数字视为上限。
 
-![堆叠柱状图，按类别组展示本书数据集中每年的交易数量，从 2010 年的 3 笔增至 2025 年的 32 笔和 2026 年截至 10 月的 22 笔，近年以 AI 和数据治理类别为主](../assets/charts/ma_deals_per_year.png)
+![堆叠柱状图，按类别组展示本书数据集中每年的交易数量，从 2010 年的 3 笔增至 2025 年的 32 笔和 2026 年截至 10 月的 22 笔，近年以 AI 和数据治理类别为主](../../../docs/assets/charts/ma_deals_per_year.png)
 
 *图 39.1 — 本精选文件中按宣布年份统计的交易数量，因此应将其视为一种模式，而非全量统计。整个 2010 年代活跃度持平，在 2020–2022 年估值热潮期间变少（卖方更愿意做风险投资融资而非退出），随后从 2023 年起急剧上升，因为 AI 对每一项数据资产重新定价。来源：`data/ma_deals.csv`。*
 
-![柱状图，按宣布年份汇总公司披露或媒体报道的交易金额，峰值分别为 2018 年约 $47B、2023 年约 $43B 和 2025 年约 $48B](../assets/charts/ma_value_per_year.png)
+![柱状图，按宣布年份汇总公司披露或媒体报道的交易金额，峰值分别为 2018 年约 $47B、2023 年约 $43B 和 2025 年约 $48B](../../../docs/assets/charts/ma_value_per_year.png)
 
 *图 39.2 — 金额呈尖峰状，由一两笔巨型交易决定：2018 年的 Red Hat 和 MuleSoft，2023 年的 Splunk，以及 2025 年的 Scale AI、Confluent 和 Informatica。2026 年的柱子偏低，部分原因是 2026 年大多数交易是未披露金额的补强收购，部分原因是 Proofpoint–Varonis 是迄今文件中唯一一笔数十亿美元级的交易。*
 
-![气泡时间线，以对数刻度展示 2010 至 2026 年按金额排名前 22 的交易，IBM–Red Hat、Cisco–Splunk、Salesforce–Tableau 和 Meta–Scale AI 是最大的气泡](../assets/charts/ma_top_deals_timeline.png)
+![气泡时间线，以对数刻度展示 2010 至 2026 年按金额排名前 22 的交易，IBM–Red Hat、Cisco–Splunk、Salesforce–Tableau 和 Meta–Scale AI 是最大的气泡](../../../docs/assets/charts/ma_top_deals_timeline.png)
 
 *图 39.3 — 最大的交易集中在三个时间窗口（2010–2011、2018–2019、2023–2026）。除私募股权私有化外，最大的买方几乎总是应用、网络或基础设施领域的老牌厂商，而不是数据原生公司。*
 
+<a id="the-five-eras"></a>
 ### 五个时代
 
 ```mermaid
@@ -65,10 +70,11 @@ timeline
 
 **2025–2026：整合浪潮。** 文件中 143 笔交易里有 54 笔落在这 22 个月内。大型交易是应用和基础设施厂商直接收购数据控制点。Salesforce 收购 Informatica（约 $8B 股权价值，每股 $25，2025 年 11 月完成；到 Q2 FY2027，Informatica 在 $2.4B 的 Data 360 ARR 中贡献了 $1.1B，公司披露[^crm-q2]）；IBM 收购 Confluent（约 $11B EV，每股现金 $31，2025 年 12 月宣布，2026 年 3 月完成；约为 Confluent FY2025 GAAP 收入 $1,166.7M 的 9.4 倍）；Thoma Bravo 旗下的 Proofpoint 同意收购 Varonis（每股 $49.75，约 $6.3B 标题金额，约 $5.71B 股权价值，预计 2027 年上半年完成）。[^infa-2025][^confluent][^varonis] 现代数据栈内部合并：Fivetran 与 dbt Labs 以全股票方式合并，于 2026 年 6 月完成，合并后年度经常性收入（ARR）"接近 $600M"（公司披露）；Prefect 同意收购 Dagster Labs。[^fivetran-dbt][^prefect] 各平台竞相争夺运营型数据库：Databricks 收购了 Neon（约 $1B，媒体报道）、Mooncake 和 Electric，Snowflake 收购了 Crunchy Data。AI 基础设施买方收购软件层：CoreWeave 收购 Weights & Biases（约 $1.7B，媒体报道），Nscale 同意收购 Anyscale（约 $1.65B，媒体报道）。[^wandb][^ma-csv] 技术栈顶端的引擎易主。SAP 收购 Dremio（2026 年 7 月完成，金额未披露），AWS 同意收购 DuckDB 背后的公司 DuckLabs，同时让该项目在 DuckDB Foundation 下继续采用 MIT 许可。[^dremio][^ducklabs] 存储与数据保护厂商收购数据智能：Veeam–Securiti（$1.725B）、Everpure–1touch（$125M）和 NetApp–DataPelago（金额未披露）。[^securiti][^1touch][^datapelago]
 
-![双面板水平条形图：左侧按类别组展示交易数量，分为公司披露、媒体报道和未披露金额三类；右侧按组汇总已知交易金额，应用厂商/存储/基础设施组以 $54B 居首，可观测性与 BI 组为 $53B](../assets/charts/ch39_deals_by_category.png)
+![双面板水平条形图：左侧按类别组展示交易数量，分为公司披露、媒体报道和未披露金额三类；右侧按组汇总已知交易金额，应用厂商/存储/基础设施组以 $54B 居首，可观测性与 BI 组为 $53B](../../../docs/assets/charts/ch39_deals_by_category.png)
 
 *图 39.5 — 数量和金额讲述的是不同的故事。数据管道和数据库在数量上领先，但大多是未披露金额的补强收购。金额集中在少数巨型交易（Red Hat、Splunk、Tableau）以及私募股权私有化中，因为上市标的必须披露。格式与目录是金额最低的组之一，却是最具战略意义的组之一。来源：`scripts/charts/ch39_deals_by_category.py`，基于 `data/ma_deals.csv` 及 ch39 暂存修正。*
 
+<a id="seven-patterns-and-the-deals-behind-them"></a>
 ### 七种模式及其背后的交易
 
 | 模式 | 证据交易（来自 CSV） | 战略逻辑 | 下一个是谁（推测，作者判断） |
@@ -141,6 +147,7 @@ flowchart LR
 
 *图 39.7 — 收购方原型及其收购对象。数据发现、分类与 DSPM 是唯一同时被三类原型争夺的标的类型（存储与数据保护、安全平台，以及通过目录参与的数据平台），这也是这类资产重新定价最快的原因。*
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 每个收购方都要做两个结构性选择：**怎么买**和**怎么整合**。数据集清楚地展示了其中的权衡。
@@ -160,6 +167,7 @@ flowchart LR
 
 **"保留品牌"的最强版本论证。** 保留品牌能保护装机基础和开发者社区，当标的面向不同的买家时这是常规做法（Portworx 面向平台工程师，Tableau 面向分析师）。风险在于，被保留的品牌会变成孤岛：独立的销售动作、独立的路线图、没有交叉销售。Portworx 是这里有用的内部先例：它保留了名称和负责人，并由 Pure 通过自己的渠道销售。[^portworx]
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 - **连续收购的平台。** Databricks 是文件中最活跃的买方（**16 笔交易**，其中 5 笔在 2026 年），其次是 Snowflake（**12 笔**）。几乎都是未披露金额的补强收购，每笔填补一个缺口：AI（MosaicML、Lilac、Fennel、Tecton）、格式（Tabular）、OLTP（Neon、Mooncake、Electric）、安全（Antimatter、Panther）以及用户界面（Row Zero）。ClickHouse 是同一模式的较小版本（PeerDB、HyperDX、Langfuse）。见[第 25 章](../04-company-deep-dives/ch25-databricks.md)和[第 26 章](../04-company-deep-dives/ch26-snowflake.md)。
@@ -170,8 +178,10 @@ flowchart LR
 - **安全平台。** Palo Alto Networks（Dig、Protect AI、Chronosphere、Portkey）、CrowdStrike（Flow、Onum）、Check Point（Lakera）和 Proofpoint 如今都在收购数据安全和遥测资产。它们是 DSPM 标的的主要竞争买方。
 - **存储与数据保护。** Everpure（Portworx、1touch）、NetApp（Instaclustr、DataPelago）、Cohesity（Veritas）、Veeam（Securiti）和 Rubrik（Laminar）。这些交易中标的一方的情况见[第 33 章](../04-company-deep-dives/ch33-governance-catalog-security-companies.md)。
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
+<a id="the-30-deals-that-mattered-most"></a>
 ### 最重要的 30 笔交易
 
 | 日期 | 收购方 | 标的 | 类别 | 金额（口径） | 逻辑 | 结果 |
@@ -209,6 +219,7 @@ flowchart LR
 
 *图 39.9 — 主交易表，取自 `data/ma_deals.csv`。日期为宣布日期（Veeam–Securiti：2025-10-21 宣布，2025-12-11 完成）。全部 143 笔交易的完整清单（每行均附逻辑、结果和来源）见仓库根目录下的 `data/ma_deals.csv`。*
 
+<a id="outcomes-and-lessons"></a>
 ### 结果与教训
 
 **创造了价值的交易。** 有两笔交易是明确的成功，而且都买下了一个可由更大分销引擎推动的控制点。**Salesforce–MuleSoft**（$6.5B）成为 Salesforce 数据和智能体战略的连接组织。Salesforce 的 FY2026 10-K 称其集成、自动化和 API 管理产品构建在 MuleSoft 之上，而 MuleSoft Agent Fabric 如今跨厂商治理智能体。[^crm-10k] **Databricks–MosaicML**（$1.3B）是最干净的 AI 案例。大约三十个月内，Databricks 报告的 AI 产品年化运行率已超过 $1.4B（公司披露，2026 年 1 月）。[^db-54] 这并非全部归功于 MosaicML，但这笔交易在 Databricks 最需要的时候为其带来了模型领域的可信度。较小的成功案例遵循同样的逻辑：Elastic–Found 成为 Elastic Cloud，MongoDB–mLab 把用户迁移到 Atlas，Google–Looker 成为 Google Cloud 的 BI 层。Snowflake–Neeva 比较特殊：资产是一支团队，结果是一位 CEO。
@@ -224,6 +235,7 @@ flowchart LR
 
 **未披露金额如何限制分析。** 文件中近一半交易没有价格，而且这一缺口并非随机。未披露的交易大多是小型补强收购，因此任何中位数或平均数描述的都是大型交易。类别比较也有偏差：格式与目录在图 39.5 中显得便宜，部分原因是 Select Star、data.world 和 Dremio 从未披露价格。有两个实用的修正方法。第一，阅读收购方下一份 10-Q 或 10-K，其中常常披露宣布时"未披露"的交易对价（Crunchy、Observe、WarpStream、Neeva 和 1touch 都是这样变得可见的）。[^crunchy][^observe][^warpstream][^neeva][^1touch] 第二，将媒体报道的数字视为上限。
 
+<a id="everpure-lens-storage-and-data-protection-move-into-data-intelligence"></a>
 ### Everpure 视角：存储与数据保护进入数据智能
 
 第七种模式已有十年历史，但正在加速。2010 年代，存储厂商收购的是**引擎**：EMC–Greenplum、Hitachi–Pentaho、HPE–MapR。2020 年代，它们收购的是**数据服务和元数据**：Pure–Portworx（2020 年）、NetApp–Instaclustr（2022 年）、Rubrik–Laminar（DSPM，2023 年）、Cohesity–Veritas（2024 年）、Veeam–Securiti（$1.725B，2025 年 10 月宣布）、Everpure–1touch（$125M，2026 年）以及 NetApp–DataPelago（GPU 数据处理，2026 年）。[^ma-csv][^securiti][^datapelago] Salesforce–Own（$1.9B 现金，2024 年）则是镜像案例：一家应用厂商为自己的数据收购备份能力。[^own]
@@ -243,6 +255,7 @@ Everpure 在更名当天（2026 年 2 月 23 日）宣布收购 1touch，于 202
 
 *图 39.10 — 按类别划分的"收购"选项，仅基于公开信息。前三行直接延伸了 1touch 的投资逻辑。最后一行若不以合作形式进行，就是 2010 年代错误的现代版。*
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源 / 日期 |
@@ -266,10 +279,12 @@ Everpure 在更名当天（2026 年 2 月 23 日）宣布收购 1touch，于 202
 
 *图 39.11 — 关键数字。*
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** 存储与数据保护厂商拥有数据平台所缺少的一项资产：企业非结构化数据和本地部署数据的物理位置，外加几乎所有数据的备份副本。这就是数据发现、分类和 DSPM 吸引它们的原因。分类可以在字节已经所在的位置运行，而备份副本本身就是整个数据资产的现成索引。FlashBlade 和备份架构如何暴露这些数据，见配套的 *Everpure Tech Atlas*。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理和企业发展同行提出的三个问题**
@@ -295,6 +310,7 @@ Everpure 在更名当天（2026 年 2 月 23 日）宣布收购 1touch，于 202
 - "存储公司收购软件总是失败。" *收购引擎（Greenplum、Pentaho）大多失败了，收购数据服务（Portworx）则没有。*
 - "Cloudera–Hortonworks 是一笔 $5.2B 的收购。" *$5.2B 是一笔全股票合并的合并股权价值，而不是支付的价格。*
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 > **深入（L3）。** 要估算一笔"未披露"交易的规模，可阅读收购方下一份 10-Q 或 10-K 中的购买价格分摊。关注总购买对价、商誉与无形资产之间的划分，以及作为薪酬费用化而不计入价格的**扣留款（holdback）**或留任激励（Confluent 对 WarpStream 的披露显示对价为 $135.1M，另有最高 $76.2M 的扣留款）。[^warpstream] 商誉占比高而已开发技术很少，表明是人才收购或战略性收购。大额薪酬扣留款表明是人才收购，无论新闻稿如何称呼它。
@@ -302,6 +318,7 @@ Everpure 在更名当天（2026 年 2 月 23 日）宣布收购 1touch，于 202
 - `data/ma_deals.csv` 结合 `value_basis` 和 `outcome` 两列阅读，是起点。另见 `meta/research-notes-ma-2010s.md` 和 `meta/research-notes-ma-2020s.md`。
 - 相关章节：关于估值倍数见[第 37 章](ch37-public-comps-valuation.md)，关于开源项目为何能在收购后存续见[第 38 章](ch38-open-source-strategy.md)，关于存储向技术栈上层移动战略的完整论述见[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)。
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [人才收购（Acquihire）](../glossary.md#acquihire) — 主要为了聘用标的团队而进行的收购，常常会关停其产品。
@@ -325,6 +342,7 @@ Everpure 在更名当天（2026 年 2 月 23 日）宣布收购 1touch，于 202
 - [Lakebase](../glossary.md#lakebase) — Databricks 基于 Neon 构建的 serverless Postgres。
 - [模型上下文协议（Model Context Protocol）](../glossary.md#model-context-protocol) — 向 AI 智能体暴露工具和数据的开放标准。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^ma-csv]: AI Data Atlas 数据集 `data/ma_deals.csv`（143 行，as_of 2026-11-01；每行来源包括公司公告、SEC 文件和媒体报道），ch39 的修正（包括 Veeam–Securiti 的宣布日期）此后已合并入主文件；统计数据由作者于 2026-11-01 计算，并由第 5 部分审阅者于 2026-11-01 使用 pandas 重新计算（143 行；74 行有金额，55 行公司披露，19 行媒体报道；有金额中位数 $825M / 公司披露中位数 $1,050M；2025–26 年 54 笔交易，43% 有金额）。配套笔记：`meta/research-notes-ma-2010s.md`、`meta/research-notes-ma-2020s.md`；检索于 2026-11-01。

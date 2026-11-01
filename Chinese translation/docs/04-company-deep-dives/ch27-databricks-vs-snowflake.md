@@ -1,6 +1,7 @@
 # 27. Databricks 对比 Snowflake：正面交锋
 > **状态：** Databricks 为私营公司 · Snowflake 为上市公司（NYSE: SNOW） · **总部：** San Francisco, CA（Databricks）/ 据 SEC 文件为 Bozeman, MT（Snowflake） · **成立：** 2013 / 2012 · **最新估值/市值：** Databricks 投后估值 $190B（1900 亿美元）（公司披露，2026-08-13）；Snowflake 市值 $107.88B，企业价值 $106.31B（2026-10-30） · **最后核实：** 2026-11-01
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - **起点不同，终点相同。** Databricks 起家于面向数据工程师的托管 Spark，随后"向上"拓展至 SQL 数据仓库。Snowflake 起家于面向分析师的托管 SQL 数据仓库，随后"向外"拓展至工程、机器学习和应用。到 2026 年，两家的产品版图几乎完全相同：开放表格式（open table format）支持、数据治理目录、无服务器计算、Postgres 数据库以及智能体（agent）层。二者仍有差别的地方在于**数据默认存放在哪里**以及**谁掌握元数据**。Databricks 默认使用客户存储桶中的开放 Delta/Iceberg 文件。Snowflake 默认使用自有的托管存储，如今也把 Iceberg 表作为一等选项提供。[^cidr][^sigmod16]
@@ -9,6 +10,7 @@
 - **估值差距。** Databricks 的 $190B 估值约为**年化运行率的 27 倍**。Snowflake 的 **EV/未来 12 个月收入为 16.9 倍**（2026-10-30）。经增速调整后，Databricks 反而*更便宜*（每个百分点增速约 0.34 倍，对比约 0.48 倍），但这仅基于其自身未经审计的运行率和增速数据。分子也不同：由优先股定价的私营投后*股权*估值，与上市公司的*企业价值*不是同一个对象，而公司自定义的年化运行率也不是 GAAP 收入。[^comps-sf][^db-7b]
 - **Everpure 视角。** Everpure 是 **Databricks Storage Ecosystem 的指定首发合作伙伴**（2026-06-10），其 OpenSharing 连接器处于私有预览阶段。在本次研究中，我们未发现 Snowflake 有对等的*计划*。Snowflake 通过其 S3 兼容存储支持来访问本地对象存储。其文档曾将 Pure Storage 列为 S3 兼容供应商之一，但 Snowflake 表示其本身不测试或验证第三方产品，并且现在要求供应商提供"经测试且合规"的服务 [VERIFY: FlashBlade 在这一新表述下的状态]；两家公司于 2022 年 5 月宣布了联合本地部署方案。[^pure-sf] 双平台、格式中立的定位是显而易见值得评估的选项。[^storage-eco][^everpure-os][^sf-s3compat]
 
+<a id="snapshot-table"></a>
 ## 概览表
 
 | 项目 | Databricks | Snowflake | 口径 / 来源 |
@@ -30,6 +32,7 @@
 
 *图 27.1 — 概览。各行口径不同：Databricks 的数字为公司披露且未经审计，Snowflake 的数字为 GAAP 或已定义的 KPI。两家的财年恰好对齐（均截至 1 月 31 日），因此"Q2"对两家而言都是 2026 年 5–7 月这同一季度。*
 
+<a id="the-head-to-head-at-a-glance"></a>
 ## 正面交锋一览
 
 | # | 维度 | Databricks | Snowflake | 优势方（作者判断） |
@@ -56,6 +59,7 @@
 
 *图 27.2 — SV-13：多维度对比。在大多数产品维度上，诚实的答案是"已趋同"。真正的差异在于默认数据位置、目录广度、披露质量和收购支付货币。来源：第 25 章和第 26 章的资料来源，以及本章脚注。[^dais26][^summit26][^polaris][^iceberg-v3]*
 
+<a id="origin-story-and-strategic-arc"></a>
 ## 起源与战略演进
 
 **Snowflake 率先构建了一体化数据仓库。** 其 SIGMOD 2016 论文描述了一种存算分离（separation of storage and compute）的设计。数据以由不可变微分区组成的专有列式格式存放在云服务商的对象存储（object storage）中。独立的计算"虚拟仓库"负责读取，云服务层负责处理元数据、优化、安全和事务。[^sigmod16] 客户从不接触集群。他们只需调整仓库规格、按秒付费，几乎无需运维。这种简洁性加上跨账户数据共享，使 Snowflake 成为同时代增长最快的企业软件公司之一。公司于 2020 年 9 月上市。[^sf-10k]
@@ -80,8 +84,10 @@ timeline
 
 > **类比：x86 对比 Arm，以及 Intel 对比 AMD。** Snowflake 起步时像一家垂直整合制造商（IDM）：它拥有格式、引擎和服务，销售高利润、客户选择余地小的成品。Databricks 起步时更接近 Arm 模式。它培育开放标准（Spark、Delta、Unity Catalog OSS），让生态系统围绕这些标准发展，再通过最佳实现来变现。一旦双方都支持 **Iceberg**，局面就更像 Intel 对 AMD 共享 x86 指令集。兼容性使切换变得可以想象，于是竞争转向微架构（每 credit 或每 DBU 的性价比）以及核心周边的平台（目录，就像芯片组及其软件生态锁定 CPU 插槽一样）。共享指令集并不会终结锁定；它只是转移了锁定。
 
+<a id="product-and-technology"></a>
 ## 产品与技术
 
+<a id="architecture-side-by-side"></a>
 ### 架构并排对比
 
 ```mermaid
@@ -121,6 +127,7 @@ flowchart LR
 
 **AI 战略。** 两家公司讲的是同一个故事：智能体需要受治理的数据、语义和权限，而已经掌握这些的平台应当承载智能体。Databricks 以构建者为先。它提供用于模型服务和微调（fine-tuning）的 Mosaic AI、用于构建和评估智能体的 **Agent Bricks**、面向业务用户的 **Genie One**，以及作为智能体写入目标的事务型存储 **Lakebase**。截至 2026 年 1 月，其 AI 产品的年化运行率已超过 $1.4B（公司披露）。[^db-54][^dais26] Snowflake 以业务用户和 SQL 为先。它提供 SQL 内的 **Cortex** AI 函数、**Cortex Agents**、**Snowflake CoWork**（2026 年 6 月由 Snowflake Intelligence 更名）、面向开发者的 **CoCo**（原 Cortex Code）、用于微调开放权重模型的 **Cortex Training**，以及 **Snowflake Postgres**（2026 年 6 月正式发布）。[^summit26] Snowflake 将 FY2027 非 GAAP 产品毛利率指引下调至 74%，理由是 AI 工作负载占比的变化。AI 需求在两家公司的损益表上都带来了 GPU 成本。[^sf-fin]
 
+<a id="how-it-makes-money"></a>
 ## 盈利模式
 
 两家公司都采用**按用量计费（consumption pricing）**：客户签订多年期承诺消费额度（committed spend）合同，并在使用计算资源时逐步消耗额度。收入按消耗确认，而非在签约时确认。但两者的计价单位不同，每个单位所包含的内容也不同。
@@ -139,6 +146,7 @@ flowchart LR
 
 > **类比：以不同单位计费的两套特许权使用费表。** 设想两家 IP 授权商。一家按裸片（die）收费，另一家按晶圆收费，并且各自既设定单位价格，*又*决定一颗给定芯片会消耗多少单位。拿"每 DBU $0.70"与"每 credit $3"作比较，就像在不知道裸片尺寸的情况下，比较每裸片 $0.70 的使用费和每晶圆 $3 的使用费。唯一有意义的数字是**每个完成的工作负载的成本**，它只能通过基准测试或在你自己的查询上做概念验证来获得。供应商还同时掌控这两个杠杆。当它推出更快的引擎时，可以保持单价不变，让客户账单下降（它希望由需求弹性抵消这种通缩），也可以对更快的层级按每小时收取更多单位。
 
+<a id="worked-example-price-two-workloads-at-list-illustrative-only"></a>
 ### 实例演算：按标价为两个工作负载定价（仅作示意）
 
 以下数字采用 AWS US East 的标价，来源及日期见上文脚注。它们忽略了协商折扣（大客户的折扣通常相当可观），并对规格做了一些**假设**，真实的概念验证会替代这些假设。请将其视为对机制的示意，而非价格比较。
@@ -162,12 +170,14 @@ flowchart LR
 
 **这个例子说明了什么。** 第一，经典 Databricks 模式在定时批处理上看起来便宜，部分原因是大部分账单流向了 AWS，而非 Databricks。这既是价格问题，也同样是收入核算问题。第二，一旦两者都采用无服务器，每小时标价就会趋同。届时账单取决于仓库保持唤醒的时长（自动挂起和自动停止设置）、每小时完成的工作量（引擎效率）以及折扣。第三，转向无服务器会使 Databricks 每个工作负载的收入*上升*，即使客户的总支出并未增加，这一点对下文的增速比较很重要。
 
+<a id="financials"></a>
 ## 财务数据
 
-![折线图：Databricks 公司披露的年化收入运行率从 2021 年约 $0.6B 升至 2026 年 7 月超过 $7B；Snowflake 财年 GAAP 产品收入从 $0.55B 升至 $4.47B，截至 2026 年 7 月的三个季度的季度产品收入乘以四分别为 $4.92B、$5.34B 和 $5.96B；已标注口径不同](../assets/charts/ch27_growth_compare.png)
+![折线图：Databricks 公司披露的年化收入运行率从 2021 年约 $0.6B 升至 2026 年 7 月超过 $7B；Snowflake 财年 GAAP 产品收入从 $0.55B 升至 $4.47B，截至 2026 年 7 月的三个季度的季度产品收入乘以四分别为 $4.92B、$5.34B 和 $5.96B；已标注口径不同](../../../docs/assets/charts/ch27_growth_compare.png)
 
 *图 27.7 — Databricks 披露的年化运行率在 2025 年前后超过了 Snowflake 的年化产品收入，但两条线的口径不同，不应解读为市场份额。来源：`data/ch25_databricks_runrate.csv`；`data/company_financials.csv`。[^db-7b][^sf-fin]*
 
+<a id="why-80-and-37-are-not-comparable"></a>
 ### 为什么">80%"与"+37%"不可比较
 
 表面差距（>80% 对 37%）混合了四种效应。它并不表明 Databricks 的增长速度是对方的两倍。
@@ -179,6 +189,7 @@ flowchart LR
 
 即使做了这些调整，**Databricks 的增长仍很可能更快**。其披露数据的内部算术是自洽的（>$7B 上的 >80% 意味着一年前的基数 ≤ 约 $3.9B，而当时披露的是">$4B"），且仅其数据仓库业务线就在三个季度内从 >$1B 增长到 >$1.5B。[^db-48][^constellation] 更值得关注的事实是**两者都在加速**。Snowflake 的产品收入增速从 30%（Q4 FY2026）升至 34%（Q1 FY2027），再升至 37%（Q2 FY2027）。这是 AI 时代的水涨船高同时抬升了两者，而非一方从另一方手中夺取份额。[^sf-fin]
 
+<a id="valuation-gap-private-mark-vs-public-ev"></a>
 ### 估值差距：私营估值 vs. 上市公司企业价值
 
 | 指标 | Databricks | Snowflake | 备注 |
@@ -198,12 +209,14 @@ flowchart LR
 
 **CFA 会得出什么结论。** 约 27 倍与约 17 倍之间的差距，经增速调整后比表面上窄，经结构和披露调整后又比表面上宽。Snowflake 因增速较慢、股权激励费用（SBC）高企（FY2026 为 $1,599.5M，约占收入的 34%）以及 GAAP 经营亏损（FY2026 GAAP 营业利润率 −30.6%）而折价交易。Databricks 因增长而享有溢价，而其自身的 SBC 和 GAAP 亏损根本不可见。[^sf-fin] 未来 Databricks 的 S-1 才是把两种口径合二为一的事件。
 
+<a id="customers-and-go-to-market"></a>
 ## 客户与市场进入
 
 **大多数大型企业两者都在用。** 两家的大客户群体如今规模相当：年化运行率 >$1M 的 Databricks 客户超过 800 家（2026 年 1 月），过去 12 个月产品收入超过 $1M 的 Snowflake 客户 828 家（2026 年 7 月）。[^db-54][^sf-q2] Databricks 称其服务超过 60% 的财富 500 强企业。[^cust] 本次我们未能获取直接衡量重叠程度的一手调查 [VERIFY: 关于同时使用两者的企业占比的分析师或调查数据，例如 ETR 或 Gartner Peer Insights]。不过，典型模式很容易描述。数据工程和机器学习团队落地在 Databricks 上，财务和 BI 团队落地在 Snowflake 上。两者通过数据管道（pipeline）、Delta Sharing/OpenSharing，或越来越多地通过共享 Iceberg 表连接起来。随后每家供应商的一线团队都会努力把对方的工作负载迁移过来。Databricks 免费提供迁移工具（Lakebridge，源自 BladeBridge），以将数据仓库工作负载拉到 Databricks SQL 上。[^bladebridge]
 
 **市场进入（GTM）差异。** Databricks 通过 Azure Databricks 拥有更强的超大规模云渠道，该服务由 Microsoft 作为第一方服务销售和计费。这一渠道同时伴随着作为捆绑竞争者的 Microsoft Fabric。Snowflake 依靠在三大云上的云市场联合销售，立场更中立，但没有同等的第一方地位。Snowflake 的 **Marketplace 和数据共享网络**是两者中历史更久、密度更高的。数据提供方发布一次，消费方即可就地查询，因此每个新参与者都会提升其他参与者的价值。Databricks 的回应是把共享做成一种*开放协议*（OpenSharing，现归属 Linux Foundation），而不是某个平台内部的网络。[^opensharing]
 
+<a id="ma-and-investments"></a>
 ## 并购与投资
 
 | 主题 | Databricks | Snowflake | 解读 |
@@ -222,6 +235,7 @@ flowchart LR
 
 战略上的差别在于**支付货币**。Databricks 主要以私营股票支付，而其估值在 20 个月内涨了两倍，因此每笔交易造成的稀释在比例上都低于表面所见。Snowflake 以上市股票和现金支付，其倍数自 2021 年以来已经压缩，且稀释情况受到每季度的审视。这有助于解释为何 Snowflake 自 Streamlit 以来最大的几笔交易金额是数亿美元，而非数十亿美元。
 
+<a id="competitive-position"></a>
 ## 竞争地位
 
 ```mermaid
@@ -261,6 +275,7 @@ quadrantChart
 
 更广阔的竞争格局与这场对决同样重要。Microsoft Fabric、Google BigQuery 和 AWS（S3 Tables、Redshift、SageMaker）把替代品捆绑进客户已承诺的预算中。Palantir 在高管层争夺"基于企业数据的 AI"这一叙事。ClickHouse 在实时性价比上胜出。完整的竞争矩阵见[第 25 章](ch25-databricks.md)，Snowflake 的视角见[第 26 章](ch26-snowflake.md)，超大规模云厂商见[第 28 章](ch28-hyperscaler-data-platforms.md)。
 
+<a id="why-its-winning--bull-case"></a>
 ## 制胜原因 / 看多逻辑
 
 ### Databricks
@@ -277,8 +292,10 @@ quadrantChart
 3. **数据共享网络效应。** Marketplace 和数据洁净室构成一个网络，开放协议必须将其取代，而不仅仅是与之匹敌。
 4. **估值支撑。** 在 EV/未来 12 个月收入 16.9 倍（2026-10-30）且非 GAAP 自由现金流为正（FY2026 利润率 25.5%）的情况下，Snowflake 在标题口径上的定价远低于 Databricks 约 27 倍的估值（但在增速调整口径上并非如此）。Databricks 的任何 IPO 都可能推动整个品类向上重估。[^comps-sf][^sf-fin]
 
+<a id="risks--bear-case-and-open-questions"></a>
 ## 风险 / 看空逻辑与待解问题
 
+<a id="databricks-1"></a>
 ### Databricks
 
 1. **未经审计的数字与满额的价格。** 在定义未披露、年化运行率约 27 倍的情况下，一份 S-1 可能重塑整体图景。PitchBook 的分析（经 Morningstar）认为其经营价值约为 $68.7B。[^ms]
@@ -286,6 +303,7 @@ quadrantChart
 3. **开放是双刃剑。** 开放目录中可被 Iceberg 读取的表，使 Snowflake、超大规模云厂商或 DuckDB 都可以争夺每一个工作负载。
 4. **Microsoft 既是合作伙伴也是对手。** Fabric 被捆绑进 Databricks 借道销售的客户环境中。
 
+<a id="snowflake-1"></a>
 ### Snowflake
 
 1. **托管存储是一条日渐收窄的护城河。** 客户在自己存储桶中创建的每一张 Iceberg 表，都是任何引擎都能读取的数据。Snowflake 最好的防御是成为开放数据上最快的引擎，而这比拥有格式要难做得多。
@@ -295,6 +313,7 @@ quadrantChart
 
 **待解问题。** Databricks 的年化运行率计算方法和无服务器占比是多少？Snowflake 客户把数据从托管存储迁移到 Iceberg 表的速度有多快？Horizon 是否能与外部 Iceberg REST 目录完全互操作？是否有任何一家公司会发布关于客户重叠的一手、有来源的数据？
 
+<a id="relevance-to-everpure"></a>
 ## 与 Everpure 的相关性
 
 > **存储桥接。** 两个平台都把对象存储视为 S3 兼容的基础层。Databricks 读取由 Unity Catalog 治理的 Delta/Iceberg 表。Snowflake 通过外部卷和外部 stage 读取 Iceberg 表或外部 stage 中的数据。两者在 SQL 上都不依赖阵列级性能特性；它们靠引擎、缓存和文件布局取胜。因此，存储供应商的筹码在于数据存放在*哪里*（本地、主权环境、靠近 GPU）以及它能贡献的元数据。S3 语义和 FlashBlade 对象性能请参阅配套的 *Everpure Tech Atlas*。
@@ -315,6 +334,7 @@ quadrantChart
 
 存储向上层移动的框架见[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)，目录见[第 8 章](../01-data-systems-foundations/ch08-catalogs-and-metastores.md)。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向任一公司的产品负责人或合作伙伴经理提出的三个问题**
@@ -340,6 +360,7 @@ quadrantChart
 - "Databricks 估值 27 倍，Snowflake 17 倍，所以 Databricks 被高估了。" *经增速调整，并基于其自身未经审计的年化运行率，Databricks 更便宜；在下结论前还需就股权 vs. 企业价值、年化运行率 vs. GAAP、优先权和流动性进行调整。*
 - "客户只会选一个。" *大多数大型企业两者都在用，并把它们连接起来。*
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [湖仓一体（Lakehouse）](../glossary.md#lakehouse) — 在对象存储中的开放文件上实现数据仓库级的管理与性能。
@@ -371,6 +392,7 @@ quadrantChart
 - [清算优先权（Liquidation preference）](../glossary.md#liquidation-preference) — 优先股股东先于普通股股东获得偿付的权利。
 - [流动性折价（Illiquidity discount）](../glossary.md#illiquidity-discount) — 无法自由出售的股份所对应的价格折让。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^db-7b]: Databricks, "Databricks Grows >80% YoY, Surpasses $7B Revenue Run-Rate, Scales Lakebase, Genie and Unity AI Gateway," https://www.databricks.com/company/newsroom/press-releases/databricks-grows-80-yoy-surpasses-7b-revenue-run-rate-scales，发布 2026-08-13；检索 2026-11-01。公司披露的年化运行率，未经审计；以 $190B 投后估值融资 $5B。

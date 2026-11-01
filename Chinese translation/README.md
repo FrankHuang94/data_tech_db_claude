@@ -8,10 +8,11 @@
 
 本图谱可直接在 github.com 上阅读（原生渲染 Mermaid），也可作为 MkDocs Material 站点浏览（运行 `mkdocs serve`，或使用 `.github/workflows/deploy.yml` 中的 GitHub Pages 工作流）。
 
-![数据与 AI 数据栈的分层市场地图，从对象存储和表格式，向上经过目录、引擎、数据管道、数据治理、AI 数据工具直至智能体，每一层均列出代表性公司](docs/assets/diagrams/ch00-market-map.svg)
+![数据与 AI 数据栈的分层市场地图，从对象存储和表格式，向上经过目录、引擎、数据管道、数据治理、AI 数据工具直至智能体，每一层均列出代表性公司](../docs/assets/diagrams/ch00-market-map.svg)
 
 *一页纸市场地图（第 0.2 章）。价值正沿着技术栈向上迁移：从存储和计算，转向目录、语义上下文与智能体。*
 
+<a id="start-here"></a>
 ## 从这里开始
 
 | 如果你有…… | 阅读内容 | 目标 |
@@ -20,8 +21,9 @@
 | **2 天** | 第 1–4 部分，然后阅读第 [35](docs/05-business-and-economics/ch35-business-models.md)–[37](docs/05-business-and-economics/ch37-public-comps-valuation.md) 章和第 [45](docs/06-history-and-future/ch45-storage-moving-up-the-stack.md) 章 | 能在白板上讲解任意一层（L2），并读懂数据公司的损益表 |
 | **2 周** | 全部内容，外加 [48 问题库](docs/07-conversation-toolkit/ch48-question-bank.md) 和 [50 闪卡与速查表](docs/07-conversation-toolkit/ch50-self-test-cheat-sheets.md) 中的练习 | 主导合作伙伴、尽职调查与创始人对话 |
 
-全书使用的深度标签：**L1** 词汇，**L2** 机制（默认），**L3** 实现（仅出现在"深入阅读"方框中）。术语定义见[术语表](glossary.md)。
+全书使用的深度标签：**L1** 词汇，**L2** 机制（默认），**L3** 实现（仅出现在"深入阅读"方框中）。术语定义见[术语表](../glossary.md)。
 
+<a id="contents-and-progress"></a>
 ## 目录与进度
 
 <!-- AUTO:CONTENTS START -->
@@ -83,14 +85,16 @@
 | 第 7 部分 | [50. 自测与速查表](docs/07-conversation-toolkit/ch50-self-test-cheat-sheets.md) | 13,286 | 19 | 2 | ✓ |
 <!-- AUTO:CONTENTS END -->
 
+<a id="how-the-numbers-work"></a>
 ## 数字的处理方式
 
 - **每个数字都有标签**：GAAP、非 GAAP、公司披露的年化运行率、媒体报道或估算。财年均明确标注（Snowflake 的 FY2027 = Feb 2026–Jan 2027，即 2026 年 2 月至 2027 年 1 月）。
-- **单一事实来源：** [`data/`](data/) 存放权威 CSV 文件（`public_comps.csv`、`private_funding.csv`、`ma_deals.csv`、`company_financials.csv`、`market_sizes.csv`，以及各章专用数据集）。每一行都带有 `source` 和 `as_of` 字段。
+- **单一事实来源：** [`data/`](../data) 存放权威 CSV 文件（`public_comps.csv`、`private_funding.csv`、`ma_deals.csv`、`company_financials.csv`、`market_sizes.csv`，以及各章专用数据集）。每一行都带有 `source` 和 `as_of` 字段。
 - **图表由数据重新生成：** `python3 scripts/make_charts.py` 会重建 `docs/assets/charts/` 中的所有 PNG。
-- **除脚注另有说明外，数字均截至 2026-11-01。** 集成人员在构建后期重新核对过的事实汇总于 [`meta/verified-facts.md`](meta/verified-facts.md)。
-- **局限性：** 研究仅使用了网络搜索（构建环境屏蔽了直接抓取网页），因此脚注引用的是搜索结果中出现的原始 URL。凡无法确认的内容均带有行内 `[VERIFY: …]` 标记，并列于 [`meta/open-questions.md`](meta/open-questions.md)。战略类章节仅使用公开信息，并以"战略团队可能评估的选项"的方式表述。
+- **除脚注另有说明外，数字均截至 2026-11-01。** 集成人员在构建后期重新核对过的事实汇总于 [`meta/verified-facts.md`](../meta/verified-facts.md)。
+- **局限性：** 研究仅使用了网络搜索（构建环境屏蔽了直接抓取网页），因此脚注引用的是搜索结果中出现的原始 URL。凡无法确认的内容均带有行内 `[VERIFY: …]` 标记，并列于 [`meta/open-questions.md`](../meta/open-questions.md)。战略类章节仅使用公开信息，并以"战略团队可能评估的选项"的方式表述。
 
+<a id="repository-map"></a>
 ## 仓库结构
 
 ```
@@ -106,6 +110,7 @@ meta/                大纲、风格指南、模板、资料来源、决策记�
 .github/workflows/   deploy.yml：构建 MkDocs 并发布到 GitHub Pages
 ```
 
+<a id="quality-checks"></a>
 ## 质量检查
 
 ```bash

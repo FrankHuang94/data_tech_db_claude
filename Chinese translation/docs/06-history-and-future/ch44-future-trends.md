@@ -1,6 +1,7 @@
 # 44. 未来趋势，2026–2032
 > **深度：** L2 · **阅读时间：** 约 18 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 42 章 — 数据库简史](ch42-history-of-databases.md)，[第 43 章 — 现代数据栈](ch43-modern-data-stack.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - **本章核心论点：价值正在上移。** 存储字节与通用算力正变得更便宜、更可互换。价值正流向那些决定数据*含义*以及谁可以使用数据的层级：目录、语义上下文、数据治理（governance），以及消费数据的智能体（agent）。下文每一项预测都是作者的判断（**估算**）。每一项都锚定在第 1–4 部分已经给出出处的证据上，并附有一个证伪条件。
@@ -9,6 +10,7 @@
 - **与市场共识相反的判断：** 独立的向量数据库（vector database）不会成长为一个规模庞大的独立品类，SQL 也不会消失。智能体正在成为 SQL 的一个重要的新*编写者*（估算；尚无厂商披露其占比）。
 - **对 Everpure 而言：** 胜算最高的几项趋势（对象存储作为底座、受治理的智能体访问、数据层的语义上下文）与公司的公开举措相吻合：Data Intelligence（1touch）、Data Stream，以及面向 Databricks Storage Ecosystem 的 OpenSharing 连接器（私有预览）。详细的选项分析见[第 45 章](ch45-storage-moving-up-the-stack.md)。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业 + Everpure 视角）
 
 企业发展（corporate development）团队承保的是未来，而不是现在。一笔在 2027 年完成的收购，回报期在 2028–2032 年。今天签署的合作，取决于届时哪些平台仍然重要。本章把第 1–4 部分阐释的机制转化为十项预测。每一项都有可能性、时间窗口、赢家、输家、路标（signpost）和证伪条件（falsifier）。合在一起，它们构成一张读者可以按季度更新的记分卡，而不是一个需要去相信的故事。
@@ -17,8 +19,10 @@
 
 **如何阅读这些预测。** *可能性*是作者对该论点在其时间窗口结束前成立的主观概率：高（≥70%）、中（40–70%）、低（<40%）。*时间*是该论点在公开数据中变得可观测的时点：近期（2026–27）、中期（2028–29）或远期（2030–32）。所有可能性与时间均为估算。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="the-radar-ten-trends-on-one-page"></a>
 ### 雷达图：一页纸看十大趋势
 
 ```mermaid
@@ -46,6 +50,7 @@ quadrantChart
 
 这张雷达图有意做得粗糙。它按"对经济性的改变有多大"与"有多大可能发生"的乘积对趋势排序，并按证据何时变得具有决定性将其铺开。有两项趋势位于左上方，因为证据已经很强：对象存储作为底座（T10）和目录作为控制点（T3）。GPU 数据处理（T4）位置最低，因为其影响取决于一个尚未解决的瓶颈，即 I/O。
 
+<a id="trend-1--agents-become-the-primary-data-consumer"></a>
 ### 趋势 1 — 智能体成为主要的数据消费者
 
 **论点。** 到 2029 年，针对受治理的企业数据存储的大多数查询和工具调用将由 AI 智能体发出。人类仍然设定意图，但大部分流量由机器生成。
@@ -75,6 +80,7 @@ flowchart LR
 
 **判断。** 可能性：高。"占查询大多数"的时间：中期（2028–29）。**赢家：** 拥有受治理目录与计量能力的平台（Databricks、Snowflake、超大规模云厂商）、ClickHouse 等低延迟引擎（[第 23 章](../03-ai-data-stack/ch23-real-time-analytics-htap.md)），以及"面向智能体的 Postgres"厂商。**输家：** 按席位计价的 BI 前端，以及为少量昂贵查询而定价的引擎。**路标：** 有厂商披露智能体在查询量或 DBU/credit 中的占比；Snowflake 和 Databricks 的托管 MCP 服务器达到 GA [VERIFY: GA 状态]；首次出现大规模公开的智能体数据外泄事件。**证伪条件：** 到 2028 年底，没有任何主要平台报告智能体占查询量的四分之一以上，或安全事件迫使企业把智能体限制在只读沙箱中。**Everpure 启示：** 智能体会产生大量小而突发的读取和短生命周期的数据库，因此值得评估的选项是将存储层与身份感知的访问控制和审计相结合，而不是去争夺智能体前端。
 
+<a id="trend-2--oltp-olap-vector-and-search-converge"></a>
 ### 趋势 2 — OLTP、OLAP、向量与搜索走向收敛
 
 **论点。** 大多数新应用将运行在一小组统一引擎上：用于运营工作的带扩展 Postgres、用于分析的湖仓，以及在同一份数据副本上连接两者的托管桥梁。专用引擎在规模与延迟的极端场景中得以存续。
@@ -112,6 +118,7 @@ flowchart LR
 
 **判断。** 可能性：高。时间：近期至中期。**赢家：** Databricks、Snowflake、超大规模云厂商的 Postgres 服务、Supabase。**输家：** 没有分销伙伴的单一工作负载引擎，以及以在引擎之间搬运副本为业务的集成工具。**路标：** LTAP 达到 GA；Lakebase 与 Snowflake Postgres 披露年化运行率；MongoDB 相对于 Postgres 服务的增速（[第 29 章](../04-company-deep-dives/ch29-operational-database-vendors.md)）。**证伪条件：** LTAP 推迟到 2027 年以后，且 Lakebase 增长停滞，表明客户更偏好通过 CDC 连接的同类最佳引擎。**Everpure 启示：** 收敛会把事务层和分析层都集中到同一个存储契约上（开放表、将 WAL 分层到对象存储），这有利于同时获得两方认证的厂商。
 
+<a id="trend-3--open-formats-commoditise-storage-catalogs-capture-value"></a>
 ### 趋势 3 — 开放格式使存储商品化；目录攫取价值
 
 **论点。** 到 2027 年，Iceberg（与 Delta 互操作）成为分析数据的默认存储契约，存储变得可替换。[技术目录](../glossary.md#technical-catalog)（technical catalog）成为控制点（control point），因为它掌握提交权、凭证、策略和使用遥测数据。
@@ -124,6 +131,7 @@ flowchart LR
 
 **判断。** 可能性：高。时间：近期。**赢家：** Unity Catalog、Horizon/Polaris、超大规模云厂商的目录；中立目录仅在多平台买家坚持时胜出。**输家：** 专有存储格式，以及不在读写路径上的业务目录（[第 33 章](../04-company-deep-dives/ch33-governance-catalog-security-companies.md)）。**路标：** Unity 与 Polaris 之间的目录联邦；服务端扫描规划的采用；目录级定价；SAP 在收购后如何使用 Dremio 的目录。[^sap-dremio] **证伪条件：** Iceberg REST 规范使目录真正可替换，切换目录成为常规操作，价值转而流向引擎或智能体。**Everpure 启示：** 如果存储桶是一种商品，那么选项是具备表感知能力（REST 目录端点、压缩合并、凭证分发），或在主导目录下获得深度认证，而不是继续做一个被动的存储桶。
 
+<a id="trend-4--gpu-accelerated-data-processing-goes-mainstream-partly"></a>
 ### 趋势 4 — GPU 加速的数据处理走向主流（部分地）
 
 **论点。** 到 2029 年，GPU 执行将成为主要 Spark、Velox/Presto 和向量索引服务中的标准选项，但它只承担少数数据处理支出：大型连接、PB 级 ETL 以及索引构建。
@@ -134,6 +142,7 @@ flowchart LR
 
 **判断。** 可能性：中。时间：中期。**赢家：** NVIDIA（cuDF/cuVS）、拥有富余 GPU 容量的云、具备 GPU 直连数据路径的存储。**输家：** 在最大型 ETL 作业上只用 CPU 的引擎。**路标：** 主要平台推出以 GPU 为后端的 SQL 仓库 SKU；Databricks 或 EMR 披露中 GPU 占 Spark 运行时间的份额；GPU 租赁价格下降到足以让数据处理成为推理集群的非高峰用途。**证伪条件：** 到 2028 年底，没有任何主要数据仓库或湖仓推出 GA 的 GPU SQL 引擎。**Everpure 启示：** 瓶颈论有利于存储。以线速为 GPU 供数是一个存储问题，因此选项是成为经过认证的数据路径（GPUDirect、cuObject），而不是自建引擎。[^cuobject]
 
+<a id="trend-5--unstructured-data-becomes-queryable"></a>
 ### 趋势 5 — 非结构化数据变得可查询
 
 **论点。** 到 2028 年，文档、图像和音频将以与表相同的 SQL 和治理方式被查询。解析、嵌入（embedding）与抽取成为内置函数，按页或按 token 计价。
@@ -144,6 +153,7 @@ flowchart LR
 
 **判断。** 可能性：高。时间：近期至中期。**赢家：** 具备 AI 函数的数据平台；[Lance](../glossary.md#lance) 等多模态格式；拥有权限图谱的内容平台。**输家：** 缺乏分销渠道的独立解析 API，它们面临[功能吸收](../glossary.md#feature-absorption)（feature absorption）。**路标：** AI 函数在平台消费中的占比；多模态表类型达到 GA；每页价格下降。**证伪条件：** 权限失败（Copilot 式的过度共享）使企业把非结构化数据挡在 AI 数据管道之外，或长上下文模型完全绕过数据平台。**Everpure 启示：** 大多数非结构化字节本就存放在文件与对象存储上，因此 Data Stream 和 Data Intelligence 为其提供了数据引力（data gravity）论据。选项是成为权限和变更事件的发源地。[^data-stream]
 
+<a id="trend-6--sovereign-and-on-prem-ai-data"></a>
 ### 趋势 6 — 主权与本地化的 AI 数据
 
 **论点。** 监管与 AI 工厂使数据本地性成为采购标准。主权是一项高可能性趋势。本地部署的*份额*增长只是中等可能性，因为超大规模云厂商也在销售主权能力。
@@ -154,6 +164,7 @@ flowchart LR
 
 **判断。** 可能性：中（本地部署份额），高（主权作为一项要求）。时间：近期至中期。**赢家：** 主权云区域、本地湖仓技术栈（Iceberg、Trino/Starburst、SAP 内的 Dremio）、进入 NVIDIA 设计方案的存储厂商。**输家：** 没有区域内部署或客户自管选项的纯云平台。**路标：** Databricks 和 Snowflake 的本地部署与主权 SKU；超大规模云厂商资本开支转向主权区域；国家级 AI 工厂采购。**证伪条件：** 超大规模云厂商的主权区域吸收了几乎全部需求，本地 AI 集群仍局限于实验室和新兴云（neocloud）。**Everpure 启示：** 选项是把本地对象存储与治理和目录连接（OpenSharing、Iceberg REST）相结合，让云平台能够就地查询这些数据。[^everpure-os]
 
+<a id="trend-7--semantic-context-and-data-intelligence-become-the-control-point"></a>
 ### 趋势 7 — 语义上下文与数据智能成为控制点
 
 **论点。** 到 2029 年，记录数据含义的那一层（语义模型、本体、数据分类与数据血缘）将是决定智能体准确率的关键所在，并变得与目录同样具有战略意义。
@@ -164,6 +175,7 @@ flowchart LR
 
 **判断。** 可能性：中高。时间：近期至中期。**赢家：** 平台语义层（metric views、semantic views、Fabric IQ）、Palantir、具备大规模数据分类能力的数据安全平台，以及合并后的 Fivetran + dbt。**输家：** 唯一护城河就是其语义模型的仪表板；独立的术语表工具。**路标：** OSI 在已发布产品中的采用；语义对象单独计费；针对数据分类资产的并购。**证伪条件：** 模型在原始模式上于 Spider 2.0 式企业基准测试中达到约 80% 以上的准确率，使语义层变得可有可无；或 OSI 使语义高度可移植，以至于没人能为其收费。**Everpure 启示：** 在承载每一个字节的那一层进行数据分类并提供上下文，正是 1touch 的投资逻辑。选项是把这些上下文输送进平台目录，而不是构建一个与之竞争的语义层。
 
+<a id="trend-8--consolidation-continues-the-ipo-window-reopens-selectively"></a>
 ### 趋势 8 — 整合持续；IPO 窗口选择性重开
 
 **论点。** 战略买家持续吞并技术栈的中间层，少数已具规模的独立公司在 2027 至 2029 年间上市。
@@ -180,6 +192,7 @@ flowchart LR
 
 **判断。** 可能性：高（整合）。对于 2028 年底前 Databricks IPO，图 44.4 中的情景隐含约 75% 的概率（看多加基准），处于"高"区间的下沿；看空情景即该论点失败之处。时间：近期至中期。**赢家：** 拥有分销能力的买家（超大规模云厂商、应用巨头、安全平台）。**输家：** 处于被吸收品类中、规模不足的独立公司。**路标：** Databricks 公开 S-1；对已具规模的独立公司的私有化（take-private）或战略收购要约；对平台交易的反垄断审查。**证伪条件：** 出现一波以溢价倍数上市的独立 IPO 且没有战略收购，或反垄断机构阻止平台收购。**Everpure 启示：** 数据分类、目录与数据移动领域的标的正在由安全和应用买家定价。存储买家的优势在于与数据路径的整合，而不是价格。
 
+<a id="trend-9--pricing-shifts-from-seats-to-consumption-and-agent-outcomes"></a>
 ### 趋势 9 — 定价从席位转向用量和智能体结果
 
 **论点。** 到 2030 年，大多数增量数据与 AI 软件收入将按计量收费（credit、DBU、动作），而不是按席位。真正的*结果*定价（按已解决的工单计费）仍属少数，因为结果难以审计。
@@ -190,6 +203,7 @@ flowchart LR
 
 **判断。** 可能性：高（按用量计费），低至中（结果定价）。时间：中期。**赢家：** 原生按用量计费的平台。**输家：** 转型缓慢、以席位为主的 BI 与应用厂商。**路标：** Agentforce 类收入在披露中的占比；续约时出现混合"credit 池"；财务团队要求为智能体设定成本上限。**证伪条件：** 捆绑 AI 的高级席位档位（ServiceNow 模式）到 2029 年仍是主导模式。**Everpure 启示：** Evergreen//One 已经以服务形式为存储定价。一个选项是对数据智能层按每个被分类的对象或每次受治理的查询计量，从而使收入与智能体活动保持一致。
 
+<a id="trend-10--object-storage-becomes-the-universal-database-substrate"></a>
 ### 趋势 10 — 对象存储成为通用的数据库底座
 
 **论点。** 到 2028 年，几乎每一个新的数据库、流和向量索引都会把其持久状态保存在兼容 S3 的对象存储上，本地闪存和内存只作为缓存。
@@ -200,6 +214,7 @@ flowchart LR
 
 **判断。** 可能性：高。时间：近期。**赢家：** 超大规模云厂商的对象存储、完整兼容 S3 API 的平台、缓存与分层层。**输家：** 绑定本地磁盘的无共享（shared-nothing）引擎；用于分析的纯块存储。**路标：** 本地 S3 存储支持条件写入及表/向量 API；基于 S3 的 Kafka 在新流处理部署中的份额；推理基准测试中的 KV 缓存分层。**证伪条件：** 对延迟敏感的 OLTP 和推理仍停留在本地 NVMe 上，对象存储仍只是冷数据层。**Everpure 启示：** 这是对存储厂商最有利的趋势，但前提是 FlashBlade 跟上 S3 的数据库级特性（条件写入、表、向量）以及 Everpure KVA 等 KV 层集成。[^everpure-kva]
 
+<a id="value-migration-the-picture-behind-all-ten-trends"></a>
 ### 价值迁移：十大趋势背后的图景
 
 ```mermaid
@@ -229,6 +244,7 @@ flowchart BT
 
 > **类比：半导体。** AI 服务器呈现同样的模式。十年前，CPU 是服务器物料清单中的价值中心。在 AI 系统中，越来越大的价值份额归于加速器及其 HBM 堆栈，而主机 CPU、机箱和通用 DRAM 的重要性下降。价值并未消失，而是转移到了决定系统性能的部件上。在数据基础设施中，这一部件正在从存储引擎转向定义含义和访问的那一层。一家向上层延伸的存储公司，就像一家学会了销售 HBM 的内存厂商：物理原理相同，却更接近约束瓶颈。
 
+<a id="things-that-wont-happen-authors-contrarian-calls"></a>
 ### 不会发生的事（作者的逆向判断）
 
 **独立的向量数据库不会成长为一个规模庞大的独立品类。** 向量检索如今已是 Postgres、MongoDB、Elastic、各平台乃至 S3 本身的一项功能。[^s3-vectors] Pinecone 上一次定价融资（$750M 投后估值）还是在 2023 年，Qdrant 2026 年的 B 轮融资为 $50M（媒体报道）。[^pinecone-b][^qdrant] 预计会有一两家作为专业厂商存活，其余被收购（估算）。*证伪条件：* 某家纯向量厂商在 2030 年前披露 ARR 超过 $500M。
@@ -239,6 +255,7 @@ flowchart BT
 
 **云数据仓库不会被整体迁回本地。** 迁回是选择性的：AI 训练与检索数据、受监管数据以及稳态工作负载会迁移，弹性分析则留在云端。*证伪条件：* 到 2029 年，某主要云数据平台报告其云端消费持续下降，并将其归因于客户把分析迁回本地；或其客户自管/本地部署产品在新增订单中占据实质性份额。
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 | 预测 | 最强反方论点（最强版本论证） | 我们为何仍倾向另一方 | 什么会让我们改变看法 |
@@ -253,6 +270,7 @@ flowchart BT
 
 *图 44.6 — 每项预测与其最强反方论点的对照。最右一列即需要监测的证伪条件。*
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 | 趋势 | 可能性 | 时间 | 可能的赢家 | 可能的输家 | 关键路标 |
@@ -270,6 +288,7 @@ flowchart BT
 
 *图 44.7 — 趋势表：在一个视图中呈现可能性、时间、赢家、输家与路标（作者估算）。公司层面的细节见[第 4 部分](../04-company-deep-dives/ch25-databricks.md)。*
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 ```mermaid
@@ -285,6 +304,7 @@ timeline
 
 [第 42 章](ch42-history-of-databases.md)中的长周期是一段先分离、后重新捆绑的历史。存储与计算分离（Snowflake，2012–2016），格式与引擎分离（Iceberg 与 Delta，2017–2024），现代数据栈先拆分为数十种工具，随后再走向整合（[第 43 章](ch43-modern-data-stack.md)）。2026–2032 年这一阶段，是围绕控制点的重新捆绑：谁拥有目录和上下文，谁就能在开放存储之上重建整套产品。
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源 / 日期 |
@@ -309,10 +329,12 @@ timeline
 
 *图 44.9 — 关键数字：支撑各项预测的证据点。年化运行率为公司披露；私募估值并非公开企业价值；除另有说明外，调查与基准测试数据均由厂商赞助。*
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** 十项趋势中有六项（T2、T3、T5、T6、T7、T10）提升了承载字节那一层的战略价值，但前提是该层能够提供数据库级语义（条件写入、表与向量 API、变更事件、权限元数据），并接入其上方的目录与语义层。风险同样存在于反方向：S3 Tables 和 S3 Vectors 表明，超大规模云厂商可以把表和向量功能吸收进存储本身。基于公开信息，战略团队可能评估的选项在[第 45 章](ch45-storage-moving-up-the-stack.md)中展开。协议与性能细节请参阅配套的 *Everpure Tech Atlas*。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理（PM）提问**
@@ -337,6 +359,7 @@ timeline
 - "Databricks 值 $190B，所以它的 IPO 也会以这个价格定价。"基于优先股的私募估值并不是公开的企业价值。
 - "主权就意味着本地部署。"超大规模云厂商也在销售主权区域。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 - 阅读证伪条件，而不是论点：建立一个季度跟踪表，为图 44.7 中的每个路标设一行。
@@ -345,6 +368,7 @@ timeline
 - Iceberg REST 目录规范和 OSI 规范，二者定义了两个被争夺的接口。[^osi-v1]
 - PitchBook 对 Databricks 估值的分析，可作为一个审慎的看空逻辑参考。[^ms]
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [模型上下文协议（Model Context Protocol）](../glossary.md#model-context-protocol) — 将 AI 智能体连接到工具和数据的开放标准。
@@ -364,6 +388,7 @@ timeline
 - [按结果计费（Outcome-based pricing）](../glossary.md#outcome-based-pricing) — 按完成的业务结果（如已解决的工单）收费。
 - [AI 工厂（AI factory）](../glossary.md#ai-factory) — 配备自身数据与网络、为大规模产出 AI 结果而建的专用 GPU 集群。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^storage-eco]: Databricks blog, "Announcing the Databricks Storage Ecosystem: Governing the Enterprise Data Estate Wherever It Lives," https://www.databricks.com/blog/announcing-databricks-storage-ecosystem-governing-enterprise-data-estate-wherever-it-lives, 发布于 2026-06-10; 检索于 2026-11-01 （引自第 25 章）.

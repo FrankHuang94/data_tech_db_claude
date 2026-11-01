@@ -1,6 +1,7 @@
 # 7. 开放表格式：Iceberg、Delta Lake 与 Hudi
 > **深度：** L2 · **阅读时间：** 约 16 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 6 章 — 文件格式](ch06-file-formats.md)、[第 5 章 — 分析引擎](ch05-analytical-engines.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - [对象存储（object storage）](../glossary.md#object-storage)上的一个装满 [Parquet](../glossary.md#parquet) 文件的文件夹并不是一张表。它没有原子性的多文件提交，在作业写入期间无法提供一致视图，也没有安全修改模式的方法。[开放表格式（open table format）](../glossary.md#open-table-format)增加了一个元数据层，同时解决这三个问题。
@@ -9,6 +10,7 @@
 - 2020–2024 年的"格式之战"以趋同告终，而不是决出一个赢家。Databricks 以媒体报道的约 $2B 收购了 Tabular（2024 年 6 月）。[^tabular] Snowflake、AWS 和 Google 现在都原生写入 Iceberg，Microsoft 的 OneLake 通过元数据转换将其 Delta 表以 Iceberg 形式暴露，而 Delta 也可以通过 UniForm 暴露 Iceberg 元数据。议价能力已经上移一层，转移到了目录（[第 8 章](ch08-catalogs-and-metastores.md)）。
 - 表格式并非没有代价。流式写入者会产生小文件和成堆的快照，因此每张表都需要压缩合并、快照过期和孤立文件清理。剩余的大部分产品差异化以及大部分运营成本，都集中在这项维护工作上。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业 + Everpure 视角）
 
 表格式是[湖仓一体（lakehouse）](../glossary.md#lakehouse)得以存在的原因。在它出现之前，企业只有两个选择：要么把数据放在数据仓库的专有存储里——快速、安全，但归厂商所有；要么把数据放在开放的数据湖里——便宜、开放，但不可靠。表格式在客户自有存储桶中的开放文件之上，提供数据库级别的保障（[ACID](../glossary.md#acid) 提交、[快照隔离（snapshot isolation）](../glossary.md#snapshot-isolation)、[时间旅行（time travel，历史版本查询）](../glossary.md#time-travel)）。一旦这一点成立，数据就不必再存放在引擎内部，各引擎转而竞争查询客户已经持有的数据。Databricks 正是基于这一论点建立了自己的业务（[第 25 章](../04-company-deep-dives/ch25-databricks.md)）。Snowflake 则不得不适应它（[第 26 章](../04-company-deep-dives/ch26-snowflake.md)）。
@@ -17,8 +19,10 @@
 
 对 Everpure 而言，影响是直接的。有了表格式，对象存储不再是被动的归档，而成为分析型数据库的持久层。存储系统此时不仅保存表的数据，还保存其元数据文件，而它的一致性语义正是提交得以安全的前提。存储层的两项动作显示了趋势所在：AWS 于 2024 年 12 月推出 S3 Tables，这是直接内置于 S3 的托管 Iceberg 服务。[^s3tables] MinIO 的 AIStor 现在在其对象存储中内置了 Iceberg REST 目录。[^ice-vendors] 对任何本地部署的 S3 平台（包括 FlashBlade）来说，问题在于：它是表"所在"的地方，还是仅仅是表的字节"存放"的地方。下文的"存储桥接"会讨论这一点。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="a-folder-of-parquet-files-is-not-a-table"></a>
 ### 一个装满 Parquet 文件的文件夹不是一张表
 
 假设一个夜间作业向 `s3://lake/orders/date=2026-10-31/` 写入 400 个新的 Parquet 文件。可能出现三类问题。
@@ -29,12 +33,14 @@
 
 所有表格式的设计洞见都是：**不再询问存储系统表里有什么，而是在元数据中显式记录。** 表就是元数据所列出的那些文件，除此之外的一切均不可见。
 
+<a id="the-core-trick-immutable-files-and-one-atomic-pointer"></a>
 ### 核心技巧：不可变文件加一个原子指针
 
 每种格式都遵循同样的两阶段模式。第一步，写入者写入新的数据文件和新的元数据文件，此时任何人都看不到它们。第二步，通过原子性地推进一个指向表最新状态的引用来发布它们。在 Iceberg 中，由目录将指针替换为指向新元数据文件。[^ice-spec] 在 Delta Lake 中，写入者创建下一个编号的日志文件；如果该编号已存在，创建必须失败。[^delta-protocol] 由于文件从不就地修改，已加载版本 41 的读取者即使在版本 42 写入期间，也能保持对版本 41 的一致视图。这就是无锁的快照隔离。
 
 > **类比：半导体。** 这种提交就是作用于单个字的硬件**比较并交换**。写入者可以在旁边做任意多的工作，然后用一条指令发布："仅当头指针仍等于 Y 时，才将其设为 X"。无锁数据结构的工作方式与此相同，失败模式也相同：争用导致重试，而不是死锁。
 
+<a id="iceberg-a-tree-of-metadata"></a>
 ### Iceberg：一棵元数据树
 
 Iceberg 把表建模为一棵树，由目录持有根指针。[^ice-spec]
@@ -88,6 +94,7 @@ flowchart TB
 
 对用户而言，Iceberg 有两项最重要的特性。[隐藏分区（hidden partitioning）](../glossary.md#hidden-partitioning)指表中存储的是诸如 `day(order_ts)` 或 `bucket(16, customer_id)` 这样的变换。查询按 `order_ts` 过滤，Iceberg 自行推导出分区过滤条件，因此分析师无需了解物理布局。[分区演进（partition evolution）](../glossary.md#partition-evolution)指变换可以改变，例如随着数据量增长从按月分区改为按日分区，而无需重写旧数据。旧文件保留旧规范，新文件使用新规范。[^ice-spec] [模式演进（schema evolution）](../glossary.md#schema-evolution)之所以安全，是因为列是通过数字字段 ID 而非名称来跟踪的。重命名只是一次元数据编辑，已删除列的 ID 永不复用。
 
+<a id="delta-lake-a-log-of-commits"></a>
 ### Delta Lake：一份提交日志
 
 Delta Lake 使用日志而不是树。每张表都有一个 `_delta_log/` 目录，其中是编号为 0、1、2 等的 JSON 文件。每个文件是一次原子提交，列出"添加文件"和"删除文件"操作。为避免读取者重放成千上万个 JSON 文件，写入者会定期写入一个 Parquet [检查点（checkpoint）](../glossary.md#delta-checkpoint)，汇总该版本时整张表的状态。[^delta-protocol] 参考实现默认每 10 次提交生成一次检查点。[^delta-config]
@@ -116,10 +123,12 @@ flowchart LR
 
 更重要的变化发生在 2026 年。Delta Lake 4.1 引入了**[目录托管表（catalog-managed tables）](../glossary.md#catalog-managed-table)**，由目录（首先是 Unity Catalog）批准每次提交并成为事实来源。[^delta-cmt] Delta 项目将此描述为向 Iceberg 首创的模式看齐。在提交路径上，两种设计已经趋同：在两者中，都由目录来裁决。
 
+<a id="hudi-and-paimon-built-for-upserts-and-streams"></a>
 ### Hudi 与 Paimon：为 upsert 和流而生
 
 Apache Hudi 于 2016 年在 Uber 构建，用于支持更新和删除的近实时数据摄取。这早于另外两种格式。[^hudi-otf] 它的[时间线（timeline）](../glossary.md#hudi-timeline)把每个操作（提交、压缩合并、聚簇、清理、回滚）记录为一个"瞬时点"（instant），其状态从 requested 到 inflight 再到 completed。[^hudi-timeline] Hudi 1.0（2024 年 12 月）重建了时间线，并为流式写入者增加了非阻塞并发控制。[^hudi-10] Hudi 与 Iceberg 的区别在于范围。它不仅提供格式，还附带存储引擎：使 upsert 成本低廉的记录级索引，以及无需单独调度器即可完成压缩合并和清理的内置表服务。Apache Paimon 源自 Flink 的表存储（table store），将 [LSM 树（LSM-tree）](../glossary.md#lsm-tree)（[第 3 章](ch03-database-internals.md)中介绍的写优化结构）应用于数据湖存储。它适合由 Flink 馈送的高频变更日志表，并且可以为批处理读取者输出兼容 Iceberg 的元数据。[^paimon]
 
+<a id="two-writers-one-retry"></a>
 ### 两个写入者，一次重试
 
 ```mermaid
@@ -147,6 +156,7 @@ sequenceDiagram
 
 重试之所以成本低，是因为写入者 A 已写入的数据文件仍然有效，只需重写其上的元数据。[^ice-spec] 只有当两个写入者触及相同文件时，重试才会变成真正的失败，例如两个 MERGE 作业更新同一分区。Iceberg 的 Java 库默认在放弃前重试 4 次。[^ice-config] 运维上的教训是：按分区隔离写入者，或者通过一个服务统一路由。大量每隔几秒就向同一张热表提交的流式写入者，会把时间都花在重试上。
 
+<a id="row-level-changes-copy-on-write-vs-merge-on-read"></a>
 ### 行级变更：写时复制与读时合并
 
 文件不可变，因此一条删除三行的 `DELETE` 必须以某种方式表达。有两种策略，其名称来自 Hudi 的表类型。[^hudi-otf]
@@ -168,6 +178,7 @@ flowchart LR
 
 [写时复制（copy-on-write）](../glossary.md#copy-on-write)仍是 Iceberg 对 DELETE、UPDATE 和 MERGE 的默认方式。[^ice-config] [读时合并（merge-on-read）](../glossary.md#merge-on-read)则分阶段演进。Iceberg v2 增加了两类[删除文件（delete files）](../glossary.md#delete-file)：位置删除（文件加行号）和[等值删除（equality deletes）](../glossary.md#equality-delete)（"所有 id = 5 的行"）。等值删除对流式写入者成本低，对读取者成本高。Iceberg v3 用二进制[删除向量（deletion vectors）](../glossary.md#deletion-vector)取代了位置删除文件：这些是存储在 Puffin 文件中的 Roaring 位图，每个数据文件最多一个。[^ice-spec] 这与 Delta 在 2023 年推出的思路相同。[^delta-dv] v4 规范草案更进一步，禁止写入新的等值删除。[^ice-spec] Iceberg 1.12（2026 年 9 月）增加了一个 Flink 维护任务，将流式等值删除转换为删除向量。[^ice-112]
 
+<a id="maintenance-the-operating-cost-nobody-puts-on-the-slide"></a>
 ### 维护：没人写进幻灯片的运营成本
 
 表格式规定了一张有效的表应当是什么样子，但它并不负责让表保持健康。举一个算例（估算）：一个有 8 个写入任务、每分钟提交一次的流式作业，每次提交产生 8 个文件，即每天 11,520 个文件和 1,440 个快照。如果每个文件约 5 MB，而 Iceberg 的目标文件大小为 512 MB，[^ice-config] 那么这张表的文件数大约是应有数量的 100 倍，查询规划和扫描都会相应变慢。这就是[小文件问题（small-files problem）](../glossary.md#small-files-problem)。
@@ -190,6 +201,7 @@ flowchart LR
 
 > **深入（L3）。** Iceberg 为每次提交分配一个*序列号*。删除文件只作用于序列号相同或更低的数据文件，因此重试的提交只需要一个新的清单列表，现有清单可以复用。v4 草案用单一的"根清单"（root manifest）和自适应树取代清单列表，使小规模流式提交不再需要重写大块元数据。[^ice-spec] Delta 在这方面的对应研究前沿是带 sidecar 文件的 V2 检查点和日志压缩。[^delta-protocol]
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 | 维度 | Apache Iceberg | Delta Lake | Apache Hudi | Apache Paimon | DuckLake |
@@ -208,6 +220,7 @@ flowchart LR
 
 **各方的最强版本论证（steelman）。** *Iceberg：* 它拥有最精确的规范和最中立于厂商的治理，几乎所有引擎和云现在都能写入它。它的弱点是把维护留给别人，这对厂商是优势，对自建者是负担。*Delta：* 它经由 Databricks 在大规模场景中经受了最多实战检验，也是最容易推理的模型。日志便于为流处理和变更数据馈送（change data feed）进行追踪读取。它的弱点是历史上被认为受 Databricks 控制。*Hudi：* 对于大量变更数据捕获（CDC）upsert 来说，它是最佳答案，因为它的索引无需扫描即可找到要更新的行。它的弱点是复杂性和较小的生态。*Paimon：* 如果 Flink 是技术栈的中心，它是自然之选。*DuckLake：* 它主张，既然无论如何都需要一个目录数据库，那么把所有元数据都放在其中会更快、更简单，尤其是对于小规模、高频的提交。[^ducklake-manifesto] 反方观点是，它在读取路径上重新引入了数据库这一依赖，在最大规模下会成为可扩展性和可用性问题。
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 | 参与者 | 在这一层中的角色 | 定位（2026 年 11 月） |
@@ -227,6 +240,7 @@ flowchart LR
 
 引擎支持在很大程度上已成为清单上的勾选项。Spark 和 Flink 能读写全部四种 Apache/LF 格式。Trino 提供 Iceberg、Delta 和 Hudi 的连接器，而 Hudi 的 Trino 连接器已于 2026 年迁入 Hudi 代码仓库。[^hudi-rel12] DuckDB 支持写入 Iceberg（自 2025 年末）和 Delta（自 2026 年 5 月）。[^duckdb-iceberg][^duckdb-delta] 真正有意思的差异现在体现在功能深度上：哪些引擎支持 v3 删除向量、行血缘（row lineage）和 variant 类型，以及哪些引擎能够通过某个特定目录写入。
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 ```mermaid
@@ -256,6 +270,7 @@ timeline
 
 **下一步走向。** 有三个值得关注的趋势，均在[第 44 章](../06-history-and-future/ch44-future-trends.md)中讨论。第一，*目录吸收格式*：提交、规划、凭证和维护都迁入目录服务。第二，*Iceberg v4* 带来用于低成本小规模提交的自适应元数据树、相对路径和约束。[^ice-spec] 第三，*DuckLake 式设计*将元数据保存在数据库中。Iceberg REST 目录的服务器端规划是朝这一立场迈出的一步，尽管双方对此的表述不同。[^ducklake-manifesto][^ice-111]
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源 / 日期 |
@@ -276,10 +291,12 @@ timeline
 
 *图 7.9 — 这些默认值（512 MB 文件、5 天快照、10 次提交一个检查点）才是运营成本和查询速度真正被设定的地方。问一问客户改动过其中哪些。*
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** 表格式把数据库的正确性移入了对象存储。存储必须提供强读后写一致性（S3 自 2020 年 12 月起提供），[^s3-consistency] 理想情况下还要支持条件性的"不存在时创建"写入。它还必须在大规模顺序数据扫描的同时，处理大量小规模元数据读写。对于 FlashBlade 这样的本地部署 S3 平台，战略选择在于：是继续充当别人目录之下的存储桶（当前 Dremio 和 Starburst 的参考架构），[^everpure-lake] 还是效仿 S3 Tables 和 MinIO AIStor 提供表感知服务：Iceberg REST 目录、自动压缩合并和快照过期，以及按表分配的凭证。这些是战略团队基于公开信息可能评估的选项。有关对象协议和性能的细节，请参阅配套的《Everpure Tech Atlas》。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理提的问题**
@@ -304,6 +321,7 @@ timeline
 - "开放格式意味着没有锁定。" 锁定转移到了目录及其权限、凭证和维护服务上。
 - "S3 Tables 取代了 Databricks/Snowflake。" 它是面向 Iceberg 的托管存储和维护服务，查询仍由引擎完成。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 - Iceberg 表规范，尤其是"Optimistic Concurrency"、"Scan Planning"以及关于版本差异的附录 E。[^ice-spec]
@@ -312,6 +330,7 @@ timeline
 - DuckLake 宣言，它是对基于文件的元数据最有力的批评。[^ducklake-manifesto]
 - Hudi 的时间线和并发控制文档，了解流式表上的非阻塞并发。[^hudi-timeline]
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [开放表格式（Open table format）](../glossary.md#open-table-format) — 将对象存储上的文件转变为事务性表的元数据层和提交协议。
@@ -343,6 +362,7 @@ timeline
 - [Parquet](../glossary.md#parquet) — 所有表格式之下占主导地位的开放列式文件格式。
 - [对象存储（Object storage）](../glossary.md#object-storage) — 通过 HTTP 访问的不可变对象的扁平键值存储，例如 S3。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^tabular]: TechCrunch, "Databricks reportedly paid $2 billion in Tabular acquisition," https://techcrunch.com/2024/08/14/databricks-reportedly-paid-2-billion-in-tabular-acquisition，发布 2024-08-14；检索 2026-11-01。WSJ 区间（$1–2B）及 Tabular 约 $37M 的融资额记录于 `data/ma_deals.csv` 和 `meta/research-notes-ma-2020s.md`。交易于 2024-06-04 宣布；价格为媒体报道，Databricks 从未披露。

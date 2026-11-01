@@ -1,6 +1,7 @@
 # 22. 智能体与数据
 > **深度：** L2 · **阅读时间：** 约 18 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 19 章 — 检索架构](ch19-retrieval-architectures.md)、[第 14 章 — 语义层与商业智能](../02-pipelines-and-governance/ch14-semantic-layers-and-bi.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - AI 智能体（agent）访问数据有三种方式：自己编写 SQL（[文本转 SQL（text-to-SQL）](../glossary.md#text-to-sql)）、调用受治理的工具（例如语义层指标 API），或检索文档和记忆（见[第 19 章](ch19-retrieval-architectures.md)）。大多数生产系统会在同一个协议之后融合这三种方式。
@@ -9,6 +10,7 @@
 - 数据治理才是真正的产品。难点在于[身份传递（identity propagation）](../glossary.md#identity-propagation)（智能体*以*特定用户的身份行事）、最小权限工具、行过滤、审计和成本限制。最主要的安全风险，是隐藏在智能体所读取数据中的[提示词注入（prompt injection）](../glossary.md#prompt-injection)。
 - 智能体还会*创建*数据库。Neon 表示，其平台上超过 80% 的数据库是由智能体创建的（公司披露，2025 年 5 月）；这一说法帮助引发了一场 Postgres 圈地运动：Databricks–Neon（Lakebase）、Snowflake–Crunchy Data（Snowflake Postgres）、估值 $10.5B 的 Supabase，以及超大规模云厂商推出的新 Postgres 服务。[^neon-dbx][^supabase-f]
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业 + Everpure 视角）
 
 二十年来，企业数据的消费者一直是人：编写 SQL 的分析师，或打开仪表盘的高管。智能体改变了需求的形态。一个人每天可能运行 30 次查询；而一个处理研究任务的智能体可以在几分钟内发出数百次查询，每次规模都很小，许多是试探性的，还有许多在出错后重试。访问模式从少量大规模扫描，转变为一大群小型、对延迟敏感、需经策略检查的调用。这改变了平台销售的东西（受治理的端点而非席位），也改变了基础设施必须承受的负载。
@@ -17,8 +19,10 @@
 
 对 Everpure 而言，由此引出两点。第一，智能体工作负载会成倍增加元数据查找、小块读取和短生命周期的数据库副本。即时分支依赖于[写时复制（copy-on-write）](../glossary.md#copy-on-write)快照，而这正是存储的原生领地（见下文"存储桥接"）。第二，缺少语义上下文，智能体就会失败：某一列是什么含义、是否包含个人数据、谁可以查看。这正是 Everpure 收购 1touch（2026 年 5 月完成交割）所公开表述的目的——发现、分类数据并为其添加语义上下文。[^1touch] 基于公开信息，战略团队可能评估的一个选项是：通过 MCP 对外提供这种数据分类能力，使智能体平台在查询时即可调用。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="the-access-path-from-agent-to-bytes"></a>
 ### 访问路径：从智能体到字节
 
 图 22.1 展示了参考路径。智能体*宿主*（Claude、ChatGPT、Microsoft Copilot 或企业自研应用）运行一个 MCP *客户端*。客户端连接到多个 MCP *服务器*，每个服务器封装一个系统。运行良好的服务器不会直接访问表，而是先经过语义层——它将"按区域划分的净收入"这样的请求转换为 SQL——再经过目录，在任何字节被移动之前执行授权、行过滤和脱敏。身份和审计贯穿整个路径，因此每一次查询都可以追溯到一个人类主体以及代表其行事的智能体。
@@ -70,6 +74,7 @@ flowchart LR
 
 *图 22.1 — SV-11：智能体从不直接接触表；每个请求都要经过 MCP 服务器、语义层和目录的策略引擎，身份与审计贯穿整个路径。*
 
+<a id="text-to-sql-why-benchmarks-flatter-it"></a>
 ### 文本转 SQL：为何基准测试会美化它
 
 文本转 SQL 是指由大语言模型（LLM）将自然语言问题转换为 SQL。一个生产系统包含四个阶段，如图 22.2 所示。**[模式链接（schema linking）](../glossary.md#schema-linking)**在成千上万的表和列中找出少数相关的那些，通常是通过检索目录描述和列名的嵌入（向量）来实现。**少样本提示（few-shot prompting）**加入经过验证的"问题–SQL"示例对，理想情况下来自同一领域。**生成**阶段产出候选 SQL，通常是多个候选。随后，**[自我修正循环（self-correction loop）](../glossary.md#self-correction-loop)**对每个候选进行编译或试运行，将任何错误反馈给模型，检查结果是否合理（行数、空值、合计），并在给出答案之前修复查询。
@@ -118,6 +123,7 @@ xychart-beta
 
 > **深入（L3）。** 大规模模式链接是一个检索问题。团队将表和列描述、示例值以及历史查询日志做嵌入，然后检索 top-k 候选。有些团队还会从查询历史中挖掘关联路径，使模型即使在没有声明外键的情况下，也能知道 `orders.cust_id` 与 `customers.id` 关联。候选生成通常会采样多个 SQL 草稿，并按自洽性（self-consistency）挑选，也就是选择多数草稿一致的结果。Spider 2.0 的代码仓库包含 Snowflake、SQLite 和 dbt 项目三种变体（分别为 547、547 和 68 个任务），专门用于测试这类数据管道。[^spider2-repo]
 
+<a id="mcp-the-bus-between-agents-and-systems"></a>
 ### MCP：智能体与系统之间的总线
 
 MCP 定义了三种角色。**宿主**是用户与之交互的应用。**客户端**是宿主内部的连接器，与每个服务器各保持一个会话。**[MCP 服务器（MCP server）](../glossary.md#mcp-server)**封装一个系统，例如数据仓库、CRM 或文件存储。服务器对外暴露三种原语。**工具**是模型可以调用的函数（`run_query`、`list_metrics`）。**资源**是宿主可以读入上下文的数据（一张表的描述、一份文档）。**提示词**是用户可以调用的可复用模板。本地服务器通过标准输入/输出通信；远程服务器使用可流式 HTTP（streamable HTTP）。规范演进很快。2025 年 6 月的修订版将远程 MCP 服务器归类为 OAuth 2.1 资源服务器：它们需发布受保护资源元数据，并且必须验证专门为其签发的令牌；客户端则须通过资源指示符（resource indicators）指明目标服务器。2025 年 11 月的修订版进一步完善了授权机制，例如客户端向服务器注册的方式。[^mcp-auth][^keycloak] 另有报道称存在一个日期为 2026 年 7 月的修订版 [VERIFY: 2026-07-28 MCP 规范修订版的内容与状态]。
@@ -140,6 +146,7 @@ MCP 定义了三种角色。**宿主**是用户与之交互的应用。**客户�
 
 MCP 将智能体连接到工具和数据。Google 的 **[Agent2Agent 协议（Agent2Agent protocol）](../glossary.md#agent2agent-protocol)**（A2A）于 2025 年 4 月推出、2025 年 6 月移交给 Linux Foundation，它将智能体连接到*其他智能体*：例如采购智能体将一个子任务交给供应商的智能体，并支持任务状态和能力发现。[^a2a] 两者是互补关系。对数据团队而言，当下重要的是 MCP，因为智能体正是通过它访问受治理的数据。
 
+<a id="risks-the-lethal-trifecta"></a>
 ### 风险：致命三要素
 
 MCP 安全领域的标志性案例出现在 2025 年 7 月。研究人员展示：一个连接到 Supabase MCP 服务器、且持有可绕过行级安全的服务角色凭证的编码智能体，可以被一张客户支持工单中的文本所操控。该工单指示智能体将一张私有令牌表复制到攻击者可读取的位置。[^willison] Simon Willison 将这一模式命名为[致命三要素（lethal trifecta）](../glossary.md#lethal-trifecta)：一个智能体同时具备访问私有数据的权限、接触不可信内容的途径，以及向外发送数据的渠道。任何一个同时具备这三点的 MCP 服务器都可被利用。Supabase 的应对措施——默认采用只读且限定于项目范围的模式——移除了其中一个要素。[^willison]
@@ -156,6 +163,7 @@ MCP 安全领域的标志性案例出现在 2025 年 7 月。研究人员展示�
 
 *图 22.5 — MCP 风险与控制措施：大多数失败源于工具权限范围和身份，而非协议本身，因此控制措施应落在服务器设计和策略层。*
 
+<a id="governed-access-who-is-the-agent"></a>
 ### 受治理的访问：智能体是谁？
 
 数据治理的核心问题表述起来很简单：当智能体运行一次查询时，适用的是谁的权限？弱的答案是一个拥有广泛权限的共享服务账号，这会让行级安全形同虚设，审计日志也毫无用处。强的答案是**身份传递**：用户完成认证，身份提供商通过[代表用户流程（on-behalf-of flow）](../glossary.md#on-behalf-of-flow)签发一个同时标明用户（主体，subject）和智能体（行为者，actor）的令牌，所有下游系统都执行*该用户*的授权。Microsoft 于 2025 年 5 月 Build 大会上发布的 Entra Agent ID，为智能体赋予了各自的目录身份及已声明的委托权限，并在签发的令牌中将智能体标记为行为者。[^entra] 其他身份厂商也在构建同样的模式。这就是业界所说的[智能体身份（agentic identity）](../glossary.md#agentic-identity)：智能体是一等主体，但其权限永远不会超过它所服务的人类用户。
@@ -164,6 +172,7 @@ MCP 安全领域的标志性案例出现在 2025 年 7 月。研究人员展示�
 
 > **类比：特权环与 IOMMU。** CPU 在 ring 3 中运行用户代码，在 ring 0 中运行内核。用户进程无法读取另一个进程的内存，因为内存管理单元会依据该进程的页表检查每一次访问。IOMMU 将同样的规则扩展到设备，使执行直接内存访问（DMA）的网卡只能触及为其映射的页面。身份传递就是智能体的 IOMMU。智能体是总线上的一个强大设备，但它的每个请求都要经过转换，并对照其所服务用户的页表（这里即权限授予）进行检查。共享服务账号则相当于允许设备对任意地址做 DMA。
 
+<a id="agent-memory-a-cache-hierarchy-for-context"></a>
 ### 智能体记忆：上下文的缓存层级
 
 智能体需要超出单个提示词范围的记忆。上下文窗口容纳当前任务；任何需要更长时间保留的内容都必须写出并在之后调回。商业化的记忆层在 2025 年涌现。Mem0 为其记忆 API 融资 $24M（种子轮加 A 轮，2025 年 10 月），该 API 从对话中提取事实，并以向量和图的形式存储。[^mem0] Zep 的开源 Graphiti 引擎构建时序知识图谱，记录每条事实在何时为真；其 2025 年 1 月的论文报告在两项记忆基准测试上超越了 MemGPT（作者报告）。[^zep] Letta 是 MemGPT 研究项目的商业化继承者，让智能体自行管理分层记忆块。ChatGPT、Claude 和 Gemini 也都提供用户级记忆功能，这使得记忆既是独立产品，也是平台功能。
@@ -181,6 +190,7 @@ MCP 安全领域的标志性案例出现在 2025 年 7 月。研究人员展示�
 
 > **类比：存储层级。** 上下文窗口是寄存器和 L1：极小、极快，任务结束即被清空。向量记忆是 DRAM：容量大得多、访问更慢，需要通过显式加载（检索）来填充。数据仓库是 NAND：海量且持久，只能通过控制器（MCP 服务器和目录）访问。设计问题都是熟悉的那些：哪些内容要预取到上下文中，窗口满时驱逐什么，以及在源数据变化时如何保持缓存事实的一致性。如果账户已被重新分配，记忆中仍写着"Acme 的负责人是 Dana"，那就是一条过期的缓存行。记忆应当缓存*指针和偏好*；业务事实则应从受治理的数据源重新读取。
 
+<a id="worked-example-which-enterprise-customers-usage-dropped-more-than-20-last-month-and-who-are-their-account-owners"></a>
 ### 实例："哪些企业客户上个月的用量下降超过 20%，他们的客户经理是谁？"
 
 Priya 是 EMEA 区域的一名收入运营经理，她在公司的智能体宿主中提出了这个问题。场景是示意性的，但其机制是标准的。
@@ -207,6 +217,7 @@ GROUP BY 1, 2;
 
 这个例子的要点在于智能所在的位置。LLM 负责选择工具并组织答案；而定义、财务日历、区域过滤和脱敏都来自受治理的层级——它们为仪表盘提供的也会是同样的结果。
 
+<a id="agents-as-database-builders-the-postgres-renaissance"></a>
 ### 智能体作为数据库构建者：Postgres 的复兴
 
 智能体与数据的第二个故事关乎创建数据库，而非查询数据库。AI 编码工具和应用构建器会为每一个原型、每一次测试运行或每一条工作分支启动一个新的 Postgres 数据库。Neon 的架构恰好适合这种需求。它将 Postgres 计算与存储服务分离，后者由"safekeeper"（持久化的预写日志）和一个将数据页保存在对象存储上的 page server 组成。[^neon-arch] 这使得创建新数据库或[数据库分支（database branch）](../glossary.md#database-branching)成为一次元数据操作——一个只需数秒的写时复制分叉。空闲的计算资源可以[缩容至零（scale to zero）](../glossary.md#scale-to-zero)，因此一个被遗忘的原型几乎不产生成本。Databricks 在 2025 年 5 月同意收购 Neon 时援引了 Neon 的遥测数据：该平台上超过 80% 的数据库是由 AI 智能体创建的（公司披露）。[^neon-dbx]
@@ -229,6 +240,7 @@ GROUP BY 1, 2;
 
 *图 22.7 — 面向智能体的 Postgres：差异化要素在于分支、缩容至零和按使用计费，而这些都依赖于存算分离。"n.v." = 本版未核实 [VERIFY: 标记为 n.v. 的单元格]。[^neon-dbx][^lakebase-ga][^dbx-q2][^ma-csv][^sf-postgres][^supabase-f][^dsql][^alloydb][^horizondb][^planetscale][^xata][^prisma][^turso]*
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 | 方法 | 灵活性 | 企业数据上的准确率 | 数据治理 | 每个问题的成本 | 最适用于 |
@@ -245,6 +257,7 @@ GROUP BY 1, 2;
 
 在数据库方面，权衡在于托管平台的引力与独立性之间。Lakebase 和 Snowflake Postgres 承诺运营数据无需数据管道即可落入分析平台。Databricks 将统一后的版本称为 LTAP，并称其即将推出（见[第 23 章](ch23-real-time-analytics-htap.md)）。Supabase 和 Neon 式的独立厂商承诺的是开发者体验和可移植性。超大规模云厂商承诺的是规模和采购的简便性。
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 - **智能体宿主与模型厂商：** Anthropic（MCP 发起者）、OpenAI、Google（Gemini Enterprise，A2A 发起者）、Microsoft（Copilot、Entra Agent ID）。全部支持 MCP。
@@ -253,6 +266,7 @@ GROUP BY 1, 2;
 - **智能体记忆：** Mem0、Zep（Graphiti）、Letta，以及各大助手内置的记忆功能。
 - **面向智能体的 Postgres：** Neon/Lakebase、Snowflake Postgres、Supabase（含 Turso）、Aurora DSQL、AlloyDB、Azure HorizonDB、PlanetScale、Xata、Prisma Postgres；Databricks 还收购了 Mooncake Labs（Postgres 转列式），并宣布收购 Electric（PGlite，供智能体沙箱使用的本地 Postgres）。[^ma-csv]
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 ```mermaid
@@ -281,6 +295,7 @@ MCP 的发展轨迹是：2024 年 11 月发布，2025 年春季被 OpenAI、Goog
 
 未来两年的三个判断。(1) 在主要平台上，智能体流量将超过人类查询流量，定价将跟随智能体（按任务或按受治理调用计费），而非按席位计费。(2) MCP 服务器将在每个企业内部整合为少数几个受治理的网关，因为安全团队不会批准数百个未经审查的服务器。(3) 运营型与分析型 Postgres 将在共享存储上融合，分支将被视为基本预期。看空逻辑是：智能体在杂乱数据上的准确率陷入停滞，企业将智能体限制在只读仪表盘范围内，而 Postgres 圈地运动最终被证明是为那些永远不会成为生产工作负载的"氛围编程"（vibe-coding）原型付了高价。
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源 / 日期 |
@@ -301,10 +316,12 @@ MCP 的发展轨迹是：2024 年 11 月发布，2025 年春季被 OpenAI、Goog
 
 *图 22.10 — 关键数字：干净基准与企业基准之间约 70 个百分点的准确率差距，一个月下载量约 100M 的协议，以及以智能体创建的数据库为定价依据的 Postgres 交易。*
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** 由智能体构建的应用，将数据库分支变成了一项存储功能。Neon 通过在 page server（将数据页保存在对象存储上）中分叉元数据来创建分支。Xata 则对底层存储卷做写时复制快照，并在其上启动一个全新的 Postgres，完全不修改 Postgres 本身。[^neon-arch][^xata] 无论哪种方式，分支的速度和成本都取决于快照与克隆路径，以及在成千上万个短生命周期租户下的元数据性能。这与企业级存储阵列用于即时克隆的能力是同一种能力。与此同时，受治理的智能体查询以大量小型、随机且对延迟敏感的读取形式到达。快照与克隆机制参见配套的 *Everpure Tech Atlas*。战略选项见[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理提出的三个问题**
@@ -329,6 +346,7 @@ MCP 的发展轨迹是：2024 年 11 月发布，2025 年春季被 OpenAI、Goog
 - "智能体记忆会取代数据仓库。"记忆缓存的是上下文。受治理的事实应当从记录系统重新读取。
 - "智能体创建了所有数据库中的 80%。"那是 Neon 在 2025 年针对其自身平台的公司披露数字，而不是行业统计数据。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 - 阅读 Spider 2.0 论文的错误分析；模式链接和方言错误是失败的主要原因。[^spider2]
@@ -336,6 +354,7 @@ MCP 的发展轨迹是：2024 年 11 月发布，2025 年春季被 OpenAI、Goog
 - Simon Willison 关于致命三要素的文章，是从业者对智能体数据外泄问题最清晰的论述。[^willison]
 - Neon 的架构文档解释了 safekeeper、page server 和写时复制分支。[^neon-arch]
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [文本转 SQL](../glossary.md#text-to-sql) — 由 LLM 将自然语言问题翻译为 SQL 查询。
@@ -360,6 +379,7 @@ MCP 的发展轨迹是：2024 年 11 月发布，2025 年春季被 OpenAI、Goog
 - [缩容至零](../glossary.md#scale-to-zero) — 释放空闲数据库的全部计算资源，使其在下一次请求之前只产生存储成本。
 - [写时复制](../glossary.md#copy-on-write) — 在版本之间共享未修改的数据，只写入被修改的块或文件。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^spider2]: Fangyu Lei et al., "Spider 2.0: Evaluating Language Models on Real-World Enterprise Text-to-SQL Workflows," ICLR 2025 (oral), arXiv:2411.07763v2, https://arxiv.org/abs/2411.07763v2，发布 2025-03-17（v1 2024-11）；检索 2026-11-01。

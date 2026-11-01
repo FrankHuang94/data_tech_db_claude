@@ -1,6 +1,7 @@
 # 28. 超大规模云厂商的数据平台：AWS、Google、Microsoft 与 Oracle
 > **状态：** 上市公司（四大集团）：AWS（Amazon，NASDAQ: AMZN）· Google Cloud（Alphabet，NASDAQ: GOOGL）· Microsoft（NASDAQ: MSFT）· Oracle（NYSE: ORCL）· **总部：** Seattle；Mountain View；Redmond；Austin [VERIFY: Oracle 总部迁往 Nashville 的进展] · **成立：** Amazon 1994 年（AWS 2006 年）；Google 1998 年；Microsoft 1975 年；Oracle 1977 年 · **最新市值：** ~$2.6T / ~$3.44T / ~$3.88T / ~$382B（stockanalysis.com，2026-10-23 至 2026-10-30）· **最后核实：** 2026-11-01
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - **超大规模云厂商（hyperscaler）就是最大的数据库厂商。** 在 Gartner 的数据库市场份额排名中，AWS、Microsoft、Oracle 和 Google 位居前列；Gartner 估算该市场 **2024 年规模为 $119.7B，同比增长 13.4%**（分析师估算）。[^gartner-dbms] 四家公司都不单独披露数据库或分析业务收入。它们的数据产品归属于各自的云业务分部，而这些分部如今的增长主要由 AI 基础设施驱动。
@@ -9,6 +10,7 @@
 - **它们与 Databricks 和 Snowflake 竞争，同时又从后者身上赚钱。** 两家公司都把租用超大规模云基础设施的支出计入营业成本，都通过云市场销售，让客户消耗承诺消费额度合同。Azure Databricks 是 Microsoft 的第一方服务。与此同时，Redshift、BigQuery、Fabric 和 Oracle 的 Autonomous AI Lakehouse 都在争夺同一笔预算。
 - **Everpure 视角。** 超大规模云厂商在默认对象存储层与 Everpure 竞争（S3 事实上是[湖仓一体（lakehouse）](../glossary.md#lakehouse)的底座）。它们同时也是渠道：Everpure Cloud 原生运行在 Azure 上。对 Everpure 有利的逆向趋势是主权和本地部署需求，就连超大规模云厂商自己也在用区域内和本地部署版本来满足这类需求。[^ep-acc26]
 
+<a id="snapshot-table"></a>
 ## 概览表
 
 | 项目 | AWS（Amazon） | Google Cloud（Alphabet） | Microsoft（Azure、Fabric） | Oracle（OCI、Database） |
@@ -23,22 +25,27 @@
 
 *图 28.1 — 概览。资料来源：`data/public_comps.csv` 与 `data/company_financials.csv`（stockanalysis.com 快照）、Amazon 与 Alphabet 的 8-K、媒体对 Microsoft 和 Oracle 公告的报道。[^comps][^amzn-q3][^goog-q3][^msft-q1][^orcl-q1][^orcl-fcf] 各家分部口径不同，因此收入一行不可直接比较。*
 
+<a id="origin-story-and-strategic-arc"></a>
 ## 起源与战略演进
 
+<a id="aws-storage-first-everything-else-on-top"></a>
 ### AWS：先做存储，其他一切建在其上
 
 Amazon 于 2006 年 3 月推出 S3，早于 EC2。[^history] 二十年后，这一先后顺序仍能解释 AWS 的数据战略。S3 成为企业存放文件的默认之地，此后的每一款分析产品都被设计为从 S3 读取数据。DynamoDB（2012 年）源自 Amazon 2007 年关于其购物车存储系统的 Dynamo 论文。[^dynamo][^history] Redshift（2012 年 11 月发布）以价格优势冲击本地部署数据仓库，AWS 称按预留定价每 TB 每年不到 $1,000。[^redshift-2012] Aurora（2014 年）把数据库引擎与一个共享的、日志结构化的存储服务分离开来。[^aurora] Glue 和 Athena（2016–17 年）让 S3 无需加载到别处即可查询。[^glue-ga]
 
 2019 年推出的 RA3 节点在基于 S3 的托管存储之上，为 Redshift 实现了[存算分离（separation of storage and compute）](../glossary.md#separation-of-storage-and-compute)。这是对 Snowflake 的直接回应。[^ra3-launch] 自 2022 年以来，主线变成了消除数据管道、把表直接放进存储*内部*。零 ETL 集成把 Aurora 和 DynamoDB 复制到 Redshift。[^zetl-2022][^zetl-ga] S3 Tables（2024 年 12 月）让托管 Apache Iceberg 成为 S3 的一种原生存储桶类型。[^s3tables] S3 Vectors 在 re:Invent 2025 上正式发布（GA）。[^reinvent25] 2026 年 8 月，AWS 同意以未披露金额收购 DuckDB 背后的公司 **DuckLabs**。DuckDB 仍在独立的 DuckDB Foundation 下保持 MIT 许可，AWS 将其定位于智能体（agent）和 S3 上的就地分析。[^ducklabs]
 
+<a id="google-the-research-lab-that-productised-its-papers"></a>
 ### Google：把论文产品化的研究实验室
 
 Google 的数据产品是其内部系统的商业版本，这些系统最早都在研究论文中描述过：Bigtable（2006 年）、Dremel（2010 年）和 Spanner（2012 年）。[^bigtable][^dremel][^spanner] BigQuery 是 Dremel 对外的产品形态，2010 年发布预览，约在 2011–2012 年正式可用。[^dremel20] 它从第一天起就是无服务器的，客户从不需要规划集群规模。它的短板在市场进入（GTM），而不在技术。因此 Google 收购了 Looker（$2.6B，2020 年 2 月完成）以获得语义层（semantic layer），又收购了 Dataform（2020 年）以获得 SQL 数据转换能力。[^looker-acq][^dataform] 随后 BigLake 和 BigQuery Omni 把 BigQuery 扩展到开放格式和其他云。2025–26 年的阶段主题是智能体：Agentspace 于 2025 年 10 月更名为 **Gemini Enterprise**，Dataplex Universal Catalog 于 2026 年更名为 **Knowledge Catalog**，Vertex AI 于 2026 年 4 月更名为 **Gemini Enterprise Agent Platform**。[^gemini-ent][^gcp-kc][^vertex-rename]
 
+<a id="microsoft-from-sql-server-to-a-saas-lake"></a>
 ### Microsoft：从 SQL Server 到 SaaS 数据湖
 
 Microsoft 的数据业务建立在 SQL Server 和 Excel 之上，后来又加上 Power BI。Azure SQL Database 和 Cosmos DB（2017 年）把这一业务搬上了云。[^history] 决定性的合作发生在 2017–18 年：Microsoft 没有自建 Spark 平台，而是把 **Azure Databricks** 做成第一方服务，由 Microsoft 负责销售、计费和支持。[^adb-ga] Azure Synapse（2019 年）是 Microsoft 自研统一分析平台的一次较弱尝试。**Microsoft Fabric** 于 2023 年 5 月发布、2023 年 11 月正式可用，取代 Synapse 成为战略押注。它是一个 SaaS 分析套件，建立在单一的租户级数据湖 **OneLake** 之上，沿用与 Power BI Premium 相同的容量计费模式。[^fabric-launch] 在 Ignite 2025 上，Microsoft 宣布 Fabric 的操作型数据库正式可用，预览了 **Fabric IQ** 语义层，并预览了可横向扩展的 PostgreSQL 服务 **Azure HorizonDB**。[^ignite25]
 
+<a id="oracle-the-incumbent-turned-ai-landlord"></a>
 ### Oracle：从守成者变身 AI 房东
 
 Oracle 在 1979 年推出了最早的商用 SQL 数据库之一，[^history] 至今仍拥有最深厚的关键任务 OLTP 装机基础。其硬件战略（Exadata，2008 年）和 **Autonomous Database**（2017 年发布）都旨在把这一基础留在 Oracle 自研的基础设施上。[^history] OCI 的“Gen 2”云起步较晚。随后 Oracle 完成了两次转向。第一，它不再坚持让客户迁往 OCI，而是把 Oracle Database 硬件放进竞争对手的云*内部*：**Oracle Database@Azure**（2023 年发布）、**@Google Cloud** 和 **@AWS**（2024 年）。[^history][^oracle-dbazure] 第二，它成为 AI 实验室的算力房东。这让 OCI 成为本章中增长最快的云业务线，并填满了它的积压订单。2025 年 10 月更名为 **Oracle AI Database 26ai**，把向量、智能体和湖仓访问能力放进了核心数据库。[^oracle-aiworld]
@@ -62,8 +69,10 @@ timeline
 
 *图 28.2 — 二十年的产品发布。每家云厂商都从存储和单一数据库（2006–2014 年）走向托管数据仓库（2012–2019 年），再走向存储内部的开放表、零 ETL 和智能体（2022–2026 年）。*
 
+<a id="product-and-technology"></a>
 ## 产品与技术
 
+<a id="the-four-stacks-side-by-side"></a>
 ### 四套技术栈并排对比
 
 四家云厂商如今都提供了[第 1 章](../01-data-systems-foundations/ch01-data-stack-map.md)所述数据栈的每一层。差别在于*各家把哪一层当作锚点*。AWS 以存储为锚：S3 是记录系统，其他一切都从它读取。Google 以查询引擎为锚，因为客户冲着 BigQuery 而来。Microsoft 以 SaaS 工作空间以及 Office/Power BI 用户为锚。Oracle 以数据库本身为锚，并把它带到客户偏好的任何一朵云上。
@@ -155,8 +164,10 @@ flowchart LR
 
 > **深入（L3）。** BigQuery 的速度来自三个解耦的层级，而不是某个巧妙的索引。存储位于 Colossus 上，采用列式格式，其编码和统计信息让引擎得以跳过数据。计算是按查询阶段分配的 Dremel 工作节点池（“slot”）。中间结果通过一个独立的远程内存 **shuffle** 服务传递，因此各阶段可以独立扩展，某个工作节点失败也不会丢失 shuffle 数据。Melnik 等人 2020 年发表于 VLDB 的回顾论文详细介绍了无服务器调度、解耦 shuffle 和列式存储如何从 2010 年的设计演进而来。[^dremel20] AWS Redshift RA3 和 Snowflake 则通过在对象存储前用本地 SSD 缓存热数据，实现了类似的分离。
 
+<a id="how-it-makes-money"></a>
 ## 盈利模式
 
+<a id="pricing-units-and-where-the-margin-sits"></a>
 ### 计价单位与利润所在
 
 超大规模云厂商以类似基础设施的单位为数据产品定价：每 GB 每月的存储、请求次数、扫描的 TB 数（Athena、BigQuery 按需）、slot 小时或 RPU 小时（BigQuery 版本、Redshift Serverless）、DynamoDB 读/写单位，以及**容量单位**（Fabric 和 Power BI Premium，一个由所有 Fabric 工作负载共享的预留资源池；见[基于容量的定价（capacity-based pricing）](../glossary.md#capacity-based-pricing)）。数据产品很少需要单独自负盈亏，它的回报来自它所带动的计算、存储和网络消费。BigQuery 客户还会购买 Cloud Storage、Dataflow、Vertex/Gemini token 和出口流量。Fabric 客户通常早已为 Microsoft 365 和 Power BI 席位付过费。
@@ -167,21 +178,24 @@ flowchart LR
 - **[零 ETL](../glossary.md#zero-etl)与镜像。** AWS 曾表示 Aurora 到 Redshift 的零 ETL 不单独收取复制费用，客户只为源端和目标端资源付费 [VERIFY: 当前零 ETL 定价页面]；Fabric 镜像计算也是免费的。[^zetl-ga][^fabric-mirror] 消除数据管道，就消除了使用 Fivetran、Informatica 或 Databricks Lakeflow 的一个理由，也消除了把分析副本放在同一朵云之外的一个理由。零 ETL 就像一家免费帮你拆箱的搬家公司，但只会把东西搬进它自己的房子。见[第 9 章](../02-pipelines-and-governance/ch09-pipeline-patterns.md)。
 - **免费迁移与抵扣额度。** 数据库迁移工具和迁移资助额度的逻辑相同：云厂商一次性承担转换成本，然后连续多年赚取运行率收入。
 
+<a id="committed-spend-the-hyperscalers-take-or-pay"></a>
 ### 承诺消费额度：超大规模云厂商的“照付不议”
 
 大客户会签订多年期**承诺消费协议**。AWS 的协议历来称为 Enterprise Discount Program（EDP；如今一般称为私有定价协议），Microsoft 的是 **Microsoft Azure Consumption Commitment（MACC）**，Google 也有同类的承诺合同。客户承诺在三年内消费比如 $100M，以换取折扣，任何差额仍需付费。通过云厂商**云市场**购买的合格第三方软件也计入承诺额度。Microsoft 在文档中写明，合格的 Azure Marketplace 购买计入 MACC。[^macc] AWS 和 Google 也有类似的云市场消耗规则，并有合同层面的具体限制 [VERIFY: AWS 和 Google 关于云市场支出中多大比例计入承诺额度的现行规则]。
 
 > **类比：照付不议（take-or-pay）供货协议。** MACC 或 EDP 相当于云领域的**照付不议晶圆或存储器供货协议**。买方承诺采购量并为差额付费，供应商则获得建设产能（这里是数据中心）所需的可见度。云市场消耗是其中的巧妙之处：这就好比 TSMC 允许客户把承诺的晶圆量花在*第三方*的芯片上，只要订单经过 TSMC 的账簿。客户花的是已承诺的预算，因此 Databricks 和 Snowflake 卖得更多。超大规模云厂商保住了承诺额度、赚取云市场费用，同时还托管这些工作负载。Oracle 的 $664B RPO 则是供应商一侧的镜像：由 AI 实验室*与*房东签订的照付不议算力合同。[^orcl-q1]
 
+<a id="group-level-economics"></a>
 ### 集团层面的经济性
 
 数据产品所在分部的经济性差异很大。Google Cloud 的营业利润在 Q3 2026 升至 **$11.1B，上年同期为 $3.6B**，对应收入 $30.7B（GAAP）。[^goog-q3] Oracle 则处于相反的阶段。其过去十二个月资本开支 **$75.7B** 超过了 **$46.9B** 的经营现金流，自由现金流为 **–$28.7B**（非 GAAP，经营现金流减资本开支，截至 2026-10-20）。Oracle 还出售了 **$20B 普通股**来为建设融资。[^orcl-fcf][^comps] 数据库许可证和支持服务（Oracle 传统的高毛利业务）实际上正在为一场 AI 基础设施建设提供资金，而这场建设的回报取决于少数几个大租户。
 
+<a id="financials"></a>
 ## 财务数据
 
 四家公司都没有单列“数据平台”收入。最好的公开替代指标是图 28.5 中的云分部数据，其中混合了数据产品、通用计算，以及越来越多的 AI 加速器。
 
-![2024 年 Q3 至 2026 年 Q3 云分部收入同比增速折线图。截至 2025 年 Q3，AWS 增速为 17% 至 20%，Google Cloud 和 Azure 约为 30% 至 40%，Oracle OCI 约为 45% 至 55%。到最新季度，Oracle OCI 达到 121%，Google Cloud 103%，Azure 48%，AWS 39%（Q2 2026 为 37%）。侧边柱状图显示最新季度收入：AWS $46.0B（Q3 2026），Google Cloud $30.7B，Azure 约 $33.2B，OCI 约 $7.4B](../assets/charts/ch28_cloud_growth.png)
+![2024 年 Q3 至 2026 年 Q3 云分部收入同比增速折线图。截至 2025 年 Q3，AWS 增速为 17% 至 20%，Google Cloud 和 Azure 约为 30% 至 40%，Oracle OCI 约为 45% 至 55%。到最新季度，Oracle OCI 达到 121%，Google Cloud 103%，Azure 48%，AWS 39%（Q2 2026 为 37%）。侧边柱状图显示最新季度收入：AWS $46.0B（Q3 2026），Google Cloud $30.7B，Azure 约 $33.2B，OCI 约 $7.4B](../../../docs/assets/charts/ch28_cloud_growth.png)
 
 *图 28.5 — 2025 至 2026 年间，在 AI 算力推动下，Google、Microsoft 和 Oracle 的云业务增速大致翻了一倍到两倍；AWS 在最大的基数上把增速从 20% 提高到 39%，大约翻了一倍。Q4 2025 至 Q2 2026 之间的多数季度未汇编，因此以虚线连接空缺。资料来源：`data/ch28_cloud_segments.csv`。[^segments][^amzn-q3]*
 
@@ -202,8 +216,10 @@ flowchart LR
 
 **Oracle。** Q1 FY2027 总收入约为 $19.35B（GAAP，媒体报道），其中 OCI 约 $7.4B，RPO 达到 **$664B，同比增加 $209B**。[^orcl-q1] 增加 $209B 意味着一年前约为 $455B，与 Oracle 在 2025 年 9 月报告的跃升相符。媒体报道把那次跃升的大部分归因于与 **OpenAI** 签订的多年期算力合同，据《华尔街日报》报道，该合同从 2027 年起约**五年、总额约 $300B**（媒体报道；Oracle 在其公告中未点名交易对手）。[^openai-oracle] Oracle 给出的 FY2027 收入指引至少为 $90B，截至 2026-10-23，EV/未来 12 个月收入约为 5.7x；由于存在净负债，EV 远高于市值。[^comps] 看多者把积压订单视为 AI 时代的收入可见度；看空者则指出，这些订单高度集中、后置，并且在自由现金流为负的情况下依靠债务和股权融资。
 
+<a id="customers-and-go-to-market"></a>
 ## 客户与市场进入
 
+<a id="coopetition-with-databricks-and-snowflake"></a>
 ### 与 Databricks 和 Snowflake 的竞合
 
 超大规模云厂商与独立数据平台之间的关系，是这个市场中最重要的商业动态。每一美元 Databricks 或 Snowflake 收入，都会以*三种*方式为超大规模云厂商带来收入：平台作为营业成本购买的基础设施、云市场费用，以及客户承诺额度的消耗。同时，它也*替代*了客户本可能花在 Redshift、BigQuery 或 Fabric 上的一美元。
@@ -241,12 +257,14 @@ flowchart LR
 
 > **类比：IDM 与无晶圆厂（fabless）芯片公司。** 超大规模云厂商是**整合元件制造商（IDM）**：它们拥有晶圆厂（数据中心），自研芯片（Graviton、TPU、Maia），并销售成品（Redshift、BigQuery、Fabric）。Databricks 和 Snowflake 是**无晶圆厂公司**：它们设计产品，向 IDM 租用晶圆厂产能，因此基础设施计入营业成本。Snowflake 约 75% 的非 GAAP 产品毛利率（Q2 FY2027）就是向代工厂付费后的无晶圆厂毛利率。[^sf-q2] 与半导体行业一样，无晶圆厂公司的执行力往往胜过 IDM 的内部设计团队。IDM 乐于向它们出售产能，但在合同续约时掌控着定价、路线图节奏和客户关系。IDM 最好的武器不是更好的芯片，而是捆绑销售，Intel 当年的平台折扣就是例证。在这里，与 Power BI 捆绑的 Fabric、与 Aurora 捆绑的零 ETL 扮演的正是这一角色。
 
+<a id="fabric-adoption-and-market-share"></a>
 ### Fabric 的采用与市场份额
 
 Microsoft 在 FabCon 2025 上表示，Fabric 已有超过 **19,000 家付费客户**（公司披露，经二手回顾报道）。[^fabric-cust] 后来的财报电话会引用了更高的数字，但我们未能为本章核实 [VERIFY: 公司最新披露的 Fabric 付费客户数和收入增速]。一家付费客户可能只是一笔小额容量采购，因此这个数字更能说明覆盖广度而非深度。Fabric 真正的优势在于分发：每个 Power BI Premium 租户都已拥有可以运行 Fabric 工作负载的容量。
 
 在市场份额方面，Gartner 的 DBMS 研究估算 **2024 年**市场总规模为 **$119.7B**（分析师估算，+13.4%），并且多年来一直把 Microsoft、AWS、Oracle 和 Google 列为按收入计最大的四家 DBMS 厂商，排在 Databricks 和 Snowflake 之前。[^gartner-dbms] 最新一版中的厂商排名和份额位于 Gartner 付费墙之后 [VERIFY: 从公开的 Gartner 摘要中获取 2024 或 2025 年厂商排名和份额]。到 2024 年，云 DBMS 已占市场的大部分（根据 Gartner 摘要估算；见 `data/market_sizes.csv`）。[^gartner-dbms]
 
+<a id="ma-and-investments"></a>
 ## 并购与投资
 
 超大规模云厂商大多自建数据产品而非收购。即便收购，它们买的也是缺失的一层能力或一个开发者社区，而不是收入。
@@ -265,6 +283,7 @@ Microsoft 在 FabCon 2025 上表示，Fabric 已有超过 **19,000 家付费客�
 
 规模更大的“投资”是对独立厂商的入股。Microsoft、AWS 以及 Google 旗下的 CapitalG 都出现在 Databricks 的融资历史中。[^funding] 入股一家同时与你竞争的公司是一种对冲：它让合作伙伴保持利益一致，而且如果对方胜出，你也能获益。
 
+<a id="competitive-position"></a>
 ## 竞争地位
 
 | 维度 | AWS | Google Cloud | Microsoft | Oracle | Databricks | Snowflake |
@@ -281,6 +300,7 @@ Microsoft 在 FabCon 2025 上表示，Fabric 已有超过 **19,000 家付费客�
 
 这个矩阵说明了为什么没有一家云厂商能取代独立厂商。每家超大规模云厂商在自己的云*内部*最强，但大型企业同时运行两到三朵云，需要一个横跨各云的统一治理和分析层。Databricks 和 Snowflake 是中立选项。Oracle 通过把 Exadata 带进每一朵云，在数据库层让自己成为中立方。Google 的跨云湖仓和 Microsoft 的 OneLake 快捷方式，都是在不要求客户迁移数据的前提下伸手触及竞争对手存储的尝试。
 
+<a id="why-its-winning--bull-case"></a>
 ## 制胜原因 / 看多逻辑
 
 1. **分发和捆绑胜过功能。** Fabric 触达每一个 Power BI 租户，零 ETL 触达每一个 Aurora 客户，BigQuery 触达每一个 Google Workspace 和 Google Ads 分析团队。即便是“够用”的产品，只要预装好并能消耗现有承诺额度，也能胜出。
@@ -289,6 +309,7 @@ Microsoft 在 FabCon 2025 上表示，Fabric 已有超过 **19,000 家付费客�
 4. **操作型数据库是护城河。** Aurora、DynamoDB、Spanner、Azure SQL、Cosmos DB 和 Oracle Database 承载着记录系统。从这些系统到云厂商自家数据仓库的零 ETL，是通往分析的最短路径。
 5. **AI 需求正在填满产能。** Google Cloud 和 OCI 的三位数增长、Azure 的 48% 以及 AWS 的 39%（约五年来最快）表明，AI 工作负载正在落到超大规模云基础设施上，数据产品也随之受益。[^amzn-q3][^goog-q3][^msft-q1][^orcl-q1]
 
+<a id="risks--bear-case-and-open-questions"></a>
 ## 风险 / 看空逻辑与待解问题
 
 1. **在 AI 资本开支的故事里，数据产品只是零头。** 增长如今由 GPU 和 TPU 产能驱动。如果 AI 需求放缓，资本开支（Alphabet 单季度 $51.4B、Microsoft 单季度 $39.4B（后者为媒体报道）；Oracle TTM $75.7B）将变成折旧负担，而数据产品无法填补这一缺口。[^comps][^orcl-fcf]
@@ -298,6 +319,7 @@ Microsoft 在 FabCon 2025 上表示，Fabric 已有超过 **19,000 家付费客�
 5. **监管与主权。** 欧盟《数据法案》（EU Data Act）的转换规则和主权云要求，提高了超大规模云厂商捆绑策略的成本，并有利于境内或本地部署方案。
 6. **待解问题。** 云收入中数据与分析占多大比例？Databricks 和 Snowflake 的消费中有多少经由云市场流转？Fabric 的客户增长能否转化为数据仓库支出中的大份额？AWS 会如何处置 DuckDB？
 
+<a id="relevance-to-everpure"></a>
 ## 与 Everpure 的相关性
 
 **竞争。** 超大规模云厂商的对象存储是湖仓和 AI 数据的默认归宿，而 AWS 正在把表（S3 Tables）和向量（S3 Vectors）内置进存储服务。[^s3tables][^reinvent25] 这抬高了任何本地对象存储平台的门槛：它需要具备感知 Iceberg 的管理能力和面向向量的数据管道，而不仅仅是兼容 S3 API。
@@ -321,6 +343,7 @@ Microsoft 在 FabCon 2025 上表示，Fabric 已有超过 **19,000 家付费客�
 
 关于数据引力和出口流量费的经济性，见[第 24 章](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)；关于云市场联合销售机制，见[第 40 章](../05-business-and-economics/ch40-gtm-partnerships.md)。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向超大规模云厂商产品负责人或合作伙伴经理提出的三个问题**
@@ -346,6 +369,7 @@ Microsoft 在 FabCon 2025 上表示，Fabric 已有超过 **19,000 家付费客�
 - “超大规模云厂商想干掉 Databricks 和 Snowflake。” *它们通过基础设施、云市场费用和承诺额度消耗从两家身上赚钱。*
 - 把“Dataplex”或“Agentspace”当作现行名称。*它们现在分别叫 Knowledge Catalog 和 Gemini Enterprise。*
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [超大规模云厂商（Hyperscaler）](../glossary.md#hyperscaler) — 以全球数据中心规模运营的云服务商（AWS、Microsoft Azure、Google Cloud；通常也包括 Oracle OCI）。
@@ -378,6 +402,7 @@ Microsoft 在 FabCon 2025 上表示，Fabric 已有超过 **19,000 家付费客�
 - [整合元件制造商（Integrated device manufacturer）](../glossary.md#integrated-device-manufacturer) — 既设计又制造芯片的芯片公司；本章用作超大规模云厂商的类比。
 - [无晶圆厂（Fabless）](../glossary.md#fabless) — 只设计芯片、租用制造产能的芯片公司；本章用作 Databricks/Snowflake 的类比。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^gartner-dbms]: Gartner, "Market Share: Database Management Systems, Worldwide"（摘要），https://www.gartner.com/en/documents/6494271 与 https://www.gartner.com/en/documents/5441963，2025 年发布；The Register, "Gartner DBMS chart," https://www.theregister.com/2026/04/21/gartner_bamboozling_dbms_chart_shows/，2026-04-21 发布；经由 AI Data Atlas `data/market_sizes.csv`（2024 = $119.7B，+13.4%）；2026-11-01 检索。分析师估算；厂商排名未重新核实 [VERIFY]。

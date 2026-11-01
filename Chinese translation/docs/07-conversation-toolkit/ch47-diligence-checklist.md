@@ -1,6 +1,7 @@
 # 47. 数据基础设施标的的技术与商业尽职调查清单
 > **深度：** L2 · **阅读时间：** 约 13 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 36 章 单位经济与 KPI](../05-business-and-economics/ch36-unit-economics-kpis.md)、[第 38 章 开源作为战略](../05-business-and-economics/ch38-open-source-strategy.md)、[第 39 章 并购史](../05-business-and-economics/ch39-ma-history.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - **数据基础设施的尽职调查（due diligence）总是在可预见的地方失败。** 大多数失败可以追溯到四类缺口之一：一个没有人与 GAAP 核对过的收入指标；一份买方无法控制的许可证或一个买方无法掌控的社区；一个 Databricks、Snowflake 或某家超大规模云厂商即将免费推出的功能；或者一种与收购方自身定价模式相冲突的定价模式。本章针对这四类缺口给出一份清单，并按八个工作流加以组织。
@@ -9,12 +10,14 @@
 - **平台吸收风险是决定性的产品问题。** 向量检索（vector search）、文档解析、Postgres、湖仓一体（lakehouse）引擎以及 MCP 网关，在 2024 至 2026 年间都变成了平台功能或被平台收购。[^s3-vectors][^datavolo][^dremio][^ducklabs][^natoma] 在投入尽职调查费用之前，应先按差异化程度与吸收风险对标的进行筛选（图 47.2）。
 - **对于存储类收购方，整合契合度本身就是一个独立的工作流。** 需要回答的问题包括：与数据平台合作伙伴的渠道冲突、交易后能否留住开源社区，以及如何调和按 TB 计价与按用量计费（consumption pricing）。1touch 交易（$125.0M 现金，2026 年 5 月 7 日完成交割）是近期一个小型、元数据层收购的例子，其结构设计规避了上述大部分陷阱；现在判断结果还为时过早。[^1touch]
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业 + Everpure 视角）
 
 数据基础设施标的比大多数软件更难做尽职调查。产品对终端用户不可见，因此与业务买方的客户访谈对底层引擎所知甚少。收入往往按用量确认，因此上一季度的数字告诉你的是客户实际运行了多少，而不是他们承诺了多少。而且大量代码可能是开源的，这意味着你要买的资产可以被超大规模云厂商合法地复制。最具警示意义的案例仍然是 HP–Autonomy：交割后约一年内减记 $8.8B，而起因是收入质量问题，而不是技术问题。[^autonomy-wd] 现代的对应情形更为隐蔽：把年化运行率当作 ARR 报出；只有净收入留存率（NRR）而没有毛收入留存率支撑；或者毛利率（gross margin）随着无服务器（serverless）占比上升而下降。
 
 对 Everpure 而言，这个视角是具体的。公司在 2026 年通过收购 1touch 并于 2026 年 6 月以 Data Intelligence 名义重新发布，进入数据智能领域，这使其成为元数据、数据治理与 AI 数据管道资产的潜在买家。[^1touch] 该市场中的每个标的都向 Databricks 和 Snowflake 所服务的同一批数据团队销售产品，而 Everpure 本身也是 Databricks Storage Ecosystem（2026 年 6 月）的首发合作伙伴。[^storage-eco] 因此，一份在常规技术与财务问题之外同时检验渠道冲突和定价契合度的清单，是战略团队基于公开信息可能评估的选项之一。它并不是对 Everpure 内部流程的描述。
 
+<a id="the-diligence-process"></a>
 ## 尽职调查流程
 
 下面的工作流是大多数企业发展团队遵循的顺序。其中有用的纪律在于两道关口。未通过初筛或管理层会议的标的不应进入数据室，因为数据室阶段正是尽职调查成本和交易惯性同时累积的地方。
@@ -41,8 +44,10 @@ flowchart LR
 
 有两个习惯能提升产出质量。第一，从第一次会议起就维护一份持续更新的危险信号日志，为每个信号指定负责人和检验方法，这样早期提出的问题不会在 IC 召开之前被遗忘。第二，先写看空逻辑（bear case），再写基准情形。先构建基准情形的团队往往会锚定在管理层给出的数字上。
 
+<a id="workstream-checklists"></a>
 ## 各工作流清单
 
+<a id="1-architecture-and-technology"></a>
 ### 1. 架构与技术
 
 核心问题是：产品能否在收购方关心的规模和环境中运行，以及它是否足够开放，能够融入客户现有的技术栈。请先阅读[第 7 章](../01-data-systems-foundations/ch07-open-table-formats.md)和[第 8 章](../01-data-systems-foundations/ch08-catalogs-and-metastores.md)，因为开放格式立场如今决定了大多数企业架构评审的结果。
@@ -54,6 +59,7 @@ flowchart LR
 
 > **类比：数据手册典型值与工艺角表征。** 厂商的基准测试相当于数据手册上的"典型"值：在标称电压、室温和友好负载下测得。半导体买方会在工艺角（process corner）上对器件进行认证。请向数据平台索取对应的东西：最坏情况下的并发、最大的租户、冷缓存查询以及最慢的存储层级，而不是那个 TPC 风格的标题数字。
 
+<a id="2-open-source-and-licensing"></a>
 ### 2. 开源与许可
 
 如果标的的核心是开源的，许可证就是资产的一部分。[第 38 章](../05-business-and-economics/ch38-open-source-strategy.md)介绍了相关机制。尽职调查需要回答三个问题：超大规模云厂商能否售卖同样的东西？厂商能否修改条款？如果厂商修改了条款，客户能否获得一个可信的分叉？
@@ -63,6 +69,7 @@ flowchart LR
 - **好的样子。** 公司无需加以限制的开放核心与超大规模云厂商难以复制的付费层之间界限清晰。[贡献者集中度](../glossary.md#contributor-concentration)足够高，使公司掌握路线图控制权，但又不至于高到少数工程师离开项目就会死掉。
 - **危险信号。** 正在考虑重新授权。存在同一项目的超大规模云厂商托管版本。近期历史很有启发性。Redis 于 2024 年 3 月转向源码可见许可。在头六个月里，Linux Foundation 的分叉项目 Valkey 吸引了来自 10 家公司的 29 名贡献者，其中 18 人此前曾为 Redis 贡献过代码。[^redis-2024][^valkey][^foster] Elasticsearch 在 2021 年也经历了 AWS 推出 OpenSearch 分叉的同样模式。[^elastic-2021] 重新授权不一定会压低价格：在 Terraform 重新授权之后，IBM 仍为 HashiCorp 支付了 $6.4B。[^ibm-hashi] 但它确实改变了你买到的东西。你得到了代码和客户，却得不到社区。
 
+<a id="3-product-and-roadmap"></a>
 ### 3. 产品与路线图
 
 核心风险是[功能吸收](../glossary.md#feature-absorption)，即标的的核心功能变成客户已经付费的某个平台的捆绑功能。从 2024 年底到 2026 年底，Snowflake 为文档数据摄取收购了 Datavolo；AWS 把向量检索变成了 S3 的一项功能（S3 Vectors，2025 年 12 月正式发布）；SAP 收购了 Dremio；AWS 同意收购 DuckLabs；Snowflake 同意以约 $110M 的披露对价收购 MCP 网关公司 Natoma。[^datavolo][^s3-vectors][^dremio][^ducklabs][^natoma] 各公司章节（[第 25 章](../04-company-deep-dives/ch25-databricks.md)至[第 34 章](../04-company-deep-dives/ch34-application-giants-data-platforms.md)）跟踪了每个平台的路线图。
@@ -97,6 +104,7 @@ quadrantChart
 
 *图 47.2 — 标的类别的初筛视图，基于作者判断而非数据。上半部分的类别已经出现过平台发布或平台收购。右下象限是最靠近字节所在位置的类别，存储类收购方在这里拥有平台所不具备的优势。*
 
+<a id="4-unit-economics"></a>
 ### 4. 单位经济
 
 这个工作流在评分矩阵中权重最高，因为这些指标由公司自行定义、未经审计且容易被美化。SEC 2020 年的指引要求上市公司定义每一项关键指标并保持一致的计算口径。私有标的对你没有这样的义务。[^sec-kpi] [第 35 章](../05-business-and-economics/ch35-business-models.md)和[第 36 章](../05-business-and-economics/ch36-unit-economics-kpis.md)解释了相关机制。
@@ -122,6 +130,7 @@ quadrantChart
 
 *图 47.3 — 单位经济工作流的 KPI 定义。每个指标都应从月度收入文件重新计算，而不是直接接受管理层的数字。参考点是用于比较的锚点，而不是及格线。*
 
+<a id="5-customers-and-go-to-market"></a>
 ### 5. 客户与市场进入
 
 数据平台越来越多地通过超大规模云厂商的云市场（marketplace）和系统集成商销售，因此标的的销售管道可能依赖于它无法控制的合作伙伴（[第 40 章](../05-business-and-economics/ch40-gtm-partnerships.md)）。Snowflake 披露 2025 日历年 AWS Marketplace 销售额超过 $2B（公司披露），而 AWS 私有报价（private offer）的费率根据合同规模分别为 3%、2% 或 1.5%。[^sf-aws-2b][^aws-fees]
@@ -131,6 +140,7 @@ quadrantChart
 - **好的样子。** 没有任何单一客户或合作伙伴大到足以拖垮模型。云市场被用作支付渠道，而不是唯一的需求来源。客户访谈覆盖流失客户和缩减客户，而不仅仅是满意的客户。
 - **危险信号。** [客户集中度](../glossary.md#customer-concentration)高，且续约集中在交割后的第一年。单一超大规模云厂商的联合销售项目带来了大部分销售管道，例如 AWS ISV Accelerate 这类项目，而超大规模云厂商可以单方面更改其规则。[^isva] 不断上升的[客户数流失](../glossary.md#logo-churn)被最大客户的扩张所掩盖。
 
+<a id="6-team-and-organization"></a>
 ### 6. 团队与组织
 
 在小型数据基础设施公司中，存储引擎或查询优化器（query optimizer）的知识往往掌握在少数几名工程师手中。因此[关键人员风险](../glossary.md#key-person-risk)是一个估值项目，而不仅仅是人力资源项目。
@@ -140,6 +150,7 @@ quadrantChart
 - **好的样子。** 核心知识分散在多名工程师身上。创始人希望在交割后担任运营角色。保留计划的规模与风险相匹配。
 - **危险信号。** 关键工程师在签约时已全部归属。创始人计划离开。保留措施仅依赖现金。收购方会为此使用[暂扣款（holdback）](../glossary.md#holdback)。Confluent 对 WarpStream 的披露显示，对价为 $135.1M，另加最高 $76.2M 的暂扣款，这提醒我们保留资金可能占真实价格的很大一部分。[^warpstream]
 
+<a id="7-legal-ip-and-data-privacy"></a>
 ### 7. 法律、知识产权与数据隐私
 
 数据基础设施产品会处理客户的个人数据，而 AI 功能扩大了风险敞口（[第 15 章](../02-pipelines-and-governance/ch15-governance-security-privacy.md)）。GDPR 罚款最高可达 €20M 或全球营业额的 4%，以较高者为准。[^gdpr] 在 2026 年 AI Omnibus 之后，EU AI Act 对高风险系统的数据治理义务现自 2027 年 12 月 2 日（附件 III）和 2028 年 8 月 2 日（附件 I）起适用。[^omnibus] EU Data Act 的云服务切换规则自 2025 年 9 月 12 日起已经适用。[^dataact]
@@ -149,6 +160,7 @@ quadrantChart
 - **好的样子。** 标准的 DPA、按区域的数据驻留、专有组件中未混入 copyleft 代码，以及干净的索赔历史。
 - **危险信号。** 闭源产品中含有 AGPL 或 GPL 代码。没有面向 EU 客户的数据驻留控制。在没有合同依据的情况下使用训练数据或遥测数据。
 
+<a id="8-integration-fit-for-a-storage-acquirer"></a>
 ### 8. 存储类收购方的整合契合度
 
 这个工作流因买方而异。对存储公司而言，它决定了标的是为装机基础增加价值，还是与客户已经在运行的数据平台产生摩擦。[第 39 章](../05-business-and-economics/ch39-ma-history.md)表明，存储类买方收购元数据和数据服务（Portworx；1touch 于 2026 年 5 月完成交割，时间太近尚无法评判）时，结果好于收购引擎（Greenplum、Pentaho）。
@@ -169,6 +181,7 @@ quadrantChart
 
 > **存储桥接。** 存储类收购方的优势在于位置：它已经持有企业的非结构化数据和本地部署数据的字节，往往还持有备份副本。把这一位置转化为元数据（发现、分类、语义上下文）的标的能够继承这一优势。与客户的查询引擎竞争的标的则不能。阵列如何暴露这些数据，请参见配套的 *Everpure Tech Atlas*。
 
+<a id="red-flag-table"></a>
 ## 危险信号表
 
 | # | 危险信号 | 为何重要 | 如何检验 |
@@ -194,6 +207,7 @@ quadrantChart
 
 *图 47.5 — 十八个危险信号及对应的检验方法。第 1–6 行由财务团队负责，第 7–13 行由技术与产品团队负责，第 14–18 行由人力资源、法务和企业发展团队负责。第 1、7、16 和 17 行通常是一票否决项，与图 47.6 中的一票否决列相对应。*
 
+<a id="scoring-matrix"></a>
 ## 评分矩阵
 
 该矩阵把各工作流转化为 1 到 5 分的加权得分。权重反映了数据基础设施交易历史上出问题的地方。权重属于作者判断，应针对每个投资逻辑重新设定。
@@ -213,6 +227,7 @@ quadrantChart
 
 举一个示意性的例子（并非真实标的）：一家数据目录公司在架构上得 4 分，许可 4 分，吸收风险 2 分，单位经济 3 分，GTM 3 分，团队 4 分，法律 4 分，整合契合度 4 分，加权总分为 3.4。吸收风险的低分是需要上报的事项。IC 应当追问：报价是否假设了平台自带的目录会一直落后，因为 Unity Catalog 和 Horizon 正在进入同一领域（[第 33 章](../04-company-deep-dives/ch33-governance-catalog-security-companies.md)）。
 
+<a id="first-10-documents-to-request"></a>
 ## 首批需索取的 10 份文件
 
 1. **自成立以来按客户和产品划分的月度收入。** 每一个单位经济指标都可以从这个文件重新计算。如果对方拒绝提供，应将拒绝本身视为危险信号。
@@ -228,6 +243,7 @@ quadrantChart
 
 如有可能，在管理层会议之前就索取第 1–4 份文件。愿意提前分享这些文件的标的，通常数字都比较干净。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理和企业发展同行提出的三个问题**
@@ -252,6 +268,7 @@ quadrantChart
 - "无服务器压低了他们的毛利率，所以是坏事。" *评价无服务器要看毛利额，而不是毛利率的百分点。*
 - "平台会选择合作，而不是竞争。" *2024–2026 年平台发布和平台收购的记录说明事实并非如此。*[^datavolo][^dremio][^natoma]
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [年度经常性收入（Annual recurring revenue）](../glossary.md#annual-recurring-revenue) — 某一时点经常性合同的年化价值。
@@ -285,6 +302,7 @@ quadrantChart
 - [渠道冲突（Channel conflict）](../glossary.md#channel-conflict) — 厂商的产品与转售或集成该产品的合作伙伴相竞争时产生的摩擦。
 - [数据室（Data room）](../glossary.md#data-room) — 标的共享尽职调查文件的受控存放库。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^db-7b]: Databricks, "Databricks Grows >80% YoY, Surpasses $7B Revenue Run-Rate, Scales Lakebase, Genie and Unity AI Gateway," https://www.databricks.com/company/newsroom/press-releases/databricks-grows-80-yoy-surpasses-7b-revenue-run-rate-scales, 发布 2026-08-13; 检索 2026-11-01. 公司披露的年化运行率，未经审计。

@@ -1,6 +1,7 @@
 # 33. 数据治理、数据目录与数据安全公司
 > **状态：** 上市与非上市公司混合 · **总部：** 各不相同（美国、比利时、以色列）· **成立：** 2005–2021 年 · **最新估值/市值：** Cyera 投后估值 $12B（媒体报道，2026 年 6 月）；Varonis 同意以约 $6.3B 交易价值 / 约 $5.71B 股权价值出售给 Proofpoint（已披露，尚待完成，2026 年 10 月）· **最后核实：** 2026-11-01
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - **两类业务，同一个问题。** *业务数据目录*厂商（Collibra、Alation、Atlan、data.world、Informatica 的目录产品）帮助人们找到并信任数据。*数据安全*厂商，即由 Cyera、BigID、Varonis、Securiti、Sentra 等组成的[数据安全态势管理（DSPM）](../glossary.md#data-security-posture-management)阵营，负责找出敏感数据以及谁能接触到它们。两者的起点都是数据发现与数据分类。[第 8 章](../01-data-systems-foundations/ch08-catalogs-and-metastores.md)和[第 15 章](../02-pipelines-and-governance/ch15-governance-security-privacy.md)讲解了其机制；本章讨论的是这些公司、它们的价格以及买家是谁。
@@ -9,6 +10,7 @@
 - **四类买家，四种不同动机。** 安全平台希望为其威胁与身份产品获得数据上下文。备份厂商希望销售"了解你的副本里有什么"。应用软件厂商希望为自己的智能体获得受治理的数据。存储厂商作为最新入场的买家，希望在承载每一个字节的那一层完成分类。
 - **Everpure 的动作规模小、时机早。** 以 **$125.0M** 现金收购 1touch（2026-02-23 宣布，2026-05-07 完成，GAAP，依据 10-Q），约占 Everpure **$43.79B** 市值（2026-10-01）的 **0.3%**。这只是 Veeam 和 Proofpoint 所付价格的一小部分，买到的是数据发现与分类的核心能力，而不附带安全销售团队。[^ep-10q][^ep-comps]
 
+<a id="snapshot-table"></a>
 ## 概览表
 
 | 公司 | 类别 | 成立 / 总部 | CEO（公开记录） | 状态，2026 年 11 月 | 最新估值标记（口径，日期） | 已披露的业务进展（标签） |
@@ -27,6 +29,7 @@
 
 *图 33.1 — 概览。独立数据目录厂商的估值标记已有三到五年历史，而安全厂商的估值标记来自 2025–26 年。这一落差用一张表概括了本章的核心论点。成立、总部和 CEO 单元格来自公开的公司简介和 2025 年以前已确定的知识（经审阅者核对），本次会话未重新抓取。[^bg] [VERIFY: 2025 年中以来的 CEO 变动]*
 
+<a id="origin-story-and-strategic-arc"></a>
 ## 起源与战略演进
 
 **第一波：合规软件（2005–2018 年）。** Varonis 于 2005 年起步，分析谁能打开 Windows 共享上的哪些文件，这正是非结构化数据中的访问问题。Collibra 于 2008 年从 Brussels 一所大学的研究团队分拆而来，为面临金融危机后监管的银行管理业务术语表和数据管理职责（data stewardship）。Alation（2012 年）把数据目录做成一个搜索引擎，从查询日志中学习人们实际使用的是哪些表。随后，自 2018 年 5 月起施行的 GDPR 催生了一个大规模查找个人数据的市场。BigID（2016 年）和 Securiti（2018–19 年）正是为此而生：处理数据主体请求、同意管理和数据删除。[^bg]
@@ -47,6 +50,7 @@ timeline
 
 *图 33.2 — 交易时间线。2023–24 年的小型 DSPM 补强收购之后，是 2025–26 年的大型平台交易。资料来源：`data/ma_deals.csv` 与 `data/private_funding.csv`。[^okera][^dspm-tuckins][^dig][^tabular][^cyera-trail][^normalyze][^metaplane][^dataworld][^infa-close][^select-star][^securiti][^ep-10q][^natoma][^cyera-g][^varonis-8k][^boomi]*
 
+<a id="product-and-technology"></a>
 ## 产品与技术
 
 相关机制（分类管道、ABAC、凭证分发、数据血缘）已在[第 15 章](../02-pipelines-and-governance/ch15-governance-security-privacy.md)和[第 8 章](../01-data-systems-foundations/ch08-catalogs-and-metastores.md)中介绍。对买家而言，有三个产品事实比算法更重要。
@@ -81,6 +85,7 @@ timeline
 
 *图 33.3 — 厂商矩阵。独立厂商能存活下来的地方，要么横跨多个平台，要么掌握平台看不到的内容，例如非结构化数据、SaaS 和本地部署数据。"AI 定位"一栏由作者用自己的话概括各厂商的公开宣传，并非经过测试的能力。*
 
+<a id="how-it-makes-money"></a>
 ## 盈利模式
 
 **数据目录是按席位和范围收费的软件。** 独立数据目录厂商销售年度订阅。价格随使用产品的人数以及所连接的系统或资产数量上升。当数据目录是数据管理员整天工作的"目的地产品"时，这一模式行之有效。但当平台自带的目录已经免费展示血缘和权限时，它就会被削弱，因为买家的问题变成了"在 Unity Catalog 之上我还能得到什么？"诚实的答案是跨平台范围：在 Snowflake、Databricks、SAP、Salesforce 和各类 BI 工具之间共用一套术语表和一张血缘图。这能卖给最大型的企业，却难以打入只运行一个平台的中型客户。
@@ -101,16 +106,19 @@ timeline
 
 *图 33.4 — 商业模式。定价单位决定了由谁签署采购订单：数据目录卖给数据办公室，DSPM 卖给 CISO，捆绑产品则通过现有合同销售。标注"作者概括"的行反映的是常见的公开描述，而非已公布的价目表。[VERIFY: Collibra、Alation、Atlan、Cyera、BigID 的定价单位]*
 
+<a id="financials"></a>
 ## 财务数据
 
 这一群体中只有一家公司仍以独立上市公司身份报告业绩，而它即将被私有化。
 
+<a id="varonis-a-saas-transition-then-a-sale"></a>
 ### Varonis：先 SaaS 转型，再被出售
 
 大约自 2023 年起，Varonis 一直在把客户从自托管软件的永久许可和定期许可转换为 SaaS。这种转换掩盖了增长：当客户迁移时，原先在定期许可下一次性确认的收入变成了按期确认的 SaaS 收入。2026 年第二季度（2026 年 4–6 月；Varonis 按日历年报告），总收入为 **$180.0M**，较 $152.2M 增长 18%（GAAP）。SaaS 收入为 **$171.7M**，约占总收入的 95%。SaaS ARR 为 **$726.0M**，增长 52%，但剔除转换因素后仅增长约 25%（公司披露）。非 GAAP 毛利率从一年前的 80.6% 降至 **77.7%**，原因是托管成本转移到了 Varonis 自己的账上。[^varonis-q2]
 
 由 Thoma Bravo 持有的 Proofpoint 于 2026-10-15 同意以**每股 $49.75 现金**收购 Varonis。这相当于约 **$6.3B** 的交易价值（标题金额）和约 **$5.71B** 的股权价值，预计于 2027 年上半年完成。[^varonis-8k] 按每股 $49.75 计算，$5.71B 大致对应 1.15 亿股，因此约 $0.6B 的差额很可能反映的是可转换票据和其他稀释性证券，而不是从股权价值到企业价值的调整（我们的推断）。以 Varonis 2026 日历年收入指引中值（$735–739M）计算，标题价格约为收入的 **8.5 倍**、SaaS ARR 的约 **8.7 倍**；按股权价值计算分别约为 **7.7 倍**和 **7.9 倍**（均为估算）。要得到干净的 EV/收入倍数，需要看 8-K 中对可转债和净现金的处理。[VERIFY: $6.3B 交易价值与 $5.71B 股权价值之间的调节]
 
+<a id="cyera-the-scarcity-mark"></a>
 ### Cyera：稀缺性定价
 
 Cyera 在 19 个月内完成的四轮定价融资，描绘出本图谱中最陡峭的估值曲线之一。
@@ -127,6 +135,7 @@ xychart-beta
 
 媒体报道称 G 轮估值约为 80 倍 ARR，而 Cyera 的发言人对这一数字提出异议。[^cyera-g] 二手资料给出的 ARR 数字相互矛盾，因此我们不列出任何数字。按我们对 CSV 各行的加总，Cyera 已累计融资超过 $2.3B，超过 Securiti 的全部出售价格。其中一部分资金用于收购，例如 Trail Security（$162M，现金加股票）。[^cyera-trail]
 
+<a id="precedent-multiples"></a>
 ### 先例交易倍数
 
 | 交易或估值标记 | 日期 | 价值 | 倍数 | 倍数口径 | 标签 |
@@ -147,6 +156,7 @@ xychart-beta
 
 > **类比：金融。** 把 Varonis 和 Cyera 看作同一条曲线的两端。Varonis 约 8.5 倍的价格来自一位现金流型买家（Thoma Bravo 旗下平台），它为一个已完成转换、公司披露 SaaS 续约率超过 90% 的 SaaS 客户群付费。[^varonis-q2] Cyera 据报道约 80 倍的价格，则是成长型股权投资对最后一家大型独立厂商的定价，更接近于一份看涨期权，押注它会成为每个安全平台最终都需要的资产。战略买家应以 Varonis 而非 Cyera 作为校准基准。
 
+<a id="customers-and-go-to-market"></a>
 ## 客户与市场进入
 
 两半业务卖给不同的人。**数据目录卖给首席数据官**和数据治理办公室，通常是受监管的企业：银行、保险公司、制药企业。交易周期长，涉及围绕业务术语表的研讨会，并依赖系统集成商。推销话术已从"找到你的数据"转向"让你的数据可以被 AI 智能体使用"，因为数据目录中的描述、认证和血缘，正是智能体避免自信地给出错误答案所需要的（[第 22 章](../03-ai-data-stack/ch22-agents-and-data.md)）。
@@ -155,8 +165,10 @@ xychart-beta
 
 **渠道决定结果。** 独立厂商越来越多地通过云市场（marketplace）并与平台合作伙伴一起销售：数据目录定位为"Unity 和 Horizon 之上的那一层"，DSPM 定位为"横跨 AWS、Azure、Google 和 SaaS 的那一层"。被收购的厂商一夜之间获得母公司的渠道。Securiti 如今通过 Veeam 的存量客户群销售，Dig 和 Normalyze 则分别通过 Palo Alto 和 Proofpoint 的渠道销售。这种交叉销售是收购方最常提到的协同效应。
 
+<a id="ma-and-investments"></a>
 ## 并购与投资
 
+<a id="who-buys-what-and-why"></a>
 ### 谁在买什么，以及为什么
 
 ```mermaid
@@ -214,10 +226,12 @@ flowchart LR
 
 > **类比：测试与分析。** 备份厂商收购 DSPM，就像测试设备厂商增加良率分析功能。测试机本就能看到每一颗裸片，因此基于测试数据做分析是自然而然、高毛利的附加业务。备份系统本就能看到每个文件的每一份副本，因此基于备份数据做分类也是同类附加业务：获客成本低、拥有现成的存量客户群，并为一项旧资产（副本）带来一个新买家（安全团队）。
 
+<a id="integration-outcomes-so-far"></a>
 ### 迄今为止的整合结果
 
 Dig 成为 Prisma Cloud DSPM 的一部分。Okera 团队被并入 Unity Catalog 的数据治理团队。Metaplane 成为 Datadog 的数据可观测性产品。Securiti 的创始人出任 Veeam 安全与 AI 总裁，这表明它是一条产品线而非一项功能。1touch 在交割后六周内以 Everpure Data Intelligence 的名义重新发布。[^dig][^okera][^metaplane][^securiti][^ep-cw] 这一群体中尚无任何交易公开减值。整合风险反而体现为交易后独立产品路线图的放缓，而这一点从外部很难看清。
 
+<a id="competitive-position"></a>
 ## 竞争地位
 
 ```mermaid
@@ -254,6 +268,7 @@ quadrantChart
 
 **超大规模云厂商。** Microsoft 是本章所有公司最危险的竞争对手。它拥有身份系统（Entra）、内容（Microsoft 365）、AI 助手（Copilot）和 Purview，因此能在一份许可内完成分类、执行和审计。Google 的 Knowledge Catalog 和 AWS 的 Macie 与 Glue 范围更窄，且绑定在各自的云上。[^gcp-kc][^macie]
 
+<a id="why-its-winning--bull-case"></a>
 ## 制胜原因 / 看多逻辑
 
 1. **AI 让数据分类成了一道关卡，而不再是一件杂务。** 每一次检索索引和智能体的上线都会引出同一个问题：这些数据是什么，谁有权看到？如今董事会也在问这个问题，于是预算从"有朝一日做数据治理"转向了"在 Copilot 上线之前完成"。
@@ -261,6 +276,7 @@ quadrantChart
 3. **非结构化数据是尚未开发的前沿。** 平台目录对表的治理做得很好，对文档则做得很差。能够对文件、电子邮件和 SaaS 内容进行分类的厂商，覆盖的正是 AI 消耗最多的数据。
 4. **中立性确有真实需求。** 多平台企业不希望自己的数据治理被数据仓库厂商掌控，这为至少一到两家独立数据目录厂商留下了空间。
 
+<a id="risks--bear-case-and-open-questions"></a>
 ## 风险 / 看空逻辑与待解问题
 
 1. **捆绑。** Unity Catalog、Horizon 和 Purview 以零边际价格到来。独立数据目录市场可能萎缩到只剩最大型的、受监管的多平台企业。
@@ -269,6 +285,7 @@ quadrantChart
 4. **扫描成本与准确性。** 在 PB 级规模上做内容扫描代价高昂，而误报会侵蚀信任。激进抽样的厂商会漏掉东西，不抽样的厂商则成本过高。
 5. **待解问题。** ServiceNow 会把 data.world 保留为独立的数据目录吗？Salesforce 会让 Informatica 的目录对 Snowflake 和 Databricks 保持中立吗？Cyera 会 IPO，还是出售给某个安全平台？
 
+<a id="relevance-to-everpure"></a>
 ## 与 Everpure 的相关性
 
 **Everpure 公开说了什么。** 2026-02-23，也就是更名当天，Pure Storage 宣布有意收购 1touch。它把 1touch 描述为能够发现、分类数据并为数据添加语义上下文的数据智能软件，并将目标定位为帮助客户从控制数据走向理解数据，使数据变得"AI-ready"（为 AI 做好准备）。[^ep-wwt] 该交易于 2026-05-07 以 $125.0M 现金完成（GAAP，依据 10-Q）。[^ep-10q] 在 2026 年 6 月的 Accelerate 大会上，这项技术以 **Data Intelligence** 的名义重新发布。行业报道称，它能在不复制数据的情况下，发现并分类分布在 Everpure 阵列、第三方存储、公有云和 SaaS 中的结构化与非结构化数据。[^ep-cw] 2026 年 10 月的更新增加了仅基于元数据的 File Edition 和一个 MCP 接口。[^ep-oct]
@@ -289,6 +306,7 @@ quadrantChart
 
 > **存储桥接。** 主存储阵列能看到任何数据目录都未登记的影子副本（快照、克隆、临时卷）。这是在存储层进行分类的结构性论据。其约束在于对生产系统的扫描负载，以及如何把标签写出到外部数据目录。快照与元数据机制请参见姊妹篇 *Everpure Tech Atlas*。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向数据治理或 DSPM 厂商高管或合作伙伴提出的三个问题**
@@ -313,6 +331,7 @@ quadrantChart
 - "Everpure 收购了一家 DSPM 公司来和 Cyera 竞争。" *公开表述把 1touch 定位为面向 AI-ready 数据的数据发现、分类和语义上下文，而不是一款安全产品。*
 - "Unity Catalog 让业务数据目录过时了。" *它挤压了业务数据目录；多平台企业仍会购买中立的数据目录。*
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [业务数据目录（Business catalog）](../glossary.md#business-catalog) — 一个可搜索的数据资产清单，附带业务定义、所有者和认证信息。
@@ -332,6 +351,7 @@ quadrantChart
 - [私有化（Take-private）](../glossary.md#take-private) — 对上市公司的收购，买方通常有私募股权背景，收购后公司退市。
 - [Unity Catalog](../glossary.md#unity-catalog) — Databricks 面向数据与 AI 资产的治理目录。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^collibra]: CNBC, "Collibra doubles valuation as investors chase next cloud winner," https://www.cnbc.com/2021/11/09/collibra-doubles-valuation-as-investors-chase-next-cloud-winner.html，发布 2021-11-09；检索 2026-11-01（依据 `data/private_funding.csv`；G 轮 $250M，投后估值 $5.25B，媒体报道）。未发现此后的定价融资（`meta/research-notes-funding.md`）。

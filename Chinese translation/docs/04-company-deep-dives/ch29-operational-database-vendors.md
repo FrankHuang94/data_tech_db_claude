@@ -1,6 +1,7 @@
 # 29. 运营型数据库厂商
 > **状态：** 上市与非上市公司并存 · **总部：** 各不相同（Oracle：Austin, TX；MongoDB：New York, NY；多数挑战者：San Francisco Bay Area）· **成立：** 1977 年（Oracle）至 2021 年（Neon）· **最新估值/市值：** Oracle 市值 $382.45B（2026-10-23）；MongoDB 市值 $29.5B，EV $27.14B，EV/未来 12 个月收入 9.0x（2026-10-20）；Supabase 投后估值 $10.5B（媒体报道，2026 年 6 月）· **最后核实：** 2026-11-01
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - **市场。** 运营型数据库（[OLTP](../glossary.md#oltp)）记录着企业的日常业务：订单、支付、账户、会话。它们属于数据库管理系统（DBMS）市场，Gartner 估算该市场 **2024 年规模为 $119.7B，同比增长 13.4%**（分析师估算）。超大规模云厂商和 Oracle 拿走了其中大部分收入，而 PostgreSQL 已成为新应用的默认引擎。[^gartner][^so25]
@@ -9,6 +10,7 @@
 - **许可证是定价杠杆，而不是道德问题。** MongoDB（2018 年）、Cockroach Labs（2019 年、2024 年）、Redis（2024 年）和 ScyllaDB（2024 年）都收紧了许可证，以阻止云厂商转售其成果。在 AWS 和 Google 支持 **Valkey** 分叉之后，Redis 于 2025 年通过增加 AGPLv3 部分回调了方向。那些没有自有云却存活下来的独立厂商大多已被出售：DataStax 卖给 IBM，Couchbase 卖给 Haveli，SingleStore 卖给 Vector Capital。[^redis][^valkey][^datastax][^couchbase][^singlestore]
 - **Everpure 视角。** 运营型数据库是 FlashArray 上典型的块存储工作负载。向云托管和无服务器 Postgres 的迁移，以及将存储重构为基于对象存储（object storage）的日志服务（Aurora、Neon/Lakebase），改变了持久性所在的位置。这既给本地块存储需求带来风险，也围绕 Kubernetes 数据服务（Portworx）、快速数据库克隆和以对象存储为后端的数据库存储创造了机会。[^neon-arch]
 
+<a id="snapshot-table"></a>
 ## 概览表
 
 | 公司 | 所有权 / 状态 | CEO（据查） | 规模指标 | 口径 / 日期 | 估值 / 市值 |
@@ -26,8 +28,10 @@
 
 *图 29.1 — 概览。只有 Oracle 和 MongoDB 公布经审计的数据。此处所有非上市公司估值要么是 2021 年的定价，要么是媒体报道数字或交易价格，因此应视为参考指标，而非公允价值。*
 
+<a id="origin-story-and-strategic-arc"></a>
 ## 起源与战略演进
 
+<a id="market-structure-in-four-layers"></a>
 ### 四层市场结构
 
 剥去品牌名称后，运营型数据库市场的形态其实很简单。
@@ -40,6 +44,7 @@
 
 **第 4 层：Postgres 生态。** PostgreSQL 本身是一个采用宽松许可证、不受任何公司控制的社区项目。商业价值来自围绕它的包装：托管服务（managed service）（Supabase、Neon、Crunchy、PlanetScale、EDB，以及每一家超大规模云厂商）和扩展（pgvector、PostGIS、TimescaleDB、Citus）。开发者调查显示了这一结果。在 Stack Overflow 的调查中，PostgreSQL 的使用率从 2024 年占受访者的 48.7% 上升到 2025 年媒体报道的 55.6%，为所有数据库中最高。2026 年上半年，PostgreSQL 在 DB-Engines 上的得分增幅也居所有系统之首。[^so24][^so25][^dbe-h1]
 
+<a id="the-strategic-arc-20182026"></a>
 ### 战略演进，2018–2026
 
 2018 年以来的演进分为三个阶段。**第一，开源厂商试图通过更改许可证来抵御云厂商。** Amazon、Microsoft 和 Google 一直在销售 MongoDB、Redis 和 Elasticsearch 的托管版本，却不向这些项目的主导公司付费。**第二，超大规模云厂商以分叉和自研引擎回应**：DocumentDB，以及后来的 Valkey。**第三，从 2025 年起，AI 改变了买方。** 编程智能体和"氛围编程"（vibe-coding）工具开始成千上万地创建数据库。分析型平台随即认定，谁拥有运营型数据库，谁就拥有新应用，于是收购 Postgres 公司以获得一个。
@@ -60,12 +65,15 @@ timeline
 
 > **类比：重新授权相当于修改版税表。** 从 Apache 或 BSD 切换到 SSPL、BSL 或 RSAL，在经济上类似于知识产权（IP）授权方针对某一类被许可方重写版税表。自行部署的终端用户仍然一分不付。而规模化变现该 IP 的那一类，即以服务形式提供该数据库的云厂商，如今被要求要么付费，要么开源其整个服务栈，而没有任何超大规模云厂商会这样做。与半导体 IP 一样，授权方的议价能力取决于转换成本。当被许可方有能力资助一个兼容的替代品（Redis 的 Valkey、MongoDB API 的 DocumentDB）时，修改版税表的结果不是提高版税，而是把最大的被许可方推出生态。
 
+<a id="product-and-technology"></a>
 ## 产品与技术
 
+<a id="oracle-the-converged-incumbent"></a>
 ### Oracle：融合型在位者
 
 Oracle Database 是关系型引擎的标杆：行存储、通过 undo 段实现的 [MVCC](../glossary.md#mvcc)、用于共享磁盘横向扩展的 Real Application Clusters，以及将 SQL 过滤下推到存储服务器的 Exadata 一体化工程系统。Oracle 的产品战略是**融合**。一个引擎同时处理关系、JSON、图、空间和向量数据，客户因此永远不需要第二个数据库。在 2025 年 10 月的 Oracle AI World 上，旗舰产品更名为 **Oracle AI Database 26ai**（23ai 的继任者），在引擎内部集成了向量检索（vector search）和 AI 功能。[^orcl-aiworld] 另一项战略举措是**多云**。Oracle 如今在其他云厂商的数据中心内运行 Exadata 硬件，形式包括 Oracle Database@Azure（28 个区域）、Database@Google Cloud（8 个区域，另有 9 个在规划中）和 Database@AWS。[^orcl-aiworld][^orcl-azure] 这种设计让数据库留在 Oracle 自己的基础设施和许可证之上，同时允许应用迁往其他云。这也解释了为何 Oracle 的云业务数据如今包含了过去属于本地支持服务的数据库收入。[第 28 章](ch28-hyperscaler-data-platforms.md)介绍了 OCI 及其 AI 基础设施建设。
 
+<a id="mongodb-the-document-model-as-a-business"></a>
 ### MongoDB：把文档模型做成一门生意
 
 MongoDB 存储的是[文档](../glossary.md#document-database)：自包含的类 JSON 记录（磁盘上为 BSON），其结构与应用代码中的对象一致。一张客户订单连同其明细行和收货地址就是一个文档，一次操作即可读写，无需关联（join）。模式存在于应用之中，开发者因此无需执行迁移就能发布。代价出现在多对多关系占主导的场景。自 4.0 版（2018 年）起，MongoDB 支持多文档 ACID 事务（transaction），消除了企业架构师的主要顾虑。[^mdb-10k] 横向扩展通过基于分片键的分片（sharding）实现，高可用则依靠副本集。
@@ -78,6 +86,7 @@ MongoDB 存储的是[文档](../glossary.md#document-database)：自包含的类
 
 AI 层分三步构建。**Atlas Vector Search** 于 2023 年 12 月正式发布（GA）。它将嵌入（向量）（embedding）与运营文档存放在一起，并用近似最近邻（ANN）索引进行检索。[^mdb-vs] 收购 **Voyage AI**（$220M，2025 年 2 月）带来了嵌入与重排序（reranking）模型，使 MongoDB 不仅能存储向量，还能生成向量。这让它对检索质量有了一定话语权，而不仅限于存储。[^voyage] 2026 年 6 月，向量检索和全文检索在免费的自管理 Community Edition 中正式发布，把 AI 检索能力下沉到漏斗中那些从不接触 Atlas 的开发者。[^mdb-vs]
 
+<a id="the-postgres-ecosystem-a-standard-with-an-extension-bus"></a>
 ### Postgres 生态：一个带扩展总线的标准
 
 PostgreSQL 的商业优势源于架构。其**扩展**机制允许第三方在不分叉内核的前提下添加数据类型、索引方法、函数乃至存储行为。这就是为什么一个引擎如今能覆盖 JSON 文档（JSONB，自 2014 年起）、向量（pgvector）、地理空间（PostGIS）、时间序列（TimescaleDB）和分片（Citus）。[^pg-jsonb][^pgvector] PostgreSQL 18（2025 年 9 月）新增了异步 I/O 子系统，表明内核仍在按年度发布周期独立改进。[^pg18]
@@ -131,6 +140,7 @@ flowchart LR
 
 **各家托管服务设计的差异在于存储放在哪里。** 经典的托管 Postgres（RDS、Cloud SQL、Supabase、Crunchy）在虚拟机上运行原生引擎，并使用网络块存储。**Aurora**（2017 年）和 **Neon**（2021 年）则对引擎进行了解耦。计算层只把[预写日志（WAL）](../glossary.md#write-ahead-log)发送到存储服务，由存储服务重建数据页；在 Neon 的方案中，数据页还会分层下沉到对象存储。[^neon-arch] 这种设计使[数据库分支](../glossary.md#database-branching)（在某个日志位置创建的写时复制克隆）和[缩容至零](../glossary.md#scale-to-zero)成为可能。当软件智能体创建成千上万个短生命周期数据库时，这两项能力都至关重要。**PlanetScale** 走了相反的路线。其"Metal"产品在本地挂载的 NVMe 而非网络块存储上运行 Postgres 和 MySQL，并依靠复制（replication）获得持久性，以牺牲弹性换取延迟。[^planetscale] PlanetScale 的 MySQL 业务建立在 **Vitess** 之上，这是在 YouTube 构建、并于 2019 年从 CNCF 毕业的分片层。[^vitess]
 
+<a id="the-specialists"></a>
 ### 专业厂商
 
 - **Redis** 是一个内存数据结构服务器，用作缓存、会话存储、限流器和消息代理。Redis 8（2025 年 5 月）把原先的模块（JSON、搜索、时间序列、概率数据结构）并入内核，并新增了向量集合，因此如今也在语义缓存和[智能体记忆](../glossary.md#agent-memory)领域展开竞争。[^redis]
@@ -138,6 +148,7 @@ flowchart LR
 - **CockroachDB、YugabyteDB 和 TiDB** 是基于 Raft 共识（consensus）的分布式 SQL（[NewSQL](../glossary.md#newsql)）引擎。CockroachDB 和 YugabyteDB 兼容 Postgres 线协议，TiDB 兼容 MySQL 线协议。[第 4 章](../01-data-systems-foundations/ch04-distributed-databases.md)解释了其中的机制。
 - **Couchbase** 是一个采用内存优先架构的 JSON 文档数据库，具备类 SQL 查询语言（SQL++）和移动端同步。**SingleStore** 是一个 [HTAP](../glossary.md#htap) 引擎，结合了内存行存储与磁盘列存储。**ScyllaDB** 是用 C++ 重写的 Apache Cassandra。**DataStax** 以 Astra DB 的形式将 Cassandra 商业化，并拥有智能体构建工具 Langflow。**Aerospike** 是针对闪存优化的键值与文档存储，用于广告技术、反欺诈和电信领域。
 
+<a id="how-it-makes-money"></a>
 ## 盈利模式
 
 该品类依靠四种收入模式运转，每一种对应不同的利润率和不同的 AI 敞口。
@@ -151,35 +162,40 @@ flowchart LR
 
 *图 29.4 — 商业模式。独立厂商的长期问题在于最后一行。当云厂商捆绑一个兼容引擎时，数据库的作者拿不到任何利润。*
 
+<a id="oracle-the-support-annuity"></a>
 ### Oracle：支持服务年金
 
 Oracle 的数据库经济模型建立在支持服务之上。客户购买永久许可证（通常按处理器核心计价），之后每年支付支持费，历史上约为**净许可证费用的 22%**，并随通胀条款上调。[^orcl-sig] 支持服务的续约率非常高，因为迁移核心银行或 ERP 数据库是一个历时多年、风险很高的项目。Oracle 不单独披露数据库收入。其"云服务与许可证支持"科目混合了数据库和应用支持以及云业务，在 **FY2025 的 $57.4B 总收入中约占 $44.0B**（财年截至 2025 年 5 月 31 日；GAAP）[VERIFY]。[^orcl-fy25]
 
 > **类比：半导体 IP 维护费。** Oracle 的支持收入流与半导体 IP 组合的维护费和版税尾部表现相似。一旦某个设计基于特定 CPU 核或接口 IP 完成流片，只要芯片还在出货，客户就会持续付费，因为改用不同 IP 重新流片既昂贵又有风险。估值逻辑也相同：将其定价为一个递减年金，具有高续约率（低流失）、温和的价格上调条款，以及一个取决于装机基础向外迁移速度的终值。Database@Azure、Google 和 AWS 是 Oracle 在应用层迁往其他云时维持这笔年金的方式。
 
+<a id="mongodb-consumption-plus-lumpy-term-licences"></a>
 ### MongoDB：按用量计费加上波动的期限许可证
 
 **Atlas** 按集群规格（实例大小、内存、存储）、I/O 和数据传输计费，按小时计量。大客户签订年度承诺并逐步抵扣。收入跟随用量变化，因此某季度的 Atlas 增长反映的是现有应用的负载强度以及新上线应用的数量，而非签了多少合同。**Enterprise Advanced** 是期限许可证。根据 ASC 606，多年期交易中的许可证部分在期限开始时确认，因此一笔大额 EA 续约就可能让某季度收入大幅波动。这就是为什么大额 EA 交易集中的 Q4 会出现 Atlas 占比（Q4 FY2026 为 72%，公司在业绩电话会上披露）低于全年（73%）的情况。[^mdb-call][^mdb-ars]
 
 Atlas 的毛利率（gross margin）低于 EA，因为 MongoDB 需要为底层机器向 AWS、Azure 和 Google 付费。这与[第 25 章](ch25-databricks.md)描述的 Databricks 无服务器业务中"从版税转向代工"的变化相同。Q2 FY2027 的综合结果为 **74% 的 GAAP 毛利率和 76% 的非 GAAP 毛利率**。[^mdb-q2]
 
+<a id="the-postgres-services-who-gets-paid"></a>
 ### Postgres 服务商：谁在赚钱
 
 由于引擎是免费的，Postgres 厂商赚的是运维、开发者体验和周边能力的钱。Supabase 将 Postgres 与身份认证、文件存储、实时订阅和边缘函数打包，按项目加用量收费。Neon（现为 Lakebase）按计算小时和存储收费，而缩容至零意味着闲置数据库几乎不产生费用。正是这一点让智能体成千上万地创建数据库变得足够便宜。EDB 向正在离开 Oracle 的企业销售企业级 Postgres 订阅和 Oracle 兼容工具。从 Postgres 中赚钱最多的是超大规模云厂商，它们通过 RDS、Aurora、Azure 和 Cloud SQL 的实例小时获利，却并不拥有该项目。
 
+<a id="financials"></a>
 ## 财务数据
 
+<a id="oracle-context-only"></a>
 ### Oracle（仅作背景）
 
 Oracle 的合并数据如今由 AI 基础设施驱动，而非数据库。Q1 FY2027（2026 年 6–8 月）总收入约为 $19.35B（GAAP），OCI 收入增长 121%，剩余履约义务（RPO）达到 $664B。Oracle 给出的 FY2027 收入指引为至少 $90B。由于资本开支超过经营现金流，过去 12 个月的自由现金流（FCF）约为 −$28.7B。[^comps-orcl] 按 5.7x 的 EV/未来 12 个月收入（截至 2026-10-23，未来 12 个月收入取指引下限）计算，市场估值的是一项底层带有数据库年金、高杠杆的 AI 算力建设，而不是一家数据库公司。[^comps-orcl]
 
 ### MongoDB
 
-![MongoDB 各财年 GAAP 总收入柱状图，从 FY2021 的 $0.59B 增至 FY2026 的约 $2.46B，增速从约 48% 放缓至约 20%，随后重新加速至 23%](../assets/charts/mongodb_revenue.png)
+![MongoDB 各财年 GAAP 总收入柱状图，从 FY2021 的 $0.59B 增至 FY2026 的约 $2.46B，增速从约 48% 放缓至约 20%，随后重新加速至 23%](../../../docs/assets/charts/mongodb_revenue.png)
 
 *图 29.5 — MongoDB 年度收入（GAAP）。FY2021 至 FY2026 收入大约翻了两番，但增速从约 48% 放缓至约 19%（FY2025），随后在 FY2026（2025 年 2 月–2026 年 1 月）重新加速至约 23%。资料来源：`data/company_financials.csv`。*
 
-![MongoDB 季度 GAAP 收入双面板图，从 Q1 FY2024 的 $368M 增至 Q2 FY2027 的 $772M，同比增速在 Q2 FY2025 降至约 13%、Q3 FY2026 为 19%，随后在 Q4 FY2026 回升至 27%、Q2 FY2027 约 30%](../assets/charts/ch29_mongodb_atlas.png)
+![MongoDB 季度 GAAP 收入双面板图，从 Q1 FY2024 的 $368M 增至 Q2 FY2027 的 $772M，同比增速在 Q2 FY2025 降至约 13%、Q3 FY2026 为 19%，随后在 Q4 FY2026 回升至 27%、Q2 FY2027 约 30%](../../../docs/assets/charts/ch29_mongodb_atlas.png)
 
 *图 29.6 — 季度视角。增速在 Q2 FY2025 触及 13% 的低点、Q3 FY2026 为 19%，随后重新加速至 27% 和约 30%。Q1 FY2027 尚未纳入数据集。资料来源：`data/ch29_mongodb_quarterly.csv`；Q4 FY2026 之前的季度未经实时核实，但与 10-K 年度合计数一致。*[^mdb-qtr]
 
@@ -209,10 +225,12 @@ Oracle 的合并数据如今由 AI 基础设施驱动，而非数据库。Q1 FY2
 
 **估值。** 按 9.0x 的 EV/未来 12 个月收入（2026-10-20；未来 12 个月收入以 FY2027 指引中值替代）计算，MongoDB 的估值约为 Snowflake 16.9x（2026-10-30，采用相同的指引替代法）的一半，尽管两者增速相近，均约 30%。毛利率解释不了这一差距：MongoDB 76% 的非 GAAP 毛利率与 Snowflake 约 75% 的非 GAAP 产品毛利率相当。折价反映的是另外几点。市场怀疑在经历数年百分之十几到二十出头的增长之后，约 30% 的增速能否持续（FY2027 指引中值意味着全年增速约 22%）；市场在为 2026 年 9 月 CEO 离职后的管理层不确定性定价；并且市场认为运营型数据库比分析型平台更容易受到免费的、由超大规模云厂商运营的 Postgres 冲击。非 GAAP 数字所剔除的股权激励费用（SBC）对两家公司都构成压力。[^comps-mdb][^comps-sf]
 
+<a id="the-private-postgres-and-nosql-companies"></a>
 ### 非上市的 Postgres 与 NoSQL 公司
 
 本章中没有任何非上市厂商公布经审计的收入。估值定价反而说明了问题。Supabase 的估值从 $2B（2025 年 4 月）升至 $5B（2025 年 10 月），再升至 $10.5B（2026 年 6 月），投资者明确表示买的是"智能体式基础设施"。[^supabase-e][^supabase-f] Cockroach Labs 的 $5B 估值来自 2021 年 12 月，此后未发现新的定价轮次。[^crdb-f] Couchbase、SingleStore 和 DataStax 通过私募股权或战略买家退出，按多数说法，成交价格低于其 2021 年的峰值 [VERIFY: DataStax 与 SingleStore 2021–22 年的估值]。
 
+<a id="customers-and-go-to-market"></a>
 ## 客户与市场进入
 
 **Oracle** 通过企业许可协议和审计自上而下地向 CIO 销售。许可证合规审查是一个众所周知的杠杆，用于把审计风险敞口转化为云承诺。其客户是全球 2000 强企业的记录系统，在这些场景中，数据库是需要压缩的成本，而不是用来构建的平台。
@@ -221,6 +239,7 @@ Oracle 的合并数据如今由 AI 基础设施驱动，而非数据库。Q1 FY2
 
 **Postgres 挑战者**由开发者主导，并越来越多地由智能体主导。Supabase 是 Lovable 和 Bolt 等 AI 应用构建工具的默认后端（公司及媒体表述 [VERIFY]）。Neon 在被 Databricks 收购时表示，其平台上创建的数据库中超过 80% 是由 AI 智能体自动配置的（公司披露，媒体报道）。[^neon-deal] 这一个统计数字就解释了 2025–26 年的大部分交易。如果由智能体创建数据库，那么智能体默认选用的平台无需一通销售电话就能拿下新工作负载。
 
+<a id="ma-and-investments"></a>
 ## 并购与投资
 
 | 日期 | 收购方 | 标的 | 金额 | 交易逻辑 | 结果 |
@@ -241,8 +260,10 @@ Oracle 的合并数据如今由 AI 基础设施驱动，而非数据库。Q1 FY2
 
 **迄今为止的整合结果。** Neon 是最明确的成功案例。Lakebase 在交易宣布约 14 个月后突破了公司披露的 $100M 年化运行率。[^db-7b] Crunchy 的价格是解读媒体报道的一课：10-Q 显示现金对价为 $164.5M，而宣布时的报道约为 $250M。[^crunchy] MongoDB"收购托管商"的模式（mLab，2018 年）在业内被反复复制，而 Voyage 是一种更新的"收购模型"变体。IBM 收购 DataStax 是押注 Langflow 和向量检索能把 watsonx 带入 AI 应用构建。其成效尚未在 IBM 的披露中体现。
 
+<a id="competitive-position"></a>
 ## 竞争地位
 
+<a id="vendor-matrix"></a>
 ### 厂商矩阵
 
 | 厂商 | 数据模型 | 许可证 | 部署方式 | 所有者 / 状态 | 最新估值 / 市值（日期） | 收入 / 增速（已标注） | AI 功能 |
@@ -268,6 +289,7 @@ Oracle 的合并数据如今由 AI 基础设施驱动，而非数据库。Q1 FY2
 
 *图 29.9 — 厂商矩阵（18 家厂商 × 7 个维度）。"n/d" = 未披露。只有两家上市公司有收入数据。AI 功能大多是向量检索，这使其成为入场门槛而非差异化因素。资料来源：`data/public_comps.csv`、`data/private_funding.csv`、`data/ma_deals.csv` 以及本章脚注。*
 
+<a id="positioning"></a>
 ### 定位
 
 ```mermaid
@@ -301,6 +323,7 @@ quadrantChart
 
 **数据平台对阵独立厂商。** Lakebase 和 Snowflake Postgres 并不打算在开发者体验上击败 Supabase。它们要做的是通过[数据镜像](../glossary.md#data-mirroring)，让运营数据无需单独的数据管道（pipeline）就能落入湖仓一体（lakehouse）或数据仓库（data warehouse）。这对[第 30 章](ch30-data-movement-streaming-companies.md)中的变更数据捕获（CDC）厂商构成的威胁，不亚于对数据库厂商的威胁。
 
+<a id="why-its-winning--bull-case"></a>
 ## 制胜原因 / 看多逻辑
 
 1. **MongoDB 在 $3B 规模上重新加速。** 增速从 19%（Q3 FY2026）升至约 30%（Q2 FY2027），Atlas 增长 29%，全年指引上调至 $2.99–3.03B。[^mdb-q2][^mdb-qtr] 在这种体量下重新加速的基础设施软件公司寥寥无几。按 9.0x 的未来 12 个月收入倍数，看多者认为市场尚未对增长的持久性定价。
@@ -308,6 +331,7 @@ quadrantChart
 3. **Oracle 的年金极其持久。** 关键任务数据库的支持服务在经济衰退中照样续约，而多云模式让 Oracle 即便在客户迁往 Azure 或 AWS 时也能保住这笔收入。[^orcl-aiworld]
 4. **向量检索把 AI 拉进了运营层。** 将嵌入与交易记录存放在一起，省去了同步到独立向量数据库（vector database）的数据管道。这有利于掌握数据的在位者（Oracle、MongoDB、Postgres 服务商），而不利于独立的向量数据库（见[第 32 章](ch32-ai-native-data-companies.md)）。
 
+<a id="risks--bear-case-and-open-questions"></a>
 ## 风险 / 看空逻辑与待解问题
 
 1. **Postgres 让引擎商品化。** 当引擎免费且每家云都在运行它时，利润流向平台（AWS、Databricks、Snowflake），而不是引擎专业厂商。MongoDB 相对 Snowflake 的折价部分反映了这一点。[^comps-mdb]
@@ -317,6 +341,7 @@ quadrantChart
 5. **Oracle 的资产负债表如今承载着 AI 建设。** EV 约 $515B，而市值约 $382B，且过去 12 个月 FCF 为负，数据库年金正在为一场 AI 算力豪赌提供资金，同时也暴露于其风险之中。[^comps-orcl]
 6. **待解问题。** MongoDB 的 Atlas 增长中有多大比例来自 AI 工作负载？Supabase 会在 IPO 之前披露收入吗？Snowflake Postgres 能否在与 Lakebase 的竞争中获得牵引力？在 Desai 于 2026 年 9 月离职后，谁将成为 MongoDB 的正式 CEO？继任者搜寻会改变优先事项或延误决策吗？
 
+<a id="relevance-to-everpure"></a>
 ## 与 Everpure 的相关性
 
 > **存储桥接。** OLTP 数据库是典型的块存储工作负载：小块随机 I/O、对延迟敏感的提交（每次提交都要等待预写日志刷盘），以及用于备份和测试/开发的快照（snapshot）与克隆。这正是 FlashArray 的核心业务。Aurora 和 Neon 等解耦式设计把持久性、复制和数据页物化移入数据库厂商自己的日志与页面服务中，后端通常是对象存储。PlanetScale Metal 等本地 NVMe 设计则完全绕开了共享存储。块存储协议和快照机制参见配套的 *Everpure Tech Atlas*。
@@ -337,6 +362,7 @@ quadrantChart
 
 数据引力（data gravity）参见[第 24 章](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)，存储厂商向技术栈上层移动参见[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向厂商产品经理或高管提出的三个问题**
@@ -363,6 +389,7 @@ quadrantChart
 - "Snowflake 花了 $250M 收购 Crunchy。" *那是媒体报道；10-Q 显示现金对价为 $164.5M。*
 - "Supabase 的收入是 $X。" *Supabase 不披露收入；公开的只有估值。*
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [OLTP](../glossary.md#oltp) — 联机事务处理：大量小型、快速且正确的读写操作。
@@ -387,6 +414,7 @@ quadrantChart
 - [支持服务年金（Support annuity）](../glossary.md#support-annuity) — 基于永久许可证装机基础的经常性维护收入。
 - [嵌入（Embedding）](../glossary.md#embedding) — 表示语义的数值向量，使相似的条目彼此靠近。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^gartner]: AI Data Atlas 数据集 `data/market_sizes.csv`，DBMS 2024 行（$119.7B，+13.4%），来源为 Gartner 市场份额摘要，https://www.gartner.com/en/documents/6494271，发布 2025-05；检索 2026-11-01。分析师估算；完整报告需付费。

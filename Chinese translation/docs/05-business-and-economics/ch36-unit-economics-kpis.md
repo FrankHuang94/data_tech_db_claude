@@ -1,6 +1,7 @@
 # 36. 单位经济与 KPI
 > **深度：** L2 · **阅读时间：** 约 14 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 35 章 商业模式](ch35-business-models.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - **解读数据平台的损益表大约要看十个 KPI，其中大多数由公司自行定义、未经审计且不可直接比较。** Snowflake 的净收入留存率（NRR）和 MongoDB 的"净 ARR 扩张率（net ARR expansion rate）"回答的都是"去年的客户今年多花了多少？"，但它们使用不同的客户群组、不同的单位和不同的时间窗口。比较两个数字之前，务必先读 10-K 中的定义。
@@ -9,14 +10,17 @@
 - **对大多数软件公司而言，GAAP 与非 GAAP 之间的差距才是真正的看点。** Q2 FY2027，Snowflake 的 GAAP 营业利润率为 −17.0%，非 GAAP 营业利润率为 +15.3%。这 32 个百分点的差距主要来自约 $424M 的股权激励费用（SBC），约占收入的 27%（媒体报道）。MongoDB 的差距约为 20 个百分点，Everpure 约为 14 个百分点。[^sf-q2][^secapi][^mdb-q2][^ep-q2]
 - **40 法则（Rule of 40）是一族公式，而非单一数字。** 对 Snowflake 而言，根据所用的利润率口径和期间，得分从约 18（Q2 FY2027 增速加 GAAP 营业利润率）、约 20（FY2026，扣除 SBC 后的 FCF）、约 41（季度调整后 FCF）到约 58（FY2027 调整后 FCF 指引）不等（作者计算）。经 SBC 调整的版本是 CFA 式的保守解读。按此口径，鲜有高增长数据公司能超过 40。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业 + Everpure 视角）
 
 企业发展团队用这些 KPI 为并购标的、合作伙伴和竞争对手定价。每一个 KPI 都是对未来的一个浓缩判断。NRR 表明存量客户将持续增加支出。RPO 表明其中部分支出已有合同约束。毛利率表明每一美元在付完超大规模云厂商的账单后还剩多少。魔力数字（magic number）表明新增收入是以多高的效率"买来"的。误读一个定义，就会给交易定错价。典型的错误是把两年滚动群组口径的 NRR 与基于 ARR 的扩张率相比较，或把 GAAP 与非 GAAP 利润率相比较。
 
 对 Everpure 而言，这一视角有两面。**由外向内：**本书中的每一个数据平台合作伙伴或标的（Snowflake、Databricks、MongoDB 以及[第 32 章](../04-company-deep-dives/ch32-ai-native-data-companies.md)中的 AI 原生厂商）都用这套语言披露业绩。**由内向外：**Everpure 已经披露一组混合 KPI：截至 Q2 FY2027（截至 2026-08-02 的季度），产品收入、订阅服务收入、订阅年度经常性收入（ARR）$2.1B（+20%）以及 RPO $4.1B（+44%）。[^ep-q2] 如果公司进一步进入数据管理和数据服务领域，市场将开始要求下文所述的软件 KPI，并以此评判 Everpure。"工作原理"的最后一节说明了会有哪些变化。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="the-kpi-tree"></a>
 ### KPI 树
 
 本章的每个指标都会影响两个结果之一：收入增长有多快，以及多少收入转化为自由现金流（FCF）。下面的树状图就是地图，本章其余部分从左到右逐一走过。
@@ -60,6 +64,7 @@ flowchart TB
 
 *图 36.1 — KPI 树。收入增长 = NRR 加新客户贡献。FCF 利润率 = 经营运资本和资本开支调整后的营业利润率。SBC 在 GAAP 下计入营业费用，但在非 GAAP 下被剔除，这就是两种利润率出现背离的原因。*
 
+<a id="net-revenue-retention-a-cohort-analysis-in-one-number"></a>
 ### 净收入留存率：一个数字浓缩的群组分析
 
 [净收入留存率（net revenue retention）](../glossary.md#net-revenue-retention)（NRR，也称净美元留存率或 NDR）选取一组固定的客户，用他们当前的支出除以一年前的支出。流失的客户按原支出留在分母中，在分子中计为零。新客户不计入。NRR 为 126% 意味着该群组在扣除扩张、收缩和流失之后，*净*多花了 26%。
@@ -75,28 +80,31 @@ flowchart TB
 
 **为什么在按用量计费模式下 NRR 领先于收入增长。** Snowflake 只在客户消耗 credit 时确认产品收入，因此去年的客户贡献了今年大部分收入。新客户起步小，需要数个季度爬坡。近似地，产品收入增速 ≈（NRR − 1）×（群组贡献的收入占比）+ 群组以外客户的贡献。NRR 为 126% 且群组贡献大部分收入时，仅存量客户就带来约 20–26 个百分点的增长。Q2 FY2027 37% 的产品收入增速中，剩余约 11 个百分点或更多来自新客户的爬坡（作者近似估算；由于 NRR 为 12 个月滚动口径、增速为季度同比口径，两者窗口不同）。[^sf-q2] 由于群组支出具有持续性，稳定或上升的 NRR 为下一年的增长设定了底线。NRR 下降是增长底线正在下移的最早的硬证据。
 
-![Snowflake 各财务期净收入留存率折线图：从 FY2020 的 158% 和 FY2022 178% 的峰值，降至 FY2024 的 131%，并自 FY2025 至 Q2 FY2027 稳定在 125–126%](../assets/charts/snowflake_nrr.png)
+![Snowflake 各财务期净收入留存率折线图：从 FY2020 的 158% 和 FY2022 178% 的峰值，降至 FY2024 的 131%，并自 FY2025 至 Q2 FY2027 稳定在 125–126%](../../../docs/assets/charts/snowflake_nrr.png)
 
 *图 36.2 — Snowflake NRR（公司披露 KPI）。2022–2024 年 NRR 从 178% 滑落至 131%，同期增速从 106% 降至 38%。NRR 在 125–126% 企稳，恰逢增速稳定在 29% 左右，随后在 Q2 FY2027 重新加速至 37%。来源：`data/company_financials.csv`。*
 
 应将这张图作为一个群组故事来解读。产品收入增速在 FY2022（2021 年 2 月–2022 年 1 月）为 106%，FY2024 为 38%，FY2025 和 FY2026 分别为 30% 和 29%（GAAP；作者依据 CSV 计算）。[^fin-csv] 下行阶段 NRR 与增速同步，因为客户在 2021 年的繁荣后优化了消耗。回升阶段两者的关系变松了：Q1 和 Q2 FY2027 增速分别重新加速至 34% 和 37%，而 NRR 持平于 126%。[^fin-csv] 由于 NRR 是两个窗口的滚动比率，它对季度拐点的反应滞后数个季度。因此，分析师会把 NRR 的环比趋势与 $1M+ 客户数一起作为确认信号。
 
+<a id="rpo-and-crpo-contracted-backlog"></a>
 ### RPO 与 cRPO：已签约积压
 
 [剩余履约义务（remaining performance obligations）](../glossary.md#remaining-performance-obligations)（RPO）是已签约但尚未确认的收入金额，按照 ASC 606 在每份 10-Q 的收入附注中披露。当期 RPO（cRPO）是预计在十二个月内确认的部分。截至 2026 年 7 月 31 日，Snowflake 的 RPO 约为 $9.0B，同比 +30%。Snowflake 预计其中约 54%，即约 $4.9B（作者计算），将在未来十二个月内确认。公司提示，确认时点取决于客户消耗，且未使用的容量有时可结转至合同期限之后。[^sf-10q]
 
 RPO 增速可能高于收入，原因很简单：多年期容量交易在签约时就把全部承诺额计入 RPO，而收入只在客户消耗时才到来。一笔三年期、$300M 的承诺在一个季度内为 RPO 增加 $300M，而每年为收入增加的或许只有 $100M。极端案例是 Oracle。凭借 AI 基础设施合同，其 RPO 在 Q1 FY2027（2026 年 6–8 月）达到 $664B，而 FY2027 收入指引至少为 $90B。[^comps] 反向情况也会发生。Snowflake 的 RPO 在 2026 年 1 月 31 日达到 $9.77B 的峰值（包括公司历史上最大的一笔交易），随后两个季度降至 $9.21B 和约 $9.0B，而同期收入在加速。[^fin-csv] 客户消耗预付容量的速度快于补充速度。这对近期收入是利好，对积压覆盖度则是中性偏谨慎。
 
-![Snowflake 各财务期剩余履约义务柱状图：从 FY2021 约 $1.3B 升至 FY2026 末 $9.77B 的峰值，并在 Q2 FY2027 回落至约 $9.0B](../assets/charts/snowflake_rpo.png)
+![Snowflake 各财务期剩余履约义务柱状图：从 FY2021 约 $1.3B 升至 FY2026 末 $9.77B 的峰值，并在 Q2 FY2027 回落至约 $9.0B](../../../docs/assets/charts/snowflake_rpo.png)
 
 *图 36.3 — Snowflake RPO（GAAP 披露）。五年间积压增长约七倍，但呈波动性。一笔大额多年期交易对它的影响就可能超过一个季度的收入，因此应看四个季度的趋势，而不是季度环比变化。来源：`data/company_financials.csv`。*
 
 > **类比：半导体积压订单与订单出货比。** RPO 就是芯片厂商的积压订单，只是规则更严格：ASC 606 只计入可执行的合同，而半导体积压订单常包含可取消订单。cRPO ÷ 未来十二个月收入的作用类似订单出货比（book-to-bill）覆盖度。Snowflake 的 cRPO（约 $4.9B）约覆盖 FY2027 产品收入指引（$6.07B）的 80%（作者估算），而对真正的未来十二个月收入覆盖更少，因为截至 2026 年 7 月 31 日，FY2027 已有一半收入确认完毕；其余部分必须来自按需使用和新承诺。RPO 下降而收入上升，相当于出货火爆时订单出货比低于 1。持续一两个季度无妨，若持续下去则是警示信号。
 
+<a id="billings-and-why-consumption-companies-play-it-down"></a>
 ### 开票额，以及按用量计费公司为何淡化它
 
 开票额（billings）等于收入加递延收入的变动，即当期开出的发票金额。对按席位计费的 SaaS 以及销售多年期支持服务的硬件厂商而言，开票额是订单额的合理代理指标。NetApp 仍以此为首要指标：Q1 FY2027（2026 年 5–7 月）开票额为 $2.06B，+36%（由 GAAP 数据推算）。[^ntap] 按用量计费的公司则淡化开票额。Snowflake 对容量合同开票，通常每年预先开票，因此开票额随合同期限和开票时点波动，而收入跟随用量。一位签订更大三年期交易但按年开票的客户，开票额变化不大。一位一次性预付两年的客户则制造了一个尖峰，却丝毫不反映消耗情况。对 Snowflake 而言，RPO 和 NRR 承载了订阅公司中开票额所承载的信息。
 
+<a id="gross-margin-and-cloud-cogs"></a>
 ### 毛利率与云 COGS
 
 云数据平台的收入成本主要是超大规模云厂商的账单：为运行客户查询而向 AWS、Azure 和 Google Cloud 购买的虚拟机、对象存储和网络出口流量，外加支持人员和资本化软件的摊销。Snowflake 将产品毛利率与总毛利率分开披露。Q2 FY2027，产品毛利率 GAAP 为 70.9%、非 GAAP 为 74.7%（差额为收入成本中的 SBC 和摊销）。由于 AI 工作负载的计算成本更高，全年非 GAAP 指引被下调至 74%。[^sf-q2][^fin-csv] 同一季度，MongoDB 的总毛利率 GAAP 为 74%、非 GAAP 为 76%。该数字混合了承担云 COGS、毛利率较低的 Atlas，与高毛利的自管许可证 Enterprise Advanced 以及服务。[^mdb-q2] 随着 Atlas 增至约占收入的 73%（FY2026），收入结构向低毛利产品倾斜。[^fin-csv]
@@ -105,12 +113,14 @@ RPO 增速可能高于收入，原因很简单：多年期容量交易在签约�
 
 > **类比：云 COGS 就是无晶圆厂公司的晶圆成本。** Snowflake 向超大规模云厂商购买算力，就像 NVIDIA 向 TSMC 购买晶圆。毛利率是相对于一项公司无法控制的成本的溢价。有三个杠杆：对投入品的议价能力（多年期承诺消费额度折扣相当于云时代的晶圆产能分配协议）、架构效率（更好的查询引擎如同更高的单片晶圆良率），以及产品结构（AI 推理工作负载类似先进制程、低良率的产品）。一家代工厂同时也是其竞争对手的无晶圆厂公司，存在明显的张力。一个其超大规模云厂商同时销售竞品数据仓库的数据平台，也是如此。
 
+<a id="sales-and-marketing-efficiency-magic-number-and-cac-payback"></a>
 ### 销售与营销效率：魔力数字与 CAC 回收期
 
 **[魔力数字（magic number）](../glossary.md#magic-number)** 回答的是每一美元销售与营销（S&M）支出买来了多少新增年化收入。该术语于 2005 年由后来的 Scale Venture Partners 提出，季度公式自 2008 年起流行开来。[^scale] 一个常见版本是（本季度收入 − 上季度收入）× 4 ÷ 上季度 S&M。高于约 1.0 为高效，约 0.7 是通常的"健康"门槛。[^scale] **[CAC 回收期（CAC payback）](../glossary.md#cac-payback)** 将同样的输入换算成月数：12 ÷（魔力数字 × 毛利率）。它回答的是新增收入带来的毛利需要多长时间才能收回获客支出。
 
 要从 10-Q 计算这两个指标，从利润表中取连续两个季度的总收入，从营业费用项中取 S&M（GAAP 口径，因此包含 SBC 和收购无形资产摊销），并从同一报表中取毛利率。下面的算例正是这样做的。主要有两个陷阱。第一，按用量计费的收入对天数敏感：Snowflake 的 Q1（2–4 月）有 89 天，Q2（5–7 月）有 92 天，这会美化环比魔力数字。第二，GAAP S&M 项包含非现金的 SBC，而许多卖方模型使用非 GAAP S&M，因此得出的数字更高。
 
+<a id="sbc-and-dilution"></a>
 ### SBC 与稀释
 
 [股权激励费用（stock-based compensation）](../glossary.md#stock-based-compensation)是以股票形式支付的员工薪酬。它在 GAAP 下计为费用，但在非 GAAP 营业利润和经营现金流中被加回。Snowflake FY2026 的 SBC 为 $1,599.5M，占收入 34%，低于 FY2025 的 $1,479.3M（41%）（GAAP；百分比为作者计算）。[^sf-10k26][^fin-csv] Q2 FY2027 约为 $424M，占收入 27.4%（媒体报道，引自 10-Q）。[^secapi]
@@ -119,18 +129,20 @@ CFA 的观点是：SBC 是真实的费用。用股票而非现金支付工程师
 
 > **类比：SBC 与研发资本化之争。** 半导体分析师争论研发是否应资本化，因为它构建的是多年期资产。SBC 引出了镜像问题：它是一项以股权而非现金支付的经营成本。把 SBC 加回，就像把研发资本化后却从不摊销。投入照样被消耗掉，只是用别人的所有权来支付。
 
+<a id="rule-of-40-fcf-margin-and-customer-counts"></a>
 ### 40 法则、FCF 利润率与客户数
 
 **[40 法则（Rule of 40）](../glossary.md#rule-of-40)** 认为收入增速加利润率应超过 40%。它由 Brad Feld 于 2015 年 2 月针对规模化 SaaS 公司推广开来。[^feld] 变体比法则本身更重要。增速可以是总收入或产品收入，季度或年度。利润率可以是 FCF、调整后 FCF、非 GAAP 营业利润率、GAAP 营业利润率或 EBITDA。Palantir 每季度公布一个公司自定义的得分：Q2 2026 为 155%，基于 93% 的增速和 63% 的调整后 FCF 利润率。[^pltr] ServiceNow 以固定汇率订阅收入增速和 FCF 利润率披露一个"Rule of"数字。[^now]
 
 **FCF 利润率** =（经营现金流 − 资本开支）÷ 收入。公司随后会对其进行"调整"。Snowflake 的调整后 FCF 加回了与员工股票交易相关的工资税项目的净现金支出。其他公司则加回重组或收购成本。每年预先开票使 FCF 在季度间波动：Snowflake Q2 FY2027 调整后 FCF 利润率为 6.0%，Q4 FY2026 为 61%，FY2026 全年为 25.5%（非 GAAP）。[^fin-csv] 做任何 40 法则分析时，都应使用 12 个月滚动或全年数据。
 
-![十二家数据与基础设施软件公司的收入增速与 FCF 利润率散点图，含 40 法则虚线；Palantir 远高于该线，为 156，Datadog 61、Snowflake 58、ServiceNow 56、Rubrik 53、Everpure 52、NetApp 50、MongoDB 48、Elastic 45、Nutanix 42，而 Workday 30 和 GitLab 24 位于线下](../assets/charts/ch36_rule_of_40.png)
+![十二家数据与基础设施软件公司的收入增速与 FCF 利润率散点图，含 40 法则虚线；Palantir 远高于该线，为 156，Datadog 61、Snowflake 58、ServiceNow 56、Rubrik 53、Everpure 52、NetApp 50、MongoDB 48、Elastic 45、Nutanix 42，而 Workday 30 和 GitLab 24 位于线下](../../../docs/assets/charts/ch36_rule_of_40.png)
 
 *图 36.4 — 可比公司的 40 法则（最近一季增速，GAAP；FCF 利润率为非 GAAP，口径以标记形状区分）。按调整后 FCF 口径，大多数数据与基础设施公司现已超过 40。若换用季度 FCF 利润率（Snowflake 降至约 41）或扣除 SBC，排名会改变。来源：`data/ch36_rule_of_40.csv`；Everpure 的 FCF 利润率为依据指引中值的估算。*
 
 **客户数**是最后一个领先指标。Snowflake 披露 12 个月滚动产品收入超过 $1M 的客户数：Q2 FY2027 为 828 家（+27%），而 FY2021 为 77 家。它还披露福布斯全球 2000 强（Forbes Global 2000）客户数：829 家，约占名单的 41%（作者计算）。[^sf-q2][^fin-csv][^pulse] MongoDB 披露总客户数（70,600+）和 ARR 超过 $100K 的客户数（2,999）。[^mdb-q2] 大客户数比总数更重要。在按用量计费模式下，大客户支撑着 NRR，因此 $1M+ 客户新增放缓往往先于 NRR 变化出现。
 
+<a id="worked-example-reading-snowflakes-q2-fy2027-mayjul-2026"></a>
 ### 算例：解读 Snowflake 的 Q2 FY2027（2026 年 5–7 月）
 
 FY2027 = 2026 年 2 月–2027 年 1 月。所有金额单位均为百万美元（US$M）。媒体报道的摘要引用了约 $263M 的 GAAP 营业亏损，与公司 −17.0% 的 GAAP 营业利润率完全吻合。
@@ -160,6 +172,7 @@ FY2027 = 2026 年 2 月–2027 年 1 月。所有金额单位均为百万美元�
 
 解读结论：Snowflake 获取增长的效率高于一年前。S&M 增长 22%，而收入增长 35%，因此 S&M 占收入比重从 43.8% 降至 39.5%。按日历调整后，约 0.7 的魔力数字属于健康而非惊艳。SBC 占收入比重已从约 41% 降至约 27%，但它仍是 GAAP 亏损与非 GAAP 盈利之间差距的主要来源。按公司定义，合理的 40 法则区间约为 41–58；若将 SBC 视同现金，则约为 20。
 
+<a id="mongodb-in-one-table-and-the-everpure-contrast"></a>
 ### 一张表看 MongoDB，以及与 Everpure 的对比
 
 | Q2 FY2027（2026 年 5–7 月）* | Snowflake | MongoDB | Everpure（原 Pure Storage） |
@@ -183,6 +196,7 @@ MongoDB 的这一季度展示了一个更成熟的按用量计费数据库的样
 
 > **存储桥接。** 存储厂商的订阅 ARR 与数据平台的 NRR 衡量的是不同的东西：ARR 是某一时点的年化合同价值，NRR 是一个固定群组支出的增长。Everpure 不公布 NRR。与之最接近的类比是订阅 ARR 增速（+20%）和 RPO 增速（+44%）。[^ep-q2] Evergreen 订阅的结构请参见配套的 *Everpure Tech Atlas*。
 
+<a id="kpi-reference-card"></a>
 ### KPI 速查卡
 
 | KPI | 定义 | 公式 | 披露位置 | 陷阱 |
@@ -204,6 +218,7 @@ MongoDB 的这一季度展示了一个更成熟的按用量计费数据库的样
 
 *图 36.7 — KPI 定义。"披露位置"一栏表明哪些数字经过审计（报表项目），哪些是公司自定义指标。SEC 2020 年的指引要求每个此类指标都有清晰的定义和一致的计算方法。[^sec-kpi]*
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 公司会选择把哪些 KPI 放在显要位置，而这一选择本身就告诉你它们希望你关注什么。
@@ -220,6 +235,7 @@ MongoDB 的这一季度展示了一个更成熟的按用量计费数据库的样
 
 为非 GAAP 指标辩护的最有力理由是可比性。SBC 是非现金项目，其会计价值取决于授予时的股价，剔除它可以让股权结构不同的公司更易于比较。最有力的反驳是：稀释是永久的。股东关心的是每股价值，而一家从未实现 GAAP 盈利的公司，从未证明其单位经济能覆盖全部人工成本。
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 | 公司 | 重点强调的主要 KPI | 最新值（口径、日期） |
@@ -235,6 +251,7 @@ MongoDB 的这一季度展示了一个更成熟的按用量计费数据库的样
 
 *图 36.9 — 谁披露什么。每家公司都把自己看起来最强的 KPI 放在显要位置。跨公司比较意味着要从报表中重建一个共同指标。关于这些公司的估值倍数，见[第 37 章](ch37-public-comps-valuation.md)。*
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 ```mermaid
@@ -257,6 +274,7 @@ timeline
 
 按用量计费的时代对这套语言进行了压力测试。Snowflake 的 FY2021 10-K 显示 NRR 为 168%。FY2022 的 178% 是峰值，公司后来在群组调整后将其重述为 177%。[^sf-10k21][^fin-csv] 当客户在 2022–2023 年优化支出时，NRR 与增速同时下滑，表明按用量计费的收入没有合同底线。2025–2026 年阶段引入了新的张力。AI 工作负载提升了消耗和增速（Q2 FY2027 产品收入 +37%），但其计算成本更高，因此毛利率指引下调至 74%。[^fin-csv] 接下来要关注的 KPI 是单客户毛利额和每美元收入的 SBC，而不仅仅是表面增速。
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源 / 日期 |
@@ -274,6 +292,7 @@ timeline
 | Everpure 非 GAAP 毛利率 / 营业利润率 | 69.9% / 19.4% | 非 GAAP | 新闻稿，2026-08-26[^ep-q2] |
 | Everpure 订阅 ARR / RPO | $2.1B（+20%）/ $4.1B（+44%） | 公司披露 KPI / GAAP | 新闻稿[^ep-q2] |
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向数据平台产品经理或产品财务负责人提出的三个问题**
@@ -299,6 +318,7 @@ timeline
 - "他们通过了 40 法则。" *要说明用的是哪个增速、哪个利润率、哪个期间。同一家公司可以得 20 分，也可以得 58 分。*
 - "开票额下降了，所以需求疲软。" *对按用量计费模式并非如此，开票额由开票时点和合同期限驱动。*
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 - 将 Snowflake FY2026 10-K 与 MongoDB FY2026 10-K 中的"Key Business Metrics（关键业务指标）"部分并排阅读，记下每一处定义差异。[^sf-10k26][^mdb-10k]
@@ -307,6 +327,7 @@ timeline
 
 > **深入（L3）。** 要重建 cRPO 覆盖度，从收入附注中取 RPO，乘以披露的未来十二个月确认比例，再除以未来十二个月产品收入指引。以 Snowflake 为例：约 $9.0B × 54% ≈ $4.86B，÷ FY2027 产品收入指引 $6.07B ≈ 80%（作者估算；该指引覆盖的是财年，而非严格的未来十二个月）。未覆盖的部分必须来自按需消耗、新合同和超额用量，这正是预测风险所在。
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [净收入留存率（net revenue retention）](../glossary.md#net-revenue-retention) — 去年客户群组今年的支出 ÷ 其一年前的支出。
@@ -330,6 +351,7 @@ timeline
 - [年度经常性收入（annual recurring revenue）](../glossary.md#annual-recurring-revenue) — 某一时点经常性合同的年化价值。
 - [收入年化运行率（revenue run-rate）](../glossary.md#revenue-run-rate) — 当期收入的年化值；并非经审计的年度收入。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^sf-q2]: Snowflake Inc., "Snowflake Reports Financial Results for the Second Quarter of Fiscal 2027," https://www.nasdaq.com/press-release/snowflake-reports-financial-results-second-quarter-fiscal-2027-2026-09-02（另见 Business Wire, https://secure.businesswire.com/news/home/20260902386235/en/Snowflake-Reports-Financial-Results-for-the-Second-Quarter-of-Fiscal-2027），发布 2026-09-02；检索 2026-11-01。数值依据 `data/company_financials.csv`；GAAP 营业亏损约 $263M、非 GAAP 营业利润约 $237M 依据新闻稿的搜索摘录。FY2027 = 2026 年 2 月–2027 年 1 月。

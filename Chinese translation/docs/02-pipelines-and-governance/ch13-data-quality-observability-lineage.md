@@ -1,6 +1,7 @@
 # 13. 数据质量、可观测性与数据血缘
 > **深度：** L2 · **阅读时间：** 约 15 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [12. 数据转换与编排](ch12-transformation-and-orchestration.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - **数据停机（data downtime）**指数据延迟、缺失、错误或具有误导性的任何时段。它很少以报错的形式出现，更常见的情况是仪表板悄无声息地显示一个错误的数字。最知名的成本估算都偏"软"：Gartner 提出的每家组织每年 $12.9M 损失，来自 2020 年一项针对厂商参考客户、由其自行估算成本的调查；Monte Carlo 的调查则由厂商赞助。两者都表明，这个问题普遍存在且代价高昂。
@@ -9,6 +10,7 @@
 - **独立厂商正在被吸收。** Datadog 收购了 Metaplane（2025 年 4 月）。Snowflake 收购了 Observe（2026 年 2 月完成；根据 Snowflake FY2026 10-K，初步对价为 $596.2M，媒体报道约为 $1B），但 Observe 做的是 IT 遥测，而非数据质量。Boomi 收购了 Elementary（2026 年 10 月）。FICO 收购了 GX Cloud，Fivetran 接手 GX Core 的社区管理（2026 年 5 月）。Databricks 和 Snowflake 现已提供原生异常检测。Monte Carlo 仍是融资最充足的独立厂商；其最近一次定价融资（2022 年 5 月）给出的估值为 $1.6B（公司披露）。
 - **AI 抬高了风险。** 智能体（agent）在没有人工合理性校验的情况下直接依据数据采取行动。因此，新鲜度、质量评分和数据血缘必须成为机器可读的输入，供智能体在行动前查询，例如通过 MCP 服务器和目录 API。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业 + Everpure 视角）
 
 Monte Carlo 借鉴"应用停机"的说法，创造了 **[数据停机（data downtime）](../glossary.md#data-downtime)** 一词：指数据不完整、错误、过时或以其他方式不可靠的时段。区别在于可见性。系统宕机会触发值班告警；而一个让董事会材料中收入翻倍的错误关联（join），在财务分析师发现之前不会触发任何东西。经济影响正源于这种不对称：检测缓慢，因此在任何人着手修复之前，损害已在不断累积。
@@ -19,8 +21,10 @@ Monte Carlo 借鉴"应用停机"的说法，创造了 **[数据停机（data dow
 
 > **Everpure 视角。** 遥测只是更多的数据，而存储系统本就能看到每个数据集的访问频率、读取者身份和对象年龄。基于公开信息，战略团队可以评估：存储层信号与 1touch 收购带来的数据发现和数据分类能力相结合，能否为数据目录和可观测性工具丰富血缘与分类信息。[^everpure-1touch]
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="testing-assertions-you-write-in-advance"></a>
 ### 测试：事先写好的断言
 
 **[数据测试（data test）](../glossary.md#data-test)** 是针对数据集运行的断言。例如：`order_id` 永不为空且唯一；`status` 只能是五个值之一；orders 中的每个 `customer_id` 都存在于 customers 中。在 dbt 中（见[第 12 章](ch12-transformation-and-orchestration.md)），这些测试在模型旁的 YAML 中声明，并在每次构建后运行。dbt 1.8（2024 年 5 月）新增了 **[单元测试（unit test）](../glossary.md#unit-test)**。单元测试向模型的 SQL 输入模拟数据行并检查输出，从而在触及任何生产数据之前，在 CI 中测试*逻辑*。随该版本发布，dbt 将旧的 `tests:` 键更名为 `data_tests:`，以区分这两类测试。[^dbt-18] **Great Expectations**（现为 GX Core，以 Apache 2.0 许可开源）用 Python 中的"Expectations"表达同样的理念。[^gx-1] **Soda** 在 Soda Core 4.0 中把 **[数据契约（data contract）](../glossary.md#data-contract)** 设为编写检查的默认方式。该版本首次公开发布于 2026 年 1 月，取代了较早的 SodaCL 检查语言。[^soda-4]
@@ -29,6 +33,7 @@ Monte Carlo 借鉴"应用停机"的说法，创造了 **[数据停机（data dow
 
 > **类比：半导体（BIST 与 DFT）。** 数据测试相当于数据管道中的可测试性设计（DFT）和内建自测试（BIST）。你在*已知*可能出现故障的位置插入扫描链和存储器 BIST 引擎，它们给出快速、确定的通过/失败结果。但它们抓不到只在现场特定温度下才出现的边缘时序故障。单元测试类似于对照测试平台（testbench）进行的流片前验证；数据测试则类似于在真实晶圆上进行的量产测试。
 
+<a id="observability-watching-metadata-for-what-you-did-not-predict"></a>
 ### 可观测性：监控元数据，发现你未曾预料的问题
 
 **[数据可观测性（data observability）](../glossary.md#data-observability)** 反转了思路。它不要求工程师陈述规则，而是从每张表收集元数据，并学习"正常"是什么样子。Monte Carlo 推广了五个信号，即其"五大支柱"。该公司现有材料有时会用"质量"替换"分布"，但最常被引用的仍是最初的列表。[^mc-pillars]
@@ -47,6 +52,7 @@ Monte Carlo 借鉴"应用停机"的说法，创造了 **[数据停机（data dow
 
 > **类比：晶圆厂良率管理（SPC）。** 这就是把统计过程控制应用于元数据。晶圆厂对关键尺寸、膜厚和颗粒数设置控制图，并依据 Western Electric 式规则（一个点超出 3σ，或一连串点朝同一方向漂移）在整批报废之前采取行动。数据可观测性则对行数和空值率设置控制图。它有同样的核心权衡：控制限收紧可以及早发现漂移，但会让工程师被误报淹没。告警疲劳是可观测性部署停滞最常见的原因。
 
+<a id="lineage-table-level-column-level-and-how-it-is-captured"></a>
 ### 数据血缘：表级、列级以及采集方式
 
 **[数据血缘（data lineage）](../glossary.md#data-lineage)** 是描述数据如何从源头经过转换流向消费者的有向图。**表级**血缘表明 `fct_revenue` 读取了 `stg_opportunities`。**[列级血缘（column-level lineage）](../glossary.md#column-level-lineage)** 则表明 `fct_revenue.amount_usd` 由 `stg_opportunities.amount` 乘以汇率得出。只有列级版本能告诉你：某个 Salesforce 字段的变更会破坏下游四十个仪表板中的三个。正是这种精确度，让影响分析变得有用，而不是徒增恐慌。
@@ -92,14 +98,17 @@ flowchart LR
 
 > **类比：晶圆谱系。** 数据血缘相当于晶圆厂中的批次与晶圆谱系（genealogy）。当现场返修件出现故障时，谱系会把裸片沿封装、晶圆、批次、机台和腔室逐级回溯，再向前追踪到所有共用该腔室的其他器件，并将它们隔离。列级血缘同样承担这两项工作：向后追溯找根因，向前追踪做隔离。与谱系一样，它的好坏取决于每个环节的埋点。只要有一个未被追踪的返工步骤，或一个游离在血缘系统之外的 Python 脚本，链条就会断裂。
 
+<a id="slas-slos-incidents-and-contracts"></a>
 ### SLA、SLO、事件与契约
 
 成熟团队会借鉴站点可靠性工程（SRE）。**[数据 SLO（data SLO）](../glossary.md#data-slo)** 是一个内部目标，例如"在 99% 的工作日中，`fct_revenue` 于 UTC 07:00 前完成刷新，且 `amount_usd` 的空值率低于 0.1%"。SLA 则是向消费方承诺的版本，有时附带后果条款。于是，可观测性工具变成了事件管理系统：告警开启一个事件，数据血缘指派负责人，负责人在 Slack 或 PagerDuty 中分诊，事后复盘再反馈到测试中。数据契约把约定推向上游。拥有源系统的团队承诺遵守某种模式和语义，任何破坏性变更都必须在该团队自己的 CI 中失败，而不是出现在别人的仪表板上。契约和 dbt 模型契约是预防层，可观测性是侦测层。数据治理策略（[第 15 章](ch15-governance-security-privacy.md)）则决定谁有权看到这些数据。
 
+<a id="the-ai-era-twist-trusted-data-for-agents"></a>
 ### AI 时代的新变化：为智能体提供可信数据
 
 人类分析师看到收入一夜之间增长 300%，会停下来问为什么，智能体则不会。随着智能体开始查询数据仓库、触发工作流并回答客户问题（[第 22 章](../03-ai-data-stack/ch22-agents-and-data.md)），质量信号必须从面向人类的仪表板转变为面向机器的输入。智能体在行动前应当检查：这张表是否新鲜？是否通过了检查？它的血缘是什么？是否经过认证？厂商正在构建的恰恰是这些能力。Monte Carlo 于 2025 年 9 月推出 Agent Observability，用于监控智能体的输入和输出。2026 年 3 月，它将产品扩展至覆盖智能体轨迹和上线前评估，并提供托管的 MCP 服务器，让助手可以查询监控项和事件。[^mc-agent] RAG 让数据血缘的要求更加严格。向量索引是构建它所用文档和表的下游资产，因此一个过时或被污染的数据源，应当能被追溯到该索引以及基于它生成的答案。因此，AI 数据管道的可观测性横跨两层：一层是对语料的经典数据检查，另一层是对 LLM 输出在依据性（groundedness）、漂移和成本方面的评估。
 
+<a id="worked-example-a-renamed-salesforce-field"></a>
 ## 实例演练：一个被重命名的 Salesforce 字段
 
 一位销售运营管理员为了规范命名，把 Salesforce Opportunity 对象上的自定义字段 `Amount_Net__c` 重命名为 `Net_Amount__c`。没有任何报错。许多托管连接器在处理源字段重命名时，会把新值同步到一个*新*列中，而保留旧列不动：新记录在旧列中为空值，且不回填历史数据。Fivetran 针对 HubSpot 自定义字段明确记录了这种行为；这是一种常见模式，而非普遍规则，因此需要逐个核查连接器。[^fivetran-rename] staging 模型仍在选取 `amount_net__c`，因此从那一刻起，每一个新商机的金额都是空值。以下数字仅为示意。
@@ -162,6 +171,7 @@ sequenceDiagram
 
 *图 13.4 — 针对此次重命名的检测与响应。智能体的健康检查是新增的一步：智能体为回答附加警示，而不是重复一个错误的数字。*
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 | 选择 | 方案 A | 方案 B | A 胜出的场景 | B 胜出的场景 |
@@ -176,6 +186,7 @@ sequenceDiagram
 
 支持独立工具最有力的论点是：数据资产并非单一平台。数据从 Salesforce 经 Fivetran 进入 Snowflake，经过 dbt，输出到 Tableau，再进入 Databricks 特征存储。只有中立的工具才能看到完整路径。最有力的反方论点是：平台现在已能看到路径的大部分，且无需额外许可费用，而"够用且捆绑"通常胜过"同类最佳但需走一轮采购流程"。
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 | 厂商 | 类型 | 定位 | 最新公开信号 |
@@ -199,6 +210,7 @@ sequenceDiagram
 
 **整合为何正在发生。** 有四股力量。第一，平台现在免费提供新鲜度和数据量检查，抹去了独立厂商价值中最容易实现的那一半。第二，可观测性天然是某个更大产品的*模块*。Datadog 希望在 SRE 的席位旁边拿下数据工程师的席位。Boomi 和 Fivetran 希望把"可信数据"与集成和数据转换放在一起；Fivetran 现已整合了 dbt（合并于 2026 年 6 月完成）、SQLMesh 以及 GX Core 的管理权。[^fivetran-dbt] 第三，"遥测只是更多的数据"这一逻辑有利于已拥有廉价存储和计算的厂商，这正是 Palo Alto Networks–Chronosphere（$3.35B）和 Snowflake–Observe 背后的逻辑。[^chronosphere] 第四，2021–22 年那一批估值让独立融资变得困难。Monte Carlo 的 $1.6B 估值定于 2022 年 5 月，正值融资热潮的尾声，此后没有披露过新的定价融资。独立厂商的看多逻辑是跨平台中立性以及新出现的智能体信任预算；看空逻辑是两者都会被捆绑。公司层面的细节见[第 33 章](../04-company-deep-dives/ch33-governance-catalog-security-companies.md)。
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 ```mermaid
@@ -219,6 +231,7 @@ timeline
 
 Gartner 于 2024 年 6 月发布了首份《数据可观测性工具市场指南》（*Market Guide for Data Observability Tools*），并于 2026 年 2 月发布了 2026 年版，这表明该品类如今已被视为一条标准的采购线。[^gartner-mg]GX 的起始年份（2017）依据的是该项目的公开历史：其开源代码库可追溯到 2017 年，而 2018 年 2 月的文章"Down with Pipeline Debt"使其广为人知。这属于 2025 年之前的既定知识，已由审校者确认，并非为本章检索的文档。预计接下来会发生三件事：平台原生监控将从数据量和新鲜度扩展到分布检查；OpenLineage 将成为外部工具向原生目录输送数据的默认方式；质量和血缘信号将与语义层元数据一起，作为智能体所用上下文的标准组成部分提供给智能体。
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源 / 日期 |
@@ -236,10 +249,12 @@ Gartner 于 2024 年 6 月发布了首份《数据可观测性工具市场指南
 
 *图 13.8 — 成本数字偏"软"且基于调查，交易数字则是"硬"数据。用前者解释该品类为何存在，用后者为其定价。*
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** 可观测性工具大多读取数据仓库元数据，但对象存储在底层也会产生同样的原始信号：最后修改时间、对象数量、每个前缀写入的字节数以及按请求记录的访问日志。对于从不经过数据仓库的文件（例如 RAG 索引背后的 PDF 和图片），这些信号可以直接映射到新鲜度、数据量和数据血缘三大支柱。关于存储阵列如何公开这些日志和元数据，请参阅姊妹篇 *Everpure Tech Atlas*。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理提的三个问题**
@@ -262,10 +277,12 @@ Gartner 于 2024 年 6 月发布了首份《数据可观测性工具市场指南
 - "我们有数据血缘"（实际仅有表级血缘）。要追问它是否是列级的，以及是否跨越系统边界。
 - "OpenLineage 是一款产品。"它是一项规范，Marquez 才是参考后端。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 > **深入（L3）。** 阅读 OpenLineage 对象模型（RunEvent、Job、Run、Dataset、facets），以及把输出字段映射到输入字段的 `ColumnLineageDatasetFacet`。在本地用 Airflow provider 试运行 Marquez，观察事件如何到达。关于异常检测，可研究厂商如何将季节性分解与动态阈值和用户反馈结合。注意，Snowflake 的异常检测只有在训练期之后才开始告警。关于基于 SQL 解析的血缘，SQLGlot（现已通过 Tobiko Data 并入 Fivetran）是一款被广泛使用的开源解析器和优化器。
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [数据停机（Data downtime）](../glossary.md#data-downtime) — 数据延迟、缺失、错误或以其他方式不可靠的时段。
@@ -282,6 +299,7 @@ Gartner 于 2024 年 6 月发布了首份《数据可观测性工具市场指南
 - [数据可观测性五大支柱（Five pillars of data observability）](../glossary.md#five-pillars-of-data-observability) — 新鲜度、数据量、模式、分布和数据血缘。
 - [数据差异比较（Data diff）](../glossary.md#data-diff) — 对一张表的两个版本逐行比较，以发现回归问题。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^gartner-129]: Reliable (reliamag.com), "The Cost of Bad Manufacturing Data (2026)," 对 Gartner $12.9M 数字出处的分析（2020 Magic Quadrant for Data Quality Solutions，对 154 家组织的参考客户调查），https://reliamag.com/topics/guides/cost-of-bad-manufacturing-data，2026 年发布；以及 Verato, "Gartner DQ," 引用 Gartner, "12 Actions Data and Analytics Leaders Can Take to Improve Data Quality"（2024 年 7 月），https://verato.com/resources/gartner-dq，无日期；2026-11-01 检索。[VERIFY: 对照 Gartner 原始文档核实措辞]

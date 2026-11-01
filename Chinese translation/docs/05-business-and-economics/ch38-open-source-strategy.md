@@ -1,6 +1,7 @@
 # 38. 作为战略的开源
 > **深度：** L2 · **阅读时间：** 约 14 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 35 章 — 商业模式](ch35-business-models.md)，[第 7 章 — 开放表格式](../01-data-systems-foundations/ch07-open-table-formats.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - 在数据基础设施领域，开源主要是一种分发策略。一个免费、采用宽松许可证的核心能以几乎为零的获客成本赢得开发者。收入随后才来，且来自规模小得多的付费层：支持服务、[开放核心（open core）](../glossary.md#open-core)企业功能，或托管云服务。托管服务已成为主导模式。在 MongoDB，Atlas 占 FY2026 收入的 73%（公司披露）。[^mdb-atlas]
@@ -9,14 +10,17 @@
 - 如今，治理与许可证同样重要。由中立基金会持有的项目不能被单一厂商更换许可证。Apache Iceberg 的提交者分布在众多公司，而 Delta Lake 的提交者集中在 Databricks，这一差异帮助决定了表格式之争的结果（[第 7 章](../01-data-systems-foundations/ch07-open-table-formats.md)）。2024 年 Unity Catalog 和 Polaris 的开源，将同一场竞争上移到了目录层（[第 8 章](../01-data-systems-foundations/ch08-catalogs-and-metastores.md)）。
 - 其经济性并不像争论所暗示的那样特殊。开源出身并不能带来可见的估值溢价。MongoDB、Elastic 和 GitLab 的估值为 EV/未来 12 个月收入 4.6–9.0 倍，而专有软件 Snowflake 和 Datadog 为 16.9–21.5 倍（EV ÷ 当年指引，估算，截至 2026-10-02 至 2026-10-30）。增长只能解释部分差距：按[第 37 章](ch37-public-comps-valuation.md)的回归，它约占 Snowflake 与 MongoDB 之间约 8 倍差距中的 1 倍。其余由留存率、按用量计费的可见度和 AI 工作负载敞口解释；许可证并不起作用。[^comps] 毛利率取决于软件的交付方式，而不是许可方式。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（业务视角 + Everpure 视角）
 
 对于企业发展团队来说，许可证是资产的一部分。对一家开源出身的公司做尽职调查时，有三个问题决定其价值。超大规模云厂商能否合法地出售同样的产品？厂商以后能否更改条款，还是代码由基金会持有？如果厂商确实更改了条款，客户是否有一个可信的分叉可以迁移？这些答案解释了近期的几笔交易价格。IBM 在 HashiCorp 更换 Terraform 许可证之后以 $6.4B 收购了它，[^ibm-hashi] 并以约 $11B 收购了 Confluent，而 IBM 并不控制后者的核心 Apache Kafka。[^comps] Databricks 以据媒体报道约 $2B 的价格收购了 Tabular，这家公司围绕一个它无法拥有的项目而建立。[^tabular]
 
 对 Everpure 而言，开放格式就像一种合作伙伴关系的通用货币。存储平台并不需要自己的开源社区。但它确实需要成为客户所用引擎依赖的开放项目的一流、经过测试的目标平台：Iceberg、Parquet、Iceberg REST 目录协议和 S3 API。一家"兼容开放格式"的厂商能在 Databricks、Snowflake、Dremio 和 Starburst 的参考架构中占据一席之地。不兼容的厂商则只能为一条专有路径辩护。下文的存储桥接部分列出了基于公开信息、战略团队可能评估的选项。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="the-funnel-from-download-to-invoice"></a>
 ### 漏斗：从下载到发票
 
 一家开源数据公司运营着一个四阶段漏斗。**采用：**开发者下载免费版本，通常无需与销售人员接触。**社区：**其中一些人提交缺陷报告、编写连接器和教程，并回答论坛问题。这些工作降低了厂商构建生态系统的成本。**生产：**一部分用户将软件投入生产，并遇到企业级需求，例如单点登录、审计日志、高可用性、合规认证，以及凌晨 3 点可以拨打的电话。**变现：**厂商以订阅、企业功能或托管服务的形式出售这些需求，并用收入为免费核心的进一步开发提供资金。
@@ -39,12 +43,14 @@ flowchart LR
 
 一个实例可以说明其经济性。假设一个项目每年有 1,000,000 次下载。其中 2%（20,000 次）转化为生产部署，生产部署中有 1.5%（300 个）成为每年支付 $60,000 的付费账户。这带来 $18M 的新增年度经常性收入（ARR），而漏斗顶端的营销支出几乎为零。所有输入值均为说明性假设。业内从业者的经验法则认为，活跃用户向付费账户的转化率在个位数低段，但没有严谨的公开研究支持某个精确比率。[^conv-est] 重点在于漏斗的形状，而不是数字。在一个巨大的免费用户基础上实现 1% 的转化率，就足以支撑一家上市公司。生产用户中转向竞争对手托管服务的比例稍有变化，商业逻辑就会随之改变。
 
+<a id="three-ways-to-charge"></a>
 ### 三种收费方式
 
 - **支持与订阅（Red Hat 模式）。** 所有代码都是开放的，客户为经过认证的构建版本、补丁、赔偿保障和支持付费。这种模式持久但天花板较低，因为无论是否有人付费，产品都是一样的。IBM 在 2019 年以 $34B 收购 Red Hat，是这种模式的巅峰。[^redhat]
 - **开放核心。** 引擎免费，企业所需的功能是专有的：安全、治理、管理工具和部分性能功能。GitLab 是一个清晰的例子，其 Q2 FY2027（2026 年 5 月–7 月）的非 GAAP 毛利率为 86.5%。[^comps] 风险在于界线划错了位置。付费墙圈得太多，社区就会分叉；圈得太少，就没人付费。
 - **托管服务。** 厂商为客户运行软件，并按用量收费。在这里，厂商出售的是运维，而不是代码，这就是为什么运行相同代码的超大规模云厂商会构成直接竞争。MongoDB 74% 的 GAAP 毛利率（Q2 FY2027）承担了这种模式所伴随的云基础设施成本。[^mdb-q2]
 
+<a id="licences-at-l2-what-each-one-actually-permits"></a>
 ### L2 层面的许可证：每种许可证实际允许什么
 
 开源促进会（OSI）维护的[开源定义（Open Source Definition）](../glossary.md#open-source-definition)有十项标准。这里最重要的是两项：不得歧视任何个人或群体，不得限制使用领域。一份写着"除以服务形式提供本软件的云厂商之外，任何人均可使用"的许可证，无论公开了多少代码，都同时违反了这两项。这就是开源与源码可用之间的法律界线。
@@ -67,6 +73,7 @@ flowchart LR
 
 > **深入（L3）。** 有两个条款承担了大部分作用。AGPL 第 13 条要求，任何允许用户通过网络与修改后软件交互的人，都必须向这些用户提供其源代码。SSPL 第 13 条将"源代码"扩展到运行该服务所需的一切：管理软件、用户界面、API、自动化、监控、备份和托管。这一定义如此宽泛，以至于没有任何云厂商能够遵守，而这正是其意图所在。第二个机制是**[贡献者许可协议（contributor license agreement）](../glossary.md#contributor-license-agreement)**（CLA）。厂商只能对自己有权重新许可的代码更换许可证。一份将贡献者版权转让或广泛授权给公司的 CLA，正是让日后更换许可证成为可能的关键。基金会项目要么使用将权利授予基金会的 CLA，要么依赖"入站即出站"（inbound-equals-outbound）的许可方式，因此没有任何一家公司能够单方面更换许可证。
 
+<a id="the-relicensing-battles-20182026"></a>
 ### 许可证之争，2018–2026
 
 ```mermaid
@@ -103,12 +110,14 @@ timeline
 
 > **类比：分叉即第二供应源。** 半导体买家长期以来都要求在设计采用关键器件之前必须有第二供应源。IBM 在 1982 年要求 Intel 将 x86 授权给 AMD 就是经典案例。Valkey 和 OpenSearch 就是超大规模云厂商的第二供应源，无论大多数客户最终是否切换，它们的存在都约束了原厂商的定价。
 
+<a id="the-strip-mining-debate"></a>
 ### "露天开采"之争
 
 厂商的论点是这样的。它们为几乎所有的工程开发提供资金。超大规模云厂商拿走免费代码，将其包装为托管服务（ElastiCache、Amazon OpenSearch Service、用于 Kafka 的 MSK），与自己的计费、身份认证和支持捆绑在一起，在不承担研发成本的情况下获取客户关系。于是，厂商自己的托管服务要与自己的代码竞争，而销售这些代码的供应商还掌握着客户的云账单。
 
 反方论点同样值得重视。超大规模云厂商确实有所贡献：AWS 称已有超过 225 位贡献者向 Valkey 提交了超过 1,500 个拉取请求。[^valkey-two] 托管服务还通过将技术带给那些永远不会自己运行它的客户而扩大了市场，其中许多客户后来会购买厂商自己的企业版。MongoDB 在与一个 API 兼容的 AWS 服务竞争的同时，让 Atlas 成长为其大部分收入来源。[^mdb-atlas] 大多数更换许可证的厂商最初也是主动选择了宽松许可证，因为这些许可证能最大化采用率。按这种观点，超大规模云厂商提供该软件，正是许可证所换来的分发渠道的代价。证据支持一种折中立场。当厂商的产品主要是"我们替你运行"时，露天开采是真实的风险。当厂商拥有超大规模云厂商版本所缺乏的功能或性能时，风险则小得多。
 
+<a id="foundations-and-governance"></a>
 ### 基金会与治理
 
 基金会持有商标、版权许可和治理规则，因此没有任何一家公司能够更换项目的许可证或改变其路线图方向。各种模式的区别在于由谁做决定。
@@ -129,10 +138,12 @@ timeline
 
 **2024 年 6 月的目录之争。** 同一个月，Snowflake 发布了 Iceberg REST 目录 Polaris，随后将其捐赠给 Apache 孵化器。Databricks 在 LF AI & Data 以 Apache 2.0 许可开源了 Unity Catalog。[^polaris][^ucoss] 两者都是防御性举措。每家公司都放弃了对自身目录接口的控制，以向客户表明不会锁定他们的元数据，同时将产生收入的治理功能保留在商业产品中。基金会的选择本身也传递了信号。Polaris 去了 ASF——更严格的中立性检验——并在 2026 年初成为顶级项目（ASF 于 2026-03-05 公告）。[^polaris] Unity Catalog 去了 LF，Databricks 在那里对其方向保留了更大的影响力。
 
+<a id="open-weights-the-next-chapter"></a>
 ### 开放权重：下一章
 
 AI 模型正以新的形式经历同样的争论。Meta 的 Llama、Mistral、DeepSeek 等公开了模型权重，但条款各不相同。有些采用 Apache 2.0 或 MIT。另一些采用带有使用限制或用户数门槛的定制许可证，这些许可证除了名称之外，实质上都是源码可用许可证。2024 年 10 月，OSI 发布了开源 AI 定义 1.0（Open Source AI Definition 1.0）。它要求提供关于训练数据的足够信息，以便重建一个实质等同的系统，而 OSI 表示 Llama 的许可证不符合要求。[^osaid] 战略逻辑似曾相识：免费权重推动采用，而赚钱靠的是托管、微调和工具。治理在这里也在向基金会转移。Anthropic 于 2025 年 12 月将模型上下文协议（MCP）捐赠给 Linux Foundation 旗下的 Agentic AI Foundation。[^mcp] 可以预期，某个模型提供商会在未来某个版本上收紧条款；如果真的发生，也可以预期会出现一个基于最后一个开放检查点的分叉。
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 | 策略 | 价值获取方式 | 能否防范超大规模云厂商？ | 社区成本 | 最强版本论证 |
@@ -157,6 +168,7 @@ xychart-beta
 
 *图 38.7 — 两家专有软件公司（Datadog、Snowflake）的估值约为开源出身公司的两倍。按第 37 章的回归，增速差异（36% 和 35% 对比 15–30%）只能解释这一差距的一小部分；NRR、按用量计费的可见度和 AI 敞口的作用更大。无论如何，该图都不支持开源能带来溢价的观点。Confluent 的柱子并非 EV/未来 12 个月收入：它是 IBM 控制权交易的倍数，即约 $11B EV ÷ FY2025 GAAP 收入 $1,166.7M（2025-12-08 公告，2026-03-17 完成）。数值来自 `data/public_comps.csv`，市场数据截至 2026-10-02 至 2026-10-30。*[^comps]
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 - **更换过许可证的厂商：** MongoDB（SSPL）、Elastic（SSPL/ELv2/AGPL）、Redis（RSAL/SSPL/AGPL）、Cockroach Labs（Enterprise 许可证）、HashiCorp（BSL，现属 IBM）、Confluent（附加组件采用 Community License，现属 IBM）、ScyllaDB（自 2024 年起源码可用）、dbt Labs（Fusion 组件采用 ELv2）。参见[第 29 章](../04-company-deep-dives/ch29-operational-database-vendors.md)和[第 30 章](../04-company-deep-dives/ch30-data-movement-streaming-companies.md)。
@@ -165,10 +177,12 @@ xychart-beta
 - **坚持宽松许可的参与者：** DuckDB（MIT，隶属 DuckDB Foundation）、PostgreSQL（社区治理），以及在 ASF 项目之上进行销售的 Apache 原生公司，如 Dremio 和 Starburst。
 - **连续收购方：** IBM 先后收购了 Red Hat（2019）、HashiCorp（2025）、DataStax（2025）和 Confluent（2026）。它是开源出身基础设施最明确的买家。
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 第一个时代（1998–2010）确立了基本词汇。OSI 于 1998 年成立，ASF 成为 Hadoop 时代数据项目的默认归宿，公司靠支持服务赚钱。第二个时代（2010–2018）是开放核心加云。Databricks、Confluent、Elastic 和 MongoDB 围绕宽松许可的核心构建了企业版和托管服务。第三个时代（2018–2024）是上文所述的许可证变更浪潮，由超大规模云厂商的托管服务引发。第四个时代（2024 年起）从限制许可证转向设定标准。厂商将目录和协议捐赠给基金会，超大规模云厂商资助分叉，两家更换过许可证的公司重新加入了 AGPL。"公平源码"试图为延时开放的许可证贴上一个体面的标签。[^fsl] 下一轮值得关注的是：AI 模型许可证、围绕智能体协议治理权的争夺，以及厂商是否会像 dbt Labs 对 Fusion 那样，为 AI 时代的引擎重新引入源码可用条款。[^dbt-fusion][^mcp]
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源 / 日期 |
@@ -192,10 +206,12 @@ xychart-beta
 
 *图 38.8 — 分叉指标（贡献者、下载量、价差）是领先指标。交易价值表明，更换过许可证的公司仍然可以是 $6–11B 的资产。*
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** 对基础设施厂商而言，开放格式取代专有集成，成为入场门票。基于公开信息，战略团队可能评估的选项包括：(1) 公布表格式所依赖的 S3 行为（强一致性、条件写入、高元数据请求速率）的一致性测试结果，并针对 Iceberg、Delta 和 Polaris/Unity Catalog 的各版本进行测试；(2) 向上游贡献，例如贡献给 S3 兼容性测试套件或 Iceberg 的存储 I/O 层，使公司成为 ASF 项目中被认可的参与者，而不仅仅是使用者；(3) 以 Apache 2.0 许可发布连接器和 Kubernetes operator，使其无需许可证审查即可出现在合作伙伴的参考架构中；(4) 对于任何旨在赢得合作伙伴的产品，避免使用源码可用许可证，因为企业的开源政策会拖慢采用。对象协议的细节请参阅配套的 *Everpure Tech Atlas*。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理提的问题**
@@ -220,6 +236,7 @@ xychart-beta
 - "Linux Foundation 就意味着厂商中立。" 治理因项目而异。Delta Lake 和 Unity Catalog 位于 LF，但仍由 Databricks 主导。
 - "开放权重就是开源。" 大多数模型许可证不符合 OSI 的开源 AI 定义。[^osaid]
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 - OSI 的开源定义，以及其 2019 年 3 月关于 SSPL 的许可证审查摘要。[^osi-sspl]
@@ -227,6 +244,7 @@ xychart-beta
 - 将 SSPL 第 13 条、ELv2 的三项限制以及 BSL 的"附加使用授权"（Additional Use Grant）文本并排阅读。
 - ASF 孵化器的毕业标准，了解"社区重于代码"在实践中意味着什么。
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [开放核心（Open core）](../glossary.md#open-core) — 免费的开源引擎加付费的专有企业功能。
@@ -248,6 +266,7 @@ xychart-beta
 - [Apache Polaris](../glossary.md#apache-polaris) — 由 Snowflake 捐赠的 Iceberg REST 目录，自 2026 年起为 Apache 顶级项目。
 - [Unity Catalog](../glossary.md#unity-catalog) — Databricks 的治理目录，在 LF AI & Data 有一个 Apache 2.0 开源服务器。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^mdb-atlas]: MongoDB, Inc., Annual Report / Form 10-K for FY2026（2025 年 2 月–2026 年 1 月），https://www.sec.gov/Archives/edgar/data/0001441816/000162828026036431/ars.htm，2026 发布；2026-11-01 检索。Atlas 占 FY2026 收入的 73%，以及 FY2021/FY2026 收入（$590.4M；约 $2.46B，GAAP），见 `data/company_financials.csv` 记录。

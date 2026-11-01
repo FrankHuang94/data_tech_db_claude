@@ -1,6 +1,7 @@
 # 16. AI 数据生命周期
 > **深度：** L2 · **阅读时间：** 约 16 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 1 章 — 数据栈全景图](../01-data-systems-foundations/ch01-data-stack-map.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - 模型的数据要经过八个阶段：原始数据、数据整理（curation）、预训练（pretraining）、后训练（post-training）、评估、部署上下文、智能体（agent）和反馈。每个阶段都有各自的数据形态、数据量、工具和风险。大多数 AI 质量问题其实是在这些阶段之一暴露出来的数据问题。
@@ -9,14 +10,17 @@
 - 高价值阶段随时间迁移。2020–2023 年是预训练规模。2024 年以来则是整理质量、后训练（偏好数据、[RL 环境](../glossary.md#rl-environment)和[验证器](../glossary.md#verifiable-reward)），对企业而言则是上下文：在模型作答的那一刻，哪些受治理的事实能送达模型。
 - 不同阶段对存储的需求不同。整理和训练需要高吞吐的顺序读取，外加用于数据打乱（shuffle）的随机读取。检查点以突发方式写入。RAG 需要对向量进行低延迟随机读取。反馈日志会无限增长。可复现性依赖[数据版本管理](../glossary.md#data-versioning)（lakeFS、Iceberg/Delta 的[时间旅行（历史版本查询）](../glossary.md#time-travel)），正如晶圆厂依赖批次谱系一样。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业视角 + Everpure 视角）
 
 投资者把 AI 描述为一个算力故事，GPU 账单也支持这种看法。但数据是算力无法替代的投入。Gartner 预测，到 2026 年，组织将放弃 60% 缺乏 AI 就绪数据的 AI 项目（分析师预测）。[^gartner] IDC 估计，2022 年组织产生的数据中约 90% 是非结构化数据（白皮书发布于 2023 年，分析师估算，由 Box 赞助）。[^idc] 非结构化数据正是 RAG 和智能体所消耗的数据，也是传统数据仓库一直忽视的数据。谁负责清洗、分类、版本管理并提供这些数据，谁就能获取生命周期中的经常性支出。相比之下，训练一个模型更接近一次性的资本项目。
 
 对公司发展（corporate development）方向的读者而言，有用的划分是：哪些阶段由前沿实验室完全自建，哪些阶段由企业外购。实验室自建爬虫、整理管道和 RL 环境，主要外购的是 GPU、存储，以及从 Scale AI 等供应商处采购的人工数据。2025 年 6 月 Meta 以约 $14.3B 购入 Scale AI 49% 的无投票权股份时，Scale AI 的估值约为 $29B（媒体报道）。[^scale] 企业则几乎什么都外购：通过 API 获取的模型、向量索引、评估工具和智能体运行时。这正是 Databricks、Snowflake 和超大规模云厂商竞争的市场，也是 Everpure 2026 年各项举措所定位的地方。Data Intelligence（来自对 1touch 的收购）负责发现和分类数据，Data Stream 则借助 NVIDIA GPU 在 FlashBlade 上对数据进行向量化。[^everpure-ds] 两者都位于企业的整理阶段和部署上下文阶段，并不涉及前沿预训练。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="the-master-map"></a>
 ### 总览图
 
 ```mermaid
@@ -68,6 +72,7 @@ flowchart LR
 
 *图 16.1 — AI 数据生命周期（SV-9）。阶段 1–5 是前沿实验室路径，产出模型权重。阶段 6–8 是企业路径，用公司数据包裹这些权重。反馈环路同时为两者供数。*
 
+<a id="stages-12-raw-data-and-curation-the-wafer-cleaning-step"></a>
 ### 阶段 1–2：原始数据与整理，相当于晶圆清洗环节
 
 原始数据有四个来源。**网络**是最大的来源。Common Crawl Foundation 2026 年 8 月的爬取包含约 21.4 亿个网页，未压缩约 360 TiB，其存档累计超过 3,000 亿个网页。[^cc-aug26][^cc-home] **授权内容**包括按合同购买的图书、新闻档案、代码和文字记录。**企业数据**是公司拥有的文档、工单和数据表。**[合成数据](../glossary.md#synthetic-data)**（synthetic data）是由一个模型生成、用于训练另一个模型的文本、代码或推理轨迹。
@@ -80,6 +85,7 @@ flowchart LR
 
 **存储画像。** 数据整理是一项针对文件和对象的批量分析作业。Spark、Ray 或 Hugging Face 的 datatrove 以高吞吐顺序读取 WARC 文件，并写出 [Parquet](../glossary.md#parquet) 分片。MinHash 去重是一次大规模 shuffle。这是最像湖仓一体（lakehouse）工作负载的阶段（[第 7 章](../01-data-systems-foundations/ch07-open-table-formats.md)），也是前沿实验室与数据平台的主要重叠之处。[第 17 章](ch17-unstructured-data-processing.md)介绍解析，[第 20 章](ch20-training-data-supply-chain.md)介绍数据来源、授权和数据标注（labeling）供应商。
 
+<a id="stage-3-pretraining-the-wafer-fab"></a>
 ### 阶段 3：预训练，相当于晶圆制造
 
 [预训练](../glossary.md#pretraining)让模型学会在整理好的语料上预测下一个 token。语料规模持续增长：
@@ -97,6 +103,7 @@ Llama 3 论文是少数公开描述底层存储的资料之一。Meta 在其分�
 
 > **类比：半导体。** 检查点和数据集版本就是**晶圆批次谱系**。当现场失效品被退回时，晶圆厂会把晶粒追溯到它的批次、机台和工艺配方。当模型出现退化时，实验室必须把它追溯到对应的检查点、数据配比和精确的分片清单。没有这份记录，没人能复现或解释结果。
 
+<a id="stage-4-post-training-from-base-model-to-product"></a>
 ### 阶段 4：后训练，从基础模型到产品
 
 预训练模型只会续写文本。[后训练](../glossary.md#post-training)把它变成助手，所用的是另一类数据：规模小、成本高，由人或验证器制作。InstructGPT（Ouyang 等，2022 年）确立了范式。[^instructgpt] 共分三步：
@@ -115,10 +122,12 @@ Llama 3 论文是少数公开描述底层存储的资料之一。Meta 在其分�
 
 后训练的数据量并不大。Meta 报告称，Llama 3 的后训练使用了超过 1,000 万条人工标注样本。[^llama3-blog] 这是 GB 级而非 PB 级。但每条样本的成本很高。标注与环境供应商出售的是专业能力和产能，而不是存储，这正是这一阶段能支撑 Scale AI 及其竞争对手等公司的原因（[第 20 章](ch20-training-data-supply-chain.md)）。
 
+<a id="stage-5-evaluation"></a>
 ### 阶段 5：评估
 
 评估决定一个检查点能否发布。它有三层。公开**基准测试**是有已知答案的固定题集，当测试题泄露进训练数据时就会受到污染。私有**评估集**（eval）是为匹配实验室或客户真实用途而构建的任务套件，通常由 [LLM 评审](../glossary.md#llm-judge)（LLM judge）打分。**[红队测试](../glossary.md#red-teaming)**（red-teaming）是指由人工和自动化手段尝试让模型出现不当行为。评估集规模小、高度敏感。它们必须做版本管理、与训练数据隔离（去污染），并像源代码一样受到保护，因为泄露的评估集将失去任何衡量意义。对企业而言，这是它们最常跳过、也最需要的阶段。例如，Databricks 的 Agent Bricks 就在售卖自动生成的任务评估和 LLM 评审。[^dbx-dais25]
 
+<a id="stage-6-deployment-context-where-enterprises-live"></a>
 ### 阶段 6：部署上下文，企业的主战场
 
 企业很少修改模型权重，它们修改的是模型看到的内容。RAG（Lewis 等，2020 年）把生成器与一个覆盖 2,100 万个维基百科段落的检索器配对，从而可以通过替换索引而非重新训练来更新知识。[^rag] 企业版本遵循同样的模式（[第 19 章](ch19-retrieval-architectures.md)）：
@@ -133,6 +142,7 @@ Menlo Ventures 2024 年的调查发现，51% 的企业生成式 AI 部署采用�
 
 微调并没有消失，它已成为各平台都提供的托管功能。Snowflake 的 Cortex Fine-tuning（2025 年 2 月 GA）在账户内部训练参数高效的适配器。[^sf-ft] Snowflake 在 Summit 2026 上新增了 Cortex Training，用于对开放权重模型进行托管式 GPU 微调。[^sf-summit26] AWS 的 Bedrock Knowledge Bases 可以把 S3 Vectors 用作托管的 RAG 存储。[^s3v-bedrock]
 
+<a id="stages-78-agents-and-the-feedback-loop"></a>
 ### 阶段 7–8：智能体与反馈环路
 
 智能体增加了两条数据流。第一条是**工具**。模型通过[模型上下文协议](../glossary.md#model-context-protocol)等接口调用 SQL、API 和搜索；Anthropic 已于 2025 年 12 月将该协议捐赠给 Linux Foundation 旗下的 Agentic AI Foundation。[^mcp] 第二条是**记忆**：会话笔记和长期用户事实，它们需要被存储、检索、过期和治理（[第 22 章](ch22-agents-and-data.md)）。每次智能体运行还会产生一条**追踪**（trace），记录提示词、检索到的分块、工具调用和结果。追踪是飞轮的原材料。
@@ -155,12 +165,14 @@ flowchart LR
 
 > **类比：半导体。** 现场退货为良率学习提供养料。拥有批次谱系（阶段 3）并对退回部件做失效分析的晶圆厂，每一代都在进步；没有这些的晶圆厂则会重复同样的缺陷。追踪就是 AI 系统的现场退货。
 
+<a id="governance-risks-by-stage"></a>
 ### 各阶段的治理风险
 
 - **版权**问题主要集中在阶段 1–2。在 *Bartz v. Anthropic* 案中，Alsup 法官于 2025 年裁定，用图书进行训练属于合理使用，但保留盗版副本则不属于。该案随后以 $1.5B 和解，约每部作品 $3,000，和解协议于 2026 年 7 月获得最终批准。[^bartz] 对数据团队的启示是：来源记录与训练本身同样重要。FineWeb 的数据集卡片同样记录了在收到停止侵权通知后被移除的域名。[^fineweb-card]
 - **PII** 在每个阶段都会出现，在阶段 8 最为严重，因为用户对话会在这里成为训练候选数据。
 - **[数据投毒](../glossary.md#data-poisoning)**（data poisoning）比直觉上更便宜。Anthropic、英国 AI Security Institute 和 Alan Turing Institute 发现，约 250 份恶意文档就能给参数量从 600M 到 13B 的模型植入后门，且与模型大小无关。对最大的模型而言，这只占其训练 token 的 0.00016%（研究结果，针对狭窄的触发行为）。[^poison] 在 RAG 中门槛可能更低：针对检索的研究攻击中，每个目标问题只需植入少量文档，因为攻击者只需让它们进入索引并获得排名。
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 | 维度 | 前沿实验室生命周期 | 企业生命周期 |
@@ -181,6 +193,7 @@ flowchart LR
 
 相反观点的最强版本论证，"长上下文让 RAG 过时"，也部分成立。百万 token 的上下文窗口让小型语料无需分块。但长上下文无法在企业规模上处理权限、时效性和成本问题，因此检索仍是默认方案（[第 19 章](ch19-retrieval-architectures.md)）。
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 | 阶段 | 代表性工具 / 供应商 | 数据形态 | 存储 I/O 画像 |
@@ -200,6 +213,7 @@ flowchart LR
 
 **版本管理**是横向贯穿的一层。lakeFS 在对象存储之上增加了 Git 风格的分支、提交与合并，使训练运行可以锁定某个精确的数据集提交。lakeFS 于 2025 年 11 月接管了 DVC 开源项目的维护工作。[^lakefs] Iceberg 和 Delta 的时间旅行为表提供同样的锁定能力（[第 7 章](../01-data-systems-foundations/ch07-open-table-formats.md)）。向量索引是薄弱环节：很少有团队能说清某个答案是由哪个索引版本产生的。
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 ```mermaid
@@ -217,6 +231,7 @@ timeline
 
 共有三个阶段。**规模阶段（2020–2023 年）：** 更好的模型来自更多的 token 和参数，数据工作意味着过滤爬取结果。**质量阶段（2023–2024 年）：** FineWeb-Edu 和 Llama 3 的数据配比表明，经分类器筛选的数据和精心的配比胜过原始数据量。[^fineweb][^llama3-paper] **经验阶段（2025 年起）：** 可用的网络文本已接近枯竭，因此实验室通过合成生成、RL 环境和验证器来制造新数据，而企业则在上下文上展开竞争。下一个可能的约束是权利。授权协议和法院和解正在把数据来源变成一条成本线，而企业飞轮依赖于客户合同中的同意条款。两者都有利于保留数据血缘的平台。预计"AI 就绪数据"类产品（分类、PII 标记、版本化的非结构化语料）将继续向数据平台和存储平台整合。
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源 / 日期 |
@@ -243,10 +258,12 @@ timeline
 
 *图 16.6 — 整理后的预训练语料只有数十 TB，但为其提供服务的基础设施却达到数百 PB 和每秒数 TB。企业层面的数字关乎采用率和就绪度，而非字节数。*
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** 每个阶段对存储的需求都不同。整理阶段需要在对象存储上进行高吞吐的顺序扫描并具备 shuffle 带宽。训练阶段需要带随机采样的持续读取，以及足够的写入带宽来吸收检查点突发，避免 GPU 停顿。RAG 需要对向量索引进行低延迟随机读取以及频繁的小规模更新。反馈阶段需要廉价、持久、以追加为主并具备保留期控制的容量。Everpure 的 FlashBlade、Data Stream 和 Data Intelligence 面向的是企业阶段（分类、向量化、受治理的数据服务）。是否更进一步，例如对非结构化语料进行版本管理或提供检查点层级服务，属于基于公开信息、战略团队可能评估的选项之一。检查点、GPUDirect 和 AI 存储基准测试请参见配套的 *Everpure Tech Atlas*；[第 24 章](ch24-data-meets-compute-and-storage.md)讨论计算与存储之间的相互作用。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理提问**
@@ -271,6 +288,7 @@ timeline
 - "训练数据是一个存储容量问题。"一个 15T token 的语料约为 60 TB。真正的挑战在于吞吐、shuffle 和检查点突发。
 - "每个 AI 应用都有数据飞轮。"只有当结果可以被廉价打分、且数据可以合法复用时才有。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 - Penedo 等，*The FineWeb Datasets*（2024 年），关于大规模去重和分类器过滤。[^fineweb]
@@ -280,6 +298,7 @@ timeline
 - Anthropic，"Effective context engineering for AI agents"（2025 年）。[^context-eng]
 - lakeFS 关于分支和可复现性的文档。[^lakefs]
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [Token](../glossary.md#token) — 语言模型读取和预测的子词单元；英文平均约每个 token 四个字符。
@@ -312,6 +331,7 @@ timeline
 - [时间旅行](../glossary.md#time-travel) — 按某个较早的快照或版本查询表。
 - [Parquet](../glossary.md#parquet) — 占主导地位的开放列式文件格式，也用于存放整理后的文本分片。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^cc-aug26]: Common Crawl Foundation，"August 2026 Crawl Archive Now Available," https://commoncrawl.org/blog/august-2026-crawl-archive-now-available，发布 2026-08；检索 2026-11-01。2026 年其他快照：2 月 2.1B 网页 / 363 TiB；4 月 2.19B / 379 TiB；5 月 2.16B / 366 TiB（同一博客系列）。

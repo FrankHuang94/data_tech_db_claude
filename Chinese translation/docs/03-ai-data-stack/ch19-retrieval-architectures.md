@@ -1,6 +1,7 @@
 # 19. 检索架构：RAG、混合检索、GraphRAG 与上下文工程
 > **深度：** L2 · **阅读时间：** 约 16 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 18 章 — 嵌入与向量检索](ch18-embeddings-and-vector-search.md)、[第 17 章 — 非结构化数据处理](ch17-unstructured-data-processing.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - [检索增强生成](../glossary.md#retrieval-augmented-generation)（retrieval-augmented generation，RAG）在提问时为语言模型提供恰当的文档，而不是依赖模型在训练中记住的内容。它分为两半。在**索引阶段**，数据源被解析、切块、嵌入并存储。在**查询阶段**，问题被改写，候选内容被检索并重排序，上下文被组装，模型生成带引用的答案。[^lewis2020]
@@ -9,6 +10,7 @@
 - 百万 token 级上下文窗口并没有终结 RAG。在一个示意性的 80 万 token 工作负载中，把所有内容塞进提示词，在不使用缓存时每次查询约需 $1.61，使用提示词缓存时约需 $0.17，而 RAG 约为 $0.03（按 Claude Sonnet 5.5 标价，2026 年 11 月）。长输入还会降低答案质量（"中间迷失"（lost in the middle）、"上下文腐化"（context rot））。[^anthropic-pricing][^liu2023][^context-rot]
 - 2025 年出现的术语[上下文工程](../glossary.md#context-engineering)（context engineering）拓宽了视角。检索只是稀缺上下文窗口的输入之一，与指令、工具、记忆和历史并列。对这些 token 进行选择、压缩和排序，如今已是构建智能体（agent）的核心技能。[^ctx-eng] 对存储而言，其影响体现在：大型索引上的低延迟读取、源自主数据的新鲜度数据管道，以及用于卸载 [KV 缓存](../glossary.md#kv-cache)（KV cache）的新存储层级。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业 + Everpure 视角）
 
 RAG 是大多数企业在自有数据上实际使用生成式 AI 的方式。一个在公共互联网上训练的模型，对一家公司的合同、工单、零件编号或制度一无所知。在这些数据上进行微调（fine-tuning）既慢又贵，而且无法实施权限控制。检索同时解决了这两个问题。每个答案都由用户本就有权查看的文档组装而成，在提问的那一刻检索获得，每条论断都能追溯到出处。这使检索成为企业搜索和"AI 助手"预算的主战场。企业搜索初创公司 Glean 在 2025 年 6 月的 F 轮融资中估值达 $7.2B（媒体报道），随后表示其年度经常性收入（ARR）在 2026 年 5 月达到 $300M（公司披露，媒体报道）。[^glean-tc][^glean-arr] Microsoft、Google、AWS、Databricks 和 Snowflake 都将检索作为其平台的托管功能出售。
@@ -17,8 +19,10 @@ RAG 系统的质量主要由数据而非模型决定。大多数故障可追溯�
 
 对 Everpure 而言，这种关联是直接的。检索带来了三类与存储相邻的工作负载。第一类是针对超大型向量和关键词索引的低延迟随机读取。第二类是让索引与文件存储和对象存储上的主数据保持同步的持续数据管道。第三类是长上下文推理中的 KV 缓存卸载。Everpure 的 **Data Stream**（2026 年 6 月发布）已覆盖前两类：它基于 NVIDIA AI Data Platform 设计，在 FlashBlade 上将数据向量化，并提供流级访问控制。[^everpure-datastream] 其 **Key-Value Accelerator** 则瞄准第三类。[^everpure-kva] 下文的存储桥接部分列出了基于公开信息、战略团队可能评估的若干选项。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="the-two-halves-of-rag"></a>
 ### RAG 的两半
 
 2020 年 Lewis 等人命名 RAG 的论文，将一个覆盖约 2,100 万条 Wikipedia 段落的神经检索器与一个生成模型配对。论文表明，在知识密集型问题上，获得检索段落的模型胜过了规模大得多、只能依赖记忆的模型。[^lewis2020] 企业系统保留了这种划分，但增加了许多环节。
@@ -51,6 +55,7 @@ flowchart LR
 
 > **类比：存储器层次结构。** 可以把 LLM 训练得到的权重看作一块巨大、缓慢、有损的主存。它保存着世界的压缩副本，更新一次需要完整的训练运行，并且无法设置权限。RAG 是这块主存前面的一层缓存。检索是一次**预取**（prefetch），在模型执行之前，把本次查询需要的少数几行从语料库（后备存储）拉入上下文窗口（片上 SRAM）。与任何预取器一样，它以命中率和污染程度来评判。取错了行，模型就在垃圾数据上计算。取得太多，有用的内容就会被逐出。
 
+<a id="hybrid-search-fusion-and-reranking"></a>
 ### 混合检索、融合与重排序
 
 稠密向量能捕捉语义："笔记本电脑无法开机"能找到"笔记本无法启动"。但它们在精确 token 上表现较弱，例如零件编号、错误代码、法律引文和人名，而这些正是关键词检索的强项。BM25 是 Lucene 和 Elasticsearch 的标准评分函数，它会奖励在文档中频繁出现的稀有查询词。同时运行两者并合并结果，是默认的生产设计。
@@ -87,6 +92,7 @@ flowchart LR
 
 > **类比：半导体测试。** 重排序就是两阶段检测。晶圆厂不会把每颗裸片都放到昂贵的参数测试机上。先用快速的光学或电学筛查剔除明显的不良品，精密测量只留给入围名单。双编码器检索是低成本筛查，针对召回率调优，以免丢掉任何好的裸片。交叉编码器是精密测量，针对少数进入该环节的样本优化精确度。在第一阶段投入过多会损失吞吐量；跳过第二阶段则会出货边缘品。
 
+<a id="where-rag-breaks"></a>
 ### RAG 在哪里失效
 
 大多数 RAG 事故是看起来像模型问题的数据问题。
@@ -106,10 +112,12 @@ flowchart LR
 
 "中间迷失"这一结论值得强调，因为它影响上下文的组装方式。Liu 等人（2023，发表于 TACL 2024）将唯一的相关文档在 20 份检索文档中移动位置。准确率呈 U 形：文档位于开头或结尾时最高，位于中间时最低。对其中一个模型而言，中间位置的准确率甚至低于完全不提供文档时的成绩。[^liu2023] Chroma 2025 年对 18 个模型的"上下文腐化"研究发现，即使在简单任务上，可靠性也会随输入增长而下降。[^context-rot] 即使放得下，更多上下文也不是免费的。
 
+<a id="agentic-rag"></a>
 ### 智能体式 RAG
 
 经典 RAG 检索一次然后作答。**智能体式 RAG**（agentic RAG）把检索变成模型可按需反复调用的工具：检索、阅读、发现缺口、细化查询、检索另一个数据源，并在证据充分时停止。它能处理多跳问题（"哪些使用旧合同模板的客户将在下季度续约？"），这类问题需要先做文档检索，再做一次 SQL 查询，然后再检索一次。代价是更多的模型调用、更难预测的延迟以及更难的评估。Microsoft 的 Azure AI Search 增加了"智能体式检索"（agentic retrieval）模式，用 LLM 规划子查询并并行执行；基于它构建的 Foundry IQ 知识库于 2026 年 6 月宣布正式可用（GA）。[^foundry-iq] [第 22 章](ch22-agents-and-data.md)介绍智能体一侧，包括把检索和 SQL 作为工具暴露出来的[模型上下文协议](../glossary.md#model-context-protocol)（Model Context Protocol）。
 
+<a id="graphrag-and-knowledge-graphs"></a>
 ### GraphRAG 与知识图谱
 
 Top-k 检索假设答案存在于少数几个段落中。但有些问题针对的是整个语料库："五年的审计报告中反复出现的供应商风险有哪些？"Microsoft Research 的 GraphRAG（Edge 等人，2024 年 4 月；2024 年 7 月开源）先构建结构。[^edge2024][^ms-graphrag-blog]
@@ -144,6 +152,7 @@ flowchart TB
 
 GraphRAG 是从文本中即时构建图谱。许多企业已经拥有经过整理的图谱：产品层级、供应链、组织架构图、客户账户关联。领先的[属性图](../glossary.md#property-graph)（property graph）数据库 Neo4j（[第 2 章](../01-data-systems-foundations/ch02-data-models.md)）在 2023 年加入了原生向量索引，因此一条 [Cypher](../glossary.md#cypher) 查询既能找到语义相似的分块，又能遍历它们之间的关系。[^neo4j-vector] Neo4j 报告称其 ARR 于 2024 年 11 月突破 $200M（公司披露），一笔 $50M 的投资重申了其 $2B 的估值。[^neo4j-arr] AWS 于 2025 年 3 月在 Bedrock Knowledge Bases 中正式推出 GraphRAG，底层由 Neptune Analytics 支撑。[^bedrock-graphrag] 最高层级是[本体](../glossary.md#ontology)（ontology）：对业务对象、属性、关联及允许操作的受治理模型。Palantir 的 Foundry Ontology 是最知名的商业实例。[^palantir-ontology] 其理念与语义层应用于指标的理念相同（[第 14 章](../02-pipelines-and-governance/ch14-semantic-layers-and-bi.md)）：把企业自己的定义交给模型，而不是让模型从文字中推断。
 
+<a id="long-context-versus-retrieval"></a>
 ### 长上下文与检索之争
 
 前沿模型的上下文窗口从 2023 年的 32K–100K token，在约两年内增长到 1M 或以上。Google 于 2024 年 2 月预览了 1M token 的 Gemini 1.5 Pro。[^gemini15] 到 2026 年末，Anthropic 为其当前的 Opus、Sonnet 和 Haiku 模型标注 1M token，OpenAI 为 GPT-5.5 标注约 1.05M。[^anthropic-pricing][^openai-gpt55] 一个显而易见的问题是：还要不要检索，还是干脆把整个语料库放进提示词？
@@ -172,6 +181,7 @@ GraphRAG 是从文本中即时构建图谱。许多企业已经拥有经过整�
 
 "大海捞针"（needle in a haystack）测试把一个事实藏在长篇填充文本中，让模型去找出来，它主要衡量的是查找能力。真实任务需要模型把分散在输入各处的许多事实组合起来，而这正是长上下文准确率下滑的地方。Chroma 的研究认为，标准的长上下文基准测试混淆了输入长度与任务难度，从而美化了长窗口的表现。[^context-rot]
 
+<a id="context-engineering"></a>
 ### 上下文工程
 
 到 2025 年，工作单元已不再是提示词，而是整个上下文窗口。Anthropic 的工程团队在 2025 年 9 月将[上下文工程](../glossary.md#context-engineering)描述为：为智能体的每一步精选出最小的一组高信号 token，包括指令、工具定义、检索到的文档、记忆和消息历史。[^ctx-eng]
@@ -207,10 +217,12 @@ flowchart LR
 
 > **类比：片上 SRAM。** 上下文窗口的行为类似容量有限的片上 SRAM。容量在每一代模型中是固定的。放入其中的每个字节都会挤占另一个字节。性能与其说取决于原始容量，不如说取决于调度器选择让哪些内容常驻。缓存更大但替换策略糟糕的芯片，会输给缓存更小但替换策略优秀的芯片。上下文工程就是那套替换策略。KV 缓存——模型对已处理 token 保存的内部状态——就是这块 SRAM 实打实的硬件成本。当窗口变大时，溢出到 DRAM 和闪存的正是它（见存储桥接）。
 
+<a id="evaluating-retrieval-systems"></a>
 ### 评估检索系统
 
 RAG 的评估分两层。检索指标，如 recall@k、NDCG 和**上下文精确度**（context precision，检索到的段落是否相关、是否排在前面？），需要一套带有已知优质段落的标注问题集。生成指标则考察答案是否**忠实**（faithful，每条论断都得到检索上下文的支持）以及是否**相关**（relevant，切中问题）。RAGAS 框架（Es 等人，2023）推广了由 LLM 计算的、无需参考答案的此类指标版本。[^ragas] [LLM 评判](../glossary.md#llm-as-judge)（LLM-as-judge）打分成本低、可扩展，但评判者存在偏差：它们偏爱更长的答案，也偏爱与自身同一模型家族的风格。优秀的团队会用几百个人工标注样本来校准评判者，并在切块器、嵌入模型或提示词发生变化时重新运行整套评估。索引变更就是一次发布，应当像发布一样接受测试。
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 | 方案 | 擅长 | 短板 | 索引阶段成本 | 查询阶段成本 | 适用情形 |
@@ -226,6 +238,7 @@ RAG 的评估分两层。检索指标，如 recall@k、NDCG 和**上下文精确
 
 **为备选方案构建最强版本论证（steelman）。** *支持长上下文：* 模型价格每年都在下降，缓存已为共享语料消除了大部分成本劣势，而每条 RAG 数据管道都是一个新的出错点。能把问题装进窗口的团队应当先试试这条路。*支持纯向量检索：* 现代嵌入模型能处理许多精确匹配的情形，一个索引也比两个简单。*支持 GraphRAG：* 当问题关乎关系时，无论调优得多好，分块检索回答的都是错误的问题。*反对所有方案：* 没有访问控制和新鲜度，其他一切都无从谈起。一个高度相关、却取自用户本不应看到的文档的答案，是一次安全事件，而不是质量上的胜利。
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 | 参与者 | 产品/服务 | 定位（2026 年 11 月） |
@@ -245,6 +258,7 @@ RAG 的评估分两层。检索指标，如 recall@k、NDCG 和**上下文精确
 
 2024 年以来的趋势是，检索技术栈向已持有受治理数据的平台集中。MongoDB 收购了 Voyage AI（$220M，2025 年），Elastic 收购了 Jina AI（据其 10-Q，收购对价为 $43.4M），各自将嵌入和重排序模型纳入内部。[^mongodb-voyage][^elastic-jina] 独立企业搜索厂商的立足点在于覆盖广度。一家公司的知识分散在 Slack、Jira、Salesforce、Google Drive 和 SharePoint 中，没有哪一家平台厂商会以完整的权限保真度为其竞争对手的应用建立索引。独立厂商的看空逻辑是：Microsoft 和 Google 会把"够用"的搜索捆绑进客户早已付费的席位中。
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 ```mermaid
@@ -265,6 +279,7 @@ timeline
 
 下一步很可能是对*结构化和非结构化数据的联合检索*，其权限和语义来自目录与语义层（[第 14 章](../02-pipelines-and-governance/ch14-semantic-layers-and-bi.md)、[第 22 章](ch22-agents-and-data.md)）。对当今 RAG 技术栈的看空逻辑是：模型自身内化了更多检索行为，这将使编排框架商品化，但不会使其下的索引或受治理数据商品化。
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源 / 日期 |
@@ -284,10 +299,12 @@ timeline
 
 *图 19.11 — 驱动检索设计的数字：融合与重排序带来可衡量的质量提升，缓存使长上下文成本变化约 10 倍，而 KV 缓存的规模正是长上下文变成存储问题的原因。*
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** 检索创造了三类存储工作负载。(1) **索引服务：** 针对超出 DRAM 容量的向量索引和倒排索引的小块随机读取。DiskANN 等驻留闪存的 ANN 设计使延迟成为一个存储性能问题（[第 18 章](ch18-embeddings-and-vector-search.md)）。(2) **新鲜度：** 索引是派生数据，因此它的时效性取决于从主文件存储和对象存储出发的数据管道。存储层的变更通知、快照和权限元数据能缩短这一循环。这正是 Everpure 的 Data Stream 和 Data Intelligence（1touch）产品所占据的领域。[^everpure-datastream] (3) **KV 缓存卸载：** 70B 级模型上的 1M token 上下文约持有 330 GB 的 KV 状态（估算），超过单个 GPU 的显存。NVIDIA Dynamo 可以将 KV 块从 HBM 分层到 CPU 内存、本地 SSD 和网络存储，NVIDIA 基于 BlueField-4 的上下文内存层（CMX）则为此确立了一个 pod 级闪存层，Dell、IBM、VAST 和 WEKA 被列为支持方。[^dynamo-kv][^nvidia-cmx] Everpure 的 Key-Value Accelerator 与 Dynamo 集成，并通过 NFS 和 S3 将可复用前缀保存在 FlashBlade 上（厂商声明）。[^everpure-kva] 基于公开信息，战略团队可能评估的选项包括：从索引服务向上沿技术栈走多远、是否掌握检索数据管道的部分环节，以及如何在 NVIDIA CMX 合作伙伴生态中为 KVA 定位。闪存与协议细节请参阅姊妹篇 *Everpure Tech Atlas*。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理提问**
@@ -312,6 +329,7 @@ timeline
 - "GraphRAG 是更好的 RAG。"它回答的是另一类问题，且索引成本高得多。
 - "模型会遵守文档权限。"模型什么也不强制执行。访问控制必须在 token 进入窗口之前完成。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 - Lewis 等人，"Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks"（NeurIPS 2020）。[^lewis2020]
@@ -322,6 +340,7 @@ timeline
 
 > **深入（L3）。** ColBERT 等后期交互（late-interaction）模型介于双编码器和交叉编码器之间。它们为每个 token 而非每个分块存储一个向量，并以最大相似度之和打分。这样能以检索速度获得交叉编码器的大部分精确度，代价是索引可能大一个数量级（估算），这是对存储容量的直接权衡。
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [检索增强生成](../glossary.md#retrieval-augmented-generation) — 在查询时获取相关内容并将其加入模型的提示词。
@@ -351,6 +370,7 @@ timeline
 - [Cypher](../glossary.md#cypher) — Neo4j 的图查询语言。
 - [模型上下文协议](../glossary.md#model-context-protocol) — 向智能体暴露工具和数据的开放标准。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^lewis2020]: P. Lewis et al., "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks," NeurIPS 2020, arXiv:2005.11401, https://arxiv.org/abs/2005.11401，发布于 2020-05-22；检索于 2026-11-01。

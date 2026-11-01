@@ -1,6 +1,7 @@
 # 9. 数据管道模式
 > **深度：** L2 · **阅读时间：** 约 15 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 1 章 — 数据技术栈全景图](../01-data-systems-foundations/ch01-data-stack-map.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - 数据管道（pipeline）的本质是制造副本。每一种模式都是对三个问题的不同回答：数据在哪里做转换、多久移动一次、如何检测变更。大多数成本、新鲜度与故障方面的权衡，都源自这三个答案。
@@ -9,6 +10,7 @@
 - “[零 ETL](../glossary.md#zero-etl)（zero-ETL）”并不意味着没有数据管道，而是由厂商在其自有平台内部替你运行管道，通常是 CDC 加复制再加格式转换。你省下了工程投入，代价是被锁定。[零拷贝数据共享](../glossary.md#zero-copy-data-sharing)（zero-copy data sharing，如 Snowflake Secure Data Sharing、Delta Sharing/OpenSharing）是更有力的理念，因为它消除的是副本本身，而不仅仅是代码。
 - 正确性来自两个习惯：[幂等](../glossary.md#idempotency)加载（同一次加载运行两次结果相同）以及有计划的[回填](../glossary.md#backfill)（backfill）。[奖章架构](../glossary.md#medallion-architecture)（medallion architecture，即青铜、白银、黄金三层）在很大程度上就是让这两件事成为常规操作的一种方法。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业视角 + Everpure 视角）
 
 数据管道是数据平台赚钱和亏钱的地方。数据摄取（ingestion）厂商按移动的行数收费。例如，Fivetran 按[月活跃行数](../glossary.md#monthly-active-rows)（monthly active rows，MAR）计费，并在 2025 年 3 月把用量分档从账户级改为按每个连接计算，这让许多使用多个连接器的客户账单上涨。[^fivetran-pricing] 数据仓库对转换数据所用的算力收费，流处理平台则对常驻运行的集群收费。这一层近期最大的几笔交易是：IBM 以约 $11B 收购 Confluent（2026 年 3 月完成）、Salesforce 以约 $8B 收购 Informatica（股权价值；2025 年 11 月完成），以及 Fivetran 与 dbt Labs 的全股票合并（2026 年 6 月完成；条款未披露；合并后 ARR “接近 $600M”，公司披露）。[^ma-csv] 这三笔交易都是押注于掌控数据的流动方式。
@@ -17,8 +19,10 @@
 
 对 Everpure 而言，观察视角是副本。每一跳管道通常都会产生又一份完整或部分的副本：原始落地区、清洗层、业务数据集市、特征存储（feature store）、向量索引。副本数量同时推高存储占用和数据治理风险。Everpure 收购 1touch（$125M，2026 年 5 月完成）[^ma-csv]及其 Data Intelligence 产品，都定位于“无需复制”即可发现和分类数据。这让 Everpure 与零拷贝共享站在同一阵营，也让副本追踪成为战略团队自然会评估的问题。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="etl-vs-elt-where-the-transformation-runs"></a>
 ### ETL 与 ELT：转换在哪里运行
 
 **ETL**（extract, transform, load，抽取、转换、加载）在数据加载进数据仓库之前，先在独立的服务器上进行清洗和重塑。**ELT**（extract, load, transform，抽取、加载、转换）则先加载原始数据，再在数据仓库内部用 SQL 完成转换，通常借助 dbt（[第 12 章](ch12-transformation-and-orchestration.md)）。
@@ -46,6 +50,7 @@ flowchart LR
 
 **ETL 仍然占优的场景。** 有三种情况。第一是隐私：如果信用卡号或健康记录绝不能出现在分析环境中，就必须在*落地之前*把它们令牌化（tokenization）或剔除。原始 PII 一旦进入青铜层表，它也就同时存在于该表的快照、备份和每一个克隆中。第二是成本控制：在极高数据量下，用廉价的流处理器或 Spark 作业先做过滤或预聚合，成本可能远低于在高端数据仓库里存储并扫描全部数据。第三是监管边界：数据驻留规则有时要求在源区域内完成转换。实践中，大多数现代技术栈采用的是 “EtLT”：在传输途中做轻量清理（脱敏、类型修正），重度建模则放在数据仓库中。
 
+<a id="batch-micro-batch-and-streaming-how-often-it-moves"></a>
 ### 批处理、微批处理与流处理：多久移动一次
 
 第二个选择是节奏。**批处理**作业按计划（每晚、每小时）移动一个有界的数据块。**[微批处理](../glossary.md#micro-batch)**（micro-batch）引擎（Spark Structured Streaming 的默认模式、Snowflake Dynamic Tables）每隔几秒到几分钟运行一次相同逻辑。**流处理**（streaming）引擎（Apache Flink、Kafka Streams、Spark 的实时模式）则在每个事件到达时立即处理（[第 11 章](ch11-streaming-and-event-platforms.md)）。
@@ -70,6 +75,7 @@ flowchart LR
 
 **[精确一次语义](../glossary.md#exactly-once-semantics)（exactly-once semantics）。** 没有任何网络能把一条消息恰好投递一次，因为超时后的重试会产生重复。系统通过把至少一次投递与去重或事务相结合，实现“等效一次”。Kafka 在 2017 年的 0.11 版本中加入了幂等生产者和事务（KIP-98）。[^kafka-eos] Debezium 3.3（2025 年 10 月）为其核心源连接器加入了精确一次支持，构建在 Kafka Connect 于 Kafka 3.3 中获得的精确一次源框架之上（KIP-618，2022 年）。[^debezium-33] 只有当*下游*（sink）同样是幂等或事务型的，端到端保证才成立，例如以主键和日志位置为键的 `MERGE`。对任何声称实现了精确一次的人，这就是唯一需要追问的问题。
 
+<a id="change-data-capture-how-changes-are-detected"></a>
 ### 变更数据捕获：如何检测变更
 
 CDC 回答的是“自上次以来发生了什么变化？”实现方式有三种。
@@ -105,10 +111,12 @@ sequenceDiagram
 
 **快照加流（回填）。** 日志只保存近期历史，因此新的 CDC 管道要先做一次全表快照，然后切换到日志。难点在于既不能锁表，又不能丢失或重复在复制期间发生的变更。Netflix 的 DBLog（2020 年）的解法是按主键分块读取表，并在每个块前后向日志中插入低水位和高水位标记。在该窗口内被日志修改过的行，以日志为准，优先于分块副本。[^dblog] Debezium 以“增量快照”的名义采用了这一方法（1.6 版，2021 年），通过向源数据库写入一行信号记录来触发。[^debezium-incr] 同样的机制也让你可以在流处理持续进行的同时，随时对某一张表重新回填。
 
+<a id="reverse-etl-closing-the-loop"></a>
 ### 反向 ETL：闭环
 
 [反向 ETL](../glossary.md#reverse-etl)（reverse ETL）把建模后的数据从数据仓库*推送出去*，送进运营工具：把流失评分推入 Salesforce、把受众推入广告平台、把产品使用情况推入 Zendesk。从机制上看，它就是对数据仓库运行的 CDC。工具计算出某个模型自上次同步以来哪些行发生了变化，然后调用目标系统的 API，并处理限流和重试。Hightouch 和 Census 在 2020 年前后定义了这一品类。Fivetran 于 2025 年 5 月同意收购 Census（金额未披露；交割日期未单独公布），[^census-deal]以便把数据摄取和数据激活作为一个产品来销售。Hightouch 转向 AI 驱动的营销，并于 2026 年 4 月以 $2.75B 估值完成 $150M 的 D 轮融资（媒体报道）。[^hightouch] 反向 ETL 也会增加副本：同一张客户表现在同时存在于数据仓库和五个 SaaS 工具中，每处都有各自的保留和访问规则。
 
+<a id="zero-etl-the-pipeline-you-dont-see"></a>
 ### 零 ETL：你看不见的管道
 
 AWS 在 2022 年 11 月的 re:Invent 上推出了“零 ETL”，首个功能是 Aurora 到 Redshift 的复制。[^aws-zetl-2022] 它于 2023 年 11 月针对 Aurora MySQL 正式发布（GA），除底层资源外不额外收费。[^aws-zetl-ga] DynamoDB 到 Redshift 于 2024 年 10 月跟进，如今这一系列已通过 AWS Glue 覆盖 SaaS 应用、S3 Tables 和自管数据库。[^aws-zetl-more] 每个平台都有对应产品：
@@ -141,10 +149,12 @@ flowchart LR
 
 坦率的评估是：对于同一厂商内部、从数据库到数据仓库的复制，零 ETL 确实很方便，而且去掉了一层脆弱的连接器代码。但它的“免费”就像打印机的“免费”一样。源端和目标端都必须是该厂商的产品，转换选项很少，数据以厂商偏好的格式和目录落地。日后要迁出，就意味着要重建那条你从未需要自己构建的管道。镜像到开放格式（Fabric 写 Delta，Snowflake 镜像写 Iceberg）可以缓和这种锁定。联邦查询则通过完全不复制进一步缓和，但代价是查询延迟以及对源系统的负载。
 
+<a id="data-sharing-the-no-copy-pipeline"></a>
 ### 数据共享：无副本的管道
 
 共享是消除副本，而不是隐藏副本。在 2017 年推出的 Snowflake Secure Data Sharing 中，提供方授予另一个账户对其表的读取权限。数据既不被复制也不被移动，消费方只为查询所用的算力付费。[^sf-sharing][^sf-sharing-2017] Delta Sharing（2021 年）通过开放的 REST 协议实现同样的功能：服务器向接收方提供指向底层 Parquet 文件的短期签名 URL，因此任何引擎都能读取。2026 年 6 月，Databricks 将其作为 **OpenSharing** 捐赠给 Linux Foundation，并扩展到支持 Iceberg 接收方以及模型等 AI 资产。[^opensharing] 约束来自物理层面：跨云或跨区域共享仍需复制，出口流量费（egress fees）也会重新出现。
 
+<a id="medallion-architecture-idempotency-and-backfills"></a>
 ### 奖章架构、幂等性与回填
 
 [奖章架构](../glossary.md#medallion-architecture)是 Databricks 为一种分层约定起的名字，这种约定适用于任何湖仓或数据仓库。[^dbx-medallion] 青铜层保存原样到达的数据，只追加，类型往往较宽松。白银层保存经清洗、去重、一致化的实体。黄金层保存业务级的聚合与特征（底层的表格式见[第 7 章](../01-data-systems-foundations/ch07-open-table-formats.md)）。
@@ -186,6 +196,7 @@ flowchart LR
 
 青铜层的意义在于可重放性。如果某个白银层转换存在一个持续了三周的错误，你修正它，然后从青铜层重新计算白银层和黄金层。这种**回填**只有在每一步都是**幂等**的情况下才安全。加载操作覆盖某个分区，或按键执行 `MERGE`，而不是盲目追加，这样运行两次也不会改变任何东西。实用规则：每次写入都以自然标识符或基于日志的标识符为键；按事件时间分区处理；让“重跑 2026-10-01 至 2026-10-21”成为一条编排器命令；绝不让回填和在线管道同时写入同一个分区（[第 12 章](ch12-transformation-and-orchestration.md)）。
 
+<a id="worked-example-one-order-table-three-designs"></a>
 ## 实例演示：一张订单表，三种设计
 
 一家中型零售商在 Postgres 中有一张 `orders` 表：约 5,000 万行，每天约 200 万笔新订单，计入状态更新后每天约 600 万次行变更。本节所有数字均为示意性估算，并非基准测试结果。
@@ -205,6 +216,7 @@ flowchart LR
 
 决策规则很简单：给新鲜度定价。如果一个 5 分钟新鲜度的库存视图能避免可量化数量的超卖订单，设计 C 就能收回成本。如果使用方是每周一次的高管看板，设计 B 已经绰绰有余。一种常见的混合方案是：只对需要的三四张表运行 CDC，其余全部采用每小时 ELT。
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 | 选择 | 选项 1 | 选项 2 | 选项 1 的最强版本论证 | 选项 2 的最强版本论证 |
@@ -219,6 +231,7 @@ flowchart LR
 
 反对“全部流式化”阵营的最有力论据来自运维层面：流处理状态难以版本化、测试和回填，而且大多数使用方本来就无法以快于每小时的速度根据数据采取行动。反对“批处理就够了”阵营的最有力论据则是：AI 智能体和运营分析越来越*确实*在以分钟为单位采取行动，而基于日志的 CDC 如今已足够便宜，默认方案正在转向持续复制，再在其上叠加批处理式建模。
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 | 层级 | 参与者（2026 年 11 月） | 定位 |
@@ -233,6 +246,7 @@ flowchart LR
 
 *图 9.8 — 独立的 CDC 和连接器厂商正受到双重挤压：下有开源，上有提供免费复制的平台。连接器经济学见[第 10 章](ch10-ingestion-and-integration.md)，公司详情见[第 30 章](../04-company-deep-dives/ch30-data-movement-streaming-companies.md)。*
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 ```mermaid
@@ -257,6 +271,7 @@ timeline
 
 下一步是更少的副本，而不是更快的副本。开放表格式（open table format）让一份副本服务于多个引擎（[第 7 章](../01-data-systems-foundations/ch07-open-table-formats.md)）。共享协议让一份副本服务于多个组织。联邦查询让部分查询完全跳过副本。可以预期，数据管道支出将从“搬运字节”转向对“谁读取哪份副本”的治理。
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源 / 日期 |
@@ -274,10 +289,12 @@ timeline
 
 *图 9.10 — 交易价格显示了买方为 CDC 技术诀窍支付的代价。定价相关的几行则显示了数据管道成本实际落在哪里：按行费用、目标端算力和存储。*
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** 图 9.5 中的每一跳都是一次新副本的写入：CDC 变更日志、青铜层、白银层、黄金层、反向 ETL 目标端，以及它们各自的快照。一个保守的技术栈可能为一张热表保存三到六份物理副本（估算）。这既是存储容量问题，也是数据安全问题，因为每份副本都需要数据分类和访问控制。零拷贝共享、联邦查询和开放表格式会减少副本数量；镜像和反向 ETL 则会增加副本数量。对于一个定位于就地发现和分类数据的厂商而言，副本血缘视图（“这张客户表存在于 7 个地方”）是战略团队基于公开信息可能评估的一个选项。快照和数据缩减机制请参阅配套的 *Everpure Tech Atlas*。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理（PM）提问**
@@ -302,6 +319,7 @@ timeline
 - “CDC 对源端没有影响。”读取日志确实很轻量，但停滞的消费者可能会写满主库的磁盘。
 - “数据共享是免费的。”存储不会被重复，但消费方要支付算力，而跨区域共享会重新引入复制和出口流量费。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 - Akidau 等，“The Dataflow Model”（VLDB 2015），以及 2026 年的回顾文章 “The Dataflow Model Revisited”。[^dataflow][^dataflow-rev]
@@ -310,6 +328,7 @@ timeline
 - Kafka KIP-98 和 Confluent 关于精确一次的文章，涉及幂等生产者和事务。[^kafka-eos]
 - Databricks 的奖章架构指南，以及 GitHub 上的 OpenSharing 协议规范。[^dbx-medallion][^opensharing]
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [ETL](../glossary.md#etl) — 抽取、转换、加载：数据在落地数据仓库之前，先在独立系统上完成重塑。
@@ -336,6 +355,7 @@ timeline
 - [奖章架构](../glossary.md#medallion-architecture) — 把原始、已清洗和业务就绪数据分为青铜、白银和黄金三层的分层方式。
 - [月活跃行数](../glossary.md#monthly-active-rows) — Fivetran 的计费单位：一个月内被插入、更新或删除的不同行数。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^redshift-2012]: Computerworld, "Amazon introduces data warehouse service"（Redshift 发布；预留价格低于 $1,000/TB/年；AWS 估算自建成本为 $19,000–25,000/TB/年），https://www.computerworld.com/article/1401411/amazon-introduces-data-warehouse-service.html，发布 2012-11-28；检索 2026-11-01。自建成本数字为 AWS 估算，引自 Jeff Barr 的发布博文。

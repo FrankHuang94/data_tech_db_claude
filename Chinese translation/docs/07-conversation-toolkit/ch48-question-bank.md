@@ -1,6 +1,7 @@
 # 48. 问题库：154 个问题
 > **深度：** L2 · **阅读时间：** 约 36 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 46 章 — 与数据从业者对话](ch46-talking-with-data-people.md)，[第 47 章 — 尽职调查清单](ch47-diligence-checklist.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - **这是一个包含 154 个编号问题的实用问题库**，适用于与数据平台厂商、超大规模云厂商合作伙伴团队、创始人、客户及财务对口人员的会谈。每个问题都带有一个主题标签和一个受众标签，大多数问题还附有一条*关注点*说明，指出一个有力的回答应包含哪些内容。
@@ -9,6 +10,7 @@
 - **许多问题是围绕前面各章指出的常见误解设计的**：年化运行率（run-rate）不等于 GAAP 收入，开放格式并不能终结锁定，零 ETL（zero-ETL）本质上仍是一条数据管道，而模型本身不执行任何权限控制。善于提问是避免说错话的最快方式。
 - **"存储与数据的交汇"主题组是为 Everpure 的战略视角而写的。** 它仅使用公开信息，并将每个问题都设定为战略团队可能向合作伙伴、客户或自身提出的问题，绝不作为对非公开计划的陈述。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（业务 + Everpure 视角）
 
 在数据行业从事企业发展（corporate development）工作的人，每周大部分时间都在进行这样的对话：对方比你更了解产品。Databricks 的合作伙伴经理了解 Storage Ecosystem 计划。创始人了解客户流失队列。客户的架构师知道到底是哪个目录（catalog）持有授权。你不可能比他们知道得更多，但你可以比他们问得更好。一个精准的问题表明你理解其中的机制。它还能让回避变得显而易见，并为你当月会见的五家公司提供可比较的依据。
@@ -17,6 +19,7 @@
 
 对于 Everpure（前身为 Pure Storage；NYSE：P，原代码 PSTG）而言，这些对话集中在三个地方。第一是 Databricks、Snowflake、各超大规模云厂商和 NVIDIA 的合作伙伴团队，问题围绕认证、凭证分发（credential vending）和联合销售（co-sell）。第二是 Data Intelligence（基于收购 1touch 构建的产品）附近的标的公司和创始人，问题围绕分类准确率、买方和可比公司。第三是正在决定其湖仓一体（lakehouse）表和 AI 检索层放在何处的客户。本问题库对这三类对话有所侧重，但对任何数据行业会谈都依然有用。
 
+<a id="how-to-use-this-chapter"></a>
 ## 如何使用本章
 
 **先读标签。** 每个问题都以 *[Topic: … · Audience: …]* 形式的标签结尾。主题（Topic）对应下面十一个 `##` 主题组之一。受众（Audience）列出应由谁来回答：**PM**（产品经理）、**Engineer**（工程师或解决方案架构师）、**Partner manager**（联盟或合作伙伴工程）、**Founder/CEO**（创始人/CEO）、**CFO/Finance**（财务、投资者关系、FP&A）以及 **Customer**（运行该产品的买方或实践者）。为工程师设计的问题会让 CFO 感到厌烦，反之亦然。会前请先按受众筛选。
@@ -75,6 +78,7 @@ flowchart TB
 
 *图 48.2 — 为一次会议挑选问题，从对方的角色出发，从两到三个主题组中选题，最后为回答评分，以便在不同会议之间进行比较。*
 
+<a id="coverage-topic-by-audience"></a>
 ### 覆盖范围：主题 × 受众
 
 一个问题可以标注多个受众，因此每行的受众合计会超过该组的问题数。计数根据本文件中的标签统计得出。
@@ -96,10 +100,11 @@ flowchart TB
 
 *图 48.3 — 工程师（69 个标签）、产品经理（52 个）和财务负责人（50 个）的问题储备最为充足。合作伙伴经理类问题集中在 Everpure 合作伙伴对话发生的领域：超大规模云厂商、Databricks 和 Snowflake，以及存储与数据的交汇。空白是有意为之：AI 数据栈没有合作伙伴经理类问题，估值主题也没有工程师类问题。*
 
-![十一个主题组各自问题数量的条形图，每组 12 到 16 个，AI 数据栈最多；第二个面板为受众标签，工程师（69）、产品经理（52）和财务（50）居前](../assets/charts/ch48_question_counts.png)
+![十一个主题组各自问题数量的条形图，每组 12 到 16 个，AI 数据栈最多；第二个面板为受众标签，工程师（69）、产品经理（52）和财务（50）居前](../../../docs/assets/charts/ch48_question_counts.png)
 
 *图 48.4 — 本问题库有意保持均衡：没有任何主题组少于 12 个问题，AI 数据栈问题最多，因为它有最多需要探查的新术语。由 `scripts/charts/ch48_question_counts.py` 根据本章中的标签生成。*
 
+<a id="data-systems-and-architecture"></a>
 ## 数据系统与架构
 
 背景阅读：[第 1 章 — 数据栈全景图](../01-data-systems-foundations/ch01-data-stack-map.md)，[第 3 章 — 数据库内部机制](../01-data-systems-foundations/ch03-database-internals.md)，[第 4 章 — 分布式数据库](../01-data-systems-foundations/ch04-distributed-databases.md)，[第 5 章 — 分析引擎](../01-data-systems-foundations/ch05-analytical-engines.md)，[第 23 章 — 实时分析与 HTAP](../03-ai-data-stack/ch23-real-time-analytics-htap.md)，[第 42 章 — 数据库发展史](../06-history-and-future/ch42-history-of-databases.md)。
@@ -132,6 +137,7 @@ flowchart TB
 
 **14.** 如果一个主流 SQL 引擎明天就推出了你们的核心索引类型，还有什么是难以复制的？ *[Topic: architecture · Audience: Founder/CEO, PM]* — *关注点：* 交付或控制点（control point）层面的优势（托管服务、目录、装机基础），以及被吸收风险的时间框架，而不是关于数据模型的论证。
 
+<a id="answers-that-should-worry-you"></a>
 ### 应当引起警惕的回答
 
 | 你可能听到的回答 | 为何应当警惕 | 追问 |
@@ -142,6 +148,7 @@ flowchart TB
 
 *图 48.5 — 三个关于架构的回答，它们透露的是营销话术而非机制，每个都附有能揭穿它的追问。*
 
+<a id="table-formats-and-catalogs"></a>
 ## 表格式与目录
 
 背景阅读：[第 6 章 — 文件格式](../01-data-systems-foundations/ch06-file-formats.md)，[第 7 章 — 开放表格式](../01-data-systems-foundations/ch07-open-table-formats.md)，[第 8 章 — 目录与元数据存储](../01-data-systems-foundations/ch08-catalogs-and-metastores.md)。
@@ -174,6 +181,7 @@ flowchart TB
 
 **28.** 你们的 AI 智能体（agent）从哪里获取表描述和经过认证的指标？ *[Topic: table formats · Audience: PM, Customer]* — *关注点：* 目录或语义层（semantic layer），而不是塞满了模式转储的提示词。
 
+<a id="answers-that-should-worry-you-1"></a>
 ### 应当引起警惕的回答
 
 | 你可能听到的回答 | 为何应当警惕 | 追问 |
@@ -184,6 +192,7 @@ flowchart TB
 
 *图 48.6 — 需要深挖的表格式回答：关于开放性的说法通常需要一个目录层面的追问。*
 
+<a id="pipelines-streaming-and-integration"></a>
 ## 数据管道、流处理与集成
 
 背景阅读：[第 9 章 — 数据管道模式](../02-pipelines-and-governance/ch09-pipeline-patterns.md)，[第 10 章 — 数据摄取与集成](../02-pipelines-and-governance/ch10-ingestion-and-integration.md)，[第 11 章 — 流处理与事件平台](../02-pipelines-and-governance/ch11-streaming-and-event-platforms.md)，[第 12 章 — 数据转换与编排](../02-pipelines-and-governance/ch12-transformation-and-orchestration.md)，[第 30 章 — 数据移动与流处理公司](../04-company-deep-dives/ch30-data-movement-streaming-companies.md)。
@@ -216,6 +225,7 @@ flowchart TB
 
 **42.** 你们的 gold 层表存在多少份环境副本，由谁来删除它们？ *[Topic: pipelines · Audience: Engineer, CFO/Finance]* — *关注点：* 零拷贝（zero-copy）克隆或虚拟环境，加上一项保留策略。这也是本组中与存储最相关的问题。
 
+<a id="answers-that-should-worry-you-2"></a>
 ### 应当引起警惕的回答
 
 | 你可能听到的回答 | 为何应当警惕 | 追问 |
@@ -226,6 +236,7 @@ flowchart TB
 
 *图 48.7 — 掩盖了工作量的数据管道回答：每一个都把工作转嫁给了不在场的人。*
 
+<a id="governance-security-and-privacy"></a>
 ## 数据治理、安全与隐私
 
 背景阅读：[第 13 章 — 数据质量、可观测性与数据血缘](../02-pipelines-and-governance/ch13-data-quality-observability-lineage.md)，[第 14 章 — 语义层与 BI](../02-pipelines-and-governance/ch14-semantic-layers-and-bi.md)，[第 15 章 — 数据治理、安全与隐私](../02-pipelines-and-governance/ch15-governance-security-privacy.md)，[第 33 章 — 数据治理、目录与安全公司](../04-company-deep-dives/ch33-governance-catalog-security-companies.md)。
@@ -258,6 +269,7 @@ flowchart TB
 
 **56.** 你们的产品在 GDPR 框架下如何对待经过令牌化（tokenization）或假名化的数据？ *[Topic: governance · Audience: Customer, Engineer]* — *关注点：* 认识到只要有人能够重新识别，假名化数据通常仍属于个人数据。
 
+<a id="answers-that-should-worry-you-3"></a>
 ### 应当引起警惕的回答
 
 | 你可能听到的回答 | 为何应当警惕 | 追问 |
@@ -268,6 +280,7 @@ flowchart TB
 
 *图 48.8 — 听起来很完整、却让敏感数据本身无人管理的数据治理回答。*
 
+<a id="ai-data-stack-rag-vectors-agents-training-data"></a>
 ## AI 数据栈（RAG、向量、智能体、训练数据）
 
 背景阅读：[第 16 章 — AI 数据生命周期](../03-ai-data-stack/ch16-ai-data-lifecycle.md)，[第 17 章 — 非结构化数据处理](../03-ai-data-stack/ch17-unstructured-data-processing.md)，[第 18 章 — 嵌入与向量检索](../03-ai-data-stack/ch18-embeddings-and-vector-search.md)，[第 19 章 — 检索架构](../03-ai-data-stack/ch19-retrieval-architectures.md)，[第 20 章 — 训练数据供应链](../03-ai-data-stack/ch20-training-data-supply-chain.md)，[第 21 章 — ML 平台、特征存储与 LLMOps](../03-ai-data-stack/ch21-ml-platforms-feature-stores-llmops.md)，[第 22 章 — 智能体与数据](../03-ai-data-stack/ch22-agents-and-data.md)，[第 32 章 — AI 原生数据公司](../04-company-deep-dives/ch32-ai-native-data-companies.md)。
@@ -304,6 +317,7 @@ flowchart TB
 
 **72.** 你们运行什么样的去重技术栈，如何针对你们报告的基准进行去污染？ *[Topic: AI data stack · Audience: Engineer]* — *关注点：* 精确去重、MinHash 去重和语义去重，并给出明确的阈值，以及展示效果的消融实验。
 
+<a id="answers-that-should-worry-you-4"></a>
 ### 应当引起警惕的回答
 
 | 你可能听到的回答 | 为何应当警惕 | 追问 |
@@ -314,6 +328,7 @@ flowchart TB
 
 *图 48.9 — 需要质疑的 AI 数据栈回答：演示与生产之间的差距通常落在权限和评估上。*
 
+<a id="databricks-and-snowflake"></a>
 ## Databricks 与 Snowflake
 
 背景阅读：[第 25 章 — Databricks](../04-company-deep-dives/ch25-databricks.md)，[第 26 章 — Snowflake](../04-company-deep-dives/ch26-snowflake.md)，[第 27 章 — Databricks 对比 Snowflake](../04-company-deep-dives/ch27-databricks-vs-snowflake.md)。
@@ -346,6 +361,7 @@ flowchart TB
 
 **86.** 你们的智能体（Databricks 上的 Genie、Snowflake 上的 CoWork）如何解析业务定义：通过语义层、目录还是提示词上下文？ *[Topic: Databricks & Snowflake · Audience: PM, Engineer]* — *关注点：* 一个具名的、受治理的语义对象，例如指标视图（metric views）或语义视图（semantic views）。
 
+<a id="answers-that-should-worry-you-5"></a>
 ### 应当引起警惕的回答
 
 | 你可能听到的回答 | 为何应当警惕 | 追问 |
@@ -356,6 +372,7 @@ flowchart TB
 
 *图 48.10 — 关于两大平台的常见错误表述，以及用来替代它们的问题。*
 
+<a id="hyperscalers-and-application-vendors"></a>
 ## 超大规模云厂商与应用厂商
 
 背景阅读：[第 28 章 — 超大规模云厂商数据平台](../04-company-deep-dives/ch28-hyperscaler-data-platforms.md)，[第 29 章 — 业务型数据库厂商](../04-company-deep-dives/ch29-operational-database-vendors.md)，[第 34 章 — 作为数据平台的应用巨头](../04-company-deep-dives/ch34-application-giants-data-platforms.md)，[第 40 章 — 市场进入与合作伙伴关系](../05-business-and-economics/ch40-gtm-partnerships.md)。
@@ -388,6 +405,7 @@ flowchart TB
 
 **100.** 对于一个无服务器 Postgres 平台，有多大比例的数据库是由智能体创建的，其中多少能存活 30 天，每个存活数据库的收入是多少？ *[Topic: hyperscalers & apps · Audience: Founder/CEO, CFO/Finance]* — *关注点：* 客户队列的存活率和转化率，而不是创建数量。
 
+<a id="answers-that-should-worry-you-6"></a>
 ### 应当引起警惕的回答
 
 | 你可能听到的回答 | 为何应当警惕 | 追问 |
@@ -398,6 +416,7 @@ flowchart TB
 
 *图 48.11 — 听起来像是对立关系或免费午餐的合作伙伴生态回答，以及其背后的经济逻辑。*
 
+<a id="business-model-and-unit-economics"></a>
 ## 商业模式与单位经济
 
 背景阅读：[第 35 章 — 商业模式](../05-business-and-economics/ch35-business-models.md)，[第 36 章 — 单位经济与 KPI](../05-business-and-economics/ch36-unit-economics-kpis.md)，[第 41 章 — 市场规模测算](../05-business-and-economics/ch41-market-sizing.md)。
@@ -430,6 +449,7 @@ flowchart TB
 
 **114.** 如果你们客户的员工人数减少，你们的哪些计量指标会增长？ *[Topic: business model · Audience: PM, Founder/CEO]* — *关注点：* 按用量或按结果的计量方式而非按席位计量，以及一种观点，认为智能体既是对席位的威胁，也是查询量的驱动因素。
 
+<a id="answers-that-should-worry-you-7"></a>
 ### 应当引起警惕的回答
 
 | 你可能听到的回答 | 为何应当警惕 | 追问 |
@@ -440,6 +460,7 @@ flowchart TB
 
 *图 48.12 — 混淆了现金、收入和利润率的商业模式回答；追问能将它们区分开来。*
 
+<a id="valuation-ma-and-competition"></a>
 ## 估值、并购与竞争
 
 背景阅读：[第 37 章 — 上市可比公司与估值](../05-business-and-economics/ch37-public-comps-valuation.md)，[第 38 章 — 开源战略](../05-business-and-economics/ch38-open-source-strategy.md)，[第 39 章 — 并购历史](../05-business-and-economics/ch39-ma-history.md)，[第 43 章 — 现代数据栈](../06-history-and-future/ch43-modern-data-stack.md)。
@@ -472,6 +493,7 @@ flowchart TB
 
 **128.** 你们的控制点能否跨平台迁移，有多大比例的客户运行两个及以上平台？ *[Topic: valuation & M&A · Audience: Founder/CEO, Partner manager]* — *关注点：* 一个实测的多平台客户比例。在客户运行不止一个平台的地方，中立性最有价值。
 
+<a id="answers-that-should-worry-you-8"></a>
 ### 应当引起警惕的回答
 
 | 你可能听到的回答 | 为何应当警惕 | 追问 |
@@ -482,6 +504,7 @@ flowchart TB
 
 *图 48.13 — 跳过口径说明的估值与并购回答；每个倍数都需要一个日期、一个分子和一个分母。*
 
+<a id="storage-meets-data-everpure-lens-public-information-only"></a>
 ## 存储与数据的交汇（Everpure 视角，仅基于公开信息）
 
 背景阅读：[第 24 章 — 数据栈与计算和存储的交汇之处](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)，[第 44 章 — 未来趋势](../06-history-and-future/ch44-future-trends.md)，[第 45 章 — 对一家向技术栈上层移动的存储公司的启示](../06-history-and-future/ch45-storage-moving-up-the-stack.md)。以下是战略团队基于公开信息，可能向合作伙伴、客户或自身产品团队提出的问题。它们不暗示任何非公开计划。
@@ -516,6 +539,7 @@ flowchart TB
 
 **142.** 随着客户在自有存储中采用开放表格式（open table format），他们数据平台支出中有多大比例会转向存储层？ *[Topic: storage meets data · Audience: CFO/Finance, PM]* — *关注点：* 认识到开放格式把表搬进了客户自己的账户，而计算仍然主导着账单。
 
+<a id="answers-that-should-worry-you-9"></a>
 ### 应当引起警惕的回答
 
 | 你可能听到的回答 | 为何应当警惕 | 追问 |
@@ -526,6 +550,7 @@ flowchart TB
 
 *图 48.14 — 存储与数据交汇领域中，合作伙伴幻灯片夸大了实际测试范围的回答。*
 
+<a id="founder-and-startup-diligence"></a>
 ## 创始人与初创公司尽职调查
 
 背景阅读：[第 47 章 — 尽职调查清单](ch47-diligence-checklist.md)，[第 32 章 — AI 原生数据公司](../04-company-deep-dives/ch32-ai-native-data-companies.md)，[第 38 章 — 开源战略](../05-business-and-economics/ch38-open-source-strategy.md)，[第 43 章 — 现代数据栈](../06-history-and-future/ch43-modern-data-stack.md)。
@@ -554,6 +579,7 @@ flowchart TB
 
 **154.** 如果我们选择合作而不是收购，在头 90 天里你们需要我们提供什么？ *[Topic: founder diligence · Audience: Founder/CEO, Partner manager]* — *关注点：* 具体的诉求，例如一个连接器、联合销售或一项联合基准测试。这些诉求揭示了价值所在。
 
+<a id="answers-that-should-worry-you-10"></a>
 ### 应当引起警惕的回答
 
 | 你可能听到的回答 | 为何应当警惕 | 追问 |
@@ -564,6 +590,7 @@ flowchart TB
 
 *图 48.15 — 应当触发尽职调查追问而不是点头附和的创始人回答。*
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [收入年化运行率（Revenue run-rate）](../glossary.md#revenue-run-rate) — 将近期收入年化（季度乘以四或月度乘以十二）；不是经审计的年度收入。
@@ -587,6 +614,7 @@ flowchart TB
 - [清算优先权（Liquidation preference）](../glossary.md#liquidation-preference) — 优先股股东在出售时先于普通股股东获得偿付的权利。
 - [关注点说明（Listen-for note）](../glossary.md#listen-for-note) — 在本问题库中，对一个问题的有力回答应包含哪些内容的简短描述。
 
+<a id="sources"></a>
 ## 资料来源
 
 这些问题综合了第 1–45 章的"对话手册"部分；这些章节中的脚注为每一项底层论断提供了出处。本章引用的数字出处如下。

@@ -1,6 +1,7 @@
 # 49. 30 秒讲清楚
 > **深度：** L1–L2 · **阅读时间：** 约 20 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** 无；每条一句话解释都链接到详细讲解它的章节（[第 1 章 — 数据栈全景图](../01-data-systems-foundations/ch01-data-stack-map.md)是最好的单一起点）
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - 本章收录 **71 条一句话解释**，编号并分为七类：基础、湖仓一体、数据管道、数据治理、AI 数据、商业以及公司。每一条都说明这个东西是什么、为什么重要，并给出一个类比。每一条都链接到深入讲解它的章节。
@@ -9,6 +10,7 @@
 - 这里的数字是一小组带日期的数据，取自本知识库的数据集（`data/*.csv`）和已核实事实登记表。每个数字都带有标签（GAAP、公司披露的年化运行率、媒体报道或估算）和脚注。复述时不要向上取整。
 - 两张图展示了概念之间如何关联，以及哪些概念对最常被混淆。数据话题对话中的许多信誉损失，来自混淆相邻术语：ARR 与年化运行率、数据湖与湖仓一体、向量索引与向量数据库。
 
+<a id="why-this-matters"></a>
 ## 为何重要
 
 一位加入 Everpure（原 Pure Storage）的企业发展专业人士，会在一周之内、在非常不同的场合中听到这些术语：一次关于 Data Intelligence 的产品评审、一位投行人士关于某家数据目录初创公司的推介、一场 Snowflake 的财报电话会、一次与湖仓厂商的合作伙伴会议。这些场合里没有人会停下来给 Iceberg 或 NRR 下定义。能够干净利落地定义一个术语、把它放到技术栈中的正确位置并说出其商业后果的人，才会被托付下一个问题。
@@ -17,6 +19,7 @@
 
 此外还有一个具体的 Everpure 视角。公司在 2026 年通过收购 1touch 并发布 Data Intelligence，从"存储数据"转向"理解数据"，这使它与下文的若干类别相邻：数据分类、DSPM、数据目录、语义上下文、向量数据管道。能够准确解释这些相邻领域，正是战略团队得以基于公开信息讨论选项、合作伙伴和竞争对手的前提。
 
+<a id="how-to-use-this-chapter"></a>
 ## 如何使用本章
 
 1. **会议之前**，浏览相关的类别。与湖仓合作伙伴的电话需要第 10–19 条和第 62–63 条。对一家 AI 初创公司的尽职调查电话需要第 38–50 条和第 57–59 条。
@@ -149,6 +152,7 @@ pie title "按类别划分的一句话解释（共 71 条）"
 
 *图 49.4 — 各类别条目占比。本章大约三分之一的内容（第 38–61 条）涉及 AI 数据和商业术语，这两个领域是战略对话推进最快、定义也最常被引申的地方。*
 
+<a id="foundations"></a>
 ## 基础
 
 **1. OLTP vs OLAP（联机事务处理与联机分析处理）.** 联机事务处理（OLTP）一次记录一笔小交易，记录的是业务本身；联机分析处理（OLAP）扫描数以百万计的此类记录，以回答关于业务的问题。两者的调优方向相反，因此大多数公司同时运行两者，并为在它们之间搬运数据付费，就像收银机旁边放着总账。（[第 1 章](../01-data-systems-foundations/ch01-data-stack-map.md)、[第 2 章](../01-data-systems-foundations/ch02-data-models.md)）
@@ -169,6 +173,7 @@ pie title "按类别划分的一句话解释（共 71 条）"
 
 **9. Write-ahead log（预写日志，WAL）.** 数据库在改动数据文件之前，先把每一项变更追加到一个持久化的顺序日志中，这样崩溃之后可以重放。同一个日志之后还会为变更数据捕获（第 21 条）提供数据；先记日记账，后过总账。（[第 3 章](../01-data-systems-foundations/ch03-database-internals.md)）
 
+<a id="lakehouse"></a>
 ## 湖仓一体
 
 **10. Data lake vs lakehouse（数据湖与湖仓一体）.** 数据湖是存放在对象存储中的廉价文件，没有事务；湖仓一体在此基础上增加了表格式和目录，使同样的文件表现得像数据仓库的表。区别在于元数据层，而不在于存储，就像库存管理系统上线前后的同一片托盘仓库。（[第 7 章](../01-data-systems-foundations/ch07-open-table-formats.md)）
@@ -191,6 +196,7 @@ pie title "按类别划分的一句话解释（共 71 条）"
 
 **19. Compaction（压缩合并）.** 在后台把大量小文件重写为少量大文件，并执行快照过期和孤立文件清理。流式写入者不断产生小文件，因此这种类似 SSD 的垃圾回收，如今是湖仓一体运营成本和厂商差异化的主要所在。（[第 7 章](../01-data-systems-foundations/ch07-open-table-formats.md)）
 
+<a id="pipelines"></a>
 ## 数据管道
 
 **20. ETL vs ELT.** 抽取-转换-加载（ETL）在数据落地之前对其进行重塑；抽取-加载-转换（ELT）先让原始数据落地，再在数据仓库内用 SQL 进行转换。廉价的云计算使 ELT 成为默认做法，并造就了 Fivetran 和 dbt 的市场，就像把原矿运到大型冶炼厂，而不是在矿山就地精炼。（[第 9 章](../02-pipelines-and-governance/ch09-pipeline-patterns.md)）
@@ -217,6 +223,7 @@ pie title "按类别划分的一句话解释（共 71 条）"
 
 **31. Semantic layer（语义层）.** 一套受治理的业务定义，例如"收入"或"活跃客户"，所有 BI 工具和 AI 智能体都查询它，而不是各自重新推导。在 AI 时代它更加重要，因为直接编写原始 SQL 的模型只能猜测定义；语义层就是会计科目表。（[第 14 章](../02-pipelines-and-governance/ch14-semantic-layers-and-bi.md)）
 
+<a id="governance"></a>
 ## 数据治理
 
 **32. RBAC vs ABAC（基于角色与基于属性的访问控制）.** 基于角色的访问控制（RBAC）把权限授予角色；基于属性的访问控制（ABAC）则根据敏感度标签、区域和用途等属性对每个请求作出决定。规模一大，RBAC 就会膨胀出成千上万个角色，而 ABAC 通过标签实现扩展，就像办公室钥匙与检查安全级别的门禁读卡器之间的区别。（[第 15 章](../02-pipelines-and-governance/ch15-governance-security-privacy.md)）
@@ -231,6 +238,7 @@ pie title "按类别划分的一句话解释（共 71 条）"
 
 **37. Permission-aware retrieval（权限感知检索）.** 在查询时强制执行源系统的访问权限，使 AI 助手只检索提问用户本来就能直接打开的段落。没有它，检索就成了泄露人力资源文件夹的快捷方式；它就像一座逐本书核验借书证、而不只是在门口查验的图书馆。（[第 17 章](../03-ai-data-stack/ch17-unstructured-data-processing.md)、[第 19 章](../03-ai-data-stack/ch19-retrieval-architectures.md)）
 
+<a id="ai-data"></a>
 ## AI 数据
 
 **38. Embedding（嵌入向量）.** 由模型生成的一串数字，长度从几百到几千不等，使相似的条目彼此靠近。嵌入让软件能够按含义而不是按精确字词进行搜索：它是含义的 GPS 坐标，"invoice"（发票）和"bill"（账单）只隔一个街区。（[第 18 章](../03-ai-data-stack/ch18-embeddings-and-vector-search.md)）
@@ -259,6 +267,7 @@ pie title "按类别划分的一句话解释（共 71 条）"
 
 **50. Hybrid search（混合检索）.** 把关键词检索（BM25）与向量检索结合起来，并合并两份排序列表，通常采用倒数排名融合（reciprocal rank fusion）。关键词能抓住嵌入会模糊掉的精确零件号和名称，向量能抓住同义改写，就像一只基金把量化筛选与分析师判断相结合。（[第 18 章](../03-ai-data-stack/ch18-embeddings-and-vector-search.md)）
 
+<a id="business"></a>
 ## 商业
 
 **51. DBU（Databricks 单位）.** Databricks Unit（DBU）是一种按小时计的标准化处理量单位，定价从传统作业计算（classic jobs compute）的约 $0.15 到无服务器 SQL 的约 $0.70 不等（第三方整理的美国标价）。[^dbx-pricing] 可以把它想象成千瓦时：一块电表，不同工作负载适用不同的电价。（[第 25 章](../04-company-deep-dives/ch25-databricks.md)、[第 35 章](../05-business-and-economics/ch35-business-models.md)）
@@ -283,6 +292,7 @@ pie title "按类别划分的一句话解释（共 71 条）"
 
 **61. SSPL and BSL（SSPL 与 BSL 许可）.** 两种源码可见许可，用于阻止竞争对手（主要是超大规模云厂商）将软件作为服务出售：MongoDB 的 Server Side Public License（2018）要求公开整个服务栈，而 Business Source License 在某个变更日期之前限制生产用途。两者都不是 OSI 认可的开源许可；可以把它们看作带有使用领域限制条款的专利许可。（[第 38 章](../05-business-and-economics/ch38-open-source-strategy.md)）
 
+<a id="companies"></a>
 ## 公司
 
 **62. Databricks.** 湖仓一体公司，由 Apache Spark 的创建者创立，基于开放格式销售数据工程、数据仓库、数据治理（Unity Catalog）、Postgres（Lakebase）和 AI 工具。2026 年 8 月，公司披露其收入年化运行率超过 $7B，增速超过 80%，并以 $190B 估值融资 $5B（公司披露）。[^db-7b]（[第 25 章](../04-company-deep-dives/ch25-databricks.md)）
@@ -305,6 +315,7 @@ pie title "按类别划分的一句话解释（共 71 条）"
 
 **71. Everpure and 1touch（Everpure 与 1touch）.** Everpure（原 Pure Storage；NYSE: P）以 $125.0M 的披露现金对价收购了一家数据发现、数据分类和语义上下文公司 1touch；交易于 2026 年 5 月 7 日完成交割，并于 2026 年 6 月以 Everpure Data Intelligence 的名义重新发布。[^ep-10q][^ep-di] 这是一家存储厂商从"存储数据"走向"理解数据"；战略团队基于公开信息可能评估的选项见第 45 章。（[第 24 章](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)、[第 33 章](../04-company-deep-dives/ch33-governance-catalog-security-companies.md)、[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)）
 
+<a id="how-the-concepts-connect"></a>
 ## 概念之间如何关联
 
 把这些一句话解释当作一条链条来记，比当作一张清单来记更容易。下面的流程图沿着一条路径，从存储上的字节一直走到智能体给出的答案。每个节点都是上文的一个条目，每个箭头都是一种依赖关系：右边的层只有在左边的层运作良好时才能运作良好。
@@ -341,6 +352,7 @@ flowchart LR
 
 *图 49.5 — 从字节到答案。Parquet 通过 Iceberg 或 Delta 变成表。随后，目录成为语义层和访问策略共同依赖的控制点。智能体通过 MCP 和检索接触数据，而这两条路径都从目录继承数据治理。谁拥有目录和策略层，谁就处在每一个 AI 回答的关键路径上，这正是 Databricks、Snowflake 和存储厂商都在争夺它的原因。*
 
+<a id="numbers-worth-carrying"></a>
 ## 值得随身携带的数字
 
 以下是本章中仅有的数字。每个数字都带有日期和标签；引用时要么照此引用，要么干脆不引用。
@@ -362,6 +374,7 @@ flowchart LR
 
 *图 49.6 — 值得随身携带的数字。十二行中出现了四种不同的标签（GAAP、公司披露、媒体报道、估算），把它们混为一谈，是一个听起来正确的数字变成错误论断最常见的方式。*
 
+<a id="most-confused-pairs"></a>
 ## 最常被混淆的概念对
 
 | 人们常说 | 实际情况 | 为何重要 | 条目 |
@@ -378,6 +391,7 @@ flowchart LR
 
 *图 49.7 — 最常被混淆的概念对。每一行都是一条"不要这样说"。中间一列是 30 秒内的纠正说法，条目编号指向完整的一句话解释。*
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [OLTP](../glossary.md#oltp) 与 [OLAP](../glossary.md#olap) — 事务型工作负载与分析型工作负载。
@@ -414,6 +428,7 @@ flowchart LR
 - [开放核心（Open core）](../glossary.md#open-core)、[SSPL](../glossary.md#sspl) 与 [Business Source License](../glossary.md#business-source-license) — 开源商业模式，以及阻止超大规模云厂商转售的许可证。
 - [Microsoft Fabric](../glossary.md#microsoft-fabric)、[OneLake](../glossary.md#onelake) 与 [BigQuery](../glossary.md#bigquery) — 超大规模云厂商的分析平台。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^tabular]: TechCrunch, "Databricks reportedly paid $2 billion in Tabular acquisition," https://techcrunch.com/2024/08/14/databricks-reportedly-paid-2-billion-in-tabular-acquisition, 发布 2024-08-14; 检索 2026-11-01. 交易于 2024-06-04 宣布；价格为媒体报道（WSJ 报道区间 $1–2B），Databricks 从未披露；依据 `data/ma_deals.csv` 的记录（经由第 7 章）。

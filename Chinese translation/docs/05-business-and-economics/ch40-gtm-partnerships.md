@@ -1,6 +1,7 @@
 # 40. 市场进入与合作伙伴关系
 > **深度：** L2 · **阅读时间：** 约 13 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 35 章 — 商业模式](ch35-business-models.md)、[第 24 章 — 数据栈与计算和存储的交汇](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - **超大规模云厂商的云市场（marketplace）如今是数据平台的主要销售渠道，而为其买单的是承诺的云消费额度（committed spend）。** 企业与 AWS、Microsoft 或 Google 签订多年期承诺。通过该云的云市场购买的 Databricks 或 Snowflake 合同计入这份承诺，因此客户用的是早已承诺出去的预算。Snowflake 报告称，2025 日历年 AWS Marketplace 销售额超过 $2B，上架以来累计超过 $7B（公司披露）。[^sf-aws-2b][^sf-aws-6b]
@@ -9,6 +10,7 @@
 - **存储厂商通过一套认证阶梯与数据平台合作。** 各级台阶依次为：S3 兼容性测试、验证设计、联合参考架构、联合销售，最后是云市场或 OEM 上架。公开可见的大多数存储–平台关系停留在前两级。Databricks Storage Ecosystem（2026 年 6 月）和 NVIDIA AI Data Platform（2025 年 3 月）是首批将存储厂商列入官方平台名录的计划。[^storage-eco][^aidp]
 - **Everpure 视角。** Pure Storage 曾出现在 Snowflake 由厂商自报的 S3 兼容存储厂商名单上（Snowflake 不对其进行验证；FlashBlade 在较新的"tested and compliant"措辞下的状态尚未确认），并位列 NVIDIA AI Data Platform 名录。它拥有 Dremio 和 Starburst 参考架构，也是 Databricks Storage Ecosystem 的首发合作伙伴。[^sf-s3compat][^aidp][^storage-eco] 其下一步的合作选项是将这些上架资质转化为联合销售、可计入 MACC/EDP 的云市场报价以及联合销售管道。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业 + Everpure 视角）
 
 [第 35 章](ch35-business-models.md)解释了数据平台如何收费：按用量计费的积分、承诺消费额度合同以及额度消耗。本章讨论这些合同是如何卖出去的，以及沿途谁抽成、谁获得业绩抵扣。对数据平台而言，答案是：越来越大比例的交易通过别人的渠道完成，即超大规模云厂商的云市场、系统集成商（"SI"）的业务团队，或技术合作伙伴的集成。
@@ -17,8 +19,10 @@
 
 对 Everpure（原 Pure Storage；NYSE: P，原代码 PSTG）而言，问题更窄。随着它从阵列走向数据管理，它需要哪些合作伙伴资产，才能让 Databricks、Snowflake、NVIDIA 和各家云厂商把它视为数据平台的一部分，而不是底层的那个存储桶？本章以基于公开信息、战略团队可能评估的选项来作答。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="marketplaces-turn-a-cloud-commitment-into-a-buying-budget"></a>
 ### 云市场把云承诺变成采购预算
 
 大型企业与其云厂商签订多年期消费承诺以换取折扣。AWS 称之为[企业折扣计划（Enterprise Discount Program）](../glossary.md#enterprise-discount-program)（EDP），也称私有定价协议（Private Pricing Agreement）。Microsoft 的版本是 [Azure 消费承诺（Azure Consumption Commitment）](../glossary.md#azure-consumption-commitment)（MACC）。Google 使用承诺消费协议和[承诺使用折扣（committed use discounts）](../glossary.md#committed-use-discount)（CUD）。客户未能消耗的承诺部分仍需支付。因此，手握未消耗承诺的 CFO 会更愿意通过云市场购买新软件，因为这笔采购可以消耗承诺额度。
@@ -58,6 +62,7 @@ sequenceDiagram
 
 > **类比：半导体（设计导入与合格供应商名单）。** 一个可计入 EDP 或 MACC 的云市场上架，就是软件版的进入超大规模云厂商合格供应商名单。客户的承诺消费额度是一个早已完成设计导入并编好预算的"插槽"。具备资格意味着你的部件无需新的采购认证就能填进去。联合销售的配额抵扣则相当于超大规模云厂商自己的销售团队在推广你的部件。
 
+<a id="worked-example-a-2m-databricks-deal-through-an-aws-private-offer-illustrative"></a>
 ### 算例：通过 AWS 私有报价完成的一笔 $2M Databricks 交易（示意）
 
 一家美国银行签有一份三年期、$30M 的 AWS EDP，实际消耗低于计划。它希望为一个 Hadoop 迁移项目采购 Databricks，该项目由一家 Databricks 级别的 SI 执行。Databricks 以 AWS Marketplace 私有报价形式提供一年期 $2M 的承诺 DBU 消费，采用经典计算模式，因此银行还要直接向 AWS 支付集群所用的 EC2 费用。以下所有数字均为示意，只有费率档位来自 AWS 的费率表。[^aws-fees]
@@ -75,6 +80,7 @@ sequenceDiagram
 
 结构性风险在于：一个承诺额度几近耗尽的客户，或一个改变销售激励的超大规模云厂商，可以在需求没有任何明显变化的情况下拖慢厂商的销售管道。这正是[第 25 章](../04-company-deep-dives/ch25-databricks.md)将 Databricks 通过 Azure 销售的收入占比列为待解问题的原因。
 
+<a id="systems-integrators-the-demand-engine-nobody-reports"></a>
 ### 系统集成商：无人报告的需求引擎
 
 SI 通常不转售软件，它销售的是创造软件消耗的项目。一次数据平台迁移（从 Teradata、Hadoop 或本地数据仓库迁移到湖仓一体（lakehouse））通常在平台厂商敲定价格之前，就已由 SI 完成范围界定、人员配置，并往往完成架构设计。在这个渠道里，规模意味着持证人数。Accenture 的 Snowflake Business Group 成立时拥有超过 5,000 名 SnowPro 认证人员。其 2026 年 3 月成立的 Databricks Business Group 称拥有超过 25,000 名接受过 Databricks 培训的专业人员。[^acn-sf][^acn-dbx]
@@ -111,12 +117,14 @@ flowchart LR
 
 > **类比：半导体（销售代表与分销商）。** 联合销售和 SI 交易登记的运作方式类似半导体公司的销售代表和分销商渠道。制造商的销售代表即使不负责出货，也能从设计导入中赚取佣金。分销商赚取利润，外加设计登记保护。市场开发基金的作用类似合作营销资金。在合作伙伴交易上获得配额抵扣的 AWS 和 Microsoft 销售人员，实际上就是由超大规模云厂商支付佣金的销售代表。
 
+<a id="technology-partners-and-data-marketplaces"></a>
 ### 技术合作伙伴与数据市场
 
 技术合作伙伴是其产品与平台相连接的 ISV：数据摄取、BI、数据治理、存储。Snowflake 运营"Snowflake Ready"技术验证，以及面向基于 Snowflake 构建的应用的 **Powered by Snowflake** 通道，其中许多应用以原生应用形式在 Snowflake Marketplace 中分发。[^sf-ready][^spn] Databricks 的技术合作伙伴页面列出了从 Registered、Validated 到 Select 和 Elite 的各个级别。[^dbx-tech]
 
 平台自己的[数据市场（data marketplaces）](../glossary.md#data-marketplace)也是一个 GTM 渠道。Snowflake Marketplace 宣称拥有来自超过 750 家提供商的超过 3,000 个上架项（公司披露，页面未注明日期）。[^sf-mkt] Databricks 在 2024 年 6 月报告称拥有超过 2,000 个 Marketplace 上架项和超过 16,000 个 Delta Sharing 接收方（公司披露）。[^ds-stats] 每一个上架项都让平台更难被替换，因为数据提供商只需发布一次，就能触达平台上的每一位客户。[Delta Sharing](../glossary.md#delta-sharing)（现已扩展为 [OpenSharing](../glossary.md#opensharing)）让 Databricks 能够把同一机制延伸到存储厂商。
 
+<a id="how-data-platforms-partner-with-storage-vendors"></a>
 ### 数据平台如何与存储厂商合作
 
 Databricks 和 Snowflake 是云服务，因此存储厂商无法简单地转售它们。关系的方向是反过来的：平台需要一个理由，去信任本地存储可以作为受治理表的存放地，而存储厂商则通过攀登阶梯来提供这个理由。
@@ -168,6 +176,7 @@ flowchart LR
 
 **双方各得到什么，代价是什么。** 数据平台获得了原本无法触达的本地数据和主权数据，外加一支把客户引向其产品的存储厂商销售队伍。存储厂商获得了在数据架构讨论中的话语权、一个上架席位、联合营销，有时还有交易登记。代价包括：测试套件和连接器的工程投入、每次平台发布时的重新认证、用于联合推广活动的市场开发基金（[MDF](../glossary.md#market-development-funds)），以及一线销售赋能。一个拥有十家存储合作伙伴的平台几乎没有理由偏爱其中任何一家，因此差异化必须来自性能证明、支持能力和客户案例。
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 | 市场进入路径 | 谁向谁付款 | 厂商成本 | 优势 | 劣势 |
@@ -183,6 +192,7 @@ flowchart LR
 
 反对过度依赖云市场的最有力论点是集中度。超大规模云厂商能看到交易、客户和价格，同时还在销售一项与之竞争的自有服务。反对 SI 渠道的最有力论点是 SI 对平台不持立场：同一个 Accenture 同时运营着 Snowflake 和 Databricks 两个业务集团。[^acn-sf][^acn-dbx]
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 | 计划 | 级别或层级 | 主要权益 | 典型要求 |
@@ -196,6 +206,7 @@ flowchart LR
 
 *图 40.7 — 合作伙伴计划对比。平台计划奖励合作伙伴所影响的用量。超大规模云厂商计划奖励云市场交易。NVIDIA 的计划奖励验证设计。存储厂商必须三者兼顾。*
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 ```mermaid
@@ -214,6 +225,7 @@ timeline
 
 如今商业关系是双向的。2026 年 5 月，Snowflake 承诺在五年内向 AWS 基础设施投入 $6B，同时报告 AWS Marketplace 累计销售额超过 $7B。这是一种互惠安排：平台购买云容量，云厂商销售平台。[^sf-aws-6b] 下一步很可能是更多可交易的合作伙伴捆绑方案，例如多厂商私有报价和"存储 + 平台"报价，以及更多像 Storage Ecosystem 这样由平台运营的名录。待解问题是，超大规模云厂商是否会继续为那些同时与其竞争的数据平台补贴联合销售。
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源 / 日期 |
@@ -233,10 +245,12 @@ timeline
 
 *图 40.9 — 云市场销售额是成交的合同总额，往往为多年期，因此不能用收入去除。它们显示的是规模，而非占比。*
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** 认证阶梯的每一级都依赖于[第 24 章](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)和配套的 *Everpure Tech Atlas* 中讨论的存储语义：S3 条件写入、LIST 行为、凭证下发和小对象延迟。兼容性测试失败通常归结为其中某一项，而不是原始吞吐量。基于公开信息，战略团队可能评估的选项：(1) 将 Databricks OpenSharing 连接器从预览推进到 GA，并登记为联合销售；[^everpure-os] (2) 发布与 Starburst 以及 Dremio/SAP 的 Iceberg/Delta 和 Iceberg REST 目录兼容性结果，以便平台团队可以引用；[^starburst-ep][^dremio-pure] (3) 让 Everpure 现有的云上架产品（Cloud Block Store 多年来一直通过 AWS 和 Azure 云市场销售；Azure 自 2021 年 3 月起）可计入承诺额度，并与数据平台私有报价捆绑；[^pcbs] (4) 将 NVIDIA AI Data Platform 和 Data Stream 的工作转化为一份联合参考架构，其中除 GPU 栈外还点名一个数据平台。[^data-stream][^aidp]
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理或联盟负责人提出的问题**
@@ -261,6 +275,7 @@ timeline
 - "联合销售意味着 AWS 替我们卖产品。" 它意味着 AWS 销售人员会因帮助促成交易而获得报酬。交易仍由厂商主导。
 - "进入 NVIDIA 名录就是差异化。" 发布时就有十家存储合作伙伴。进入名录只是入场券。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 - AWS Marketplace 卖家指南中关于上架费和 CPPO 的内容，以及 Microsoft Learn 的 MACC 和联合销售要求页面，了解当前的确切规则。[^aws-fees][^cppo][^macc][^ms-cosell]
@@ -268,6 +283,7 @@ timeline
 - Snowflake 的 S3 兼容存储文档及其公开兼容性测试。[^sf-s3compat]
 - 关于合作伙伴资质如何契合 Everpure 向技术栈上层移动，见[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)；关于 Snowflake 的市场进入，见[第 26 章](../04-company-deep-dives/ch26-snowflake.md)。
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [云市场（Cloud marketplace）](../glossary.md#cloud-marketplace) — 超大规模云厂商的线上商店，第三方软件可在其中通过云账单购买。
@@ -295,6 +311,7 @@ timeline
 - [NVIDIA AI Data Platform](../glossary.md#nvidia-ai-data-platform) — NVIDIA 2025 年的参考设计，存储合作伙伴将其构建进 AI 就绪存储产品。
 - [NVIDIA-Certified Storage](../glossary.md#nvidia-certified-storage) — NVIDIA 的存储验证计划，设有 Foundation、Enterprise 和 NCP 三个级别。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^aws-fees]: AWS, "AWS Marketplace announces simplified and reduced listing fees for sellers," https://aws.amazon.com/about-aws/whats-new/2024/01/aws-marketplace-simplified-reduced-listing-fees/，发布于 2024-01；AWS Marketplace Seller Guide, "Understanding listing fees for AWS Marketplace sellers," https://docs.aws.amazon.com/marketplace/latest/userguide/listing-fees.html，持续更新的文档（费用自 2024-01-05 生效；CPPO +0.5 个百分点）；检索于 2026-11-01。CRN Australia 2026 年的一篇报道称，专业服务上架费已从 2.5% 降至 0.5%，https://www.crn.com.au/news/2026/cloud/aws-marketplace-slashes-listing-fee-for-professional-service [VERIFY: 日期及生效条款]。

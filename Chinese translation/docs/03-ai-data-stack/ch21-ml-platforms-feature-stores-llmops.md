@@ -1,6 +1,7 @@
 # 21. 机器学习平台、特征存储与 LLMOps
 > **深度：** L2 · **阅读时间：** 约 15 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 16 章 — AI 数据生命周期](ch16-ai-data-lifecycle.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - 生产环境中的机器学习，本质上主要是数据工程，模型只是处于中间的一环。经典生命周期依次为：数据 → 特征 → 训练 → 注册表 → 服务 → 监控，而 [MLOps](../glossary.md#mlops) 就是让这一闭环可重复运行的方法论。Databricks 于 2018 年开源的 MLflow 已成为这一闭环事实上的默认记录系统。Databricks 表示，在 2025 年 6 月 MLflow 3 发布前后，MLflow 月下载量已超过 30M（公司披露）。[^mlflow3]
@@ -9,6 +10,7 @@
 - 独立的 MLOps 品类已被吸收。CoreWeave 收购 Weights & Biases（约 $1.7B，媒体报道，2025 年 5 月完成交割）；Databricks 收购 Tecton 的资产（2025 年 8 月）；OpenAI 同意收购 Neptune（2025 年 12 月）；ClickHouse 收购 Langfuse（2026 年 1 月）；Cisco 正在收购 Galileo，Palo Alto Networks 正在收购 Portkey（均于 2026 年 4 月宣布）；Nscale 同意以媒体报道的约 $1.65B 收购 Anyscale（2026 年 7 月）。[^wandb][^tecton-dbx][^neptune][^langfuse][^galileo][^portkey][^nscale]
 - 收购方可分为三类：数据平台（模型需要数据）、GPU 云（向技术栈上层延伸），以及安全或可观测性厂商（LLM 请求路径是一个新的控制点）。仍保持独立的公司，是那些拥有开源切入点并处于全新生成式 AI 品类中的企业，例如 LangChain、Braintrust、Arize 和 Inferact（vLLM）。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业 + Everpure 视角）
 
 对战略团队而言，这一层是近期工具品类被其下方平台吸收的最清晰案例。2018 年至 2022 年间，投资者为机器学习生命周期中的每一个环节分别资助了一家独立公司：实验追踪、特征存储、模型监控、数据标注和编排。到 2026 年，这些环节大多已成为 Databricks、Snowflake、超大规模云厂商或 GPU 云内部的功能。这一模式之所以重要，是因为同样的压力如今正作用于 LLMOps 工具、AI 网关，以及更下一层的与存储相邻的数据服务。
@@ -17,8 +19,10 @@
 
 对 Everpure 而言，有三点值得关注。第一，这一层**呈突发式的高存储负载**：训练检查点、特征表历史和模型制品体量大、带版本，且集中一次性写入。第二，特征表和模型制品越来越多地以开放表和对象的形式存放在 S3 兼容存储上，并由 Unity Catalog 等目录管理，这正是[第 7 章](../01-data-systems-foundations/ch07-open-table-formats.md)中"存储桶位于他人目录之下"的问题。第三，LLMOps 公司的收购方（安全和可观测性厂商）表明，谁处于 AI 请求路径之中，谁就能销售数据治理。Everpure 基于 1touch 的 Data Intelligence 在数据进入 AI 数据管道之前对其进行分类，在同一路径的数据侧占据了一个相邻位置。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="the-classic-ml-lifecycle"></a>
 ### 经典机器学习生命周期
 
 Google 2015 年那篇关于"隐藏技术债"的论文指出，模型代码只是一个小方框，周围环绕着规模大得多的数据采集、特征提取、服务和监控系统。[^sculley] Uber 的 Michelangelo 平台（2017 年公开介绍）是第一个被广泛效仿的设计，它把这些环节整合进一个内部产品，其中就包括特征存储。[^michelangelo] 后来的大多数工具，都是一个或多个 Michelangelo 环节的商业化版本。
@@ -57,6 +61,7 @@ flowchart LR
 
 MLflow 从一开始就涵盖了追踪、模型打包格式和注册表。Databricks 于 2018 年 6 月将其作为开源项目发布，后来该项目转入 Linux Foundation。[^mlflow-launch] **MLflow 3**（2025 年 6 月）是面向生成式 AI 的重写版本。它新增了基于 OpenTelemetry 的追踪功能，集成了 20 多个生成式 AI 库；新增了基于生产追踪数据构建的数据集、由 LLM 评判者执行的评估；还新增了一个 `LoggedModel` 实体，用于跨多次运行（而非在单次运行内部）追踪某个模型或智能体的版本。[^mlflow3][^mlflow-docs] 这一设计选择值得注意：Databricks 并没有另建一个 LLMOps 产品，而是扩展了已经承载机器学习记录系统的那个工具。
 
+<a id="feature-stores-what-problem-they-solve"></a>
 ### 特征存储：解决什么问题
 
 **特征**是由原始数据计算得出的模型输入，例如"过去 30 天内的支持工单数"或"距上次登录的天数"。特征在生产环境中会引发三个反复出现的问题。
@@ -101,6 +106,7 @@ flowchart LR
 
 > **类比：半导体。** 训练/服务偏差相当于机器学习版的**流片前与流片后相关性（pre-silicon versus post-silicon correlation）**问题。设计团队基于模型（SPICE 网表、liberty 文件、仿真）完成时序和功耗签核，然后测量真实芯片，找出模型出错的工艺角。两个领域的解决办法相同：让模型与生产共享同一份特征化数据。特征存储就是这份共享的特征化数据。同理，特征注册表类似于**标准单元库**：每个单元（特征）只需特征化一次，带版本管理，并在众多设计（模型）中复用。没有人会为每一颗芯片重新推导 NAND2 的时序，也不应有人为每一个模型重新实现 `tickets_30d`。
 
+<a id="worked-example-a-churn-model-and-the-leaky-join"></a>
 ### 实例：流失模型与泄漏的关联
 
 一家订阅制企业希望预测哪些客户会在未来 30 天内取消订阅。每条训练样本是一个（客户，预测日期）对，并附带标签：该客户是否在该日期之后 30 天内取消？以客户 C-1042 为例。预测日期为 2026 年 3 月 1 日，该客户于 3 月 15 日取消，因此标签为 1。
@@ -142,6 +148,7 @@ Feast 的文档准确描述了这一行为：对每个实体行，它从该行�
 
 > **深入（L3）。** 如果没有特征存储，同样的关联在 SQL 中就是对标签与特征的并集做窗口运算：对每个 `(customer, label_ts)`，将满足 `feature_ts <= label_ts` 的特征行按 `feature_ts DESC` 排名并保留排名第 1 的行，再过滤 `label_ts - feature_ts <= INTERVAL '30 days'`。有些引擎原生提供 `ASOF JOIN` 来完成这一操作。手工实现的团队还常会踩到另外两个坑：事件时间与摄取时间之别（一行数据计算得晚但时间戳标得早，仍然会造成泄漏），以及聚合窗口在标签时间*之后*才结束的特征。
 
+<a id="llmops-the-same-loop-with-new-nouns"></a>
 ### LLMOps：同样的闭环，新的名词
 
 生成式 AI 保留了这个闭环，但改变了在其中流动的东西。大多数企业并不训练基础模型。它们构建的是这样的应用：以提示词、检索到的上下文（[第 19 章](ch19-retrieval-architectures.md)）和工具来调用模型，并常常串联成智能体（[第 22 章](ch22-agents-and-data.md)）。被管理的单元也相应地发生了变化。
@@ -166,6 +173,7 @@ Feast 的文档准确描述了这一行为：对每个实体行，它从该行�
 
 > **类比：半导体。** LLM 评估就是**流片后验证（post-silicon validation）**。芯片不是因为 RTL 仿真正确就能出货；只有当验证套件在真实芯片上覆盖了足够多的规格、且覆盖率指标指明了缺口所在时，芯片才会出货。黄金数据集就是测试程序，LLM 作为评判者是一台自动测试机，其自身准确率必须与参考标准（人工评分员）进行相关性校准，而在线评估则相当于现场返修分析。两个领域的难点都在于覆盖率：一个 500 道题的黄金数据集如果漏掉了客户实际遇到的边界情况，那么 98% 的通过率意义不大。
 
+<a id="how-the-platforms-absorbed-mlops"></a>
 ### 平台如何吸收 MLOps
 
 **Databricks** 拥有最完整的自研技术栈。MLflow 是追踪和评估层。特征工程、模型和函数都在 [Unity Catalog](../glossary.md#unity-catalog) 中治理，因此一张特征表就是一张带主键的 Delta 表，并带有到使用它的模型的数据血缘，在线服务由 Databricks 托管。[^dbx-fs] Mosaic AI（来自 2023 年的 MosaicML 交易）和 Agent Bricks 覆盖模型服务、微调和智能体评估。继 2025 年 4 月规模较小的 Fennel 特征工程交易之后，Databricks 于 2025 年 8 月收购了 Tecton 的实时特征技术，用于为智能体提供新鲜上下文。[^tecton-dbx] 在 DAIS 2026 上，Databricks 新增了 Unity AI Gateway，用于治理智能体流量和 AI 支出。[^unity-gw]
@@ -176,6 +184,7 @@ Feast 的文档准确描述了这一行为：对每个实体行，它从该行�
 
 **开源计算保持中立。** Anyscale 背后的分布式计算框架 Ray 于 2025 年 10 月加入 PyTorch Foundation，与 PyTorch 和 vLLM 并列。[^ray-pt] Kubeflow 仍是 Kubernetes 原生的选择，Feast 则是它常见的特征存储搭档，并由 Red Hat 打包进 OpenShift AI。[^rh-feast] 但开放治理并没有保护这些项目背后的厂商：Anyscale 本身就同意出售给 GPU 云厂商 Nscale。[^nscale]
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 | 决策 | 方案 A | 方案 B | A 胜出的情形 | B 胜出的情形 |
@@ -191,6 +200,7 @@ Feast 的文档准确描述了这一行为：对每个实体行，它从该行�
 
 最佳组合方案的最强版本论证是成立的。平台型特征存储在批量特征上最强。基于流的滑动窗口实时反欺诈和广告排序特征很难做，这正是 Databricks 选择收购 Tecton 而非自建的原因。Weights & Biases 之所以保住了一批忠实的研究用户，是因为其实验体验和报告功能优于各平台的版本。反方观点是：大多数企业模型并非延迟敏感型，而买方（通常是 CDO 而非机器学习研究员）更看重统一的治理模型，而非更好的 UI。
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 | 参与者 | 在这一层中的角色 | 定位（2026 年 11 月） |
@@ -205,6 +215,7 @@ Feast 的文档准确描述了这一行为：对每个实体行，它从该行�
 
 *图 21.7 — MLOps 工具的所有权已转移到平台、GPU 云和安全厂商手中。开源项目是其中稳定的一层。*
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 ```mermaid
@@ -233,6 +244,7 @@ timeline
 
 > **类比：金融。** 应将这些收购理解为**把功能整合进平台的"汇总式收购"（roll-up）**，其定价依据的是战略价值而非独立价值。W&B 的媒体报道价格约 $1.7B，约为其上一轮私募估值 $1.25B 的 1.4 倍；[^wandb][^wandb-round] Anyscale 的媒体报道价格约 $1.65B，比媒体报道的 2022 年 $1.38B 估值高出约 20%（本书自行计算）。[^nscale] 对品类领先者而言，这些溢价幅度并不大。其他标的，例如 Tecton（资产交易）和 Neptune（对外部客户停止服务），则体现了人才收购（acquihire）的经济逻辑。对尽职调查的启示是：一个建立在平台数据之上的工具，其潜在收购方可能只有五家左右，这就限制了退出倍数。
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源 / 日期 |
@@ -253,10 +265,12 @@ timeline
 
 *图 21.9 — 交易价格集中在 $0.3B 到 $1.7B 之间：金额不小，但与收购它们的平台相比规模很小。检查点这一行说明了为什么这一层会触及存储预算。*
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** 这一层以突发方式写入。同步训练检查点在写入时会让所有 GPU 暂停，而每个 70B 参数模型约需写入 1 TB（估算），因此检查点带宽会直接转化为 GPU 空闲时间。特征存储增加了位于对象存储上、长期保留、按时间分区的历史表；注册表则增加了大量带版本的模型制品，在发布过程中由服务集群同时读取。基于公开信息，战略团队可能评估的选项包括：将 FlashBlade 认证为 Unity Catalog 和 Snowflake 外部卷之下的离线存储及制品存储，以及将 Everpure Data Intelligence 的数据分类功能定位于特征数据集和评估数据集的上游。检查点 I/O 模式和性能细节参见配套的 *Everpure Tech Atlas*。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理提问**
@@ -281,6 +295,7 @@ timeline
 - "MLflow 是 Databricks 的产品。"它是 Linux Foundation 旗下的开源项目，由 Databricks 主导。托管版 MLflow 才是产品。
 - "离线准确率高就证明模型有效。"如果没有时点关联，这可能只证明了模型能读取未来。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 - Sculley 等，"Hidden Technical Debt in Machine Learning Systems"（NeurIPS 2015），MLOps 的奠基性论文。[^sculley]
@@ -289,6 +304,7 @@ timeline
 - Rajbhandari 等，"ZeRO"（2019），介绍大模型训练的内存与检查点核算。[^zero]
 - 相关章节：[第 16 章](ch16-ai-data-lifecycle.md)介绍完整的 AI 数据闭环，[第 20 章](ch20-training-data-supply-chain.md)介绍训练数据，[第 13 章](../02-pipelines-and-governance/ch13-data-quality-observability-lineage.md)介绍数据可观测性——LLM 追踪正越来越像它。
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [MLOps](../glossary.md#mlops) — 使机器学习生命周期可重复、受治理且可监控的实践与工具。
@@ -310,6 +326,7 @@ timeline
 - [AI 网关](../glossary.md#ai-gateway) — 位于模型提供商之前的代理，用于路由、密钥、限流、缓存和支出控制。
 - [Unity Catalog](../glossary.md#unity-catalog) — Databricks 用于表、特征、模型和函数的治理目录。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^mlflow3]: Databricks, "MLflow 3.0: Unified AI Experimentation, Observability, and Governance," https://www.databricks.com/blog/mlflow-30-unified-ai-experimentation-observability-and-governance，发布 2025-06（Data + AI Summit 2025）；检索 2026-11-01。月下载量数字为公司披露；二手资料引用的 33M–60M 未予采用。

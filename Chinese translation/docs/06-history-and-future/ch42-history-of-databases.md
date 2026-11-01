@@ -1,6 +1,7 @@
 # 42. 数据库简史，1960 年代–2026 年
 > **深度：** L2 · **阅读时间：** 约 20 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 1 章 — 数据栈全景图](../01-data-systems-foundations/ch01-data-stack-map.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - 数据库的历史可以分为九个时代。每个时代的开端，都是硬件或工作负载的变化速度超过了在位者架构的跟进能力：大型机、小型机、客户端-服务器、Web 规模集群、云对象存储，以及如今的 GPU 和智能体。
@@ -9,12 +10,14 @@
 - 商业模式的变化比技术变化更大：先是捆绑式大型机软件，然后是永久许可证加维护费，接着是硬件一体机，再是开源加订阅，最后是云上按用量计费。每一次转变都移动了利润池。保住了技术却错过了模式转变的在位者（Teradata、Cloudera）损失的价值最多。
 - 对战略人员来说，最主要的教训是：新的数据模型很少能构成持久的护城河。持久的地位来自掌控数据存放在哪里、谁有权读取它：存储层、表格式、目录和计费关系。存储与每个时代共同演进，这正是 Everpure 应当把这段历史当作自己的历史来读的原因。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业 + Everpure 视角）
 
 数据基础设施领域的每一份融资路演材料都声称"这次不一样"。历史是检验这一说法成本最低的尽职调查（due diligence）工具。如果一家初创公司的核心论点是"新的数据模型能打败 SQL"，那么基础概率并不乐观：对象数据库、XML 数据库和大多数第一代 NoSQL 供应商都在大约十年内被吸收或边缘化。[^wgaca24] 如果论点是"新的部署模式或商业模式能打败在位者"，基础概率就好得多。Oracle 在商用 SQL 上抢先 IBM 进入市场，Snowflake 则凭借弹性和按用量计费（consumption pricing）击败了 Teradata，而不是靠更好的查询语言。
 
 对 Everpure 而言，这段历史还有第二个用途。每个数据库时代都伴随着与之匹配的存储架构：大型机时代的直连磁盘，客户端-服务器关系数据库时代的存储区域网络（SAN），Hadoop 时代的 Hadoop 分布式文件系统（HDFS），以及云数据仓库和湖仓一体（lakehouse）时代的对象存储（object storage）。每一次存储转变也重新洗牌了存储供应商。Everpure 向上层延伸进入数据管理领域（Enterprise Data Cloud，以及 2026 年为数据发现与分类而收购 1touch），是在押注哪一层将掌控下一个时代。[^everpure-1touch] 本章提供长周期视角，[第 39 章](../05-business-and-economics/ch39-ma-history.md)则提供逐笔交易的记录。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
 理解这段历史的有效方式，是把它看作一个反复出现的循环，而不是一份产品清单。硬件或工作负载的变化制造出一个缺口。一种新架构填补这个缺口，它通常来自研究实验室或 Web 公司。一种新的商业模式将其变现。随后，在位的查询接口 SQL 加入这项新能力，挑战者要么变成一个 SQL 引擎，要么萎缩为细分产品。Stonebraker 和 Hellerstein 追溯了截至 2005 年的九个数据模型时代中的这一循环。Stonebraker 和 Pavlo 在 2024 年把分析延伸到其后二十年，结论是关系模型和 SQL 同样吸收了这一时期的主要挑战者。[^wgaca05][^wgaca24]
@@ -60,6 +63,7 @@ timeline
 
 *图 42.1 — SV-16。九个时代相互重叠，而非彼此取代。IMS 仍在银行中运行，Oracle 仍在几乎每一家大型企业中运行。每个新时代都在上方叠加一层，并移动了利润池。日期以正文所引为准。*
 
+<a id="era-1-navigational-databases-1960s1970s"></a>
 ### 时代 1：导航式数据库（1960 年代–1970 年代）
 
 最早的数据库系统回答的是一个大型机时代的问题：许多程序如何在昂贵的磁盘上共享同一组记录？Charles Bachman 在 General Electric 开发的 Integrated Data Store（约 1963–64 年）把记录组织成一张由指针连接的网络。程序从一条属主记录出发，一次一个链接地"导航"到其成员记录。Bachman 1973 年图灵奖演讲的题目就是《The Programmer as Navigator》（程序员即导航员）。[^bachman] CODASYL 数据库任务组在 1969 年和 1971 年发布的报告中对网状模型进行了标准化。IDMS 最初在 B.F. Goodrich 开发，自 1973 年起由 Cullinane 销售，成为该模型最主要的商业实现。
@@ -68,6 +72,7 @@ IBM 走的是层次化路线。IMS 从 1966 年起与 North American Rockwell（
 
 *教训：* 导航式系统之所以快，是因为它把访问路径硬编码进了数据。这同时也是它的弱点。每个新问题都需要程序员介入，往往还需要重组数据库。其商业模式就是大型机的商业模式：软件与 IBM 硬件绑定；在 IBM 于 1969 年 6 月决定将软件与硬件分拆定价之后，变成单独定价的经常性许可费（IMS 是 IBM 最早的这类"程序产品"之一）。数据独立性，即在不重写应用程序的前提下改变存储方式的能力，是下一个时代所要满足的未被满足的需求。
 
+<a id="era-2-the-relational-revolution-19701990s"></a>
 ### 时代 2：关系型革命（1970–1990 年代）
 
 1970 年，IBM 研究员 Edgar F. Codd 提出，应以简单的表（关系）向用户呈现数据，并通过声明*要什么*而不是*如何找到*来查询。访问路径由系统来选择。[^codd] 这个想法争议了十年，因为从业者怀疑机器规划查询的能力能否比得上一位熟练的"导航员"。两个研究原型平息了这场争论。
@@ -81,6 +86,7 @@ IBM 公开发表了 System R 的成果，但产品化行动迟缓。Larry Elliso
 
 *教训：* 关系型时代的赢家是商业化最快的公司，而不是发明这项技术的公司。IBM 做了研究。Oracle 凭借激进的销售、跨硬件的可移植性以及**永久许可证加年度维护费**模式，攫取了大部分价值。在这一模式下，客户先预付许可费，此后每年支付一笔支持费，业内通常认为约为许可证价格的 22%。[^orcl-sig] 维护费把装机基础变成了一笔年金。这正是 Oracle 后来能够以强势地位为其云转型提供资金的主要原因。
 
+<a id="era-3-data-warehousing-19792010s"></a>
 ### 时代 3：数据仓库（1979–2010 年代）
 
 在接收订单的同一个数据库上跑报表，会拖慢订单处理。业界的答案是把数据复制到一个专为分析而构建的独立系统中：即 [OLAP](../glossary.md#olap) 一侧，有别于事务型的 [OLTP](../glossary.md#oltp)。成立于 1979 年的 Teradata 在 1983 年向 Wells Fargo 交付一台测试系统之后，于 1984 年发布了 DBC/1012。这是一台采用[无共享](../glossary.md#shared-nothing)（shared-nothing）设计的[大规模并行处理](../glossary.md#massively-parallel-processing)（MPP）机器：每个节点拥有自己的磁盘和每张表的一个分片，因此一次大规模扫描可以在数百个节点上并行执行。[^teradata-10k] Teradata 把硬件和软件作为**一体机**（appliance）一起销售。Netezza（2010 年以 $1.7B 卖给 IBM）和 Greenplum（2010 年卖给 EMC）后来复制了这一模式。[^ma-netezza][^ma-greenplum]
@@ -116,6 +122,7 @@ flowchart LR
 
 *教训：* 数据仓库时代靠**一体机和按席位计费的工具许可证**赚钱，它奖励的是那些客户预算庞大、稳定且集中的供应商。它还培养了一代把数据平台视为资本支出的战略人员。这种习惯让后来向按用量计费的转变显得像一场冲击，而不是一种趋势。
 
+<a id="era-4-the-web-and-the-nosql-wave-20032012"></a>
 ### 时代 4：Web 与 NoSQL 浪潮（2003–2012）
 
 Web 公司遇到了数据仓库供应商从未面对过的极限。Google 要为整个互联网建立索引，Amazon 要运行一个永不宕机的购物车。购买更大的 Oracle 或 Teradata 机器太过昂贵，而且仍然无法扩展到足够大的规模。Google 的答案是一系列论文：Google File System（2003）、MapReduce（2004）和 Bigtable（2006）。它们描述了如何把存储和计算分散到数千台廉价、不可靠的机器上。[^gfs][^mapreduce][^bigtable] Amazon 的 Dynamo 论文（2007）放弃了强一致性，以保证购物车始终可写。[^dynamo]
@@ -126,6 +133,7 @@ Web 公司遇到了数据仓库供应商从未面对过的极限。Google 要为
 
 *教训：* 存活下来的 NoSQL 供应商，卖的是**托管云服务**（managed service）和开发者体验，而不是数据模型。MongoDB 在 FY2026（Feb 2025–Jan 2026）实现约 $2.46B 的 GAAP 收入，其 Atlas 云服务目前约占收入的四分之三。[^mdb-q4][^mdb-ars] 没有云服务的开源 NoSQL 供应商则面临超大规模云厂商托管其代码的竞争。MongoDB（2018 年，SSPL）和 Redis（2024 年）的应对是改用限制更多的许可证，不过 Redis 在 2025 年随 Redis 8 重新加入了经 OSI 批准的 AGPL 选项。[^mdb-sspl][^redis-2024]
 
+<a id="era-5-the-hadoop-era-20062019"></a>
 ### 时代 5：Hadoop 时代（2006–2019）
 
 Doug Cutting 和 Mike Cafarella 对 GFS 和 MapReduce 的开源重新实现，于 2006 年在 Yahoo 独立为 Hadoop，并于 2008 年成为 Apache 顶级项目。[^hadoop] 它承诺以原始形式把所有数据廉价地存放在通用服务器上，只在读取数据时才施加结构（[读时模式](../glossary.md#schema-on-read)，schema-on-read）。其卖点就是"[数据湖](../glossary.md#data-lake)"（data lake）。
@@ -136,6 +144,7 @@ Doug Cutting 和 Mike Cafarella 对 GFS 和 MapReduce 的开源重新实现，�
 
 *教训：* 当多家供应商分发同一个项目、而全部运维工作都由客户承担时，**开源加支持订阅**是一种脆弱的模式。Hadoop 供应商销售的是在本地运行的软件，而此时市场恰恰在转向租用服务。它们的技术以文件格式（Parquet、ORC）、Hive 元数据存储和 Spark 的形式延续了下来，但大部分股权价值没有。
 
+<a id="era-6-spark-and-databricks-2009"></a>
 ### 时代 6：Spark 与 Databricks（2009–）
 
 Apache [Spark](../glossary.md#apache-spark) 于 2009 年诞生于 UC Berkeley，是 Matei Zaharia 开发的更快的、基于内存的 MapReduce 继任者。它始于 RAD Lab，后成为其继任实验室 AMPLab（2011 年成立）的旗舰项目。它于 2010 年开源，2013 年捐赠给 Apache 软件基金会，并于 2014 年 2 月成为顶级项目。[^nsdi][^spark-tlp] 它的创造者们于 2013 年创立了 Databricks。关键的战略决策是*绝不*销售 Hadoop 式的发行版。Databricks 只以云服务的形式运行 Spark，这让使用量变得可计量、可计费。[^wiki]
@@ -144,6 +153,7 @@ Apache [Spark](../glossary.md#apache-spark) 于 2009 年诞生于 UC Berkeley，
 
 *教训：* 同样的技术，取决于交付模式，可以产生截然不同的股权结果。拥有正在运行的服务，就意味着拥有使用数据、升级路径和账单。
 
+<a id="era-7-cloud-data-warehouses-20102020"></a>
 ### 时代 7：云数据仓库（2010–2020）
 
 三款产品以各不相同的设计把数据仓库搬上了云。
@@ -156,6 +166,7 @@ Apache [Spark](../glossary.md#apache-spark) 于 2009 年诞生于 UC Berkeley，
 
 *教训：* 云数据仓库时代使**按用量计费**成为主导模式。客户购买积分（credits）或承诺消费额度（committed spend），收入随使用量变动。对在位者而言，一个无法计量的架构所带来的代价，可能比一个更慢的引擎还要大。
 
+<a id="era-8-the-modern-data-stack-and-the-lakehouse-20162024"></a>
 ### 时代 8：现代数据栈与湖仓一体（2016–2024）
 
 廉价的云数据仓库催生了围绕它的一大批单一用途工具，即所谓的"现代数据栈"。Fivetran 负责数据摄取（ingestion），dbt 负责在数据仓库内部进行 SQL 数据转换（transformation）（即 [ELT](../glossary.md#elt) 而非 ETL），Looker 等则负责 BI。这一技术栈如今正在整合，最显著的例子是已经完成的 Fivetran–dbt Labs 合并。[^fivetran-dbt] [第 43 章](ch43-modern-data-stack.md)讲述了这个故事。
@@ -164,6 +175,7 @@ Apache [Spark](../glossary.md#apache-spark) 于 2009 年诞生于 UC Berkeley，
 
 *教训：* 当存储格式变得开放时，价值就上移到目录和数据治理（governance）层，由它来决定谁可以读取什么（见[第 8 章](../01-data-systems-foundations/ch08-catalogs-and-metastores.md)）。这与时代 2 的模式相同：当时标准化的 SQL 把价值转移给了运行最好引擎、签下最具黏性合同的一方。
 
+<a id="era-9-ai-and-agents-20212026"></a>
 ### 时代 9：AI 与智能体（2021–2026）
 
 大语言模型带来了对嵌入（向量）（embedding）进行相似性检索的需求。Pinecone、Weaviate、Qdrant 和 Milvus 等专用[向量数据库](../glossary.md#vector-database)（vector database）迅速融资。Pinecone 在 2023 年 4 月完成的 $100M 融资使其估值达到约 $750M（媒体报道）。[^pinecone-b] 随后，吸收循环以前所未有的速度运转。[pgvector](../glossary.md#pgvector) 把向量检索带进了 Postgres。[^pgvector] MongoDB Atlas Vector Search 于 2023 年 12 月正式可用。[^mdb-vs] Oracle 在其 AI Database 26ai 中推出了向量检索。[^oracle] AWS 于 2025 年 12 月让 S3 Vectors 正式可用。[^s3v] 在大约三年之内，向量检索就成了现有数据库的一项功能，正如 Stonebraker 和 Pavlo 在 2024 年所预言的那样。[^wgaca24]
@@ -172,6 +184,7 @@ AI 时代的第二个转变，是 **Postgres 复兴**以及**智能体成为数�
 
 *教训：* 在 AI 时代，稀缺的投入是关于数据的可信上下文：数据意味着什么、谁可以看、是否是最新的。向量的原始存储并不稀缺。商业模式仍然是按用量计费，但使用者越来越多地是机器，它们在没有人参与的情况下创建数据库、运行查询并消耗积分。这有利于具备计量、治理和极低成本资源开通能力的平台。
 
+<a id="the-pattern-sql-absorbs-challengers"></a>
 ### 规律：SQL 吸收挑战者
 
 ```mermaid
@@ -197,6 +210,7 @@ flowchart LR
 
 > **类比：x86 与 RISC。** SQL 之于数据，就如同 x86 指令集之于计算。1980 年代，RISC 设计更简洁、更快速，许多人预期它会取代 x86。结果是，从 1990 年代中期开始，Intel 和 AMD 的芯片在内部把 x86 指令解码为类 RISC 的微操作。它们保留了兼容的接口，同时吸收了更好的微架构。SQL 引擎对列式存储（columnar storage）、向量化执行（vectorized execution）和向量索引做了同样的事。反例同样重要。Arm 在 x86 兼容性负担最无关紧要的地方胜出，先是手机，如今是对能效敏感的数据中心。在数据领域，对应的是没有遗留 SQL 资产的新工作负载，例如基于 Postgres 的 AI 应用或嵌入式 DuckDB，在这些场景中，更轻量、更便宜的设计可以胜出。接口会长存，但在在位者成本结构不适配的边缘地带，它们可能失去份额。
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 下面两张表概括了这段战略史。第一张给出每个时代的教训。第二张展示主导商业模式如何变迁，这对估值的影响比技术更大。
@@ -227,6 +241,7 @@ flowchart LR
 
 **为对立观点构建最强版本论证（steelman）。** "SQL 永远会赢"的说法可能被夸大了。DynamoDB 和 Redis 等键值存储仍是庞大的业务，从未真正被吸收；它们服务的是不同的延迟层级。文档数据库保住了一个庞大的开发者细分市场，MongoDB 的收入就是证明。大多数数据科学家使用的是 Python 中的 dataframe API，而不是 SQL，而大语言模型可能让自然语言成为主导的查询接口。公允的解读要窄一些。SQL 吸收的是*数据模型和查询功能*，它不吸收*延迟层级*或*交付模式*。而且关系型接口最终可能被隐藏在智能体背后，使得查询语言的重要性不如那些把意图翻译成 SQL 的语义层（semantic layer）和目录（见[第 14 章](../02-pipelines-and-governance/ch14-semantic-layers-and-bi.md)）。
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 那些经久不衰的在位者，要么转变了商业模式，要么成为了默认接口。其余的都被收购了。
@@ -247,6 +262,7 @@ flowchart LR
 
 *图 42.6 — 幸存者与出局者。每一个长寿的业务，要么拥有接口（SQL、Postgres），要么拥有一项正在运行的服务和计费关系。*
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 三条长期趋势贯穿了九个时代，每一条都指向未来几年。
@@ -257,6 +273,7 @@ flowchart LR
 
 **第三，循环正在加速。** 关系型从论文（1970）到占据主导花了约 15 年。NoSQL 从炒作（2009）到被吸收花了约六年。向量检索大约只用了三年（2021–2024）。更快的循环有利于出货迅速的在位者和拥有分发渠道的平台。它们对单一功能型初创公司非常不利，这是本章最主要的尽职调查启示。[第 44 章](ch44-future-trends.md)把这些趋势转化为预测。
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源 / 日期 |
@@ -280,12 +297,14 @@ flowchart LR
 
 *图 42.7 — 关系型在位者（Oracle）按收入计仍是本表中最大的公司。数据仓库一体机时代的领导者（Teradata）如今的市值，只有 Postgres 初创公司 Supabase 最近一次私募估值的约三分之一。跨口径比较（上市公司市值 vs. 私募投后估值）仅供参考。*
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** 存储与每个数据库时代共同演进。客户端-服务器关系数据库推动了 SAN 和块存储阵列的发展，其卖点是为 OLTP 日志提供的低延迟和一致性。Hadoop 通过 HDFS 在本地磁盘上的三副本复制，把存储搬进了计算服务器内部，这让外部存储供应商受损长达十年。云数据仓库和湖仓一体把数据的持久副本搬进了 S3 API 背后的对象存储，使对象存储成为分析领域的记录系统。AI 时代正在为 GPU 训练增加高吞吐的文件和对象存储层，并为向量索引和 KV 缓存增加高速闪存。协议和介质细节请参见配套的 *Everpure Tech Atlas*。
 
 对战略团队而言，这一规律提示了一个可供评估的选项（基于公开信息）。在每个时代，通过收购数据库向上延伸一层的存储供应商（EMC–Greenplum、HPE–MapR）大多毁掉了价值，因为它们恰好在引擎商品化之际买下了一个引擎。[^ma-greenplum][^ma-mapr] 而进入*控制*层的举措，例如跨任何引擎运作的元数据、分类和数据治理，则顺应了上文所述的利润池走向。Everpure 对 1touch 的收购属于第二类，[第 45 章](ch45-storage-moving-up-the-stack.md)对这些选项做了详细评估。[^everpure-1touch]
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理提出的三个问题**
@@ -310,6 +329,7 @@ flowchart LR
 - "Snowflake 赢在更快。"它主要赢在弹性、存算分离和按用量计费。
 - "向量数据库是一个会保持独立的新品类。"历史表明，新的数据类型会在几年内被吸收。独立的幸存者需要另一种优势。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 - 把 Stonebraker 和 Hellerstein（2005）与 Stonebraker 和 Pavlo（2024）连起来读。两者合在一起，是对吸收论最好的单一论证。[^wgaca05][^wgaca24]
@@ -317,6 +337,7 @@ flowchart LR
 - 关于云数据仓库的设计，请把 Snowflake 的 SIGMOD 2016 论文与 Lakehouse 的 CIDR 2021 论文对照阅读。它们是当今 Databricks–Snowflake 之争的两份奠基文献（[第 27 章](../04-company-deep-dives/ch27-databricks-vs-snowflake.md)）。[^snowflake16][^cidr]
 - 第 1 部分介绍了这段历史背后的机制：数据模型（[第 2 章](../01-data-systems-foundations/ch02-data-models.md)）、内部原理（[第 3 章](../01-data-systems-foundations/ch03-database-internals.md)）、分布式数据库（[第 4 章](../01-data-systems-foundations/ch04-distributed-databases.md)）和分析引擎（[第 5 章](../01-data-systems-foundations/ch05-analytical-engines.md)）。
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [导航式数据库](../glossary.md#navigational-database)（Navigational database）— 程序沿着存储的指针从一条记录跳到另一条记录的数据库，如 IMS 和 CODASYL 系统。
@@ -342,6 +363,7 @@ flowchart LR
 - [永久许可证](../glossary.md#perpetual-license)（Perpetual license）— 一次性支付的软件许可费，通常随后每年支付维护费。
 - [按用量计费](../glossary.md#consumption-pricing)（Consumption pricing）— 按计量的使用量（如积分或扫描的 TB 数）而非席位或许可证计费。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^wgaca05]: M. Stonebraker and J. M. Hellerstein, "What Goes Around Comes Around," in *Readings in Database Systems*, 4th ed., MIT Press, 2005，作者版本 https://people.csail.mit.edu/tdanford/6830papers/stonebraker-what-goes-around.pdf [VERIFY: 核实 URL 路径]，发布于 2005；检索于 2026-11-01（经典引用，未实时抓取）。

@@ -1,6 +1,7 @@
 # 5. 分析引擎
 > **深度：** L2 · **阅读时间：** 约 15 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 3 章 — 数据库内部原理](ch03-database-internals.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - 分析型查询只涉及少数几列，却要跨越数十亿行。**按列存储**数据可以让引擎只读取这几列，而且相似的值彼此相邻，压缩效果很好。两者叠加，通常能把扫描的字节数减少一到两个数量级（见下文算例）。
@@ -9,14 +10,17 @@
 - Snowflake 2016 年的设计把**对象存储当作持久化磁盘**，使用带本地 SSD 缓存的无状态计算集群，并由一个独立的服务层负责元数据。弹性扩缩容、并发隔离和按用量付费都源自这一个决策。BigQuery（其 Dremel 血统在 Google 内部更早就实现了存储解耦）、Redshift RA3 和 Databricks 都收敛到了同一模式。
 - 引擎正在拆解为可复用的组件：**Arrow** 负责内存格式，**Velox/DataFusion** 负责执行，Parquet/Iceberg 负责存储。性能正在商品化，战略控制点（control point）转向存储吞吐、缓存和目录（catalog）。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业视角 + Everpure 视角）
 
 分析引擎是大多数数据平台收入的计量之处。Snowflake 的 credit、BigQuery 的 slot 和 Databricks 的 DBU，主要计量的都是扫描、连接和聚合所耗费的计算时间。引擎效率决定了厂商的毛利率（gross margin），也决定了客户每条查询要付多少钱。因此，支出跟随的是引擎的设计选择，而不是它的市场宣传。
 
 对一家存储公司而言，从无共享 MPP 向**存算分离（separation of storage and compute）**的转变，是本书中最重要的架构变化。一旦计算变成无状态、数据迁移到对象存储（object storage），瓶颈就不再是单块磁盘的 IOPS，而变成对象存储层的**聚合吞吐量**加上其前端缓存的命中率。这是一个存储问题：无论引擎是 Snowflake、Trino 还是 Spark，谁能提供快速、可扩展的对象存储和智能缓存层，谁就处在引擎的关键路径上。Everpure 公开的合作伙伴资料已经展示了这一模式的一个版本：一套在 FlashBlade 对象存储上的 Iceberg 表之上运行 Starburst 引擎的参考架构。[^ep-starburst] 基于公开信息，战略团队可能评估的选项包括：与更多引擎做认证、缓存层产品，以及让本地部署的对象存储成为开放表格式（open table format）的一等"数据库磁盘"（[第 7 章](ch07-open-table-formats.md)）。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="row-versus-columnar-layout"></a>
 ### 行式与列式布局
 
 事务型数据库（[第 3 章](ch03-database-internals.md)）把每一行连续地存储在一个页上，因为订单录入系统读写的是整行：取出 42 号客户，更新订单。分析则把这种访问模式翻转过来。"第三季度各区域总收入"需要大约五十列中的三列（日期、区域、金额），但要覆盖该季度的每一行。在行存储中，磁盘和内存系统必须把全部五十列都搬运经过 CPU，才能拿到所需的三列。
@@ -48,6 +52,7 @@ flowchart LR
 
 > **类比：内存层次结构。** 这就是数据库版的**结构体数组（AoS）与数组结构体（SoA）**之争。一个对一百万个结构体中的某一字段求和的 GPU 内核，如果结构体是交错存放的（AoS），每条缓存行和每次 DRAM 突发传输的大部分都被浪费。把该字段连续存放（SoA），取回的每个字节都有用，预取器也能看到整齐的步长。列存储就是在磁盘、内存和缓存中的 SoA。
 
+<a id="compression-and-encoding"></a>
 ### 压缩与编码
 
 把相似的值放在一起使其易于压缩，列存储会针对每一列选择**轻量级编码**：
@@ -59,12 +64,14 @@ flowchart LR
 
 在此之上再叠加通用压缩编解码器（LZ4、Zstandard）。Abadi、Madden 和 Ferreira 在 SIGMOD 2006 的论文中表明，更大的收益不在于节省磁盘，而在于算子可以**直接在压缩数据上运算**：对一个 RLE 游程求和只需一次乘法，对字典编码列的过滤比较的是整数而非字符串。[^abadi06] 能期待多大的压缩比取决于数据本身。作为厂商，ClickHouse 将典型分析数据在列式形态下的压缩比描述为 5–10×，而行式页压缩为 1.5–3×，低基数列则远超 30×。[^ch-compress] 应把这些视为经验法则，而非保证。
 
+<a id="skipping-data-zone-maps-and-late-materialization"></a>
 ### 跳过数据：区域映射与延迟物化
 
 最便宜的字节是从未读取的字节。引擎会为每个数据块存储小型摘要，例如每列的最小值和最大值。这些摘要称为**[区域映射](../glossary.md#zone-map)（zone map）**（Snowflake 按*微分区*保存，Parquet 按行组保存）。一条过滤到 2026 年 7 月的查询会先检查摘要，凡是日期范围不覆盖 7 月的数据块都直接跳过，无需打开。Snowflake 的每个微分区包含 50–500 MB 未压缩数据，其元数据包括每列的取值范围，查询规划器正是用它来做这种裁剪。[^sf-mp] 当数据按过滤列聚簇时，裁剪效果最好。一张按日期排序的表在日期上裁剪得非常漂亮，而在客户 ID 上几乎无法裁剪。
 
 **[延迟物化](../glossary.md#late-materialization)（late materialization）**把同样的逻辑推进到查询内部。引擎先在日期列上执行过滤，生成匹配行位置的列表，然后才去取这些位置上的 price 和 store 值。宽行被尽可能晚地拼接（"物化"）起来，往往只在最终结果时才做。
 
+<a id="executing-the-query-vectorization-versus-compilation"></a>
 ### 执行查询：向量化与编译
 
 经典引擎使用 **Volcano 迭代器模型**：每个算子对其子算子调用 `next()`，一次拉取一行。这很优雅，但在现代 CPU 上，逐行的函数调用、分支预测失败和指针追逐的开销远超运算本身。由此出现了两种应对方案。
@@ -95,12 +102,14 @@ flowchart LR
 
 哪一种胜出？一项 2018 年的研究在同一系统内实现了两者，结论是二者均不占绝对优势。编译代码在计算密集型查询上执行的指令更少，而向量化代码更善于隐藏内存延迟，例如在哈希连接中。[^kersten] 业界出于实际原因大多选择了向量化：它更易于调试和性能剖析，避免了短查询上的编译延迟，并能在运行时针对每个批次自适应调整。Databricks 在 Photon 上选择了向量化 C++ 设计，而没有扩展 Spark 的代码生成，理由正是这种自适应性。[^photon]
 
+<a id="scaling-out-mpp-shared-nothing"></a>
 ### 横向扩展：MPP 无共享架构
 
 当一台机器不够用时，**[大规模并行处理](../glossary.md#massively-parallel-processing)（massively parallel processing，MPP）**引擎会把表分布到许多节点上。在 Teradata、Netezza、Greenplum 和最初的 Redshift 所采用的**[无共享](../glossary.md#shared-nothing)（shared-nothing）**设计中，每个节点在自己的磁盘上拥有一片按哈希分区的数据。查询在每一片上并行执行，部分结果在协调节点汇合。读取几乎可以线性扩展，这正是该设计在 2000 年代主导数据仓库市场的原因。IBM 于 2010 年以 $1.7B 收购 Netezza（已披露），EMC 同年收购 Greenplum（条款未披露）。[^ma-netezza][^ma-greenplum] Redshift 本身就是基于授权的 ParAccel MPP 代码构建的。[^ma-paraccel]
 
 痛点在于耦合。在非分区键上做连接会强制触发**[数据洗牌](../glossary.md#shuffle)（shuffle）**：行在网络上重新分布，使匹配的键落到同一个节点上。存储和计算按固定比例配置，因此需要更多磁盘的客户必须购买更多 CPU，反之亦然。最痛苦的是，**调整集群规模意味着重新分布数据**：从 10 个节点扩到 20 个节点要对每一行重新哈希并搬移。并发也是共享的：一个繁重的数据科学作业与 CFO 的仪表盘争抢同一批节点。
 
+<a id="separating-storage-and-compute-the-snowflake-design"></a>
 ### 存算分离：Snowflake 的设计
 
 Snowflake 的 SIGMOD 2016 论文（Dageville 等）描述了一种被其称为多集群、共享数据（multi-cluster, shared-data）的架构，从零开始为云而建。开发始于 2012 年末，服务于 2015 年 6 月正式上线（GA）。[^snowflake16] 其关键举措：
@@ -146,10 +155,12 @@ flowchart TB
 
 > **类比：解耦内存。** 存算分离是 CXL 内存池化在机架内所做之事的数据中心级版本：将容量与处理器解耦，使两者能各自独立扩展和利用，代价是接受额外的延迟。每个虚拟仓库中的 SSD 缓存扮演着 NAND 前端 DRAM 缓存的角色。命中率决定了用户看到的是本地磁盘的速度，还是对象存储的延迟。
 
+<a id="the-composable-data-stack"></a>
 ### 可组合数据栈
 
 最新的转变是走向开放、可复用的引擎组件。**Apache Arrow** 标准化了内存中的列式格式，使引擎和工具之间交换批次无需转换（[第 6 章](ch06-file-formats.md)）。**Velox**（Meta，VLDB 2022）是一个 C++ 向量化执行库，在论文发表时已与 Meta 内部十几个系统集成或正在集成，包括 Presto 和 Spark。[^velox] **Apache DataFusion** 是一个基于 Arrow 构建的 Rust 查询引擎，专为嵌入新产品而设计。[^datafusion] 2023 年的《可组合数据管理系统宣言》（Composable Data Management System Manifesto）主张，业界应停止为每个系统重复构建解析器、优化器和执行器，转而用共享组件来组装。[^manifesto] 其含义是：快速的向量化执行本身已不再构成护城河。
 
+<a id="worked-example-1-billion-sales-rows-3-of-50-columns"></a>
 ## 算例：10 亿行销售数据，50 列中取 3 列
 
 **示意性算术，并非基准测试。** 假设一张 `sales` 表有 10 亿行、50 列，未压缩时每个列值平均 8 字节。查询按 `store` 汇总一个月的 `price`，因此涉及 `date`、`store` 和 `price`。
@@ -171,6 +182,7 @@ xychart-beta
 
 *图 5.4 — 列裁剪（字节数减少约 17×）与压缩（再减少 5×）叠加，在区域映射裁剪之前就能让读取的数据量减少约 80×（示意性假设）。*
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 | 选择 | 选项 A | 选项 B | A 胜出的场景 | B 胜出的场景 |
@@ -199,6 +211,7 @@ xychart-beta
 
 *图 5.6 — 引擎格局：封闭的云数据仓库在托管弹性上竞争，开放引擎在可嵌入性和开放性上竞争。各行描述的是架构，而非基准测试排名。*
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 - **云数据仓库：**Snowflake，存算分离的参考设计（[第 26 章](../04-company-deep-dives/ch26-snowflake.md)）；Google BigQuery（无服务器）；Amazon Redshift（MPP 传承，现为 RA3 和无服务器）；Microsoft Fabric/Synapse。
@@ -207,6 +220,7 @@ xychart-beta
 - **传统 MPP：**Teradata、Netezza（IBM）、Greenplum（经由 VMware 归属 Broadcom）、Vertica（经由 Micro Focus 归属 OpenText）[VERIFY: Vertica 当前的所有者]。它们拥有庞大的装机基础，但正面临持续向云迁移的压力。
 - **组件：**Apache Arrow、Velox、DataFusion。它们位于上述许多系统之下，并日益成为共享的底层基座。
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 ```mermaid
@@ -229,6 +243,7 @@ timeline
 
 这条演进弧线分为三幕。**第一幕（2005–2012）：列式与向量化思想**源自学术界（C-Store、X100），并在一体机中实现商业化（Vertica、Vectorwise、Netezza），随后被既有巨头收购。[^cstore][^x100][^ma-netezza] **第二幕（2012–2020）：云实现存算分离。** Snowflake（2015 年 GA）、BigQuery 以及之后的 Redshift RA3（2019）把数据仓库变成了弹性服务。[^snowflake16][^ra3-launch] **第三幕（2020 至今）：开放与可组合。** Photon（2022）把数据仓库级的执行能力带到开放文件上，Velox 和 DataFusion 把执行器变成了库，DuckDB 于 2024 年 6 月发布 1.0。[^photon][^velox][^duckdb10] 这一轨迹指向的是：引擎成为对象存储上开放表的可互换消费者。价值随之流向目录（[第 8 章](ch08-catalogs-and-metastores.md)）、数据治理，以及为引擎供数的存储层和缓存层（[第 24 章](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)）。
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源/日期 |
@@ -244,10 +259,12 @@ timeline
 | IBM 收购 Netezza 价格 | $1.7B（2010） | 已披露 | WilmerHale，2010-09-22[^ma-netezza] |
 | ClickHouse 估值 | $15B（D 轮，$400M） | 媒体报道 | Bloomberg，2026-01-16[^clickhouse-val] |
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** 存算分离把分析瓶颈从本地磁盘的 IOPS 转移到了**对象存储吞吐量**，并使**缓存层**（每个计算集群中的本地 NVMe，或对象存储前端的共享缓存）成为最主要的性能杠杆。在本地部署环境中，对应的问题是：快速的对象存储能否以类似云的聚合带宽和可预测的延迟，为 Trino、Spark 或 Snowflake 式引擎供数。协议与硬件细节请参见[第 24 章](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)以及配套的 *Everpure Tech Atlas*。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理提的问题**
@@ -272,10 +289,12 @@ timeline
 - "向量化就是 GPU。"它指的是 CPU SIMD 和批处理；GPU 引擎是另一个话题（[第 24 章](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)）。
 - "压缩就是为了节省磁盘。"在分析场景中，它主要是为了扫描更少的字节并直接在编码数据上运算。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 > **深入（L3）。** 先阅读 MonetDB/X100 原始论文，了解为什么批次大小应与缓存大小相匹配；再阅读 Kersten 等人（VLDB 2018）对向量化引擎与编译引擎的受控对比。[^x100][^kersten] 关于云架构，Snowflake SIGMOD 2016 论文中有关工作节点缓存、一致性哈希和文件窃取的章节简短易读。[^snowflake16] 关于可组合的未来，可以对比 Velox 的算子接口与 DataFusion 的 Rust `ExecutionPlan` trait。[^velox][^datafusion]
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [列式存储](../glossary.md#columnar-storage)（columnar storage）— 把每一列的值连续存储，使查询只读取所需的列。
@@ -297,6 +316,7 @@ timeline
 - [托管存储](../glossary.md#managed-storage)（managed storage）— 数据仓库背后由厂商运营的分层存储（SSD 缓存加对象存储），如 Redshift RA3。
 - [可组合数据栈](../glossary.md#composable-data-stack)（composable data stack）— 用 Arrow、Velox 和 DataFusion 等共享、可互换的组件构建数据系统。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^cstore]: M. Stonebraker, D. J. Abadi et al., "C-Store: A Column-oriented DBMS," Proceedings of the 31st VLDB Conference, pp. 553–564, https://dsl.cds.iisc.ac.in/~course/DBMS/papers/cstore.pdf （作者副本；DOI 10.1145/3226595.3226638），发布 2005；检索 2026-11-01。

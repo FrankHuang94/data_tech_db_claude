@@ -1,6 +1,7 @@
 # 2. 数据模型
 > **深度：** L2 · **阅读时间：** 约 14 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 1 章 — 数据技术栈全景图](ch01-data-stack-map.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - **数据模型（data model）**是数据库保存数据的形态：表、文档、键值对、宽行、图、带时间戳的数据点、倒排索引或向量。这种形态决定了哪些问题问起来便宜、哪些问起来昂贵。没有哪种模型对所有问题都便宜。
@@ -9,6 +10,7 @@
 - 行业正在向**多模型（multi-model）**引擎收敛。Postgres 在一个引擎中运行 JSONB 文档、pgvector 嵌入和 PostGIS 几何数据；MongoDB 在 Atlas 中提供向量检索，并自 2026 年 6 月起在其自管理的 Community Edition 中也提供该功能。[^pgvector][^mdb-vs] 流行的概括是"SQL 赢了"，但更准确的说法是 SQL 吸收了其他模型。
 - **Everpure 视角：**数据模型决定 I/O 模式。键值和图工作负载发出小块随机读，分析发出大块顺序扫描，向量检索介于两者之间。AI 还提高了非结构化数据和向量的价值，这正是 Everpure 2026 年推出的 Data Intelligence 和 Data Stream 所瞄准的方向。[^ep-ds]
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业视角 + Everpure 视角）
 
 本书涉及的每一家数据库厂商，在销售产品之前首先销售的是一种数据模型。MongoDB 卖的是文档，Neo4j 卖的是图，Elastic 卖的是倒排索引，Pinecone 卖的是向量，Oracle 卖的是关系。当一个战略团队问某个品类能否独立生存时，它实际上是在问：这种模型是否足够与众不同，以至于通用引擎无法简单地把它作为一项功能加进来。第 29 章会逐个厂商地讨论这个问题（[第 29 章](../04-company-deep-dives/ch29-operational-database-vendors.md)）。
@@ -17,8 +19,10 @@ AI 改变了每种模型的价值。在大语言模型出现之前，钱都在�
 
 对 Everpure 而言，这种联系是具体的。Everpure 于 2026 年 5 月 7 日完成对 1touch 的收购，并把这项技术重新推出为 **Data Intelligence**，用于发现和分类结构化与非结构化数据。2026 年 6 月 17 日，它宣布推出 **Data Stream**，在 FlashBlade 上借助 NVIDIA GPU 为 AI 数据管道对选定数据进行向量化。[^ep-1touch][^ep-ds] 这两款产品都位于数据模型与存储交汇之处。一个战略团队应当了解客户的数据最终会落入哪种模型，以及该模型会产生什么样的 I/O。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="the-map"></a>
 ### 全景图
 
 ```mermaid
@@ -52,6 +56,7 @@ mindmap
 
 *图 2.1 — 八种数据模型，每种各列两个代表性产品。如今大多数旗舰产品都支持不止一种模型，因此这里列出的是每个产品的主要模型。*
 
+<a id="relational-tables-keys-joins"></a>
 ### 关系型：表、键、连接
 
 Edgar Codd 在 1970 年的论文中提出，把数据存储为**关系（relation）**，即由行组成的表。行与行之间通过值而不是物理指针相互关联。[^codd] 每一行都有一个[主键](../glossary.md#primary-key)。另一张表中的[外键](../glossary.md#foreign-key)引用它，而[连接（join）](../glossary.md#join)在查询时把相关的行重新组合起来。[规范化](../glossary.md#normalization)让每个事实只存储一次，因此更新只需在一处进行，各副本也就不会彼此偏离。
@@ -71,6 +76,7 @@ GROUP BY p.name ORDER BY revenue DESC LIMIT 10;
 
 > **类比：半导体。** 规范化就像对物料清单（BOM）去重。在一份干净的 BOM 中，一颗 0402 电容的料号和规格只存在于一条主记录中，所有使用它的电路板都指向这条记录。如果把规格复制到每块板的 BOM 上，那么一次供应商变更就意味着要修改数百行，漏改一行就会发错料。外键就是料号引用，而连接就是 BOM 展开。
 
+<a id="document-json-and-schema-on-read"></a>
 ### 文档：JSON 与读时模式
 
 [文档数据库](../glossary.md#document-database)存储自包含的类 JSON 记录。MongoDB 以 BSON 格式存储它们，每个文档上限为 16 MiB。[^mdb-limits] 模式存在于应用程序中而非数据库中，这被称为[读时模式（schema-on-read）](../glossary.md#schema-on-read)。团队可以在不执行迁移的情况下新增字段。
@@ -83,6 +89,7 @@ db.orders.find({ customer_id: 42 }).sort({ order_date: -1 }).limit(5)
 
 **擅长：**一次读取整个聚合、演进中的模式，以及让数据保持应用本来使用的形态。**旗舰产品：**MongoDB、Couchbase、Amazon DocumentDB。**不宜使用的情形：**以多对多关系为主，或需要跨实体的临时性分析。高度内嵌的设计会把这些操作变成应用侧的连接。
 
+<a id="key-value-the-hash-table-at-datacenter-scale"></a>
 ### 键值：数据中心规模的哈希表
 
 [键值存储](../glossary.md#key-value-store)只做一件事：给定一个键，返回一个值。Redis 把数据保存在内存中，并增加了列表、集合、有序集合等数据结构。DynamoDB 借鉴了 Amazon 2007 年 Dynamo 论文的思想，但没有沿用其无主（leaderless）设计：每个分区都有一个通过 Multi-Paxos 选举出的主副本。它通过对[分区键](../glossary.md#partition-key)做哈希，把数据项分散到各个分区。[^ddb-atc] 它将单个数据项上限设为 400 KB，分区键上限设为 2,048 字节。[^ddb][^dynamo]
@@ -97,6 +104,7 @@ GET session:7f3a9c      ->  {"user":42,"cart":[...],"ttl":1800}
 
 许可证在这个品类中很重要。Redis 于 2024 年 3 月放弃了 BSD 许可证，Linux Foundation 将其分叉为 **Valkey**，而 Redis 8 于 2025 年 5 月增加了 AGPLv3 作为第三种许可选项。[^redis]
 
+<a id="wide-column-sparse-rows-sorted-by-key"></a>
 ### 宽列：按键排序的稀疏行
 
 Google 2006 年的 Bigtable 论文定义了一种**宽列（wide-column）**模型：一个从行键、列和时间戳映射到值的稀疏、有序映射。[^bigtable] Cassandra 把 Bigtable 的存储布局与 Dynamo 风格的分区结合起来，HBase 则是 Bigtable 的开源克隆。你需要围绕查询来设计表。分区键决定数据落在哪个节点，聚簇键（clustering key）决定行在分区内的排序。
@@ -108,6 +116,7 @@ SELECT * FROM orders_by_customer WHERE customer_id = 42 LIMIT 20;
 
 **擅长：**极高的写入速率、多区域可用性、按时间排序的事件和物联网遥测数据。**旗舰产品：**Cassandra、ScyllaDB、Bigtable、HBase。**不宜使用的情形：**查询不可预测。一个不以分区键开头的问题会变成对整个集群的扫描。[第 4 章](ch04-distributed-databases.md) 介绍这一模型背后的分片与复制机制。
 
+<a id="graph-relationships-as-first-class-data"></a>
 ### 图：把关系作为一等数据
 
 [属性图（property graph）](../glossary.md#property-graph)存储**节点**和**边**，两者都可以带有属性。[图遍历](../glossary.md#graph-traversal)直接沿着边从一个节点走到另一个节点，因此其成本随所触及的边数增长，而不是随整张表的大小增长。另一种图模型是 [RDF](../glossary.md#rdf)，它存储主语–谓语–宾语三元组，使用 SPARQL 查询，常见于生命科学和政府领域的知识图谱。
@@ -125,6 +134,7 @@ RETURN rec.name, count(DISTINCT c) AS buyers ORDER BY buyers DESC LIMIT 5;
 
 > **类比：半导体。** 图遍历就像在片上网络（NoC）中路由一个数据包。每个路由器只知道它的邻居，数据包逐个 tile 跳转。延迟取决于跳数以及下一个 tile 是否在本地，而与芯片上有多少个 tile 无关。关系型的多跳查询则更像是在每一跳都从头重建路由表。
 
+<a id="time-series-search-and-vector"></a>
 ### 时间序列、搜索与向量
 
 **时间序列。** [时间序列数据库](../glossary.md#time-series-database)存储以时间以及主机、传感器等标签为键、以追加为主的测量值。它会压缩相似值的连续序列，并对旧数据进行降采样。典型查询是求某个时间窗口内的速率、百分位数或移动平均。旗舰产品采取三种路径：InfluxDB 是专门构建的，TimescaleDB 是 Postgres 扩展，Prometheus 是拥有自己的 PromQL 语言的指标引擎。**不宜使用的情形：**数据没有时间戳，或必须原地更新。
@@ -142,6 +152,7 @@ SELECT review_id, body FROM review
 ORDER BY embedding <=> $query_embedding LIMIT 10;   -- pgvector 余弦距离
 ```
 
+<a id="worked-example-one-domain-four-models"></a>
 ## 实例演示：一个领域，四种模型
 
 以一家拥有**客户**、**订单**、**商品**和**评论**的零售商为例。同样的事实可以用四种方式建模，而每种模型都能低成本地回答一组不同的问题。
@@ -227,6 +238,7 @@ flowchart LR
 
 *图 2.4 — 同一领域的四种建模方式。每种模型让一组不同的问题变得便宜，因此严肃的应用最终都会组合使用其中几种。*
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 | 模型 | 数据形态 | 查询模式 | 一致性（典型默认） | 扩展方式 | 代表厂商 | 与 AI 的相关性 |
@@ -245,6 +257,7 @@ flowchart LR
 
 **为专业厂商做最强版本论证。** "Postgres 包揽一切"的理由很充分：你只需一个运营界面、一个安全模型，事务还能同时覆盖行、JSON 和向量。pgvector 0.8.0（2024 年 11 月）增加了迭代索引扫描，因此带过滤条件的向量查询可以持续搜索，直到获得足够多的匹配结果。[^pgvector] 反方论点是：通用引擎在极端场景下会落败，即高 QPS 下的数十亿向量、跨多区域的亚毫秒查找，或 PB 级的日志搜索。专业产品守住了这些阵地，其成本结构也正是为此而建。常见的规律是：通用引擎默认胜出，而一旦某个工作负载的规模或延迟足以证明有必要引入第二个系统，专业厂商就会胜出。
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 - **关系型：**Oracle、Microsoft SQL Server、MySQL、PostgreSQL 及其众多托管变体，以及 [第 4 章](ch04-distributed-databases.md) 介绍的分布式 SQL 引擎。
@@ -258,6 +271,7 @@ flowchart LR
 
 **市场背景。** DB-Engines（现由 Redgate 运营）每月根据网络提及、招聘信息、搜索热度和问答活跃度对各系统进行排名。这些是流行度信号，而不是收入。一份关于 2026 年 7 月排名的二手报道列出的第一至第四名依次为 Oracle、MySQL、SQL Server 和 PostgreSQL，其后是 MongoDB、Snowflake 和 Databricks。[^dbe-jul] 2026 年上半年，PostgreSQL 的得分增幅最大（+21.97 分），其次是 Databricks（+16.04）和 MongoDB（+11.24）。[^dbe-h1] 开发者使用情况也呈现同样的趋势。在 Stack Overflow 调查中，PostgreSQL 在全体受访者中的使用率从 2024 年的 48.7% 升至 2025 年媒体报道的 55.6%，领先于 MySQL。[^so24][^so25]
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 ```mermaid
@@ -282,6 +296,7 @@ timeline
 
 > **Everpure 视角：模型决定 I/O。** 键值查找、图遍历和 OLTP 索引探测发出的是小块随机读，每次几 KB，受延迟和 IOPS 约束。对列式文件的分析扫描读取大段连续范围，受吞吐量约束。向量检索介于两者之间。内存中的 HNSW 索引在热路径上避开了存储，但 DiskANN 等驻留在闪存上的设计会把每次查询变成几十次 4 KB 随机读 [VERIFY: DiskANN 每次查询的典型读取次数]。AI 工作负载还扩大了值得保留的数据量：原始文档、它们的嵌入，以及说明每份数据是什么的元数据。这正是 Data Intelligence（分类与上下文）和 Data Stream（向量化）所定位要填补的空白。[^ep-ds][^ep-1touch]
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源 / 日期 |
@@ -299,10 +314,12 @@ timeline
 
 *图 2.7 — 几个值得记住的硬性限制和采用信号。向量大小的算术是在存储话题的对话中最可能被问到的。*
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** 同样 1 TB 的数据，因模型不同而表现迥异。作为键值或图数据，它会产生数百万次小块随机读。作为用于分析的 Parquet，它以数 MB 的顺序块流式读取。作为嵌入，它会让源文本的体积膨胀好几倍，因为 1,536 个浮点数约占 6 KB，而它们所编码的段落可能还不到 1 KB。在为客户的 AI 项目做容量规划时，要问清楚数据将落入哪些模型。关于介质与协议的细节，请参阅配套的 *Everpure Tech Atlas*。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理提出的问题**
@@ -323,10 +340,12 @@ timeline
 - "向量数据库会取代搜索。"生产环境中的检索通常是混合检索：BM25 负责精确词项，向量负责语义（[第 19 章](../03-ai-data-stack/ch19-retrieval-architectures.md)）。
 - "SQL 赢了，所以其他模型都死了。"SQL 赢得的是接口。其他模型以数据类型、索引类型以及在极端场景中的专业引擎的形式存活了下来。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 > **深入（L3）。** 阅读 Codd 1970 年的论文，了解数据独立性的最初论证。[^codd] 阅读 Bigtable 和 Dynamo 论文，了解宽列和键值系统背后的存储设计。[^bigtable][^dynamo] Malkov 和 Yashunin 的 HNSW 论文解释了为什么基于图的向量索引需要大量 RAM。[^hnsw] Neo4j 的 GQL 一致性附录逐项列出了 Cypher 与该标准之间的差距。[^neo4j] 关于每种模型之下的存储引擎（B 树、LSM 树、MVCC），请继续阅读 [第 3 章](ch03-database-internals.md)。
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [关系模型](../glossary.md#relational-model)：以通过键值相互关联的行组成的表来表示数据，并以声明式方式查询。
@@ -352,6 +371,7 @@ timeline
 - [近似最近邻](../glossary.md#approximate-nearest-neighbor)：以牺牲少量召回率换取速度的快速相似度检索。
 - [多模型数据库](../glossary.md#multi-model-database)：支持多种数据模型的单一引擎。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^codd]: E. F. Codd, "A Relational Model of Data for Large Shared Data Banks," *Communications of the ACM* 13(6), 377–387, https://doi.org/10.1145/362384.362685，发布于 1970-06；检索于 2026-11-01（经典引用，未重新抓取）。

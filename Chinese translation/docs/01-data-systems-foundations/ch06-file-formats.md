@@ -1,6 +1,7 @@
 # 6. 文件格式：从 CSV 到 Parquet、Arrow 和 Lance
 > **深度：** L2 · **阅读时间：** 约 13 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 5 章 — 分析引擎](ch05-analytical-engines.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - 文件格式（file format）决定字节如何排布，而这种排布锁定了此后每一次查询的成本。文本格式（CSV、JSON）通用，但不带类型、不保存统计信息，并且要在解析上耗费 CPU。列式二进制格式（Parquet、ORC）让引擎只读取查询所需的列和行范围。
@@ -9,24 +10,29 @@
 - AI 工作负载恰恰考验 Parquet 最不擅长的一点：对单行的快速随机访问，例如在训练数据混洗（shuffle）、向量检索和多模态大对象（blob）场景中。**Lance**、**Vortex** 和 **Nimble** 是主要挑战者。Parquet 守住了生态，挑战者则在特定访问模式上胜出。
 - 对存储而言，格式选择就是工作负载选择。Parquet 扫描表现为高吞吐的大块顺序范围读取。Lance 式的机器学习访问表现为高 IOPS 的小块随机读取。小文件过多则对两者都有害。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业视角 + Everpure 视角）
 
 [第 7 章](ch07-open-table-formats.md)中的开放表格式（open table format，Iceberg、Delta、Hudi）是元数据层。它们底下的数据几乎总是存放在对象存储（object storage）上的 Parquet 文件。谁控制这些文件的写入方式，谁就同时控制了扫描成本、云出口流量费（egress fees）、缓存命中率，以及日益重要的——图形处理器（GPU）集群的供数速度。围绕格式的争夺看似是技术问题，实际上决定了数据能否在不同引擎之间保持可移植。正是这种可移植性，使 Snowflake、Databricks、Google 和 AWS 最终都读取同样的 Parquet 文件（[第 5 章](ch05-analytical-engines.md)）。
 
 对 Everpure（前身为 Pure Storage；NYSE: P）而言，文件格式是数据栈与存储系统之间的 I/O 契约。基于 Parquet 的商业智能（BI）查询会转化为少量大块、对齐的范围读取，此时吞吐量占优。从 Lance 数据集中混洗样本的训练作业，或探测嵌入向量（embedding）的向量索引（[第 18 章](../03-ai-data-stack/ch18-embeddings-and-vector-search.md)），则会转化为大量小块随机读取，此时延迟和 IOPS 占优。基于公开信息，战略团队可以把格式的采用情况作为先行指标，用来判断客户下一步将需要哪种 I/O 特征（[第 24 章](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)）。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="text-formats-universal-and-expensive"></a>
 ### 文本格式：通用而昂贵
 
 CSV 和换行分隔 JSON（[NDJSON](../glossary.md#ndjson)，每行一个 JSON 对象）没有需要学习的二进制布局，所有工具都能读取。这种可移植性要付出三项代价。**解析 CPU**：每个数字都以字符形式存储，因此每次读取都要把文本重新转换成整数和浮点数，每个引号和转义字符都要检查。**没有类型或模式**：读取方必须猜测 `"0042"` 是字符串还是数字，而不同读取方会猜得不一样。**没有元数据**：文件没有统计信息，也没有索引，因此回答"德国有多少笔购买？"的唯一办法就是读完每一个字节。JSON 还在每一行重复每个字段名，这就是为什么同样数据的 NDJSON 文件通常比 CSV 更大。
 
+<a id="row-oriented-binary-avro-and-the-streaming-world"></a>
 ### 行式二进制：Avro 与流处理世界
 
 [Apache Avro](../glossary.md#apache-avro) 以二进制方式存储记录，一整行接着一整行。Avro 容器文件以一个文件头开始，其中以 JSON 形式嵌入了写入方的模式。数据随后以块的形式排列，每块以一个 16 字节的同步标记结尾，因此分布式引擎可以在块边界处切分文件。[^avro-spec] Avro 最出色的特性是**[模式演进](../glossary.md#schema-evolution)（schema evolution）**。规范规定了使用较新模式的读取方如何与用较旧模式写入的数据相协调：带默认值的新增字段、被删除的字段以及类型拓宽。[^avro-spec]
 
 这一特性使 Avro 成为 Kafka 天然的载荷格式。Confluent 的[模式注册表](../glossary.md#schema-registry)（Schema Registry）为每个主题保存版本历史，并拒绝会破坏消费者的生产者变更。其兼容性模式包括向后（backward）、向前（forward）和完全（full），默认是 BACKWARD；它现在除 Avro 外还支持 Protobuf 和 JSON Schema。[^confluent-sr] 经验法则是：行式适合一次写入一个事件，列式适合一次读取数百万个事件。
 
+<a id="columnar-files-orc-and-parquet"></a>
 ### 列式文件：ORC 与 Parquet
 
 两种列式格式在 Hadoop 时代的同一年诞生。**[Apache ORC](../glossary.md#apache-orc)** 来自 Hortonworks 与 Facebook 的合作，是 2013 年加速 Hive 的"Stinger"计划的一部分，并于 2015 年 4 月成为 Apache 顶级项目。[^stinger][^orc-tlp] **[Apache Parquet](../glossary.md#apache-parquet)** 来自 Twitter 和 Cloudera。两家于 2012 年秋联手，2013 年 3 月开源，2013 年 7 月发布 1.0。[^twitter-parquet] Parquet 处理嵌套数据的技巧（重复级别和定义级别）直接来自 Google 2010 年的 Dremel 论文，该论文展示了如何把嵌套记录存储在扁平列中。[^dremel] Twitter 报告称，其大型数据集改用 Parquet 后体积缩小了约三分之一。它还报告，只需少数几列的扫描，耗时仅为原来的一小部分。[^twitter-parquet]
@@ -63,6 +69,7 @@ flowchart TB
 
 > **类比：半导体与内存。** 行组和页的大小扮演着 DRAM 突发长度和缓存行的角色。每次读取应搬运足够多的连续字节，以覆盖固定的每请求开销（一次对象存储 GET 或一次磁盘寻道），但又不能多到取回随后被丢弃的数据。同样的道理也用于让文件系统的 I/O 大小对齐 NAND 的页和擦除块。一个行组应能装入一个存储 I/O 单元，这就是为什么 Parquet 文档在历史上把 512 MB–1 GB 的行组与一个 HDFS 块绑定。[^parquet-config]
 
+<a id="worked-example-1m-json-events--parquet"></a>
 ### 算例：100 万条 JSON 事件 → Parquet
 
 为本章，我们生成了 1,000,000 条合成点击流事件（10 个字段：各类 ID、时间戳、事件类型、国家、设备、价格和延迟）。我们将其写成 NDJSON，再用 PyArrow 26.0 转换为行组大小为 25 万行的 Parquet。随后，我们在一台 4 vCPU 的云沙箱上、在操作系统缓存已预热的情况下，对一条查询"购买事件的分国家收入"计时。[^sandbox]
@@ -78,6 +85,7 @@ flowchart TB
 
 有三点经验可以推广。第一，大部分收益来自*不读取*十列中的七列以及不解析文本，而不是来自压缩。第二，编解码器的选择对存储和出口流量成本的影响大于对本地磁盘速度的影响：Zstandard 与 Snappy 速度相当，体积却小了三分之一。一项已发表的 DuckDB 基准测试在 1,120 万行出租车数据上对 CSV 发现了同样的规律：Zstandard 压缩的 Parquet 比 CSV 小 6.8x，Snappy 压缩的 Parquet 小 5.1x（厂商执行的基准测试）。[^motherduck] 第三，整个页脚只占 5.6 KB，因此远程读取方只需一次小 GET 即可规划后续读取。字段基数低的合成数据比典型生产日志压缩得更好，因此应把这些比率视为中等偏上的情形，而不是承诺。
 
+<a id="apache-arrow-one-memory-layout-for-everyone"></a>
 ### Apache Arrow：人人共用的一种内存布局
 
 Parquet 是数据在磁盘上静置的方式。[Apache Arrow](../glossary.md#apache-arrow) 则是数据在内存中存活的方式：一种与语言无关的列式布局，为值、有效性位图和偏移量设置固定缓冲区。在 Arrow 出现之前，把结果从数据库移到 pandas 意味着要把每个值逐行转换成接收程序的对象。这一序列化/反序列化步骤往往比查询本身还耗时。有了 Arrow，生产方和消费方共享同一种布局。交接数据只需传递指针，或在网络上原样流式传输原始缓冲区。
@@ -103,6 +111,7 @@ flowchart LR
 
 > **类比：共享内存与 DMA。** Arrow 零拷贝的工作方式类似直接内存访问（DMA）。网卡可以写入一个 CPU 随后直接读取的缓冲区，无需中转复制，因为双方对字节存放的位置达成了一致。Arrow 就是分析软件之间的这种约定：DuckDB、Polars 和 GPU 数据框库都可以指向同一批缓冲区。节省下来的是内存带宽和 CPU 周期，与 DMA 节省的资源相同。
 
+<a id="ai-era-formats-when-random-access-matters"></a>
 ### AI 时代的格式：当随机访问变得重要
 
 Parquet 是为扫描而设计的。获取第 7,341,002 行意味着要定位其所在行组，为每个所需列至少解码一个约 1 MB 的页（往往还要解压），再丢弃几乎所有其他内容。这对 BI 没问题，但对以下工作负载代价高昂：
@@ -142,10 +151,12 @@ quadrantChart
 
 *图 6.4 — 定性定位（作者依据所引论文和厂商声称作出的判断）。AI 时代的格式试图抵达默认 Parquet 留空的右上角。*
 
+<a id="how-format-choice-shapes-io"></a>
 ### 格式选择如何塑造 I/O
 
 在对象存储上，一次 Parquet 扫描就是一串 HTTP 范围 GET：一次读页脚，然后每个所需列块各一次或多次。引擎会合并相邻范围并大量并行发出请求，因此存储系统看到的是大块、以顺序为主的读取，此时吞吐量最重要。相反的失败模式是**[小文件问题](../glossary.md#small-files-problem)（small files problem）**。每隔几秒写一个 2 MB 文件的流式数据摄取会产生数以百万计的文件。每个文件都要付出一次页脚读取、一条元数据记录和一次请求，这会挤压请求速率上限（S3 文档写明，每个分区前缀的基线为每秒 5,500 次 GET/HEAD 和 3,500 次 PUT/COPY/POST/DELETE 请求）[^s3-perf]，也会拖累表格式的查询规划。[压缩合并](../glossary.md#compaction)（compaction）会把它们重写为更大的文件。当前的默认值集中在一个狭窄区间：Iceberg 的目标数据文件为 512 MB，Databricks 会随着表的增长把 Delta 文件从 256 MB 自动调整到 1 GB，DuckDB 在每个行组 10 万–100 万行时表现最佳。[^iceberg-config][^databricks-size][^duckdb-formats] 机器学习训练则恰好相反：每一步都有大量小块随机读取，这就是为什么数据集要么被分片以便顺序读取（WebDataset），要么以随机访问格式（Lance）存放在低延迟闪存上。
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 | 格式 | 存储方向 | 模式 | 压缩 | 随机访问 | 生态 | 最佳适用场景 | 治理归属 |
@@ -163,6 +174,7 @@ quadrantChart
 
 继续使用 Parquet 的最强版本论证（steelman）是：每一个数据仓库、湖仓引擎和表格式都能读取它，而经过调优的写入器可以弥合大部分随机访问差距。迁移的最强版本论证是：新写入的数据如今由 AI 工作负载驱动。一种为随机访问、大对象和版本管理而构建的格式，可以避免在向量数据库或一堆 tar 分片中再保留一份数据副本。
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 - **Apache Parquet / ORC 社区**：Parquet 是湖仓的默认格式，ORC 如今的覆盖面较小。
@@ -172,6 +184,7 @@ quadrantChart
 - **Meta**：Nimble，与 Velox 引擎配套构建。
 - **Confluent**（Schema Registry）、**Hugging Face**（Safetensors）和 **NVIDIA**（面向 WebDataset/TFRecord 的 DALI 加载器）是与格式相邻的参与者。
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 ```mermaid
@@ -192,6 +205,7 @@ timeline
 
 Avro 由 Hadoop 的创造者 Doug Cutting 于 2009 年作为 Hadoop 子项目发起，并于 2010 年成为 Apache 顶级项目。Parquet 于 2014 年进入 Apache 孵化器，并于 2015 年 4 月成为顶级项目，与 ORC 同月。[^asf-tlp] 未来最可能的路径是共存。Parquet 仍是 Iceberg 和 Delta 之下的交换层，而表格式日益接受底层的其他文件类型，正如 Iceberg 中关于 Nimble 枚举的讨论所显示的那样。[^nimble-iceberg]
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源 / 日期 |
@@ -209,10 +223,12 @@ Avro 由 Hadoop 的创造者 Doug Cutting 于 2009 年作为 Hadoop 子项目发
 
 *图 6.7 — 文件大小指引趋向于数百 MB 到 1 GB 的文件。随机访问加速大多为厂商自测，且对照的 Parquet 基线各不相同，比较时需谨慎。*
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** Parquet 分析会转化为大块并行范围 GET，奖励的是流式吞吐和良好的预取。Lance 和向量工作负载会转化为小块随机读取，此时尾延迟和 IOPS 起主导作用。压缩合并是一种后台重写工作负载，其流量可与前台流量相当。为 AI 湖仓提供服务的存储系统必须在同一个命名空间上同时应对这三者。关于对象存储和闪存在这些模式下的表现，请参见配套的 *Everpure Tech Atlas*。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理提的问题**
@@ -233,10 +249,12 @@ Avro 由 Hadoop 的创造者 Doug Cutting 于 2009 年作为 Hadoop 子项目发
 - "Arrow 是和 Parquet 一样的文件格式。"Arrow 主要是一种内存布局；其 IPC 文件只是副产品。
 - "Lance 取代了 Iceberg。"Lance 包含一个表层，但大多数湖仓仍在 Parquet 之上运行 Iceberg 或 Delta。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 > **深入（L3）。** 先阅读 Dremel 论文中关于重复级别/定义级别的章节，再看 Parquet 的 Thrift 页脚定义。将其与 Lance 2.1 论文中"mini-block"与"full-zip"两种结构编码，以及 F3 提案中内嵌的 Wasm 解码器进行比较。[^dremel][^lance-paper][^f3]
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [NDJSON](../glossary.md#ndjson) — 换行分隔的 JSON，每行一条记录。
@@ -262,6 +280,7 @@ Avro 由 Hadoop 的创造者 Doug Cutting 于 2009 年作为 Hadoop 子项目发
 - [小文件问题](../glossary.md#small-files-problem)（small files problem）— 小数据文件过多所带来的开销。
 - [压缩合并](../glossary.md#compaction)（compaction）— 把小文件重写为更大的文件。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^avro-spec]: Apache Software Foundation, "Apache Avro 1.10.0 Specification" (Object Container Files; Schema Resolution), https://avro.apache.org/docs/1.10.0/spec.pdf ，发布 2020；检索 2026-11-01。

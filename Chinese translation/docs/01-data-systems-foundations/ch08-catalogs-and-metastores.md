@@ -1,6 +1,7 @@
 # 8. 目录与元数据存储：新的控制点
 > **深度：** L2 · **阅读时间：** 约 11 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 7 章 — 开放表格式](ch07-open-table-formats.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - [技术目录（technical catalog）](../glossary.md#technical-catalog)（或称[元数据存储（metastore）](../glossary.md#metastore)）把 `sales.orders` 这样的名称映射到一张开放表的当前元数据文件。它还存储模式和分区信息、让提交具备原子性、执行访问策略，并且越来越多地向引擎发放短期存储凭证。
@@ -9,6 +10,7 @@
 - Iceberg 和 Delta 等开放格式让*文件*变得可移植。权力则流向了运营目录的一方，因为每个引擎都必须向它申请提交权限、凭证和策略。由此引发了"开放格式、封闭目录"之争。
 - 战略利害关系还在不断上升。目录如今是数据血缘、使用遥测以及面向 AI 智能体的语义上下文汇聚的地方。这就是为什么 Databricks 收购了 Tabular、Snowflake 把 Polaris 捐给了 Apache，而 AWS、Google 和 Microsoft 几乎免费提供各自的目录。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业 + Everpure 视角）
 
 [第 7 章](ch07-open-table-formats.md)以一个重要细节结尾：一次 Iceberg 提交只是对一个指针的原子替换，而这个指针由目录持有。因此，一旦存储成为大宗商品（对象存储），表布局成为开放标准（Iceberg、Delta），湖仓一体中剩下的稀缺之物就是那个决定*表的哪个版本是当前版本*以及*谁可以操作它*的服务。每个引擎的每一次查询都要先经过这个服务。
@@ -17,8 +19,10 @@
 
 对 Everpure 来说，目录层在两个方面很重要。第一，FlashBlade 上的 Iceberg 湖仓只有在目录能够向本地部署的 S3 端点发放凭证时才能运行。这使目录兼容性成为存储销售中的一个资质勾选项。第二，对 1touch 的收购（现金对价 $125.0M，于 2026 年 5 月 7 日完成，依据 10-Q）带来了数据发现、数据分类和语义上下文技术。[^ep-10q] 这恰恰是目录会摄取的那类元数据。战略团队基于公开信息可能评估的一个选项是：将 Everpure Data Intelligence 定位为各目录（Unity、Polaris/Horizon、Glue）的*元数据供应方*，而不是目录的竞争者。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="what-a-technical-catalog-actually-does"></a>
 ### 技术目录实际上做什么
 
 技术目录承担六项职能。可以把它们看作同一服务的六个层次：
@@ -72,10 +76,12 @@ flowchart TB
 
 > **类比：DNS 加证书颁发机构。** 目录扮演湖仓的 DNS 角色：它把人类可读的名称解析为当前元数据的地址。它同时也是证书颁发机构，签发存储会认可的短期、限定作用域的凭证。同时控制这两者，你就控制了整个网络，即使你一台服务器（这里指数据文件）都不拥有。半导体背景的读者也可以把它想象成内存管理单元（MMU）：每一次 load 和 store 在触及 DRAM 之前，都要在那里完成地址转换和权限检查。
 
+<a id="technical-catalog-versus-business-catalog"></a>
 ### 技术目录与业务目录
 
 这两类产品共用一个词，除此之外几乎没有共同点。技术目录是热路径上的基础设施，以毫秒和正确的提交来衡量。业务目录是面向分析师、数据管理员和合规团队的交互型系统（system of engagement）。它爬取技术目录、BI 工具和数据管道，然后添加术语表（"什么算活跃客户"）、归属、认证徽章和搜索。两层正在趋同。Databricks 和 Snowflake 正在为 Unity 和 Horizon 增加数据发现和业务语义（Snowflake 于 2025 年末收购 Select Star 正是出于这一目的）。[^ma-csv] 业务目录厂商则将自己重新定位为面向智能体的"上下文层"。数据治理工作流见[第 15 章](../02-pipelines-and-governance/ch15-governance-security-privacy.md)，相关厂商见[第 33 章](../04-company-deep-dives/ch33-governance-catalog-security-companies.md)。
 
+<a id="credential-vending-step-by-step"></a>
 ### 凭证发放，逐步解析
 
 凭证发放是把目录从"电话簿"变成"守门人"的机制。在 Iceberg REST 协议中，客户端通过发送 `X-Iceberg-Access-Delegation` 请求头并取值 `vended-credentials` 来表明它需要委托访问；也可以取值 `remote-signing`，即由目录对每个存储请求签名。[^irc-spec][^minio-irc] 各实现会把临时密钥的作用域限定在表的前缀上，并且授予的权限永远不超过调用者自身的权限。只读用户只会得到只读密钥。[^minio-irc]
@@ -102,6 +108,7 @@ sequenceDiagram
 
 > **深入（L3）。** REST 规范是 Iceberg 代码仓库中的一个 OpenAPI YAML 文件（`open-api/rest-catalog-open-api.yaml`）。一份 2026 年的兼容性评估统计出 35 个操作，包括 `loadTable`、`commitTransaction` 以及较新的服务器端扫描规划。[^irc-spec][^irc-report] 支持该协议的引擎无需任何厂商 SDK。Iceberg 将该协议记录为 Hive Thrift 接口的继任者。[^irc-spec]
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 | 维度 | 技术目录 | 业务目录 |
@@ -122,6 +129,7 @@ sequenceDiagram
 - **联邦与整合。** [目录联邦（catalog federation）](../glossary.md#catalog-federation)让一个目录能够治理注册在另一个目录中的表。Unity Catalog 于 2025 年 6 月宣布支持联邦到 Glue、Hive Metastore 和 Snowflake Horizon（公开预览）。[^uc-2025] 联邦是务实的做法，但每多一跳，策略就多一个可能在转换中丢失的地方。
 - **版本化历史与线性历史。** Nessie 增加了类似 git 的跨多表分支、标签和合并，便于在发布前先在分支上测试数据管道。[^nessie] 大多数目录对每张表只保留一条线性历史。
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 | 目录 | 起源 | 开源 / 许可证 | Iceberg REST | Delta 支持 | 治理深度 | 厂商中立性 |
@@ -141,6 +149,7 @@ sequenceDiagram
 
 **一句话定位。** *Databricks* 把 Unity Catalog 作为其平台的重心，并将其扩展到治理模型、AI 函数和智能体流量（Unity AI Gateway，2026）。[^uc-2026] *Snowflake* 分散押注：Horizon 是功能丰富的专有层，Polaris 是中立的开源层，让 Snowflake 可以宣称自己不锁定数据。*AWS* 把 Glue、Lake Formation 和 S3 Tables 捆绑进存储账单。*Google* 和 *Microsoft* 将目录与 BigQuery 和 Fabric 绑定。*Gravitino*、*Nessie* 和 *Lakekeeper* 是独立派：技术可信，商业包装单薄。
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 ```mermaid
@@ -175,6 +184,7 @@ timeline
 
 **整合期（2025–2026）。** Gravitino 于 2025 年 6 月从 Apache 孵化器毕业。[^gravitino] Polaris 于 2026 年初紧随其后：孵化器记录的毕业日期为 2 月 15 日，项目和厂商博客于 2 月 19 日宣布，ASF 于 2026 年 3 月 5 日正式宣布。[^polaris-tlp] Polaris 1.4 于 2026 年 4 月发布，改进了多租户能力，[^polaris-14] 截至 2026-09-28，该项目已发布 1.8.0 版本。[^polaris-18] Google 于 2025 年 11 月正式发布 BigLake metastore 的 Iceberg REST 端点，并于 2026 年 4 月 10 日将 Dataplex Universal Catalog 更名为 Knowledge Catalog。[^biglake-irc][^gcp-kc] Snowflake 的 Horizon 现在向外部引擎暴露 Iceberg REST，并计划于 2026 年按每百万次调用 0.5 credits 进行请求计费。[^horizon-irc] Unity Catalog OSS 在 LF AI & Data 中的阶段（沙箱还是孵化）无法确认。[VERIFY: Unity Catalog OSS 在 LF AI and Data 中的成熟度阶段]
 
+<a id="why-the-deals-made-sense"></a>
 ### 为什么这些交易合乎逻辑
 
 - **Databricks–Tabular。** 以媒体报道接近 $2B 的价格收购一家约 40 人的公司，Databricks 买下的是对 Iceberg 路线图重心的控制权，而不是收入。[^tabular-pr][^ma-csv] 它恰在 Snowflake 发布 Polaris 之际，让一家可信的"中立 Iceberg 目录"公司退出了竞争。它还把 Iceberg 的创造者带入了 Delta–Iceberg 趋同工作。用金融术语说，这是为控制点支付的一笔防御性期权溢价。
@@ -185,6 +195,7 @@ timeline
 
 **下一步走向。** 目录正在变成 AI 智能体的事实依据层（grounding layer）。描述、经认证的指标、数据血缘和使用统计，正是文本转 SQL（text-to-SQL）智能体避免自信地给出错误答案所需要的（见[第 22 章](../03-ai-data-stack/ch22-agents-and-data.md)和[第 14 章](../02-pipelines-and-governance/ch14-semantic-layers-and-bi.md)）。谁拥有这些上下文，谁就拥有智能体体验，这就是为什么"开放格式、封闭目录"如今是一个现实的采购问题。针对平台的看空逻辑（bear case）是：REST API 让目录可以互换，而联邦削弱了任何单一所有者的掌控力。
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源 / 日期 |
@@ -201,10 +212,12 @@ timeline
 
 *图 8.6 — 目录的直接收入微乎其微（Glue 每 100,000 个对象只收几美元），而围绕它的交易却高达数十亿美元：价值在于控制权，而不在于费用。*
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** 对于本地部署的湖仓，目录必须能够为兼容 S3 的端点（而不仅仅是 AWS）签发限定作用域的凭证或对请求进行远程签名。Lakekeeper 和 MinIO AIStor 等实现已经能够针对非 AWS 对象存储发放前缀级凭证或远程签名请求。[^lakekeeper][^minio-irc] 对 FlashBlade 而言，资质认证问题包括：STS 式临时凭证、按前缀的策略，以及在大量小规模元数据读取下的请求签名性能。有关 S3 协议和 FlashBlade 的细节，请参阅配套的《Everpure Tech Atlas》。战略选项见[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理提的三个问题**
@@ -226,12 +239,14 @@ timeline
 - "Hive Metastore 已经死了。" 仍有大量表位于它之后，现代目录也会联邦到它。
 - "Polaris 是 Snowflake 的目录。" 它是 Apache 顶级项目。Snowflake 的专有目录是 Horizon，后者内嵌了 Polaris。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 - 阅读 Iceberg REST OpenAPI 规范，追踪 `loadTable` → `commitTable`，准确看清原子性和凭证所在的位置。[^irc-spec]
 - 比较 Unity Catalog、Polaris 和 Lakekeeper 如何把授权映射到所发放凭证的作用域，以及各自在何处执行行和列策略（目录还是引擎）。
 - Hive 的 ICDE 2010 论文篇幅很短，说明了为什么"分区存于关系型数据库"的设计必须被取代。[^hive-icde]
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [元数据存储（Metastore）](../glossary.md#metastore) — 为查询引擎存储表定义和位置的服务；Hive 时代对技术目录的称呼。
@@ -245,6 +260,7 @@ timeline
 - [命名空间（Namespace）](../glossary.md#namespace) — 在目录中对表进行分组的层级容器（数据库或模式）。
 - [元数据指针（Metadata pointer）](../glossary.md#metadata-pointer) — 目录中关于哪个元数据文件是表当前版本的记录。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^ep-10q]: Everpure, Inc., Form 10-Q for the quarter ended 2026-05-03, SEC EDGAR, https://www.sec.gov/Archives/edgar/data/0001474432/000147443226000061/pstg-20260503.htm，发布 2026-06；检索 2026-11-01。另见 Cleary Gottlieb, "Everpure Completes Acquisition of 1touch," https://www.clearygottlieb.com/news-and-insights/news-listing/everpure-completes-acquisition-of-1touch，发布 2026-05-11；检索 2026-11-01。

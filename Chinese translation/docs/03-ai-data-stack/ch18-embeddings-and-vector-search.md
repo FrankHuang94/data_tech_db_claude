@@ -1,6 +1,7 @@
 # 18. 嵌入与向量检索
 > **深度：** L2 · **阅读时间：** 约 19 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 17 章 — 非结构化数据处理](ch17-unstructured-data-processing.md)，[第 2 章 — 数据模型](../01-data-systems-foundations/ch02-data-models.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - [嵌入（向量）（embedding）](../glossary.md#embedding)模型将一段文本、一张图片或一个代码文件转换为约 384 到 3,072 维空间中的一个点，其位置使语义相近的内容彼此靠近。于是检索就变成了几何问题：找到离查询点最近的那些点，按余弦相似度或点积打分。
@@ -9,6 +10,7 @@
 - 市场已经分化。专用向量数据库（vector database）（Pinecone、Weaviate、Qdrant、Milvus/Zilliz、Chroma、LanceDB、turbopuffer、Vespa）与 Postgres、MongoDB、Oracle、SQL Server、Elasticsearch、Redis、Databricks、Snowflake 中"作为功能的向量"竞争，而自 2025 年 12 月起，Amazon S3 本身也加入了竞争。[^s3v] 自 2023 年以来，纯向量数据库公司的融资规模一直不大。
 - **Everpure 视角：** 2024–2026 年的各种设计（DiskANN、SPANN/SPFresh、turbopuffer、Chroma Cloud、S3 Vectors、Milvus 2.6 分层存储）都在把向量数据从 DRAM 推向闪存和对象存储（object storage）。在 NVMe 和 S3 兼容存储上实现十亿级检索，是存储厂商一个具体的机会。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业 + Everpure 视角）
 
 检索决定了大语言模型能读到什么。每一个 RAG 系统（[第 19 章](ch19-retrieval-architectures.md)）、每一款企业级"与你的文档对话"产品以及大多数智能体（agent）记忆设计，都始于一次向量查询。如果检索漏掉了正确的段落，模型要么在缺少它的情况下作答，要么凭空编造。因此，检索质量就成了回答质量，而买方愿意为做对这件事付费。
@@ -17,8 +19,10 @@
 
 对 Everpure 而言，向量是一种形态特殊的存储工作负载。一个十亿向量的语料库是数 TB 的热数据，且被随机访问。工程师曾把它放在 DRAM 中，因为没有别的介质足够快；但闪存原生的索引设计如今使 NVMe 在相近召回率下成为更便宜的层级。Everpure 于 2026 年 6 月发布的 Data Stream 借助 NVIDIA GPU 在 FlashBlade 上对选定数据进行向量化，使公司站在了这一工作负载的生产端。[^ep-ds] Zilliz 将 Pure Storage 列为 Milvus 2.6 分层存储的存储合作伙伴之一，这又使其站在了服务端。[^milvus26]
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="from-content-to-coordinates"></a>
 ### 从内容到坐标
 
 嵌入模型是一种神经网络编码器。它接收一个输入（一个 512 token 的文本分块、一张图片、一个代码函数），输出一个定长的数字列表。对每个输入而言，列表长度都相同：OpenAI 的 text-embedding-3-small 为 1,536 个数字，text-embedding-3-large 为 3,072 个。[^openai-emb] 每个数字都是一个坐标。模型经过训练，使"发票已逾期"和"付款迟了"彼此靠近，而"发票模板"尽管共享一个关键词，却离得更远。
@@ -46,6 +50,7 @@ flowchart LR
 
 *图 18.1 — 文档和查询必须经过同一个模型。更换模型意味着要对整个语料库重新嵌入，这是这一层主要的切换成本。*
 
+<a id="dimensions-quantization-and-matryoshka"></a>
 ### 维度、量化与 Matryoshka
 
 维度越多通常意味着检索越好，但在全精度（float32）下，每个维度每个向量要花 4 字节。一个 768 维向量为 3 KB，一个 3,072 维向量为 12 KB，这可能超过它所代表的文本分块本身的大小。有两种技术可以降低这一成本。
@@ -56,6 +61,7 @@ flowchart LR
 
 > **类比：半导体（量化就是 ADC 位深）。** 对嵌入向量做量化，就像为模数转换器选择位深。32 位浮点数是高分辨率采样。int8 编码是一个 8 位 ADC，每个通道保留 256 个电平，对下游任务而言几乎没有损失。二值则是一个 1 位比较器：单独使用很粗糙，但速度快，足以在精确的第二轮之前做初筛。乘积量化（见下文）更接近编解码器中的矢量量化：它依据学习得到的码本对坐标块进行编码，而不是对每个坐标单独取整。
 
+<a id="exact-search-and-the-need-to-approximate"></a>
 ### 精确检索与近似的必要性
 
 精确的 **[k 最近邻](../glossary.md#k-nearest-neighbors)**（kNN）检索会把查询与每一个已存储的向量比较。对 100 万个 768 维向量而言，每次查询约需 7.7 亿次乘加运算。借助 SIMD 指令，算术本身很便宜；真正的约束是内存带宽，因为每次查询都要流式读取约 3 GB 的 float32 数据。一台内存带宽约 200 GB/s 的多核服务器需要约 15 ms（估算），而 int8 或二值编码，或者每轮批量处理多个查询，都能将其降低数倍。因此，在约 100 万–500 万向量以内（取决于维度、量化方式和查询速率），暴力检索是合理的选择。到 10 亿向量时，每次查询需流式读取约 3 TB 数据，对于交互式使用来说远远太慢。
@@ -64,6 +70,7 @@ ANN 索引避免查看大多数向量。其质量以 **recall@k** 衡量：在�
 
 > **类比：晶圆良率。** recall@k 就是检索系统的良率。你可以通过更彻底的测试（更大的搜索列表、探查更多的聚类）来提高良率，代价是测试机时间。也可以购买更好的工艺（更好的索引或更好的嵌入），代价是资本投入。最后几个百分点的良率最昂贵，而经济上的目标良率，是下游缺陷（漏掉一个段落）的代价低于再多一单位测试时间的那个点。一个团队只报"99% 召回率"而不附带延迟和成本，就相当于只报良率而不报周期时间。
 
+<a id="hnsw-a-skip-list-made-of-graphs"></a>
 ### HNSW：由图构成的跳表
 
 由 Malkov 和 Yashunin 于 2016 年发表的分层可导航小世界（HNSW）图，是大多数产品中的默认索引。[^hnsw] 每个向量都是一个节点，每个节点连接到几十个近邻。检索从一个入口点开始，贪心地移向离查询更近的邻居，当没有更近的邻居时停止。在单层平面图上，这种贪心游走可能需要很多步，因此 HNSW 增加了层级。最底层包含所有节点；每个更高的层级包含一个随机的、呈指数级缩小的样本，并带有更长距离的连接。查询通过几次长跳跨越稀疏的顶层，然后下降，并在稠密的底层进行局部细化。
@@ -104,6 +111,7 @@ flowchart TB
 
 > **类比：跳表与页表。** HNSW 是把跳表从一条有序直线推广到高维空间。跳表在链表上方保留快速通道，使一次查找只需 O(log n) 跳而非 n 跳；HNSW 的上层就是这些快速通道。它也类似多级页表：每一级都缩小你在地址空间中所处的区域，直到最后一级指向确切的页面。区别在于 HNSW 的"地址转换"是近似的：一次贪心跳跃偶尔会走错路，丢失的召回率就来自这里。
 
+<a id="ivf-and-product-quantization-partition-then-compress"></a>
 ### IVF 与乘积量化：先分区，再压缩
 
 第二个类别源自 Meta 和 INRIA 的 FAISS 谱系。[^pq][^faiss] **倒排文件索引（IVF）**在语料库上运行 k-means，找出例如 65,536 个质心，然后把每个向量分配到其最近质心的列表中。查询会与所有质心比较，选出最近的 **nprobe** 个列表（例如 8 个或 64 个），并只扫描这些列表。在 65,536 个列表、nprobe=64 的情况下，查询只触及约 0.1% 的数据。提高 nprobe 会同时提高召回率和成本。
@@ -140,6 +148,7 @@ flowchart LR
 
 Google 的 **ScaNN**（2020）改进了量化步骤。它使用各向异性量化，把误差预算花在对内积排序影响最小的地方。[^scann] 它既有开源版本，也作为 AlloyDB 中的 ScaNN 索引提供；Google 于 2024 年 10 月将其 GA，并声称可扩展到十亿向量以上（公司披露）。[^alloydb]
 
+<a id="diskann-the-memory-hierarchy-applied"></a>
 ### DiskANN：内存层级的实际应用
 
 Microsoft Research 的 DiskANN（NeurIPS 2019）探讨了当索引无法放进 RAM 时会发生什么。[^diskann] 它的图算法 **[Vamana](../glossary.md#vamana)**构建一个单层图，并在设计中刻意加入长距离边，因此一次检索所需的跳数比 HNSW 的底层更少。其布局遵循内存层级。所有向量的 PQ 压缩副本位于 DRAM 中，每个 64 字节或更少。全精度向量和图的邻居列表位于 SSD 上，并存放在一起，使一次 4 KB 读取就能同时返回某个节点的精确向量及其边。检索利用廉价的内存内编码进行导航，并发出小批量的 SSD 读取以展开最有希望的节点，然后用沿途取回的精确向量进行重排序。
@@ -175,16 +184,19 @@ flowchart TB
 
 > **类比：内存层级（DiskANN 是一种缓存设计）。** DiskANN 是标签与数据的经典分离。CPU 缓存把小的标签放在快速 SRAM 中，把大量数据放在下一级。DiskANN 把小的"标签"（PQ 编码）放在 DRAM 中，用来决定哪些节点值得取回，而把完整的行（精确向量加边）放在 NAND 上。像一个好的缓存一样，它对数据进行布局，使一次取回就能带回下一步所需的全部内容，并把热点行（靠近入口点的节点）固定在更快的层级。任何对 HBM 与 DRAM 的取舍做过定价的人，都已经明白为什么这比把一切都放在最高层级更划算。
 
+<a id="object-storage-spann-and-gpus"></a>
 ### 对象存储、SPANN 与 GPU
 
 沿内存层级再往下一步是对象存储，在那里一次访问需要数十毫秒（最高约 100 ms），而不是约 100 µs，图遍历便不再奏效。基于聚类的设计在这里更合适。**SPANN**（Microsoft，NeurIPS 2021）把聚类质心放在内存中，把倒排列表放在磁盘上，[^spann] 而 **SPFresh**（SOSP 2023）增加了原地更新。[^spfresh] turbopuffer 的文档描述了一个基于 SPFresh 的质心索引，以对象存储为权威数据源、以 NVMe 为缓存。冷查询会先下载质心，然后以尽可能少的对象存储往返次数取回选中的聚类。[^tpuf] Chroma Cloud（2025 年 8 月）同样结合了 SPANN 和 SPFresh，并使用以对象存储为后端的预写日志（WAL）。[^chroma] 2025 年 12 月 2 日 GA 的 Amazon S3 Vectors 把这一思路推向极致：每个索引最多 20 亿个向量，每个存储桶最多 20 万亿个，AWS 称查询延迟约 100 ms，成本比替代方案最多低 90%（公司披露）。[^s3v]
 
 在另一个极端，GPU 被用于批量构建和检索索引。NVIDIA 的 cuVS 库包含 **[CAGRA](../glossary.md#cagra)**，这是一种为 GPU 并行而设计的图索引（2023）。[^cagra] 它已集成到 FAISS、Milvus 以及 OpenSearch 的远程索引构建器中。一种常见模式是在 GPU 上几分钟内构建好图，再将其转换为 HNSW，以便在 CPU 上更低成本地提供服务。[^cuvs] GPU 最适合索引构建和重新嵌入作业，以及吞吐量极高的批量查询；典型的 RAG 查询流很少需要它们。
 
+<a id="filtering-and-the-hybrid-search-teaser"></a>
 ### 过滤与混合检索预告
 
 真实的查询都带有条件："这个租户的、2026 年的、该用户有权查看的文档"。把这些条件应用到 ANN 检索上比听起来要难。**[预过滤](../glossary.md#pre-filtering)**先缩小候选集，再在其中检索。对幸存者做暴力检索是精确的，但当过滤条件宽泛时会很慢；只经由匹配节点遍历图则很快，但可能把图切成互不相连的孤岛。**[后过滤](../glossary.md#post-filtering)**先检索再过滤，很简单，但限制性强的过滤条件可能使 10 个结果只剩 2 个。**图内过滤**在遍历过程中检查谓词，Qdrant 的载荷感知 HNSW 和 ACORN 研究设计都是如此。[^acorn] pgvector 0.8.0 的迭代索引扫描通过持续检索直到有足够多的行通过过滤，来修补后过滤的问题。[^pgvector] 过滤选择性是"基准测试表现良好、在生产中却漏掉结果"的向量系统最常见的原因。纯向量检索还会漏掉零件编号、名称等精确词元。因此，生产系统会把它与关键词检索（[BM25](../glossary.md#bm25)）和重排序器配合使用，这就是[第 19 章](ch19-retrieval-architectures.md)讨论的[混合检索](../glossary.md#hybrid-search)模式。
 
+<a id="worked-example-memory-math-for-one-billion-vectors"></a>
 ## 实例演算：十亿向量的内存计算
 
 假设有 10 亿个分块，以 768 维嵌入，大致相当于一家大型企业或一个中型网页索引的语料库。算术是精确的；价格是示意性假设，并非报价。
@@ -215,6 +227,7 @@ xychart-beta
 
 生产环境还要增加副本（通常 2–3 倍）、余量和计算资源，因此绝对金额会更高。但比例关系依然成立，并解释了 2023 年以来的行业方向：把引导检索的字节留在快速内存中，把大部分数据推到闪存或对象存储上。
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 | 算法 | 结构 | 每个 768 维向量的内存（参考值） | 查询延迟特征 | 更新与删除 | 过滤 | 常见于 |
@@ -231,6 +244,7 @@ xychart-beta
 
 更深层的权衡在于**内存成本与漏检成本**之间。一个把前 20 个分块送往重排序器的消费级聊天机器人，可以容忍廉价索引带来的 0.90 召回率。法律或医疗检索系统则可能愿意为 0.99 付费。脱离嵌入模型、分块方式和过滤条件，这两个数字都没有多大意义。从强嵌入模型换到弱嵌入模型的团队，损失的质量往往比任何索引设置所能弥补的还要多。
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 | 产品 | 类型 | 索引算法 | 主要数据层级 | 部署方式 | 2025–26 年要点 |
@@ -257,10 +271,11 @@ xychart-beta
 
 *图 18.8 — 十九款产品，两种商业模式。专用厂商在规模、延迟和调优深度上竞争；功能型厂商以"无需新系统"竞争。对象存储型设计（turbopuffer、Chroma Cloud、S3 Vectors、Pinecone 无服务器）正是价格压缩的来源。*
 
-![数据集中向量数据库融资轮次的柱状图：Zilliz $60M（2022）、Weaviate $50M（2023）、Pinecone $100M（2023）、Qdrant $28M（2024）、LanceDB $30M（2025）和 Qdrant $50M（2026），显示自 2023 年以来没有超过 $100M 的轮次](../assets/charts/vector_db_funding.png)
+![数据集中向量数据库融资轮次的柱状图：Zilliz $60M（2022）、Weaviate $50M（2023）、Pinecone $100M（2023）、Qdrant $28M（2024）、LanceDB $30M（2025）和 Qdrant $50M（2026），显示自 2023 年以来没有超过 $100M 的轮次](../../../docs/assets/charts/vector_db_funding.png)
 
 *图 18.9 — 自 2023 年以来，纯向量数据库公司的融资轮次规模都不大，Pinecone 2023 年的 B 轮仍是数据集中的最高点。资本反而流向了吸收这一功能的平台。资料来源：`data/private_funding.csv`；Chroma 2023 年的种子轮因金额未经确认而未计入。*[^funding]
 
+<a id="does-the-standalone-vector-database-survive"></a>
 ### 独立向量数据库能否存活？
 
 **看空逻辑：功能被吸收加上价格压缩。** 我们判断，大多数企业语料库的规模以百万向量计，而非十亿。在这种规模下，在客户已经运行的数据库中使用 pgvector 或 MongoDB 就足够了。这还解决了独立系统带来的问题：让嵌入向量与源数据行保持同步、执行同样的访问控制，以及与关系型过滤条件进行连接。超大规模云厂商已把这类产品变成按 GB 定价的存储功能，例如 S3 Vectors。[^s3v] 融资情况也反映了这一点。Pinecone 自 2023 年以来未进行任何定价轮融资，据报道曾与银行家就出售事宜进行初步接触。Calcalist 援引 The Information 的报道称，Oracle、IBM、MongoDB 和 Snowflake 是潜在买家（媒体报道；尚未宣布交易）。[^pinecone-sale] Weaviate 最近一次定价轮可追溯到 2023 年。[^funding] 当一个类别中的头部公司不再融资时，市场就是在把它当作一项功能来定价。
@@ -269,6 +284,7 @@ xychart-beta
 
 **我们的观点。** 市场的中间地带属于"作为功能的向量"，而这个市场大体上已经尘埃落定。独立厂商会在两端存活：超大规模、多租户、成本敏感的一端（对象存储原生设计），以及对延迟要求严苛、高 QPS 的一端（专用引擎和 GPU）。对许多厂商而言，可能的退出方式是被数据库、云或搜索厂商收购，这符合 IBM–DataStax 和 MongoDB–Voyage 的模式（[第 32 章](../04-company-deep-dives/ch32-ai-native-data-companies.md)）。最有力的反驳是：RAG 质量更多取决于混合检索、重排序和数据新鲜度，而不是原始的 ANN 速度。一家掌握完整检索管道的厂商，有可能成为一个持久的平台，而不只是一项功能。
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 ```mermaid
@@ -295,6 +311,7 @@ timeline
 
 展望 2027 年，可以看到三个方向。第一，更多的分层：对于约 1 亿向量以上的场景，闪存原生和对象存储原生索引将成为默认选项。第二，更多 GPU 辅助的索引构建，因为随着模型改进，重新嵌入的周期会变短。[^cuvs] 第三，检索引擎与 Lance、Iceberg 等湖仓格式融合，使向量成为受治理表中的又一列（[第 7 章](../01-data-systems-foundations/ch07-open-table-formats.md)、[第 24 章](ch24-data-meets-compute-and-storage.md)）。
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 依据 | 来源 / 日期 |
@@ -314,10 +331,12 @@ timeline
 
 *图 18.11 — 带进会议的关键数字。各厂商的延迟数字彼此不可比，因为召回率目标、维度和过滤条件各不相同。*
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** 向量检索正在变成一种闪存和对象存储工作负载。DiskANN 风格的索引会在低队列深度下发出成批的 4 KB 小型随机读取，此时尾延迟比带宽更重要。SPFresh 风格和 S3 Vectors 的设计则发出更少、更大的范围 GET 请求，此时首字节时间和每请求成本占主导。重新嵌入和索引构建是为 GPU 供数的大型顺序作业。对于 FlashBlade 这样的本地部署 S3 和 NVMe 平台，基于公开信息，战略团队可能评估的选项包括：与 Milvus（已将 Pure Storage 列为 2.6 分层存储合作伙伴）[^milvus26] 以及其他对象存储原生引擎共同推出认证参考设计；在本地部署提供与 S3 Vectors 兼容的 API；将 Data Stream 从生产嵌入向量扩展到提供嵌入向量服务。[^ep-ds] [第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)将这些选项置于存储厂商向技术栈上层移动的更广泛模式之中。闪存延迟和对象协议细节参见配套的 *Everpure Tech Atlas*。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理提问**
@@ -342,6 +361,7 @@ timeline
 - "RAG 只需要一个向量数据库。"生产级 RAG 需要混合关键词检索、重排序、过滤和访问控制（[第 19 章](ch19-retrieval-architectures.md)）。
 - "HNSW 是唯一重要的索引。"在十亿规模下，IVF-PQ、DiskANN 和"聚类放在对象存储上"的设计通常在成本上胜出。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 - Malkov 和 Yashunin 的 HNSW 论文，尤其是关于启发式邻居选择的章节。[^hnsw]
@@ -353,6 +373,7 @@ timeline
 
 > **深入（L3）。** HNSW 的邻居选择并不是"保留最近的 M 个"。只有当一个候选项离新节点比离任何已选邻居都更近时，它才会被保留，这样能保留指向不同方向的边，使图保持可导航。Vamana 用一个大于 1 的松弛因子 α 推广了这一规则，刻意保留一些长边，使单层图也能达到 HNSW 依靠上层才获得的跳数。这一条剪枝规则对质量的影响，比大多数已公开的调优旋钮都更大。
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [嵌入（向量）](../glossary.md#embedding) — 一种学习得到的向量表示，相似内容在其中彼此靠近。
@@ -379,6 +400,7 @@ timeline
 - [BM25](../glossary.md#bm25) — 标准的关键词相关性打分函数。
 - [向量数据库](../glossary.md#vector-database) — 主要为存储、索引和查询嵌入向量而构建的数据库。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^hnsw]: Y. Malkov and D. Yashunin, "Efficient and robust approximate nearest neighbor search using Hierarchical Navigable Small World graphs," arXiv:1603.09320, https://arxiv.org/abs/1603.09320，发布 2016-03（IEEE TPAMI 42(4), 2018/2020, https://doi.org/10.1109/TPAMI.2018.2889473）；检索 2026-11-01（标准引用）。

@@ -1,6 +1,7 @@
 # 25. Databricks
 > **状态：** 私营 · **总部：** 加利福尼亚州旧金山 · **成立：** 2013 · **最新估值/市值：** $190B 投后估值（公司披露，融资于 2026-08-13 完成交割） · **最后核实：** 2026-11-01
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - **它是什么。** Databricks 销售一套托管式数据与 AI 平台，该平台构建于存放在客户自有云对象存储中的开放格式之上。它起步于"托管版 Apache Spark"，如今已是数据仓库、ETL 工具、数据治理目录、ML/智能体平台，并自 2025 年起成为一款运营型 Postgres 数据库（Lakebase）。其[湖仓一体（lakehouse）](../glossary.md#lakehouse)的核心主张是：一份数据、多个引擎、一个治理层。
@@ -9,6 +10,7 @@
 - **控制点是 Unity Catalog，而非文件格式。** Databricks 于 2024 年收购 Tabular（Iceberg 创始人创办的公司，媒体报道约 $2B），平息了格式之争。如今它在开放数据之上叠加的数据治理、无服务器计算和 AI 智能体层面展开竞争。这也意味着它与每一家转售其产品的超大规模云厂商形成竞争。[^tabular]
 - **Everpure 视角。** Databricks 基本只在云端运行，但在 2026 年 6 月，它推出了基于 [OpenSharing](../glossary.md#opensharing) 协议的 **Storage Ecosystem（存储生态）**，从而可以治理和查询本地部署的对象数据。**Everpure 被列为首发合作伙伴**，其面向 FlashBlade/FlashArray 对象存储的 OpenSharing 连接器处于私有预览阶段。这是迄今为止两家公司之间最具体的公开连接点。[^storage-eco][^everpure-os]
 
+<a id="snapshot-table"></a>
 ## 概览表
 
 | 项目 | 数值 | 依据 / 日期 |
@@ -32,6 +34,7 @@
 
 *图 25.1 — Databricks 的每一个关键指标都是公司披露的下限（"超过 $X"），且基于未披露的年化运行率定义。应将其视为方向上可靠、但未经审计的数据。*
 
+<a id="origin-story-and-strategic-arc"></a>
 ## 起源与战略演进
 
 **伯克利时期。** Apache [Spark](../glossary.md#apache-spark) 约于 2009 年起源于 Matei Zaharia 在 UC Berkeley AMPLab 的博士项目。它是 Hadoop MapReduce 的一个更快的内存计算后继者。其核心思想是弹性分布式数据集（RDD）：把中间结果保存在集群内存中，并记录数据转换的血缘，这样丢失的分区可以重新计算，而无需复制。2012 年关于 RDD 的 NSDI 论文获得最佳论文奖。[^nsdi] 七位 AMPLab 研究人员——包括 Zaharia 的导师 Ion Stoica 和研究员 Ali Ghodsi——于 2013 年创立 Databricks，将 Spark 商业化。Andreessen Horowitz 领投了约 $14M 的 A 轮。[^wiki][^funding] Stoica 担任首任 CEO。Ghodsi 于 2016 年接任，至今仍执掌公司。
@@ -64,8 +67,10 @@ timeline
 
 *图 25.2 — 每一幕都扩大了可在同一份开放格式数据上运行的工作负载范围：先是 Spark 作业，然后是 SQL，再到数据治理、模型，最后是运营型数据库和智能体。*
 
+<a id="product-and-technology"></a>
 ## 产品与技术
 
+<a id="the-architecture-in-one-picture"></a>
 ### 一张图看懂架构
 
 Databricks 将其系统划分为**[控制平面（control plane）](../glossary.md#control-plane)**和**[计算平面（compute plane）](../glossary.md#compute-plane)**。控制平面运行在 Databricks 自己的云账户中，承载 Web UI、笔记本、作业调度器、集群管理器、查询优化器（query optimizer）服务以及 Unity Catalog 元数据服务。计算平面是实际处理数据的地方，分为两种形态。[^arch-docs]
@@ -119,6 +124,7 @@ flowchart TB
 
 > **类比：统一内存。** 传统的两层架构（数据湖加一个独立的数据仓库）就像 CPU 和拥有独立显存的独立 GPU。每个作业都要跨越边界付出一次类似 PCIe 的拷贝代价，而且两份副本会逐渐失去同步。湖仓是统一内存设计，类似 Apple M 系列或 NVIDIA Grace Hopper。对象存储中只有一份物理副本，多个处理器（SQL、Spark、ML、智能体）对其寻址，一致性由表格式的事务日志而非拷贝来保证。代价也与统一内存相同：你用任一单一工作负载上的峰值性能（经过调优的专有数据仓库格式）换取更少的数据移动和单一事实来源。
 
+<a id="how-the-pieces-work-l2"></a>
 ### 各组件如何工作（L2）
 
 **Delta Lake 与 UniForm。** 一张 Delta 表是一个由 Parquet 数据文件组成的文件夹，外加一个 `_delta_log` 文件夹，其中存放按编号排列的 JSON 提交文件和定期检查点。写入方通过原子地创建下一条日志条目来提交。读取方从日志重建表状态，由此获得快照隔离和对旧版本的"时间旅行（历史版本查询）"。UniForm 从同样的提交生成 Iceberg 元数据，因此一张物理表可同时服务两个生态。[^delta-vldb] [第 7 章](../01-data-systems-foundations/ch07-open-table-formats.md)深入讲解了元数据树。
@@ -133,12 +139,15 @@ flowchart TB
 
 **其余产品面。** **Lakeflow** 涵盖数据摄取（Lakeflow Connect，包括通过收购 Arcion 获得的 CDC 技术）、**Lakeflow Spark Declarative Pipelines**（前身为 Delta Live Tables，后为 Lakeflow Declarative Pipelines；2025 年 11 月更名）和编排（Jobs）。**Mosaic AI** 和 **Agent Bricks** 覆盖模型服务、微调、向量检索、评估和智能体构建。**Genie** 将自然语言问题转化为基于 Unity Catalog 元数据、受治理的 SQL。**Databricks Apps** 托管内部数据应用。**Lakewatch**（2026）与 Panther 将湖仓重新包装为安全分析存储，即 SIEM。[^lakewatch][^panther] [第 22 章](../03-ai-data-stack/ch22-agents-and-data.md)解释了为何智能体会提升目录和运营型数据库的价值。
 
+<a id="how-it-makes-money"></a>
 ## 盈利模式
 
+<a id="the-dbu"></a>
 ### DBU
 
 Databricks 以 **[Databricks Units（DBU）](../glossary.md#dbu)** 计费，这是一种按小时消耗、按秒计费的标准化处理能力单位。每种实例类型每小时消耗固定数量的 DBU，因此更大的虚拟机消耗更多。每个 **SKU**（工作负载类型）的每 DBU 美元单价不同。据第三方整理，2026 年 AWS 美国区的代表性目录价大致为：**Jobs 计算约 $0.15/DBU**、**All-Purpose（交互式）计算约 $0.55**、**Serverless SQL 约 $0.70**。Azure 列出的 Premium Jobs 为每 DBU 小时 $0.30、All-Purpose 为 $0.55，均不含虚拟机费用。[^pricing] 经谈判的企业合同通常是多年期承诺消费额度协议，按实际消耗逐步抵扣，因此目录价是上限。SKU 阶梯鼓励将工作从交互式笔记本（昂贵）迁移到定时作业（便宜），同时也对便利性收取溢价：无服务器，以及面向 BI 并发的 SQL。
 
+<a id="how-a-query-becomes-revenue"></a>
 ### 一次查询如何变成收入
 
 ```mermaid
@@ -160,6 +169,7 @@ flowchart LR
 
 > **类比：半导体与授权费。** 在经典计算下，DBU 的作用就像 **Arm 授权费**。客户通过购买自己的云虚拟机来"流片"算力，而 Databricks 对其软件编排的每一个 DBU 工作量收取单位费用，毛利率极高。无服务器则让 Databricks 部分转型为**代工厂加 IP 供应商**。它现在购买"晶圆"（云虚拟机）并转售成品算力。单位收入上升，毛利率百分比下降，成败取决于机群利用率，这与代工厂如出一辙。分析师应当问半导体投资者在任何"授权到产品"转型中都会问的问题：产品结构的变化所增加的毛利润金额，是否快于其对毛利率百分比的稀释？
 
+<a id="gross-margin-and-channel-economics"></a>
 ### 毛利率与渠道经济学
 
 唯一由公司披露的利润率数据点是截至 2024 年 10 月的季度**非 GAAP 订阅毛利率超过 80%**。[^db-j] PitchBook 的估值研究（由 Morningstar 转载）将 80% 视为*乐观*的稳态情景，意味着基准情景低于此值。[^ms] Snowflake 一直在自有云账户中运行全部计算，其报告的非 GAAP 产品毛利率约为 75%（Q2 FY2027）。[^sf-q2] 这是判断全面无服务器化的 Databricks 可能落在何处的一个有用参照。另外两个利润率驱动因素：
@@ -169,11 +179,12 @@ flowchart LR
 
 [第 35 章](../05-business-and-economics/ch35-business-models.md)更广泛地比较了按用量计费与订阅模式。
 
+<a id="financials"></a>
 ## 财务数据
 
 Databricks 是私营公司，因此**没有 GAAP 财务报表**。以下每个数字都属于以下几类之一：**公司披露的年化运行率**（通常表述为"超过 $X"）、经媒体转述的公司披露财年收入，或公司向投资者给出的预测。年化运行率的计算方法（是季度收入 × 4 还是期末月 × 12，以及如何处理已承诺但尚未消耗的额度）尚未披露。财年截至 1 月 31 日。[^db-j]
 
-![Databricks 公司披露的收入年化运行率折线图：从 2021 年的约 $0.6B 升至 2026 年 7 月的超过 $7B；数据仓库年化运行率升至 $1.5B，AI 产品升至 $1.4B，Lakebase 为 $0.1B；财年收入标记点分别为 $1.0B、$1.6B 和 $2.6B](../assets/charts/ch25_databricks_runrate.png)
+![Databricks 公司披露的收入年化运行率折线图：从 2021 年的约 $0.6B 升至 2026 年 7 月的超过 $7B；数据仓库年化运行率升至 $1.5B，AI 产品升至 $1.4B，Lakebase 为 $0.1B；财年收入标记点分别为 $1.0B、$1.6B 和 $2.6B](../../../docs/assets/charts/ch25_databricks_runrate.png)
 
 *图 25.5 — 年化运行率在五年内增长约 12x，增速从约 50%（2025 年年中）重新加速至 >80%（2026 年年中）。年化运行率是基于未披露定义的下限，其中两个点为前瞻性预测。来源：`data/ch25_databricks_runrate.csv`。*
 
@@ -198,7 +209,7 @@ Databricks 是私营公司，因此**没有 GAAP 财务报表**。以下每个�
 
 **融资与估值。** 据本书对 `data/private_funding.csv` 的加总，从 2013 年到 2026 年 8 月，Databricks 共募集约 $25B 股权资金，另有债务融资。2024 年以来的各轮融资明确部分用于为员工提供流动性并支付 RSU 预扣税，作为 IPO 的替代。[^db-j][^db-48]
 
-![Databricks 各轮融资投后估值折线图：从 2019 年 E 轮的 $2.75B 到 2026 年 8 月的 $190B，2021 至 2023 年间长期持平，2024 年末起急剧上升](../assets/charts/databricks_valuation_timeline.png)
+![Databricks 各轮融资投后估值折线图：从 2019 年 E 轮的 $2.75B 到 2026 年 8 月的 $190B，2021 至 2023 年间长期持平，2024 年末起急剧上升](../../../docs/assets/charts/databricks_valuation_timeline.png)
 
 *图 25.7 — 估值在 2021 年峰值后横盘两年（H 轮 $38B → I 轮 $43B），随后随着增长重新加速和 AI 需求到来，在 20 个月内从 $62B 增至 $190B，翻了约三倍。来源：`data/private_funding.csv`。*
 
@@ -219,6 +230,7 @@ Databricks 是私营公司，因此**没有 GAAP 财务报表**。以下每个�
 
 > **类比：估值。** 以 $190B 估值对应 >$7B 年化运行率，Databricks 的定价约为**当前年化运行率的 27x**。Snowflake 的交易倍数为 **16.9x EV/未来 12 个月收入**（EV $106.31B ÷ 未来 12 个月收入 $6.30B，截至 2026-10-30，未来 12 个月收入基于 FY2027 业绩指引），或约为其 Q2 FY2027 总收入年化值（$1.55B × 4）的 17x。[^comps-sf][^sf-q2] 要做同口径比较，需将 Databricks 向前滚动。若年化运行率在未来一年增长 50%，从 $7B 增至 $10.5B，则未来 12 个月收入大致为中点，约 $8.75B，倍数约为 **22x 未来 12 个月收入**（本书估算）。按每个百分点增速计算，Databricks 约为 0.34x（27 ÷ 80），Snowflake 约为 0.48x（16.9 ÷ 35）。在这一粗略的增长调整口径下，这一私募估值相对 Snowflake *并不*昂贵。但有三项调整方向相反。(1) $190B 是**投后股权价值**而非 EV，且由通常附带清算优先权的优先股定价，因此高估了普通股的价值。(2) 相对于过去期间的数字，年化运行率会美化快速增长的公司。(3) 债务（一笔 $2.75B 定期贷款加循环信贷额度及后续额度）未被扣除。Palantir 约 70x EV/过去 12 个月收入（70.3x；过去 12 个月口径而非未来 12 个月），过去 12 个月增速约 79%（2026-10-30），表明在 AI 叙事强劲时，公开市场愿为可比增速支付高得多的价格。[^comps-pltr]
 
+<a id="customers-and-go-to-market"></a>
 ## 客户与市场进入
 
 Databricks 称有超过 20,000 家组织使用其产品，包括超过 60% 的财富 500 强。[^cust] 收入集中于大型企业：>800 家客户的年化运行率 >$1M，>70 家 >$10M。[^db-54] 传统买方是**数据工程与数据科学**团队，而非 BI 团队。这在历史上恰好是 Snowflake 的镜像——后者是从 SQL 分析师和财务部门切入的。两家公司都花了五年时间进攻对方的大本营买方。
@@ -227,6 +239,7 @@ Databricks 称有超过 20,000 家组织使用其产品，包括超过 60% 的�
 
 **免费层与开发者漏斗**在 2025–26 年进一步扩大。到 DAIS 2026 时，Free Edition 用户已超过 500,000，现已包含 Lakebase、Agent Bricks 和无服务器 GPU（公司披露，经活动回顾转述）。[^dais26] Lakebase 面向的是新的买方——应用开发者，而收购 Electric（PGlite）将漏斗推进到本地开发和智能体沙箱。[^electric] Data + AI Summit 本身在 2026 年吸引了约 30,000 名参会者（媒体报道），使其成为一个重要的销售活动。[^dais26]
 
+<a id="ma-and-investments"></a>
 ## 并购与投资
 
 Databricks 是数据平台市场上最活跃的连续收购者。`data/ma_deals.csv` 列出了 16 笔交易，其中仅 2026 年就有五笔。几乎全部是未披露金额的补强型收购，每笔填补平台的一个空白，且主要以价值不断上涨的私募股票支付。这种"货币"优势一直是公司低调的战略武器之一。更广泛的交易全景见[第 39 章](../05-business-and-economics/ch39-ma-history.md)。
@@ -265,6 +278,7 @@ timeline
 
 **投资。** Databricks Ventures 在其生态中进行少数股权投资；例如，它参与了 Sigma Computing 2026 年的 E 轮融资。[^funding] 公司自身也已成为战略投资的对象。Microsoft、NVIDIA 和 Meta 均持有其股份，这使其三家最重要的供应商和渠道与其成功利益一致。[^funding]
 
+<a id="competitive-position"></a>
 ## 竞争地位
 
 Databricks 同时在四条战线上竞争。**Snowflake** 是争夺分析与 AI 平台预算的正面对手。**超大规模云厂商**既转售 Databricks，也打造替代品。**Palantir** 争夺"基于企业数据的 AI"这一面向高管的叙事和预算。ClickHouse 等**专业引擎**则在其更快或更便宜的特定工作负载上发起进攻。
@@ -308,6 +322,7 @@ quadrantChart
 
 **对比 Palantir 与专业厂商。** Palantir（过去 12 个月收入约 $6.2B，过去 12 个月增速约 79%，截至 2026-10-30 约 70x EV/过去 12 个月收入）向高管销售 Ontology 和运营型 AI 应用。它与 Genie 和 Agent Bricks 在应用层的重叠，多于与数据仓库的重叠。[^comps-pltr] ClickHouse（估值 $15B，2026 年 1 月）凭借性价比赢得实时和可观测性工作负载，而 Lakehouse//RT 以及 Panther/Lakewatch 的安全布局显然正瞄准这一细分市场。[^clickhouse][^dais26]
 
+<a id="why-its-winning--bull-case"></a>
 ## 制胜原因 / 看多逻辑
 
 1. **规模化下增长仍在加速。** 报告增速从约 50%（$4B 收入年化运行率，2025 年年中）升至 >80%（$7B 年化运行率，2026 年年中），二者均为公司披露。[^db-4b][^db-7b] 极少有软件公司在超过 $5B 规模后还能重新加速。只要这些数字大致准确，AI 工作负载的顺风就是真实的，并且已体现在消耗量中。
@@ -317,6 +332,7 @@ quadrantChart
 5. **资本与"货币"优势。** $190B 的私募股票"货币"，且无需接受季度审视，支撑了"买而非建"策略（16 笔交易）以及通过要约收购留住人才。公开市场的对手若要做到这一点，就必须在众目睽睽之下稀释股东权益。
 6. **按增长调整后的估值站得住脚。** 每个百分点增速约 0.34x 投后价值/年化运行率，而 Snowflake 约为每个百分点 0.48x EV/未来 12 个月收入（分子和分母均不同，因此仅供参考）；再加上 Palantir 的交易倍数接近 70x EV/过去 12 个月收入，看多者可以主张 $190B 已经计入了大幅减速（见上文估值桥接）。
 
+<a id="risks--bear-case-and-open-questions"></a>
 ## 风险 / 看空逻辑与待解问题
 
 1. **倍数所假设的增长和利润率未经审计。** 在约 27x 年化运行率下，这一价格需要多年 40%+ 的增长*以及*成熟软件公司的利润率。PitchBook 的分析（由 Morningstar 转载）估计其经营价值更接近 **$68.7B**，折价 64%，并发现即便在 80% 毛利率的乐观情景下也只能达到约 $182B。[^ms] 年化运行率的定义未披露，而 S-1 可能重塑整体图景。
@@ -327,6 +343,7 @@ quadrantChart
 6. **整合广度与聚焦度。** 2026 年在安全、Postgres 和电子表格领域的五笔交易拉长了产品战线。Lakewatch 使 Databricks 与 Splunk/Cisco、CrowdStrike 和 Palo Alto 正面交锋，而这些厂商在安全领域的积累远比它深厚。
 7. **需持续跟踪的待解问题。** 年化运行率的确切定义是什么？无服务器在 DBU 中的占比是多少，无服务器的毛利率是多少？有多少收入来自 Azure？LTAP 能否交付？Lakebase 是蚕食外部 Postgres 还是带来新增工作负载？S-1 何时提交？
 
+<a id="relevance-to-everpure"></a>
 ## 与 Everpure 的相关性
 
 > **存储桥接。** Databricks 将对象存储视为商品化的基础层：基于 S3 兼容 API 的 Delta/Iceberg 文件，由 Unity Catalog 决定谁可以读取。性能来自 Photon、缓存和文件布局，而非存储阵列，因此存储厂商的议价筹码在于数据*存放在哪里*（本地、主权环境、靠近 GPU）以及元数据，而不在于为 Databricks SQL 提供的原始吞吐量。有关 S3 语义和 FlashBlade 对象性能，请参见配套的 *Everpure Tech Atlas*。
@@ -346,6 +363,7 @@ quadrantChart
 
 存储厂商向技术栈上层延伸的更广泛趋势见[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)，数据引力（data gravity）与出口流量费（egress fees）的经济学见[第 24 章](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向 Databricks 产品经理或高管提出的三个问题**
@@ -371,6 +389,7 @@ quadrantChart
 - "Everpure 与 Databricks 没有任何关系。" *Everpure 是 2026 年 6 月 Storage Ecosystem 的指定首发合作伙伴（连接器处于私有预览）。*
 - "$190B 是它的市值。" *这是由优先股定价的私募投后估值。*
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [湖仓一体（Lakehouse）](../glossary.md#lakehouse) — 在对象存储中的开放文件之上实现数据仓库级别的管理和性能。
@@ -397,6 +416,7 @@ quadrantChart
 - [清算优先权（Liquidation preference）](../glossary.md#liquidation-preference) — 在出售公司时，优先股股东先于普通股股东获得偿付的权利。
 - [要约收购（Tender offer）](../glossary.md#tender-offer) — 由公司或投资者组织、向员工和持有人购买现有股份的行为。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^db-7b]: Databricks, "Databricks Grows >80% YoY, Surpasses $7B Revenue Run-Rate, Scales Lakebase, Genie and Unity AI Gateway," https://www.databricks.com/company/newsroom/press-releases/databricks-grows-80-yoy-surpasses-7b-revenue-run-rate-scales, 发布 2026-08-13；与 IT Brief 交叉核对，https://itbrief.com.au/story/databricks-tops-usd-7-billion-run-rate-after-funding, 2026-08；检索 2026-11-01。公司披露的年化运行率，未经审计。

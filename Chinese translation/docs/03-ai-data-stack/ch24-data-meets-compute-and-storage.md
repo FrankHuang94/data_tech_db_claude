@@ -1,6 +1,7 @@
 # 24. 数据栈与计算和存储的交汇点
 > **深度：** L2 · **阅读时间：** 约 16 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 5 章 — 分析引擎](../01-data-systems-foundations/ch05-analytical-engines.md)、[第 7 章 — 开放表格式](../01-data-systems-foundations/ch07-open-table-formats.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - 每一个现代数据平台都是一组构建在 **对象存储（object storage）** 之上的软件层（引擎、目录、表格式、文件格式、缓存）。存储层在厂商架构图中是隐形的，但其语义（一致性、条件写入、请求计费、LIST 速度）决定了上层是否正确、是否负担得起。
@@ -9,6 +10,7 @@
 - **数据引力（data gravity）是有价格的。** AWS 第一档的互联网出口流量费（egress fees）标价约为 $0.09/GB。[^s3-pricing] 每月从另一个云重新读取数据湖的很大一部分，其成本可能超过存储成本。监管机构已对此有所削减（2024 年的迁出费用豁免、2025 年受欧盟《数据法案》推动的多云费用下调），但稳态的跨云读取仍然收费。
 - 战略上的答案是**把计算带到数据所在之处**：联邦查询、零拷贝（zero-copy）共享、缓存，以及在数据已经所在位置运行的引擎，包括本地部署的 Iceberg 湖仓一体（lakehouse）。这为 Everpure 的 FlashBlade 这类兼容 S3 的本地平台打开了机会，也是存储厂商（NetApp–DataPelago、Everpure–Data Stream）如今纷纷在其阵列旁收购或自建计算能力的原因。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业视角 + Everpure 视角）
 
 本书第 1 部分自上而下地描述了数据栈：引擎（[第 5 章](../01-data-systems-foundations/ch05-analytical-engines.md)）、文件格式、表格式（[第 7 章](../01-data-systems-foundations/ch07-open-table-formats.md)）和目录。本章则自下而上地审视：这些层对其下方的硬件提出了什么要求，以及当它们交汇时，资金流向何处。
@@ -17,8 +19,10 @@
 
 对 Everpure（原 Pure Storage；NYSE: P，原 PSTG）而言，正是在这一层，存储公司要么沦为一个商品化的存储桶，要么成为数据平台的参与者。Everpure 的公开动作指向第二条路径。这些动作包括：与 Dremio 和 Starburst 合作的 FlashBlade 参考架构、Databricks Storage Ecosystem 的首发合作伙伴身份（2026 年 6 月），以及 Data Stream——一个基于 FlashBlade 加 NVIDIA GPU 的向量化数据管道。[^dremio-pure][^starburst-ep][^storage-eco][^data-stream] 后续章节将基于公开信息，阐述战略团队可能评估的选项。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="the-lakehouse-is-a-stack-on-object-storage"></a>
 ### 湖仓一体是构建在对象存储上的一组层
 
 一条[湖仓](../glossary.md#lakehouse)查询在触及磁盘之前要穿过六个层。每一层都会给存储带来一种不同类型的负载。
@@ -49,6 +53,7 @@ flowchart TB
 
 流量的这种分化很重要。一条 Iceberg 查询首先读取一个元数据 JSON 文件、一个清单列表和若干清单文件：都是小对象，串行读取，延迟起主导作用。随后它扇出为数千个针对 Parquet 文件的并行字节范围 GET 请求，此时总吞吐量起主导作用。一次提交会增加一次条件写入。维护作业（压缩、快照过期）则带来成批的 LIST 和 DELETE 调用。一个只针对大规模顺序流调优的存储系统，在基准测试里看起来很快，在湖仓里却会很慢。
 
+<a id="what-the-s3-api-now-promises"></a>
 ### S3 API 如今承诺了什么
 
 S3 于 2006 年推出时，是一个具有最终一致性的简单键值存储。表格式不得不绕开这一点：S3 上的 Delta Lake 最初需要借助外部 DynamoDB 锁才能安全提交。2020 年以来的四项变化，把这个 API 变成了数据库可以在其上构建的东西。
@@ -60,12 +65,14 @@ S3 于 2006 年推出时，是一个具有最终一致性的简单键值存储�
 
 > **类比：半导体。** S3 的演进类似于指令集架构获得原子操作。早期的多处理器只有加载和存储指令，软件在其之上以高昂代价构建锁。在 ISA 中加入比较并交换指令后，无锁结构变得廉价。条件写入就是 S3 的 CAS 指令。如今每个"兼容 S3"的存储都必须在竞争条件下正确实现它，否则表提交会在无声无息中损坏数据。
 
+<a id="request-pricing-why-small-files-are-expensive"></a>
 ### 请求计费：为什么小文件很昂贵
 
 对象存储既按字节收费，也按请求收费。这改变了数据工程师设计数据管道的方式。在 S3 Standard 上，前 50 TB 的存储标价约为 $0.023/GB-月。PUT 和 LIST 请求每 1,000 次 $0.005，GET 每 1,000 次 $0.0004。[^s3-pricing] S3 每次 LIST 调用最多返回 1,000 个键，每个前缀每秒支持约 3,500 次写入和 5,500 次读取。[^s3-list][^s3-perf]
 
 **算例（估算）。** 一个流处理作业写入 4 KB 的微批文件：每月十亿个，约 4 TB。存储 4 TB 每月约 $92。而写入十亿个对象仅 PUT 费用就约 $5,000，是存储账单的 50 多倍。读回它们还要再花 $400 的 GET 费用。在其上规划一条查询需要一百万页 LIST。同样的 4 TB 若写成 512 MB 的 Parquet 文件（约 8,000 个对象），请求费用只需几美分。这就是为什么[第 7 章](../01-data-systems-foundations/ch07-open-table-formats.md)中的小文件问题既是性能问题，也是财务问题。本地部署的对象存储通常不按请求计费，但它们要在元数据 IOPS 和 CPU 上付出同样的代价。
 
+<a id="gpu-accelerated-data-processing"></a>
 ### GPU 加速的数据处理
 
 GPU 是从 AI 一侧进入数据栈的。训练或嵌入（向量）数据管道的大部分实际耗时都花在 ETL 上：解码 Parquet、过滤、与元数据关联、去重、分词。如果这些工作在 CPU 上运行而 GPU 在等待，数据中心里最昂贵的资产就会闲置。NVIDIA 的答案是 RAPIDS，一组与流行的 Python 和 JVM 数据 API 相对应的 CUDA 库。
@@ -104,6 +111,7 @@ flowchart LR
 
 [GPUDirect Storage](../glossary.md#gpudirect-storage) 通过 DMA 将数据从 NVMe 或网络文件系统直接移入 GPU 显存，跳过经由主机 DRAM 的一次复制。2026 年，NVIDIA 通过 **cuObject** 把这一思路扩展到对象存储。它让 S3 控制路径仍走 HTTP，但通过 RDMA 传输有效载荷，并且需要同时修改客户端 SDK 和存储服务器。[^cuobject] 对存储厂商而言，这是一道新的认证门槛："兼容 S3"可能很快也意味着"兼容基于 RDMA 的 S3"。
 
+<a id="when-gpus-help-and-when-they-do-not"></a>
 ### GPU 何时有用、何时无用
 
 有用的判断标准是[算术强度（arithmetic intensity）](../glossary.md#arithmetic-intensity)：作业每读取一个字节所做的工作量。
@@ -134,6 +142,7 @@ quadrantChart
 
 > **类比：内存墙。** 这就是芯片设计中熟悉的屋顶线（roofline）模型。性能的上限取决于峰值计算能力与"内存带宽 × 算术强度"两者中的较低者。CPU 上的分析会撞上带宽屋顶，这正是列式格式和向量化执行存在的原因（[第 5 章](../01-data-systems-foundations/ch05-analytical-engines.md)）。迁移到 GPU 会同时抬高两个屋顶，但仅限于已在 HBM 中的数据。业界一旦发现某个工作负载在内存上受带宽约束，就会把它迁移到加速器上，然后又不得不重建 I/O 路径，以免存储成为新的屋顶。
 
+<a id="caching-layers-the-sram-in-front-of-the-object-store"></a>
 ### 缓存层：对象存储前面的 SRAM
 
 存算分离意味着每次扫描都要穿过网络。缓存弥合了这一差距。
@@ -150,6 +159,7 @@ quadrantChart
 
 > **类比：存储层次结构。** 本地 NVMe 缓存之于对象存储，就像 SRAM 缓存之于 DRAM，也像 GPU 中 HBM 之于主机内存。它们把一个小的工作集放在靠近计算的地方。命中率高时能隐藏延迟，访问随机时则毫无帮助。当计算是弹性的，它们也会"变冷"：一个挂起的 Snowflake 仓库会丢失其缓存，就像一个断电的核心丢失其 L2 缓存。
 
+<a id="data-gravity-and-egress"></a>
 ### 数据引力与出口流量费
 
 [数据引力](../glossary.md#data-gravity)是指大型数据集把计算和应用吸引到自身周围的倾向。云定价让这种倾向变得显性。入口流量免费、存储便宜，但把数据移出（到互联网或另一个云）是计量收费的。AWS 第一档的互联网出口流量费标价约为 $0.09/GB，自 2021 年起每月前 100 GB 免费。[^s3-pricing][^aws-100gb]
@@ -189,6 +199,7 @@ xychart-beta
 
 > **类比：数据中心规模的内存墙。** 在芯片中，从 DRAM 搬运一个字节所耗的能量远高于对它执行一次算术运算。在云中，跨越服务商边界搬运一个字节的成本，高于把它存储数周。两种情况下的工程应对是一样的：让工作集保持在本地，移动结果而非输入，把计算放在内存旁边。
 
+<a id="bringing-compute-to-the-data"></a>
 ### 把计算带到数据所在之处
 
 有四种模式可以避免搬运字节：
@@ -198,12 +209,14 @@ xychart-beta
 - **在数据所在之处运行的引擎。** 开放表格式让 Trino、Spark、Dremio 或 DuckDB 能在本地针对兼容 S3 存储上的 Iceberg 运行，同时这些表通过 REST 目录对云端引擎可见。
 - **存储层内部的计算。** 存储厂商正在阵列旁增加处理能力。NetApp 收购了 DataPelago（2026 年 7 月，条款未披露），其 Nucleus 引擎可就地对数据执行 CPU/GPU 处理，厂商声称成本最多可降低 80%。[^datapelago] Everpure 的 Data Stream 在 FlashBlade 上借助 NVIDIA GPU 对数据进行向量化，基于 NVIDIA AI Data Platform 参考设计。[^data-stream][^aidp]
 
+<a id="on-prem-and-sovereign-lakehouses"></a>
 ### 本地部署与主权湖仓
 
 三股力量让本地分析重新焕发活力。**主权**：AWS 于 2026 年 1 月在勃兰登堡推出了由欧盟居民员工运营的 European Sovereign Cloud。这表明连超大规模云厂商如今也把本地化当作一项卖点。[^aws-esc] **AI 工厂**：在本地构建 GPU 集群的企业希望训练和检索数据位于同一网络结构上，而不是隔着广域网。**回迁**：一项由 Cloudera 委托进行的调查（2026 年 8 月）发现，66% 的受访者在过去 12 个月中把部分 AI 工作负载从公有云迁回本地或私有云。考虑到调查的出资方，应将其视为方向性信号。[^cloudera-survey]
 
 本地湖仓如今使用与云端湖仓相同的组件：Iceberg 表、Parquet 文件、一个 Iceberg REST 目录（Polaris、Nessie 或厂商目录），以及作为引擎的 Trino、Starburst、Dremio 或 Spark，全部运行在兼容 S3 的对象存储上。Cloudera 把这一模式作为混合数据平台来销售。SAP 对 Dremio 的收购（2026 年 5 月宣布，约 2026 年 7 月完成）把主要的本地 Iceberg 引擎之一纳入了一家应用软件巨头。[^sap-dremio] 云数据仓库在边缘处做出了调整。自 2022 年的预览版以来，Snowflake 一直支持基于兼容 S3 的本地存储的外部表，并提供一套供厂商自我认证的公开测试套件。Databricks 于 2026 年 6 月推出的 Storage Ecosystem 让工作区能够通过 OpenSharing 就地查询合作伙伴存储上的 Delta 和 Iceberg 表。[^sf-onprem][^sf-s3compat][^storage-eco]
 
+<a id="what-a-lakehouse-demands-of-object-storage"></a>
 ### 湖仓对对象存储的要求
 
 下表列出的是要求，而不是产品宣称。它是评估任何对象存储（无论云端还是本地）作为湖仓底座的检查清单。
@@ -223,6 +236,7 @@ xychart-beta
 
 *图 24.7 — 湖仓同时在十个维度上对对象存储施压。其中大多数涉及元数据、延迟和正确性，而非峰值吞吐量。*
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 | 选项 | 运作方式 | 优势 | 劣势 | 适用场景 |
@@ -238,6 +252,7 @@ xychart-beta
 
 反对本地和存储内计算的最强论据在于运维。托管云服务负责升级、扩展、目录操作和表维护。大多数企业低估了这些工作，而 S3 Tables 如今已能自动执行压缩。反对 GPU 加速的最强论据是，大多数企业 SQL 要么受 I/O 约束，要么规模很小。一个调优良好、文件布局合理的 CPU 引擎，往往能以更低的成本达到与 GPU 相当的效果。
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 | 工具或厂商 | 功能 | 现状（2026 年） | 备注 |
@@ -257,6 +272,7 @@ xychart-beta
 
 *图 24.9 — GPU 数据工具如今覆盖数据框、Spark、向量检索和现有 SQL 引擎。更不起眼的趋势是存储厂商在自己的产品中加入计算能力。*
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 ```mermaid
@@ -277,6 +293,7 @@ timeline
 
 RAPIDS 的起始年份 2018 年，对应的是 NVIDIA 于 2018 年 10 月在 GTC Europe 上开源该项目（基于 2025 年前的知识，未重新抓取）。发展轨迹指向同一个方向。存储 API 吸收了越来越多的数据库工作：提交、表、向量、凭证分发。计算向存储靠拢，既通过 GPU 加速引擎，也通过存储厂商嵌入引擎。悬而未决的问题是：谁拥有两者之间的那一层。目录厂商（Databricks、Snowflake、AWS）想要它，存储厂商也在争夺它（[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)）。
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源 / 日期 |
@@ -297,10 +314,12 @@ RAPIDS 的起始年份 2018 年，对应的是 NVIDIA 于 2018 年 10 月在 GTC
 
 *图 24.11 — 价格均为标价，提速数据均为厂商宣称。两者都只是谈判或概念验证的起点，而不是可据以规划的结果。*
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** 湖仓使用 FlashBlade 这类兼容 S3 的本地存储，作为 Iceberg 或 Delta 表之下的持久层。引擎（Dremio、Starburst/Trino、Spark）通过范围 GET 读取 Parquet，并通过目录进行提交。Everpure 的公开资料显示了一个面向混合 Iceberg 湖仓的 Dremio 联合解决方案（2024 年简介；Dremio 现归 SAP 所有），以及一个 Starburst"可扩展湖仓分析"（Scalable Lakehouse Analytics）参考架构。[^dremio-pure][^starburst-ep][^sap-dremio] Pure 与 Snowflake 于 2022 年宣布了一个通过兼容 S3 的外部表使用本地数据的联合解决方案。[^sf-onprem] Everpure 是 Databricks Storage Ecosystem 的首发合作伙伴，其 OpenSharing 连接器自 2026 年 6 月起处于私有预览阶段。[^storage-eco][^everpure-os] FlashBlade 还在 NVIDIA AI Data Platform 设计上承载 Data Stream。[^data-stream][^aidp] 基于公开信息，战略团队可能评估的选项包括：（1）与引擎合作伙伴一起，针对上文的要求表发布独立测试结果；（2）像 S3 Tables 那样增加感知表的服务（REST 目录、维护）；（3）认证基于 RDMA 的 S3（cuObject）路径，使 GPU ETL 能直接读取湖仓表；（4）将 DataPelago 先例与通过合作实现存储内计算进行比较。协议和硬件细节见配套的 *Everpure Tech Atlas*。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理提的问题**
@@ -325,6 +344,7 @@ RAPIDS 的起始年份 2018 年，对应的是 NVIDIA 于 2018 年 10 月在 GTC
 - "缓存解决了对象存储的延迟问题。" 只对重复访问的工作集有效；弹性计算在缩容或挂起时会丢失缓存。
 - "Databricks 和 Snowflake 可以在本地运行。" 它们不能。它们可以通过兼容 S3 的表、OpenSharing 或联邦查询读取本地数据。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 - NVIDIA RAPIDS 关于 cuDF、`cudf.pandas` 以及 Spark RAPIDS 资格评估和性能剖析工具的文档。[^cudf-ga][^aether]
@@ -333,6 +353,7 @@ RAPIDS 的起始年份 2018 年，对应的是 NVIDIA 于 2018 年 10 月在 GTC
 - NVIDIA 的 cuObject 文档，了解基于 RDMA 的 S3 设计及其对存储服务器的要求。[^cuobject]
 - [第 16 章](ch16-ai-data-lifecycle.md)介绍为 GPU 供数的 AI 数据生命周期，[第 40 章](../05-business-and-economics/ch40-gtm-partnerships.md)介绍存储与平台的合作关系如何销售。
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [对象存储（Object storage）](../glossary.md#object-storage) — 通过 HTTP 访问、按键存储不可变对象的扁平化存储，例如 S3。
@@ -359,6 +380,7 @@ RAPIDS 的起始年份 2018 年，对应的是 NVIDIA 于 2018 年 10 月在 GTC
 - [纠删码（Erasure coding）](../glossary.md#erasure-coding) — 将数据存储为数据分片加校验分片，以比复制更低的开销承受故障。
 - [OpenSharing](../glossary.md#opensharing) — 源自 Delta Sharing 一脉、用于就地共享表的开放协议。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^s3-consistency]: AWS, "Amazon S3 now delivers strong read-after-write consistency automatically for all applications," https://aws.amazon.com/about-aws/whats-new/2020/12/amazon-s3-now-delivers-strong-read-after-write-consistency-automatically-for-all-applications/，发布 2020-12-01；检索 2026-11-01。

@@ -1,6 +1,7 @@
 # 41. 市场规模与增长驱动因素
 > **深度：** L2 · **阅读时间：** 约 8 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 37 章 — 上市可比公司与估值](ch37-public-comps-valuation.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - 数据基础设施领域锚定最可靠的数字是 Gartner 的数据库管理系统（DBMS）市场：**2024 年 $119.7B，增长 13.4%**，其中 64% 的支出发生在云端。Gartner 预测 **2026 年为 $161B**。[^g-dbms24][^g-dbms-fc] 该领域的大多数其他"市场规模"都要弱得多，本书数据集中有若干行是推算得出或仅有单一来源的。本章对每一项都做了标注。
@@ -9,14 +10,17 @@
 - 增长驱动因素真实存在且可衡量：2025 年 $318B 的 AI 基础设施支出、云迁移、主权云（2026 年 $80B 的 IaaS）以及监管。[^idc-apr26][^g-sov] 阻力同样存在：成本优化、开放格式使存储层商品化、超大规模云厂商的捆绑销售，以及 AI 智能体（agent）取代 BI 席位。
 - 对 Everpure 而言，"向上层移动"的数据管理市场是真实的，但与存储相比规模较小。Everpure 自己的 FY2030 Modern Data Software TAM 为 $22B（公司估算，二手报道），而企业存储为 $79B。[^ep-fam]
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业 + Everpure 视角）
 
 [第 37 章](ch37-public-comps-valuation.md)中的每一个交易模型，以及[第 39 章](ch39-ma-history.md)中的每一条收购理由，都依赖于一张市场规模幻灯片。这些幻灯片是企业发展团队会看到的审计程度最低的数字。分析师摘要需付费才能阅读，公司 TAM 不经审计师审查，而第三方汇编报告之间常常相差四倍。一个无法拆解 TAM 的团队，会为增长故事支付过高的价格。
 
 对 Everpure 而言，这个问题很具体。公司于 2026 年 2 月更名，并以 $125.0M 收购 1touch，以进入数据发现与数据分类领域（[第 33 章](../04-company-deep-dives/ch33-governance-catalog-security-companies.md)）。其 2026 年 9 月的分析师会议为这一举措给出了数字：到 FY2030 Modern Data Software TAM 达 $22B。[^ep-fam] 这个数字能否实现，取决于哪些数据管理支出真正可以争夺，以及哪些已经被捆绑进超大规模云厂商和平台的账单之中。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="four-bases-four-answers"></a>
 ### 四种口径，四个答案
 
 一个市场规模数字有其**口径**，而决定这个数字的更多是口径，而非市场本身。
@@ -26,10 +30,11 @@
 3. **公司披露的 TAM。** 这是供应商对其可触达钱包的估算，通常包括相邻品类以及其软件可替代的人力。它未经审计，也不是可观察到的市场。
 4. **第三方汇编估算。** 这些来自 MarketsandMarkets 或 Grand View 等报告机构，按报告出售，方法不透明。对于 DSPM、向量数据库和训练数据，这些是唯一可得的公开数字。
 
-![对数刻度水平条形图，显示各细分市场的最新市场规模数字，从 DSPM 的 $1.1B 到 AI 总支出的 $2.67T，按口径着色，来源较弱者以阴影线标示](../assets/charts/ch41_market_sizes.png)
+![对数刻度水平条形图，显示各细分市场的最新市场规模数字，从 DSPM 的 $1.1B 到 AI 总支出的 $2.67T，按口径着色，来源较弱者以阴影线标示](../../../docs/assets/charts/ch41_market_sizes.png)
 
 *图 41.1 — 这些数字跨越三个以上数量级和四种口径。带阴影线的条形基于推算、单一来源或第三方汇编的数字。这些条形不可相加。来源：`data/market_sizes.csv` 和 `data/ch41_market_sizes_additions.csv`。*
 
+<a id="segment-by-segment"></a>
 ### 逐个细分市场
 
 | 细分市场 | 数值 | 年份 | 口径 | 发布方 | 注意事项 |
@@ -54,6 +59,7 @@
 
 原始数据集中有三行需要明确警示。2023 年的 DBMS 数字（$105.6B）和云 DBMS 拆分是倒推得出的，并非公开发布。2026 年 6 月的 Snowflake TAM 来自一份 AI 生成的会议纪要摘要。向量数据库一行是方法不透明的第三方汇编估算。[^sf-id26] 它们在图表中以阴影线显示。
 
+<a id="why-the-totals-dont-add"></a>
 ### 为什么总数不能相加
 
 Gartner 的最终用户预测在设计上避免了*同一*预测内部的重复计算。错误出现在一份演示材料把不同发布方的市场，或同一价值链不同层级的市场叠加在一起的时候。
@@ -78,6 +84,7 @@ flowchart LR
 
 > **类比：半导体。** 这与把 TSMC 的晶圆收入加到 NVIDIA 的芯片收入上、再把总数称为"半导体市场"是同一种错误。晶圆是芯片的投入成本。同理，云服务商的基础设施收入是 Snowflake 收入的投入成本。行业芯片销售统计在销售环节对每颗器件只计一次，一个合理的数据市场模型也应如此。
 
+<a id="company-tams-versus-analyst-markets"></a>
 ### 公司 TAM 与分析师市场
 
 | 公司 | 披露的 TAM（口径、日期） | 最接近的分析师市场 | 公司收入 | 收入 ÷ 披露 TAM |
@@ -94,6 +101,7 @@ TAM 膨胀遵循一种模式。每一次投资者日都会增加相邻品类：�
 
 > **类比：半导体。** 公司披露的 TAM 是数据行业版的初创公司幻灯片，上面声称"SAM：每一片 3nm 晶圆投片"。它加总的是整个制程节点，而不是产品能够赢得的插槽。严谨的做法是逐个插槽构建[可服务市场（serviceable addressable market）](../glossary.md#serviceable-addressable-market)：具名的工作负载、每个工作负载当前的支出，以及产品能够现实拿下的份额。
 
+<a id="growth-drivers-and-headwinds"></a>
 ### 增长驱动因素与阻力
 
 ```mermaid
@@ -131,6 +139,7 @@ flowchart LR
 
 **阻力。** 调查受访者估计 29% 的云支出被浪费，AI 工作负载在 2026 年推高了这一数字（Flexera，自我报告）。[^flexera] [FinOps](../glossary.md#finops) 项目将其转化为用量削减。[开放表格式（open table format）](../glossary.md#open-table-format)让客户无需迁移数据即可更换引擎，从而限制了存储层的租金（[第 7 章](../01-data-systems-foundations/ch07-open-table-formats.md)）。[超大规模云厂商（hyperscaler）](../glossary.md#hyperscaler)把集成、目录和 BI 捆绑进平台账单。直接查询[语义层（semantic layer）](../glossary.md#semantic-layer)的智能体会降低对[按席位计费（seat-based）](../glossary.md#seat-based-pricing) BI 许可证的需求（[第 14 章](../02-pipelines-and-governance/ch14-semantic-layers-and-bi.md)）。Gartner 预计到 2029 年，数据集成的增速将从 9.8% 放缓至 8.1% 的 CAGR。[^bf-di]
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 | 你要回答的问题 | 使用该口径 | 原因 | 主要陷阱 |
@@ -142,10 +151,12 @@ flowchart LR
 
 *图 41.6 — 让口径与问题匹配。对这种怀疑态度最有力的反驳是：公司 TAM 本意是展示方向和相邻品类，而非预测收入，而品类开创者往往会成长进入分析师尚未定义的市场。即便如此，1–3% 的收入/TAM 比率也很难说明哪一部分份额是可以赢得的。*
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 **Gartner** 发布被引用最多的 DBMS、分析、集成和安全数字，主要通过付费摘要和新闻稿。**IDC** 掌握 AI 基础设施追踪数据，其预测大幅上调：其 2029 年数字从 2025 年 10 月的 $758B 升至 2026 年 4 月的 $1T 以上。[^idc-oct25][^idc-apr26] **第三方汇编机构**（MarketsandMarkets、Grand View、Global Market Insights、Future Market Insights）填补细分品类的空白。**公司**在投资者日上发布 TAM。本章使用的是 Snowflake（2022、2024、2025、2026）、Confluent（S-1 和业绩电话会）以及 Everpure（2026 年 9 月）的数据。
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 - **2021：** 云已占 DBMS 支出的近一半，在约 $80B 的市场中云 DBMS 为 $39.2B（媒体报道的 Gartner 数字）。[^techrep] Confluent IPO 时的 TAM 约为 $50B。[^cflt-ipo]
@@ -153,6 +164,7 @@ flowchart LR
 - **2025：** Snowflake 的 TAM 为 $170B，预计到 2029 年达 $355B。[^sf-id25] Gartner 预测生成式 AI 支出为 $644B，其中约 80% 为硬件。[^g-genai] 公有云支出预测为 $723.4B。[^g-cloud]
 - **2026：** Gartner 的 2026 年 AI 支出预测在三个版本中逐次上调，从 $2.52T 升至 $2.67T。IDC 预计 2029 年 AI 基础设施将超过 $1T。Everpure 发布了其首个分部 TAM，其中 Modern Data Software 到 FY2030 为 $22B。[^g-ai26][^idc-apr26][^ep-fam] 发展轨迹：分析师统计的总数持续上升，也推动公司 TAM 随之上升。参见[第 44 章](../06-history-and-future/ch44-future-trends.md)。
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源/日期 |
@@ -170,10 +182,12 @@ flowchart LR
 
 *图 41.7 — 关键数字及其口径。引用数字时请同时说明口径。*
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** IDC 的追踪数据显示，2025 年 Q4 存储仅占 AI 基础设施支出的 2.4%。[^idc-apr26] 这一数字解释了向上层移动的逻辑：钱在阵列之上。Everpure 的划分口径将企业存储定为 $79B、Modern Data Software 定为到 FY2030 的 $22B（公司估算，二手报道）。其 $22B 的数字已约为 Gartner 整个 2023 年不含 DBMS 的数据管理市场（$11.1B）的两倍；即便按该市场 2023 年的增速（8.1%）复合增长，Gartner 的数字到 2030 年也只有约 $19B（我们的计算），因此该 TAM 必然依赖一个包括 Portworx、韧性和云在内的宽泛定义。[^ep-fam][^g-dm] 基于公开信息，战略团队可能评估的选项：(a) 围绕 1touch 的基础，为数据治理和数据发现构建插槽级的 SAM；(b) 将大型 AI 平台的 TAM 视为合作伙伴领地，而非可触达收入；(c) 依据对已安装存储基础的附加率而非品类 TAM 为数据管理交易估值。参见[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)及配套的 *Everpure Tech Atlas*。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理提出的问题**
@@ -197,12 +211,14 @@ flowchart LR
 - "向量数据库是一个 $X billion 的品类。" Gartner 预计独立向量数据库将保持在 DBMS 收入的 1% 以下。[^yb]
 - "Snowflake 的 TAM 是 $460B。" 该数字来自一份较弱的会议纪要摘要，尚未与演示材料核对。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 - Gartner 市场份额与预测摘要（DBMS、数据与分析软件）：比较定义有何不同，而不仅仅是总数。[^g-dbms24][^g-da]
 - IDC 的 AI 基础设施追踪说明，用于了解服务器与存储的拆分。[^idc-apr26]
 - Snowflake 的 Investor Day 2025 演示材料，作为 TAM 构建的实例。[^sf-id25] 可与讨论估值倍数的[第 37 章](ch37-public-comps-valuation.md)配合阅读。
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [总可服务市场（Total addressable market）](../glossary.md#total-addressable-market) — 假如产品赢得其定义品类中所有可能的客户，可获得的收入。
@@ -221,6 +237,7 @@ flowchart LR
 - [语义层（Semantic layer）](../glossary.md#semantic-layer) — 供工具和智能体查询的共享业务定义。
 - [按席位计费（Seat-based pricing）](../glossary.md#seat-based-pricing) — 按具名用户定价。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^g-dbms24]: Gartner, DBMS market-share abstract（2024 年 DBMS 收入 $119.7B，+13.4%；云 64% 对本地部署 36%；非关系型 +22.7%，关系型 +10.8%），https://www.gartner.com/en/documents/6494271，发布 2025-05；检索 2026-11-01。分析师估算；完整报告需付费。

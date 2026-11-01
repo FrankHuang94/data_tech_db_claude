@@ -1,6 +1,7 @@
 # 43. 现代数据栈：兴起、解绑与再捆绑
 > **深度：** L2 · **阅读时间：** 约 10 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 12 章 — 数据转换与编排](../02-pipelines-and-governance/ch12-transformation-and-orchestration.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - **云数据仓库催生了现代数据栈。** Redshift（2012 年 11 月发布）、BigQuery 和 Snowflake（2015 年 6 月正式上线）让算力变得足够弹性、足够便宜，以至于可以先加载原始数据、再做转换。[^redshift-2012][^dremel20][^snowflake16] 从 ETL 到 [ELT](../glossary.md#elt) 的这一个变化，为围绕数据仓库的十几种专业"单点工具"打开了空间。
@@ -9,6 +10,7 @@
 - **2025–26 年是再捆绑期。** Fivetran 同意收购 Census，收购了 Tobiko，并与 dbt Labs 完成全股票合并（合并 ARR "接近 $600M"，公司披露）。[^merger-close] Datadog 收购了 Metaplane，Snowflake 收购了 Observe（据其 10-K，初步对价 $596.2M），Prefect 同意收购 Dagster，FICO 和 Boomi 也收购了数据质量工具。[^dd-metaplane][^sf-observe][^prefect-dagster][^gx-2026][^elementary]
 - **价值汇聚到平台和元数据控制点。** 幸存者要么成为平台（Snowflake、Databricks），要么成为整合者（Fivetran），要么掌握某个控制点（control point），例如[数据目录（data catalog）](../glossary.md#data-catalog)或[语义层（semantic layer）](../glossary.md#semantic-layer)。后现代数据栈是：建立在[开放表格式（open table format）](../glossary.md#open-table-format)之上的[湖仓一体（lakehouse）](../glossary.md#lakehouse)、一个负责治理的目录、少数几个平台，以及位于顶层的智能体。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业 + Everpure 视角）
 
 现代数据栈（MDS）是近年来最清晰的案例，展示了一个技术层如何解绑、吸引资本、然后再捆绑。对于企业发展（corporate development）方向的读者，它回答了三个实际问题：哪些独立数据工具公司仍是收购标的？音乐停止时，买家付了多少钱？当平台吸收各项功能时，哪一层能捕获价值？
@@ -17,14 +19,17 @@
 
 **Everpure 视角。** MDS 的整合表明，数据平台的所有者捕获了大部分价值。独立的基础设施层会逐渐走向商品化，除非它掌握某个控制点——通常是元数据：数据是什么、谁可以使用、如何定义。Everpure 在 2026 年收购用于数据发现和数据分类的 1touch，就是向这一元数据层迈进的一步。[^everpure-1touch] 基于公开信息，战略团队可能评估的一个选项是：驻留在存储中的元数据能否成为一个平台选择与之集成、而非将其取代的控制点。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="act-1-the-warehouse-becomes-the-center-of-gravity-20122016"></a>
 ### 第一幕：数据仓库成为重心（2012–2016）
 
 2012 年之前，分析能力是按峰值负载配置的固定一体机（Teradata、Netezza、Exadata）。数据转换在单独的 ETL 服务器上运行（Informatica、DataStage），因为一体机的 CPU 太昂贵，不值得花在清洗数据上。Amazon 在发布 Redshift 时将其定价为每 TB 每年不到 $1,000，而它自己对自建数据仓库的估算是 $19,000–25,000。[^redshift-2012] BigQuery 作为 Google Dremel 的公开版本，从一开始就是无服务器的。[^dremel20] Snowflake 实现了存算分离（separation of storage and compute），使多个独立集群可以读取同一份数据。[^snowflake16]
 
 一旦算力变得弹性且按用量计费，把原始数据落到数据仓库中、再在仓库里用 SQL 做转换就变得更便宜。从 ETL 到 ELT 的这一倒置，是此后一切的根源。原本存在于一个 ETL 套件内部的每个步骤，如今都可以成为一个独立的 SaaS 产品，从数据仓库读取或向其写入。
 
+<a id="act-2-the-unbundling-20162021"></a>
 ### 第二幕：解绑（2016–2021）
 
 创始人们挑出每个步骤，为其打造一款"同类最佳"产品：
@@ -64,6 +69,7 @@ flowchart LR
 
 *图 43.1 — 2016 年的架构图每项工作一个方框、每个方框一家厂商。2026 年的架构图只有少数几个平台，而目录是它们争夺的那一层。*
 
+<a id="act-3-the-critique-and-the-shakeout-20222024"></a>
 ### 第三幕：批评与洗牌（2022–2024）
 
 反对 MDS 的理由主要关乎经济性。Mode 联合创始人 Benn Stancil 广泛撰文和发言，指出这个"栈"已经从对一种架构的描述漂移成一个营销品类。他认为，它让工具成倍增加，却没有解决让业务用户获得可信答案这一根本问题。[^stancil] 买家把它感受为一种集成税。一个中等规模的数据团队可能要运行六到十家厂商的产品。每家都有自己的合同、计费表（行数、积分、席位、模型）和故障模式，而没有人对端到端的结果负责。数据仓库的按用量账单让问题雪上加霜，因为每个单点工具都在客户自己的数据仓库上运行查询。
@@ -72,6 +78,7 @@ flowchart LR
 
 数据集中没有任何一家核心 MDS 公司在 2026 年之前以高于其 2021–22 年估值的价格重新定价。Fivetran 的 $5.6B 和 dbt Labs 的 $4.2B 从未在新一轮定价融资中接受检验。两者的合并是全股票交易，因此没有公布价格。[^merger-ann][^funding-csv]
 
+<a id="act-4-the-rebundling-20252026"></a>
 ### 第四幕：再捆绑（2025–2026）
 
 再捆绑同时朝三个方向推进：
@@ -100,6 +107,7 @@ timeline
 
 *图 43.2 — 从数据仓库拐点（2012 年）到合并浪潮（2025–26 年）大约经历了 13 年。融资高峰（2021 年）出现在大约三分之二处，此前已有近十年的解绑。*
 
+<a id="why-the-rebundling-happened"></a>
 ### 再捆绑为何发生
 
 原因有五个，大致按权重排序：
@@ -114,6 +122,7 @@ timeline
 
 > **类比：EDA 补强收购。** MDS 中的单点工具表现得就像小众电子设计自动化（EDA）初创公司。一家专注于时序、验证或功耗分析的公司会赢下设计流程中的某一步，然后被 Synopsys 或 Cadence 收购并整合进套件。这类初创公司真正的退出市场是那两家套件厂商，而不是终端客户。Metaplane（Datadog）、Select Star（Snowflake）、Elementary（Boomi）和 Tobiko（Fivetran）都遵循了这套剧本。[^dd-metaplane][^selectstar][^elementary][^tobiko]
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 | 选择 | 同类最佳单点工具（2019 年默认） | 平台捆绑（2026 年默认） | 何时另一方胜出 |
@@ -129,6 +138,7 @@ timeline
 
 独立性最有力的最强版本论证（steelman）是**跨平台中立性**。大型企业同时运行 Databricks 和 Snowflake，外加一两家超大规模云厂商（[第 27 章](../04-company-deep-dives/ch27-databricks-vs-snowflake.md)）。一家在所有这些平台上以同样方式工作的厂商，拥有一个可防守的角色。这正是合并后的 Fivetran–dbt 和 Atlan 的卖点，也是 Open Semantic Interchange 这一倡议存在的原因（[第 14 章](../02-pipelines-and-governance/ch14-semantic-layers-and-bi.md)）。
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 下面的幸存者表格涵盖了主要的 MDS 公司，图表则展示了其背后的融资周期。
@@ -160,10 +170,11 @@ timeline
 
 *图 43.4 — 在 22 家公司中，7 家保持独立。大多数退出是未披露金额的补强收购，因此 2021 年的估值从未接受检验。*
 
-![双面板图表。左：按年份堆叠的六大现代数据栈品类已披露融资柱状图，2021 年 6 轮约 $1.19B，2022 年 $480M，2023 年 $50M，2024 年 $213M，2025 年 $206M，2026 年 $350M。右：最近一次定价估值，依次为 Fivetran $5.6B（2021）、Collibra $5.25B（2021）和 dbt Labs $4.2B（2022），以及 Sigma、Hightouch 和 Omni 在 2026 年的较新估值](../assets/charts/ch43_mds_funding.png)
+![双面板图表。左：按年份堆叠的六大现代数据栈品类已披露融资柱状图，2021 年 6 轮约 $1.19B，2022 年 $480M，2023 年 $50M，2024 年 $213M，2025 年 $206M，2026 年 $350M。右：最近一次定价估值，依次为 Fivetran $5.6B（2021）、Collibra $5.25B（2021）和 dbt Labs $4.2B（2022），以及 Sigma、Hightouch 和 Omni 在 2026 年的较新估值](../../../docs/assets/charts/ch43_mds_funding.png)
 
 *图 43.5 — 在整理后的数据集中，MDS 融资在 2021 年后崩塌，而大多数标志性估值都来自 2021–22 年。数据激活和 BI 领域的融资推动了 2026 年的回升。该数据集是整理所得，而非全量普查，且 2021 年之前的数据较少。*
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 这条弧线分为四幕。**2012–2016：**弹性云数据仓库让 ELT 在经济上可行。[^redshift-2012][^snowflake16] **2016–2021：**创始人们把旧的 ETL 套件解绑为单点工具，a16z 为其命名。[^a16z] **2022–2024：**利率上升、供应商疲劳和集成税批评使融资枯竭，迫使小规模退出。[^stancil][^mode] **2025–2026：**独立厂商合并，平台吸收其余部分。[^merger-close][^sf-observe]
@@ -179,6 +190,7 @@ timeline
 
 > **存储桥接。** 再捆绑把数据从数据仓库专有的存储中迁出，迁入对象存储上的开放表。这使对象存储层及其附带的元数据在技术栈中的地位比 2016 年更加核心。对象存储和协议细节参见姊妹篇 *Everpure Tech Atlas*。
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源 / 日期 |
@@ -200,6 +212,7 @@ timeline
 
 *图 43.6 — 平台如今比最大的合并后单点工具厂商大约高出一个数量级：Snowflake 的 FY2026 GAAP 收入约为合并后 Fivetran–dbt "接近 $600M" ARR 的 8x，Databricks 公司披露的年化运行率约为其 12x（作者跨不同口径计算）。这一规模差距就是再捆绑的一句话概括。*
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理和战略负责人提出的问题**
@@ -223,10 +236,12 @@ timeline
 - "平台会捆绑一切。"跨平台中立性和目录仍有争夺。拥有控制点的独立厂商（Atlan、Fivetran–dbt）依然存在。
 - "反向 ETL 失败了。"它正在成为套件的一项功能（Fivetran 同意收购的 Census；交割未单独确认），并在 Hightouch 那里成为一款营销产品。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 > **深入（L3）。** 把 a16z 的文章与其 2022 年更新版对照阅读，可以看出这张参考架构图是如何扩展的。[^a16z] Snowflake 的 SIGMOD 2016 论文解释了为什么存算分离让 ELT 在经济上可行。[^snowflake16] 关于再捆绑的机制，可比较[第 12 章](../02-pipelines-and-governance/ch12-transformation-and-orchestration.md)中 dbt 的 Fusion 引擎与 SQLMesh 的虚拟环境，以及[第 8 章](../01-data-systems-foundations/ch08-catalogs-and-metastores.md)中的目录之争。
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [现代数据栈（Modern data stack）](../glossary.md#modern-data-stack) — 2016–2022 年的模式：云数据仓库加上为每个数据管道步骤提供的专业 SaaS 工具。
@@ -246,6 +261,7 @@ timeline
 - [月活跃行数（Monthly active rows）](../glossary.md#monthly-active-rows) — Fivetran 的计价单位。
 - [编排器（Orchestrator）](../glossary.md#orchestrator) — 调度并编排数据管道任务顺序的软件。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^redshift-2012]: Computerworld, "Amazon introduces data warehouse service"（Redshift 发布；预留定价低于 $1,000/TB/年；AWS 估算自建成本为 $19,000–25,000/TB/年），https://www.computerworld.com/article/1401411/amazon-introduces-data-warehouse-service.html，发布 2012-11-28；检索 2026-11-01。媒体引用的公司声称。

@@ -3,6 +3,7 @@
 
 > **研究说明。** 本次会话的网络检索额度在实时核实开始之前就已用尽。下文数字来自图谱数据集（`data/*.csv`，2026-10 核实）、`meta/research-briefing.md` 以及整合者经实时核实的登记表（`meta/verified-facts.md`，2026-11-01），独立审阅已将其应用于 Salesforce、SAP、Workday 和 ServiceNow 各节。2025 年中以后、仍无法重新核对的产品事实标注为 `[VERIFY]`。
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - **核心论点。** 智能体（agent）需要两样仅靠数据仓库无法提供的东西：跨系统的上下文，以及*回写*到记录系统（system of record）的权限。应用软件厂商掌握着写入路径和业务语义（"商机"、"事件单"或"成本中心"究竟意味着什么）。如今每家厂商都在构建一个数据层，好让它自己的智能体，而不是 Databricks 或 Snowflake 的智能体，成为"智能系统（system of intelligence）"。
@@ -11,6 +12,7 @@
 - **零拷贝是休战，而非合并。** 应用软件厂商与数据平台如今原地向对方开放数据表，而不是导出数据。Salesforce 与 Snowflake、Databricks、BigQuery 和 Redshift 进行双向共享。SAP 把 Databricks 嵌入 Business Data Cloud，并在 2025 年底加入了 BigQuery 和 Snowflake。Workday 推出了 Data Cloud，与 Databricks、Salesforce、Snowflake 和 BigQuery 建立零拷贝连接。各方仍都希望成为智能体运行的地方。[^zcpn][^sf-snow][^sap-snow][^wday-dc]
 - **Everpure 视角。** 这些数据云几乎完全运行在超大规模云厂商之上。本地部署的机会较窄但真实存在：SAP 如今拥有 Dremio，而后者本就是 FlashBlade 的合作伙伴；主权部署（SAP、Palantir、Oracle）需要本地基础设施；SaaS 数据的副本仍然需要数据发现和保护。[^briefing-a]
 
+<a id="snapshot-table"></a>
 ## 概览表
 
 | 公司 | 财年 | 市值 / EV | 所用收入口径 | EV/收入 | 增长（口径） | 数据与智能体产品 |
@@ -23,8 +25,10 @@
 
 *图 34.1 — 概览。市场数据来自 stockanalysis.com，日期见 `data/public_comps.csv`（CRM、PLTR 为 2026-10-30；SAP 为 2026-10-30；WDAY 为 2026-10-16；NOW 为 2026-10-01）。收入口径不同（过去 12 个月与指引），因此倍数仅供参考。[^comps-crm][^comps-now][^comps-sap][^comps-wday][^comps-pltr]*
 
+<a id="origin-story-and-strategic-arc"></a>
 ## 起源与战略演进
 
+<a id="why-application-vendors-want-the-data-layer"></a>
 ### 应用软件厂商为何想要数据层
 
 二十年来，分工一直很稳定。CRM、IT 服务管理（ITSM）、ERP 和人力资源等应用负责记录交易。数据团队把这些记录复制到数据仓库中进行分析。洞察随后再通过手工或[反向 ETL（reverse ETL）](../glossary.md#reverse-etl)流回业务系统。智能体从四个方面打破了这种安排。
@@ -38,6 +42,7 @@
 
 > **类比：芯片领域的垂直整合。** Apple 把 Mac 从 Intel 处理器转向自研的 M 系列芯片，因为底层决定了电池续航、每瓦性能和开发者体验。构建数据云的应用软件厂商下的是同样的赌注：谁控制了智能体之下的那一层，谁就控制了体验和利润。这个类比也带有警示。Apple 仍然从 TSMC 购买晶圆。Salesforce、SAP 和 Workday 仍然从 AWS、Azure 和 Google 租用计算和存储。它们整合的是设计层（语义、元数据、智能体），而不是晶圆厂。
 
+<a id="the-arc-20182026"></a>
 ### 演进轨迹，2018–2026 年
 
 这一转变分三波展开。2018 至 2019 年，厂商收购集成与 BI：MuleSoft、Datorama 和 Tableau。2022 至 2025 年，它们在此之上构建数据云：Salesforce 的客户数据平台变成了 Data Cloud（2025 年 10 月更名为 Data 360），ServiceNow 推出 Workflow Data Fabric（2024 年 10 月），SAP 先后推出 Datasphere 和 Business Data Cloud（2025 年 2 月），Workday 推出 Workday Data Cloud（2025 年 9 月）。2025 和 2026 年，它们直接收购数据管理和智能体前端：Informatica、Moveworks、data.world 和 Dremio。
@@ -55,8 +60,10 @@ timeline
 
 *图 34.2 — 收购顺序沿技术栈向下推进，从 BI 与集成（2018–19 年）到数据目录、主数据和智能体前端（2024–26 年）。数值来自 `data/ma_deals.csv`；2025 年 Workday Data Cloud、SAP 合作伙伴和 Data 360 条目来自 `meta/verified-facts.md`；Paradox 与 Sana 交易在下文中仍标注为 [VERIFY]。[^ma-csv][^wday-dc][^sap-snow]*
 
+<a id="product-and-technology"></a>
 ## 产品与技术
 
+<a id="the-common-architecture"></a>
 ### 共同架构
 
 本章中的每家厂商都在向同一个四层设计收敛。记录系统保存交易。由厂商运营的数据云保存经过协调的副本或元数据、一个数据目录以及业务语义。零拷贝（zero-copy）连接让外部数据平台读取这些表，也让数据云读取各平台的表，而无需批量导出。智能体位于最上层，通过数据云读取数据，并通过应用自身的 API 和规则回写。
@@ -127,6 +134,7 @@ Workday 的数据历程始于 **Platfora**（2016 年），后者演变为 **Pri
 
 Palantir 是个异类：一家应用与智能体公司，却没有自己的传统记录系统。它的 **Ontology（本体）** 把来自其他系统的数据映射为业务对象（一座"工厂"、一批"货运"、一份"理赔"），附带属性、关系和*动作*，即回写到源系统的受治理函数。**AIP**（Artificial Intelligence Platform，2023 年）让语言模型能够基于这些对象和动作运行。[^pltr-aip] 实际上，Palantir 是在其他厂商的记录之上构建了上文所述的语义层和回写层。这就是为什么市场给予它约 70 倍过去 12 个月收入的估值，而老牌厂商的交易倍数只有 4–10 倍。[^comps-pltr] Palantir 于 2025 年 3 月宣布与 Databricks 合作 [VERIFY: 范围与商业条款]。[第 31 章](ch31-analytical-engine-challengers-legacy.md)对 Ontology 有深入介绍。
 
+<a id="microsoft-dynamics-and-oracle-fusion-brief"></a>
 ### Microsoft Dynamics 与 Oracle Fusion（简述）
 
 **Microsoft** 的路径最简单，因为它同时拥有数据平台。Dataverse 中的 Dynamics 365 和 Power Platform 数据可以链接进 **Fabric** 的 OneLake，而 OneLake 可将 Snowflake、Azure SQL 和 Cosmos DB 镜像为 Delta 表。语义层 Fabric IQ 于 2025 年 11 月进入预览。[^fabric-mirror][^ignite] **Oracle** 提供 Fusion Data Intelligence（基于 Fusion ERP 和 HCM 的预置分析）以及面向 Fusion 应用的 AI Agent Studio [VERIFY: 当前名称]。它还在 Azure、Google Cloud 和 AWS 内提供其 Autonomous AI Lakehouse（2025 年 10 月 GA）和数据库服务。[^oracle-aiw] 两者都能把应用、数据平台和基础设施捆绑在一起，这是任何纯应用软件厂商都做不到的。
@@ -143,6 +151,7 @@ Palantir 是个异类：一家应用与智能体公司，却没有自己的传�
 
 *图 34.4 — 七家厂商，一种架构。差别在于语义从何而来（自有记录、收购来的数据目录，或架在他人记录之上的本体），以及底层基础设施归谁所有。[^comps-now][^comps-sap][^comps-wday][^comps-pltr][^fabric-cust][^comps-orcl]*
 
+<a id="the-zero-copy-alliance-graph"></a>
 ### 零拷贝联盟关系图
 
 在此语境下，"零拷贝"通常意味着**联邦查询加元数据共享**。一个平台获得另一个平台数据表的凭证和模式，并原地读取它们，有时会缓存结果。批量数据留在原处，因此无需每晚导出再做对账。但它并非免费：查询仍然要跨越网络，源平台仍会收取计算费用，延迟也会上升。
@@ -184,6 +193,7 @@ flowchart LR
 
 > **类比：共享虚拟内存。** 零拷贝共享相当于数据中心版的 CPU 与 GPU 之间的共享虚拟内存（CUDA 统一内存、OpenCL SVM）。两个设备寻址同一个虚拟空间，因此程序传递的是指针，而不必设置一次 DMA 拷贝。IOMMU 按页权限检查每一次访问，在这里扮演这一角色的是数据目录的访问策略。与统一内存一样，拷贝并没有消失，而是变成了隐式的：页面按需迁移，热数据在访问方被缓存。性能取决于访问模式，带宽账单（在这里是云出口流量费（egress fees）和查询计算费）照样会到来。零拷贝消除的是对账问题，而不是物理规律。
 
+<a id="how-it-makes-money"></a>
 ## 盈利模式
 
 定价正从**席位**转向**智能体动作**和**数据用量**。每家厂商仍在销售席位，但都在增加新的计量单位。
@@ -202,6 +212,7 @@ flowchart LR
 
 > **类比：金融。** 席位定价是一种与客户员工人数挂钩的年金。智能体定价则是对交易量收取的通行费。这种转换降低了对裁员的敞口，却增加了波动性，这与让 Snowflake 季度业绩更难预测的按用量收入特征如出一辙（[第 35 章](../05-business-and-economics/ch35-business-models.md)）。
 
+<a id="financials"></a>
 ## 财务数据
 
 | 公司 | 收入数字 | 口径 | 增长 | EV/收入（日期） |
@@ -228,12 +239,14 @@ xychart-beta
 
 没有任何厂商按 GAAP 报告数据云收入。Salesforce 的 Data 360 和 Agentforce ARR 数字（Q2 FY2027 分别为 $2.4B 和 >$1.5B）是公司披露的指标，有其自身的、最近被扩大的定义，而且 Data 360 包含 $1.1B 收购而来的 Informatica Cloud ARR。[^crm-q2fy27] ServiceNow 的 Now Assist 年度合同价值（ACV）目标为公司披露 [VERIFY: 最新 Now Assist ACV]。[^sf-q4fy25]
 
+<a id="customers-and-go-to-market"></a>
 ## 客户与市场进入
 
 市场进入（GTM）的优势在于存量客户群。每一个 Salesforce、SAP 和 ServiceNow 客户都已有合同、管理员团队和系统集成商。数据云作为 CRM、ERP 或 ITSM 续约的附加项来销售，通常捆绑 credits。这比销售一个新的数据平台成本更低，而且触达的是业务线买家（客服负责人、CFO、CHRO），而不是首席数据官。
 
 弱点恰好是其镜像。首席数据官花了十年时间整合到 Snowflake 或 Databricks 上，抗拒为每个应用再引入一个数据平台。因此厂商把零拷贝当作一种安抚来销售：保留你的湖仓，让应用的数据云与之联邦。SAP 的做法走得最远，直接在 BDC 内销售 Databricks。Accenture 和 Deloitte 等系统集成商为双方都设有业务团队，这让它们在决定企业的智能体落在何处时成为造王者。
 
+<a id="ma-and-investments"></a>
 ## 并购与投资
 
 | 日期 | 收购方 | 标的 | 价值 | 动机 | 结果 |
@@ -253,6 +266,7 @@ xychart-beta
 
 规律很清楚。Salesforce 通过收购进入了从集成到 BI 再到数据目录和 MDM 的每一层。其整合记录好坏参半：Tableau 保住了品牌，却失去了市场势头，而 MuleSoft 成为了 Data 360 的连接组织。ServiceNow 收购的是较小的部件，并倚重其单一平台的工程文化。SAP 更偏好合作（Databricks、BigQuery，以及自 2025 年 11 月起的 Snowflake），并为获得一个自己能够掌控的开放引擎而收购了 Dremio。这些厂商的风险投资部门也在对冲：Salesforce Ventures 投资了 Snowflake、Databricks 和 Supabase，ServiceNow 和 Workday 则投资了 Sigma Computing。[^funding]
 
+<a id="competitive-position"></a>
 ## 竞争地位
 
 | 维度 | 应用软件巨头（Salesforce、SAP、ServiceNow、Workday） | Databricks / Snowflake | 超大规模云厂商（Microsoft、Google、AWS） | Palantir |
@@ -287,6 +301,7 @@ quadrantChart
 
 *图 34.11 — 定位（作者判断，非实测数据）。应用软件厂商正通过收购广度向右移动；数据平台正通过操作型数据库和智能体 API 向上移动。Palantir 已经接近目标角落。*
 
+<a id="why-its-winning--bull-case"></a>
 ## 制胜原因 / 看多逻辑
 
 1. **回写是持久的护城河。** 修改订单或薪酬记录的智能体必须遵守存在于应用中的审批、审计轨迹和监管要求。这些逻辑很难复制到数据仓库里。
@@ -295,6 +310,7 @@ quadrantChart
 4. **零拷贝削弱了转换的理由。** 客户不必在湖仓与应用的数据云之间二选一，这降低了销售阻力。
 5. **定价可以扩张。** 如果智能体计量以更高的总额取代席位，就像算例中那样，那么即使员工人数下降，每位客户带来的收入也会上升。
 
+<a id="risks--bear-case-and-open-questions"></a>
 ## 风险 / 看空逻辑与待解问题
 
 1. **中立枢纽可能胜出。** 大多数企业拥有数十个应用。一个需要从所有应用获取数据的智能体，可能会落在中立平台上，而不是某一家应用软件厂商内部。
@@ -303,6 +319,7 @@ quadrantChart
 4. **按用量模式的利润率。** 运行在超大规模云厂商之上的数据云要把基础设施成本计入销货成本（COGS），这会稀释毛利率，就像无服务器（serverless）业务对 Databricks 的影响一样（[第 25 章](ch25-databricks.md)）。
 5. **待解问题。** 当 Informatica 跨过 2025-11-18 完成日的周年（自 Q4 FY2027 起，即 2026 年 11 月至 2027 年 1 月）后，Data 360 ARR 的内生增长是多少？ServiceNow 是否已正式完成对 data.world 的收购？SAP Snowflake 是否如期 GA？SAP 会如何处置 Dremio 的开源引擎及其合作伙伴渠道，包括存储合作伙伴？Workday 的数据共享会保持双向吗？
 
+<a id="relevance-to-everpure"></a>
 ## 与 Everpure 的相关性
 
 > **存储桥接。** 应用软件厂商的数据云是运行在超大规模云厂商对象存储之上的多租户 SaaS 服务。存储决策归厂商而非客户所有。因此，只有在数据离开 SaaS 边界的地方才会出现存储层面的影响力：对外共享的 Iceberg/Delta 表、备份、主权或本地部署，以及为 AI 管道准备的本地副本。对象存储和数据保护的细节请参见姊妹篇 *Everpure Tech Atlas*。
@@ -323,6 +340,7 @@ quadrantChart
 
 关于存储厂商沿技术栈向上移动，请参见[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)；关于智能体为何提升了回写的价值，请参见[第 22 章](../03-ai-data-stack/ch22-agents-and-data.md)。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向厂商产品负责人提出的问题**
@@ -347,6 +365,7 @@ quadrantChart
 - "Palantir 是一家数据库公司。" *它销售的是架在其他系统数据之上的本体和应用。*
 - "应用软件厂商将取代湖仓。" *它们与湖仓联邦；争夺的焦点是智能体在哪里运行。*
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [记录系统（System of record）](../glossary.md#system-of-record) — 其数据是某项业务事实权威版本的应用。
@@ -364,6 +383,7 @@ quadrantChart
 - [Flex Credits](../glossary.md#flex-credits) — Salesforce 用于 Agentforce 动作的消费货币。
 - [按席位定价（Seat-based pricing）](../glossary.md#seat-based-pricing) — 按指名用户收费，当智能体取代用户时会让厂商暴露于风险之下。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^comps-crm]: AI Data Atlas 数据集 `data/public_comps.csv`，Salesforce 行（市值 $188.61B，EV $219.58B，过去 12 个月收入 $43.94B，5.0 倍，过去 12 个月增长 11.2%；市值同比下降约 21%），来源 https://stockanalysis.com/stocks/crm/market-cap/，截至 2026-10-30；检索 2026-11-01。

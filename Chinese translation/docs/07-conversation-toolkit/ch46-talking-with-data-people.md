@@ -1,6 +1,7 @@
 # 46. 与数据平台产品经理、工程师、合作伙伴和创始人对话
 > **深度：** L2 · **阅读时间：** 约 17 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 27 章 — Databricks 对比 Snowflake](../04-company-deep-dives/ch27-databricks-vs-snowflake.md)，[第 36 章 — 单位经济与 KPI](../05-business-and-economics/ch36-unit-economics-kpis.md)，[第 40 章 — 市场进入与合作伙伴](../05-business-and-economics/ch40-gtm-partnerships.md)，[第 45 章 — 存储向上层软件栈延伸](../06-history-and-future/ch45-storage-moving-up-the-stack.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - **每一类角色都因优化不同的东西而获得报酬。** 数据平台产品经理（PM）的考核看采用率和消费量；工程师看正确性、延迟和可运维性；合作伙伴经理看销售管道（pipeline）和联合销售（co-sell）；创始人看切入点（wedge）、ARR、NRR、烧钱速度和下一轮融资；超大规模云厂商的合作伙伴团队看云消费量和承诺消费额度（committed spend）的消耗；系统集成商（SI）业务负责人看可计费、可复制的服务。问每个人他们负责的那个数字，并用他们的单位来问。
@@ -9,6 +10,7 @@
 - **少数几个术语错误会在几秒钟内让你丧失可信度。** 把 Iceberg 称为数据库、把年化运行率当作收入引用、把向量数据库等同于 RAG、把零 ETL（zero-ETL）理解为"没有数据管道"、把湖仓一体（lakehouse）称为"不过是个数据湖"——每一个都会让技术型听众意识到你是从新闻稿里学到这个领域的。
 - **把存储专长当作手术刀，而不是讲座。** 一个关于条件写入、小文件、元数据延迟或出口流量费（egress fees）的精准问题，比花五分钟讲闪存介质更能赢得尊重。作为 Everpure 的从业者，请坚持使用公开定位：Enterprise Data Cloud、Data Intelligence（源自 1touch）以及 Databricks Storage Ecosystem 首发合作伙伴身份。绝不暗示非公开计划。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业 + Everpure 视角）
 
 企业发展工作主要就是对话。一份合作条款书、一笔少数股权投资或一宗收购，都始于一连串会议，你在会上试图弄清三件事：这个团队真正相信什么？他们因做什么而拿报酬？当你们的利益与他们的利益出现分歧时，他们会怎么做？本章之前的 45 章为你提供了内容。本章讲的是：在对方比你更懂技术的会议室里，如何运用这些内容。
@@ -17,6 +19,7 @@
 
 对 Everpure 而言，这一视角十分具体。Pure Storage 于 2026 年 2 月 23 日更名为 Everpure，并于同日宣布收购 1touch。[^ep-wwt] 公司现以 NYSE: P 交易。[^ep-ticker] 1touch 于 2026 年 5 月 7 日以 $125.0M 现金完成交割（GAAP，依据 10-Q）。[^ep-10q] 2026 年 6 月 10 日，Everpure 被列为 Databricks Storage Ecosystem 的首发合作伙伴，其 OpenSharing 连接器处于私有预览阶段（厂商披露）。[^storage-eco][^everpure-os] 一家正向上层软件栈延伸的公司（[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)）中的战略从业者，将不断与数据平台产品经理、联盟团队和创始人打交道。他们每个人都会掂量：一家存储公司究竟是合作伙伴、渠道，还是未来的竞争对手。你的用词和你的问题，就是他们做判断的依据。
 
+<a id="how-each-persona-thinks"></a>
 ## 每类角色如何思考
 
 在任何会议之前，先弄清对方的记分卡。人们回答问题的方式，会保护他们赖以获得报酬的那个指标。了解这个指标，你就能读出回答中刻意略去的部分。
@@ -75,6 +78,7 @@ mindmap
 
 *图 46.2 — 角色记分卡。读每一个回答时都要看它在保护什么：产品经理保护计量收入，联盟经理保护管道认定，创始人保护下一轮融资。*
 
+<a id="question-sets"></a>
 ## 问题集
 
 下面的矩阵是一页纸版本。随后的四个小节给出完整的问题集及其背后的理由。[第 48 章](ch48-question-bank.md)收录了带标签的问题库，[第 47 章](ch47-diligence-checklist.md)则把尽职调查（due diligence）问题整理成一份清单。
@@ -90,6 +94,7 @@ mindmap
 
 *图 46.3 — 问题集矩阵。每个单元格都瞄准该角色在这类对话中负责的那个数字。*
 
+<a id="a-partnership-talks-with-databricks-snowflake-and-the-hyperscalers"></a>
 ### (a) 与 Databricks、Snowflake 及超大规模云厂商的合作洽谈
 
 合作对话有一条可预测的弧线，最常见的失败是跳过某个阶段。下面的流程图展示了各个阶段及其退出匝道。退出并不等于失败。"只做集成，不做联合销售"是一个完全不错的结果，前提是双方都明确说出来。
@@ -118,6 +123,7 @@ flowchart LR
 
 **下一步。** 每次会议都以指定负责人和有日期的里程碑收尾：一份联合参考架构、一个共同客户试点，或针对平台下一个版本的重新认证。"保持联系"意味着这条弧线停在了第三阶段。
 
+<a id="b-technical-diligence-of-a-data-infrastructure-startup"></a>
 ### (b) 对数据基础设施初创公司的技术尽职调查
 
 尽职调查是术语转化为风险评估的地方。按照各领域导致交易失败的频率顺序，逐一过以下六个方面。
@@ -129,6 +135,7 @@ flowchart LR
 5. **依赖与许可证。** "关键路径上有哪些开源组件，采用什么许可证？你们是否对自己的代码持有贡献者许可协议（CLA）？"SSPL 并未获得 OSI 批准；MongoDB 于 2019 年 3 月将其从 OSI 审核中撤回。[^osi-sspl] 某个依赖项更换许可证，可能会变成你的问题（[第 38 章](../05-business-and-economics/ch38-open-source-strategy.md)）。
 6. **相对平台的路线图。** "你们的哪些功能出现在某个平台的公开路线图上？"这是下文"被吸收"问题的技术版本。
 
+<a id="c-founder-conversations"></a>
 ### (c) 与创始人的对话
 
 与创始人的会面，最好是以真诚的好奇心提出一连串尖锐问题。有五个话题最重要。
@@ -143,6 +150,7 @@ flowchart LR
 
 **指标与下一轮融资。** "请定义 ARR。它是合同金额，还是年化用量？NRR 使用哪个客户群？你们的烧钱倍数是多少，下一轮融资要支撑到哪个里程碑？"用一个公开的锚点。ClickHouse 报告的公司披露 ARR 超过 $250M，[^ch-arr] 对应的是 2026 年 1 月媒体报道的 $15B 估值。[^ch-seriesd] 同时说出这两个数字及其口径，表明你懂得估值与收入之间的区别。
 
+<a id="d-customer-reference-calls"></a>
 ### (d) 客户背调电话
 
 厂商挑选的参考客户，是厂商预先排练过的参考客户。你的目标是越过剧本，触及实际操作者的体验。要求与日常运维该系统的人交谈，而不只是高管发起人。提开放式问题，并留意具体细节。
@@ -156,6 +164,7 @@ flowchart LR
 
 在这些电话中要严守商业纪律。除了已经商定的内容外，不要透露你所在公司的意图，也不要分享其他方在保密协议（NDA）下告诉你的任何信息。
 
+<a id="signals-of-a-strong-vs-weak-answer"></a>
 ## 强回答与弱回答的信号
 
 无论角色如何，强回答都有共同的质感。它们先给定义再给数字，标明口径，点明取舍，并主动说出发言者自己公司做得不好的一件事。闪烁其词的回答也有其质感：单位在句子中途变了、客户是匿名的、问题在另一个抽象层次上被回答，或者"在路线图上"却不附带具体季度。
@@ -171,6 +180,7 @@ flowchart LR
 
 *图 46.5 — 好回答与闪烁其词的回答。强回答一栏给出定义、标明口径并承认局限。闪烁其词的一栏偷换单位或抽象层次。强回答一栏中的答案仅为示例，并非引用任何公司的说法。*
 
+<a id="red-flags"></a>
 ## 危险信号
 
 有些回答应当改变你对这笔交易的看法，而不只是多一个追问。下表列出了数据基础设施对话中最常见的危险信号。
@@ -189,6 +199,7 @@ flowchart LR
 
 *图 46.6 — 危险信号。每一项都是一个追问点，而非定论；但一次会议中出现三个或更多，通常意味着故事跑在了业务前面。*
 
+<a id="vocabulary-traps"></a>
 ## 术语陷阱
 
 技术型听众把术语当作过滤器。一次失误不会终结会议，但会改变对方愿意为你解释多少。下面的陷阱来自整部图谱中各章的"不要这样说"清单。
@@ -211,6 +222,7 @@ flowchart LR
 
 其中三个陷阱值得用一句话交代历史，因为这些误解都有可追溯的来源。"零 ETL"是通过 AWS 在 2022 年 11 月宣布的 Aurora 到 Redshift 集成进入行业词汇的。[^aws-zetl-2022] 这个名称描述的是客户体验，而不是架构，其架构仍然是变更数据捕获（CDC）。"向量数据库 = RAG"在 2023 年流行开来，当时独立的向量数据库是引人注目的新品类。此后，这项能力已扩散到 Postgres、搜索引擎、湖仓乃至对象存储本身。[^s3-vectors] 年化运行率的混淆之所以持续，是因为私营公司自行选择披露哪个指标，而媒体把它当作"收入"重复报道。S3 Vectors 的发布也提醒了第四个陷阱：一家初创公司的品类可能在一个产品周期内就变成一项云功能。
 
+<a id="using-storage-expertise-as-credibility"></a>
 ## 以存储专长建立可信度
 
 在这些会议室里，存储背景是一项资产，前提是你用它来就对方的系统提出更犀利的问题，而不是给他们讲解你的系统。数据平台工程师把对象存储理解为一个附带价目表的 API。他们往往不了解它在争用下、在规模化场景中或在本地部署时的表现。一个恰到好处的问题，就能表明你理解他们整个架构所依托的那一层。
@@ -226,6 +238,7 @@ flowchart LR
 
 > **存储桥接。** 对数据平台而言重要的存储问题关乎语义，而非介质：条件写入的正确性、LIST 和 HEAD 延迟、小对象性能、并发提交下的一致性，以及出口流量定价。就这些问题提问，让对方看到你理解他们的表格式为什么需要这些特性。配套的 *Everpure Tech Atlas* 涵盖了每一项背后的硬件与协议深度。
 
+<a id="framing-for-an-everpure-strategy-professional"></a>
 ## 面向 Everpure 战略从业者的表述框架
 
 本节的所有内容均基于公开信息。战略团队可能会在技术栈的每一层评估选项（[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)）。但在对话中，你的任务是学习，而不是释放信号。
@@ -236,6 +249,7 @@ flowchart LR
 
 **信息纪律。** 合作、投资和收购对话常常在不同时间涉及同一批人。让每一场对话都处于其适用的保密条款之内，并在笔记中把你从公开渠道获得的信息与在 NDA 下获得的信息分开。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 这是一份元手册：无论话题是什么，这些问题在与数据平台对口人的几乎任何首次会面中都适用。
@@ -262,6 +276,7 @@ flowchart LR
 - "零 ETL，所以没有数据管道。"是厂商替你运行了数据管道。
 - "Everpure 正在变成一个数据平台。"它的公开举措止步于引擎层之下，并与各平台合作。
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [收入年化运行率（Revenue run-rate）](../glossary.md#revenue-run-rate) — 将近期收入年化（季度 × 4 或月度 × 12），通常为公司披露且未经审计。
@@ -286,6 +301,7 @@ flowchart LR
 - [OpenSharing](../glossary.md#opensharing) — 源自 Delta Sharing 的开放数据共享协议，是 Databricks Storage Ecosystem 的基础。
 - [开放核心（Open core）](../glossary.md#open-core) — 以开源核心加专有付费功能或服务为特征的模式。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^db-7b]: Databricks, "Databricks Grows >80% YoY, Surpasses $7B Revenue Run-Rate, Scales Lakebase, Genie and Unity AI Gateway," https://www.databricks.com/company/newsroom/press-releases/databricks-grows-80-yoy-surpasses-7b-revenue-run-rate-scales, 发布于 2026-08-13; 检索于 2026-11-01. 公司披露的年化运行率，未经审计（来自第 25 章).

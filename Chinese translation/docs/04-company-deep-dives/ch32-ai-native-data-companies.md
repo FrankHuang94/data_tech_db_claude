@@ -1,6 +1,7 @@
 # 32. AI 原生数据公司
 > **状态：** 以非上市公司为主 · **总部：** 各不相同（美国、欧洲、以色列）· **成立：** 本章所介绍的公司大多成立于 2016–2023 年 · **最新估值/市值：** 从约 $0.5B（Hammerspace，2025 年 4 月）到 $30B（VAST Data，2026 年 4 月）不等，均为公司披露或媒体报道的投后估值 · **最后核实：** 2026-11-01
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - **五个类别，五种截然不同的生意。** "AI 原生数据公司"涵盖：(A) [向量数据库（vector database）](../glossary.md#vector-database)厂商；(B) 文档解析与面向 AI 的 ETL 工具；(C) 训练数据与数据标注供应商；(D) 由存储起家的 AI 数据基础设施平台；(E) 企业级 AI 搜索。它们面对同一类买家——AI 团队——但毛利率、护城河和退出路径大相径庭。本章逐一剖析各类别；底层技术见[第 17 章](../03-ai-data-stack/ch17-unstructured-data-processing.md)、[第 18 章](../03-ai-data-stack/ch18-embeddings-and-vector-search.md)和[第 20 章](../03-ai-data-stack/ch20-training-data-supply-chain.md)。
@@ -9,6 +10,7 @@
 - **中立性是一种只能卖一次的资产。** Meta 交易之后，Scale AI 的 CEO 转投 Meta，据报道多家主要 AI 实验室客户随之缩减合作。Surge AI、Mercor 等竞争对手的份额和估值随之上升。这一教训适用于任何在集中市场中接受单一客户入股的供应商。[^meta-scale][^tk-scale-after]
 - **Everpure 视角。** VAST Data 是"存储公司向技术栈上层延伸"最接近的可比对象：它如今在自家存储之上销售数据库、事件/函数引擎和检索引擎。Everpure 走的是一条平行但不同的路径（Enterprise Data Cloud、收购 1touch、基于 NVIDIA AI Data Platform 的 Data Stream）。对战略团队而言，待解的问题是：独自向上延伸到哪一层，以及在哪些环节寻求合作。[^everpure-ds][^1touch]
 
+<a id="snapshot-table"></a>
 ## 概览表
 
 | 类别 | 代表公司 | 最新估值（口径，日期） | 规模指标（已标注口径） | 商业模式 | 类别现状 |
@@ -21,6 +23,7 @@
 
 *图 32.1 — 类别概览。估值均为私募估值，往往已过时，且由优先股定价；这些公司均未公布经审计的财务报表。资料来源：`data/private_funding.csv` 及正文脚注。[^pf]*
 
+<a id="origin-story-and-strategic-arc"></a>
 ## 起源与战略演进
 
 AI 原生数据这一类别分三波形成，每一波都由模型对数据需求的变化所触发。
@@ -42,6 +45,7 @@ timeline
 
 *图 32.2 — 资金从独立的检索产品（2023 年）转向平台发起的收购（2024–2025 年），再转向基础设施级别的大额融资（2026 年）。资料来源：`data/private_funding.csv`、`data/ma_deals.csv`。[^pf][^ma]*
 
+<a id="product-and-technology"></a>
 ## 产品与技术
 
 下图按层级排列各家公司，应自下而上阅读：数据落在存储与数据平台上，经过解析和切块，再被嵌入并建立索引以供检索；另一路则被加工成带标注的训练集和评估集。企业搜索等应用位于最上层。虚线箭头表示谁正在吸收谁。
@@ -83,6 +87,7 @@ flowchart TB
 
 *图 32.3 — AI 数据基础设施全景（作者绘制）。纯业务公司位于中间层；其下方和上方的平台正在向中间层扩张。*
 
+<a id="a-vector-databases"></a>
 ### (A) 向量数据库
 
 向量数据库存储[嵌入（向量）（embedding）](../glossary.md#embedding)，并借助[近似最近邻（approximate nearest neighbor，ANN）](../glossary.md#approximate-nearest-neighbor)索引（HNSW 图、IVF 分区、DiskANN 式闪存图；见[第 18 章](../03-ai-data-stack/ch18-embeddings-and-vector-search.md)）回答"找出最相似的 k 个条目"这类查询。工程上的竞争集中在三点：每个存储向量的内存成本、带过滤条件的检索质量（相似度加元数据谓词），以及持续写入下的数据新鲜度。
@@ -94,6 +99,7 @@ flowchart TB
 
 > **类比：独立 DRAM 厂商与集成内存控制器。** 2000 年代初，内存控制器位于独立的北桥芯片上，芯片组厂商以此为生。AMD（2003 年）和随后的 Intel（2008 年）将控制器移入 CPU 裸片，大多数独立芯片组业务随之消失。DRAM 厂商之所以存活，是因为它们拥有 CPU 厂商无法集成的东西：存储器本身的制程技术和晶圆厂规模。向量检索就是 RAG 技术栈中的内存控制器。这项功能正被集成进每一个数据库，乃至 S3。独立厂商只有像 DRAM 厂商那样，掌握集成者无法复制的规模或成本优势，才能生存。对向量数据库而言，这意味着以最低成本存储和服务数十亿个向量，而不是更好的 API。
 
+<a id="b-unstructured-data-and-etl-for-ai"></a>
 ### (B) 非结构化数据与面向 AI 的 ETL
 
 企业的大部分知识存在于 PDF、幻灯片、扫描表单和电子邮件中。任何内容在被嵌入之前，都必须先经过解析（文本、表格、版式、图像）、清洗，并切分为带元数据的文本块（[第 17 章](../03-ai-data-stack/ch17-unstructured-data-processing.md)）。难点在于表格和多栏版式——一旦阅读顺序出错，检索结果就会在无声无息中被污染。
@@ -104,6 +110,7 @@ flowchart TB
 - **Datavolo** 由 Apache NiFi 的创建者创立，构建多模态数据摄取管道。Snowflake 于 2024 年 11 月将其收购，并以 **Openflow** 之名重新推出。[^datavolo]
 - **Vectara** 和 **Contextual AI** 销售端到端 RAG 平台（解析、索引、检索，以及带事实依据校验的生成）。Contextual AI 的 CEO Douwe Kiela 是 2020 年最初那篇 RAG 论文的合著者。[^tk-rag-platforms]
 
+<a id="c-training-data-and-labeling"></a>
 ### (C) 训练数据与数据标注
 
 前沿实验室采购三类数据服务：用于 RLHF 的偏好判断，专家撰写的示范与推理轨迹（编程、数学、法律、医学），以及评估集。行业已从低成本的众包标注转向 **[专家数据（expert data）](../glossary.md#expert-data)**，其投入是按小时计酬的博士或资深工程师。第 20 章介绍供应链；本节聚焦于这些企业本身。
@@ -113,6 +120,7 @@ flowchart TB
 - **Mercor** 运营一个为实验室招募领域专家并支付报酬的平台型市场；它于 2025 年 2 月以 $2B 估值融资，据媒体报道 2025 年 10 月估值达 $10B。[^tk-mercor]
 - **Snorkel AI** 从程序化标注软件转向专家数据服务。它于 2025 年 5 月以 $1.3B 估值融资 $100M，随后于 2026 年 9 月以 $3.5B 估值融资 $350M（Insight Partners 和 S32），并称收入年化运行率约 $375M（均为公司披露；Reuters 报道为 >$350M）。[^snorkel] 按约 9 倍年化运行率计，其定价远低于上文那些软件式估值，更接近服务型业务组合所能支撑的水平。**Turing** 则从开发者人力派遣转向为实验室提供编程与推理数据。[^tk-snorkel-turing]
 
+<a id="d-ai-data-infrastructure"></a>
 ### (D) AI 数据基础设施
 
 这一类别起步于存储，如今将自己定位为 AI 工厂的数据层。存储机制见配套的 *Everpure Tech Atlas*；这里的战略问题是：每家公司要向技术栈上层延伸多远。
@@ -125,10 +133,12 @@ flowchart TB
 
 > **类比：内存厂商进军存内计算。** Samsung 的 HBM-PIM 和 SK hynix 的 AiM 将简单的运算单元放在 DRAM 存储体旁边，因为把数据搬运到处理器所耗费的能量，比运算本身还多。这项技术可行，但普及缓慢：主机厂商（CPU 或 GPU）掌控编程模型，软件必须重写才能利用它。VAST 的 DataEngine 和 InsightEngine，以及 Everpure 的 Data Stream，是[存内计算（compute-in-memory）](../glossary.md#compute-in-memory)的存储版本：在数据所在之处运行嵌入、过滤和触发器。同样的约束依然适用。NVIDIA、Databricks 和 Snowflake 掌控着 AI 编程模型，因此存储侧计算要想成功，必须接入它们的框架（NVIDIA AI Data Platform、OpenSharing、Iceberg），而不是要求开发者采用一套新框架。
 
+<a id="e-enterprise-ai-search-and-context"></a>
 ### (E) 企业级 AI 搜索与上下文
 
 **Glean** 由 Arvind Jain（Rubrik 联合创始人）于 2019 年创立，通过具备权限感知能力的连接器为企业的 SaaS 应用、文档和聊天内容建立索引，并在其上叠加助手和智能体。它是面向知识工作者的领先独立"上下文层"。它于 2025 年 6 月以 $7.2B 估值融资 $150M（媒体报道），并于 2026 年 5 月称 ARR 约 $300M（公司披露）。[^glean]
 
+<a id="how-it-makes-money"></a>
 ## 盈利模式
 
 | 类别 | 计价单位 | 毛利率的驱动因素 | 毛利率走向 | 主要价格压力 |
@@ -149,15 +159,16 @@ flowchart TB
 
 **基础设施：运行在他人硬件上、以许可为主导的软件。** VAST 和 Hammerspace 销售运行在合作伙伴所造服务器上的软件，这使硬件转嫁收入不计入（或很少计入）其收入项，从而支撑软件式毛利率。在位者（Everpure、NetApp）销售带订阅的集成系统；Everpure 在 Q2 FY2027（截至 2026-08-02 的季度）的 GAAP 毛利率为 68.4%。[^everpure-comps]
 
+<a id="financials"></a>
 ## 财务数据
 
 本章所涉及的非上市公司均未公布经审计的财务报表。现有的只是一系列私募估值和公司披露的年化运行率，通常在融资时一并披露。下面两张图展示了数据集中的内容。
 
-![2022 至 2026 年向量数据库融资轮次柱状图：Zilliz 60M 美元（2022 年），Weaviate 50M 与 Pinecone 100M（2023 年），Qdrant 28M（2024 年），LanceDB 30M（2025 年），Qdrant 50M（2026 年）](../assets/charts/vector_db_funding.png)
+![2022 至 2026 年向量数据库融资轮次柱状图：Zilliz 60M 美元（2022 年），Weaviate 50M 与 Pinecone 100M（2023 年），Qdrant 28M（2024 年），LanceDB 30M（2025 年），Qdrant 50M（2026 年）](../../../docs/assets/charts/vector_db_funding.png)
 
 *图 32.5 — 向量数据库的融资规模一直不大，介于 $28M 与 $100M 之间；在数据集中，没有任何一家纯业务公司以高于 Pinecone 2023 年 $750M 的估值完成上调估值的定价融资。资料来源：`data/private_funding.csv`。*
 
-![数据与 AI 数据公司最新私募估值横向柱状图，VAST Data 以 30B 美元居首，其次为 Scale AI 29B 美元和 ClickHouse 15B 美元，Glean 为 7.2B 美元](../assets/charts/private_marks_latest.png)
+![数据与 AI 数据公司最新私募估值横向柱状图，VAST Data 以 30B 美元居首，其次为 Scale AI 29B 美元和 ClickHouse 15B 美元，Glean 为 7.2B 美元](../../../docs/assets/charts/private_marks_latest.png)
 
 *图 32.6 — 在剔除 Databricks 后的数据领域中，两个最高的私募估值都属于 AI 原生数据公司，且分处技术栈两端：VAST Data（基础设施）和 Scale AI（训练数据）。部分 2021–2022 年的估值（Fivetran、Collibra、Dremio）已经过时。资料来源：`data/private_funding.csv`。*
 
@@ -169,6 +180,7 @@ flowchart TB
 - **Pinecone，$750M（2023 年 4 月，媒体报道）。** 此后三年多没有任何定价融资，而这段时间该类别的价格持续压缩。若以低于最近一轮优先股价格出售，[清算优先权（liquidation preference）](../glossary.md#liquidation-preference)的层级将排在普通股股东和员工之前。[^pinecone-b]
 - **Hammerspace，">$500M"（2025 年 4 月，公司披露）。** 这是一个下限，而非精确的投后估值。[^hammerspace-b]
 
+<a id="customers-and-go-to-market"></a>
 ## 客户与市场进入
 
 **向量数据库**采用自下而上的销售方式。开发者从免费层或开源版本起步，项目进入生产，之后由平台团队谈判企业合同或 BYOC 部署。云市场很重要，因为客户可以借此消耗承诺的云消费额度。这种模式的弱点在于：同一位开发者也可以直接使用技术栈中已有的 pgvector 或 MongoDB Atlas Vector Search 起步，而且很多人确实如此；MongoDB 收购 Voyage AI，正是为了让其内置选项变得"够用"。[^voyage]
@@ -181,6 +193,7 @@ flowchart TB
 
 **Glean** 自上而下地向 CIO 按席位销售，与 Microsoft Copilot 和 Google 的企业智能体争夺同一预算科目。[^glean]
 
+<a id="ma-and-investments"></a>
 ## 并购与投资
 
 | 日期 | 收购方 / 投资方 | 标的 | 金额（口径） | 交易逻辑 | 结果 |
@@ -204,6 +217,7 @@ flowchart TB
 
 > **类比：晶圆代工客户入股关键供应商。** 2012 年，Intel、TSMC 和 Samsung 购入 ASML 的少数股权，为 EUV 研发提供资金。ASML 保持了中立，价值也随之提升，原因有二：这些持股有上限且是被动的，而且没有任何客户能替代 ASML 的设备。[^tk-asml] Meta–Scale 交易在这两项检验上都不合格。持股比例达 49%，创始人转投投资方，而且数据标注是可替代的：Surge、Mercor 和实验室内部团队都能承接这些工作。在集中市场中，供应商只有在自身不可替代、且投资方明显保持被动时，才能安全地接受战略股权投资。
 
+<a id="competitive-position"></a>
 ## 竞争地位
 
 | 公司 | 类别 | 成立 | 最近一轮融资 / 估值（日期，口径） | 模式 | 是否开源？ | 差异化 | 被吸收风险 |
@@ -262,6 +276,7 @@ quadrantChart
 - **(D) AI 数据基础设施：** VAST 正在赢得 GPU 云细分市场和估值竞赛。其规模使 IPO 比出售更可能成为退出路径。Hammerspace 和 WEKA 是存储 OEM 或服务器厂商可能的收购标的。
 - **(E) Glean：** 在独立厂商中胜出，但大型套件厂商（Microsoft、Google、Salesforce、ServiceNow）和数据平台（Snowflake CoWork、Databricks Genie One）都在向同一位 CIO 推销"企业上下文"的故事。合乎逻辑的收购方是应用套件厂商；目前尚无相关报道。
 
+<a id="why-its-winning--bull-case"></a>
 ## 制胜原因 / 看多逻辑
 
 1. **稀缺的投入品变成了数据，而非模型。** 随着模型质量趋同，优势转向专有数据及其准备和检索。这里的每个类别都在出售其中的一部分，而企业的 AI 预算仍在增长。
@@ -270,6 +285,7 @@ quadrantChart
 4. **对象存储原生的检索可以在成本上胜出。** 如果向量检索变成一个存储成本问题，那么构建在对象存储上的设计就能以更低价格击败基于 RAM 的在位者，并可在任何提供 S3 API 的地方运行，包括本地闪存。
 5. **收购方活跃且资金充裕。** 自 2024 年以来，数据库厂商、数据平台、GPU 云和存储厂商都曾为 AI 数据能力付费，这为退出价值提供了支撑，即便对那些无法独立生存的公司也是如此。
 
+<a id="risks--bear-case-and-open-questions"></a>
 ## 风险 / 看空逻辑与待解问题
 
 1. **被吸收。** 向量检索已进入 S3、Postgres、MongoDB 和每一个数据平台；解析已进入 Snowflake、Databricks 和各超大规模云厂商；企业搜索已进入 Microsoft 365 和 Google Workspace。独立厂商每年都必须在成本或质量上明显更胜一筹。[^s3-vectors][^voyage][^datavolo]
@@ -279,6 +295,7 @@ quadrantChart
 5. **年化运行率不透明。** 现有的少量收入数字，都是在融资前后公司披露或媒体报道的年化运行率。
 6. **待解问题。** Pinecone 会出售吗？卖给谁？VAST 会申请 IPO 吗？其毛利率在审计之下会是什么样子？Scale 能否在新领导层带领下企稳？前沿模型会否在两年内让文档解析沦为商品？[VERIFY: Pinecone 2025–2026 年的战略状态；Scale AI 正式 CEO]
 
+<a id="relevance-to-everpure"></a>
 ## 与 Everpure 的相关性
 
 > **存储桥接。** VAST、Hammerspace、WEKA、DDN、NetApp 和 Everpure 服务的是同一批 AI 工厂。它们在存储架构上的差异（DASE、并行 NFS、并行文件系统、统一文件与对象存储）见配套的 *Everpure Tech Atlas*。本章仅将其视为向数据层延伸的起点。
@@ -312,6 +329,7 @@ quadrantChart
 
 数据引力见[第 24 章](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)，更广泛的"存储向技术栈上层延伸"模式见[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向这些公司的高管或产品经理提出的三个问题**
@@ -337,6 +355,7 @@ quadrantChart
 - "RAG 意味着你需要一个向量数据库。" *许多 RAG 系统使用现有数据库或搜索引擎中的混合检索。*
 - "Everpure 与 VAST 采取同样的战略竞争。" *两者的公开举措不同：Everpure 侧重数据智能以及与数据平台合作；VAST 则在构建自己的数据库和引擎层。*
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [向量数据库（Vector database）](../glossary.md#vector-database) — 专为存储嵌入并大规模响应相似度查询而构建的数据库。
@@ -361,6 +380,7 @@ quadrantChart
 - [清算优先权（Liquidation preference）](../glossary.md#liquidation-preference) — 在公司被出售时，优先股股东先于普通股股东获得偿付的权利。
 - [人才收购（Acquihire）](../glossary.md#acquihire) — 以招揽标的公司团队为主要目的的交易。
 
+<a id="sources"></a>
 ## 资料来源
 
 方法说明：本章起草期间无法使用实时网络搜索（会话搜索额度已用尽）。数据来自本 atlas 的数据集和 Phase 0 研究笔记，这些笔记引用了下列原始 URL。来自起草者背景知识（2025 年年中以前）且无法重新核对的条目标注为"training knowledge"（训练知识），并以 [VERIFY] 标记。

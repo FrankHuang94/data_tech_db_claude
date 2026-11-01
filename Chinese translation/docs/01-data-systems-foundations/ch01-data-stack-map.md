@@ -1,6 +1,7 @@
 # 1. 数据技术栈全景图
 > **深度：** L2 · **阅读时间：** 约 15 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** 无（第一章）
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - 企业数据工作可分为四类工作负载：**OLTP**（快速、正确地记录每一笔业务事件）、**OLAP**（扫描历史数据以回答问题）、**流处理（streaming）**（在事件发生时传输事件并做出响应）以及 **AI**（准备训练数据、对内容做嵌入与检索、为智能体提供上下文）。每一类对底层系统的要求都不同，因此各自发展出了独立的产品与厂商。
@@ -9,6 +10,7 @@
 - 大约从 2020 年起，技术栈开始重新聚合。推动这一趋势的有四股力量：湖仓一体（lakehouse，在对象存储上保存一份开放表）、HTAP、带扩展的 Postgres，以及需要在同一处同时获取运营数据与分析数据的 AI 智能体。厂商们如今争夺的是对合并后各层的控制权。
 - 存储位于每一跳之下，目录与数据治理层则横跨所有环节。这两个横向层是控制权与数据引力不断积聚的地方，也是与 Everpure 最相关的部分。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业视角 + Everpure 视角）
 
 数据行业的大多数争论，本质上都是关于一层在哪里结束、下一层从哪里开始的争论。Snowflake 对 Databricks、Postgres 对其他所有数据库、IBM 收购 Confluent、Fivetran 与 dbt Labs 合并：每一项都是在押注哪些环节会合并，以及谁将拥有合并后的那一层。IBM 于 2026-03-17 完成对 Confluent 的收购，企业价值约 $11B（已披露）。[^ibm-confluent] Fivetran 与 dbt Labs 于 2026-06-01 完成全股票合并，合并后的 ARR "接近 $600M"（公司披露）。[^fivetran-dbt] 这两笔交易都把下文所述数据旅程中的两跳压缩进了同一家厂商。只要手里有一张各跳的地图，交易逻辑就一目了然。
@@ -17,8 +19,10 @@
 
 对 Everpure（原 Pure Storage；NYSE: P，原代码 PSTG）而言，关键在于存储并不是其中的某一跳，而是位于所有环节之下。OLTP 数据库的日志、Kafka broker 的磁盘、湖仓的对象存储、向量索引的闪存层，全都是存储，而且各自的性能特征不同。Everpure 在 2026 年的举措恰好落在这张地图正在变化的位置。它于 2026-02-23 更名，并以 $125.0M 现金收购了数据发现与分类公司 1touch（已披露；2026-05-07 完成交割）。[^everpure-1touch] 2026 年 6 月，它推出了 Data Stream 功能，在 FlashBlade 上借助 NVIDIA GPU 为 AI 数据管道对数据进行向量化。[^everpure-datastream] 这两项举措都是试图从最底层进入数据治理与 AI 环节。基于公开信息，一个战略团队会想知道：存储厂商可以可信地进入哪些环节，又应当通过合作进入哪些环节。后续章节将在 [第 24 章](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md) 和 [第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md) 中回到这一话题。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="four-workload-families"></a>
 ### 四类工作负载
 
 **工作负载（workload）**是指软件读写数据的模式。四种模式几乎涵盖了全部企业数据工作，而它们把系统设计拉向相反的方向。
@@ -70,6 +74,7 @@ quadrantChart
 
 > **类比：存储器层次结构。** 可以把这四类工作负载看作缓存层次结构中的各个层级。OLTP 是寄存器堆和 L1 缓存：容量小、数据热、延迟预算极小，正确性高于一切。数据仓库或湖仓是 DRAM，再往下是 NAND：容量大得多，以宽幅顺序扫描方式读取，每字节更便宜，也能容忍更高的延迟。存放在冷对象存储中的归档历史数据则相当于磁带和 HDD 层。连比例都相当吻合：一次 DRAM 访问约 100 ns，而一次 SSD 随机读取约 150 µs，慢约 1,500 倍。[^dean] OLTP 提交与数据仓库查询之间也相差类似的倍数。与芯片设计一样，数据按照温度在各层之间升级和降级，而大部分成本工程都在于让热数据保持小规模。
 
+<a id="the-journey-of-a-byte-one-order-end-to-end"></a>
 ### 一个字节的旅程：一笔订单的端到端路径
 
 以一家中等规模的在线零售商为例（示意）。下文所有时间与副本数量均为典型云部署下的**示意性估算**，并非对任何特定厂商的实测。一位客户在 10:00:00.000 于手机 App 中点击"下单"。
@@ -169,16 +174,20 @@ sequenceDiagram
 
 > **类比：晶圆穿过晶圆厂。** 一个字节的旅程就像一片晶圆依次经过各道工序。每一步（光刻、刻蚀、沉积、测试）都会增加下一步所依赖的价值，增加成本和周期时间，也会产生一个可能损失良率的环节。一次破坏 CDC 的模式变更就是一次失败的刻蚀，所有下游步骤都会继承这个缺陷。晶圆厂经济学揭示的两条教训，数据团队如今也在学习：交接越少，周期时间越短，良率损失越少；而量测（在这里指数据血缘与数据质量检查）只有覆盖每一个步骤，才能收回成本。
 
+<a id="where-governance-and-the-catalog-sit"></a>
 ### 数据治理与目录位于何处
 
 数据治理不是某一跳，而是一个触及每一跳的横向层。[数据目录](../glossary.md#data-catalog)记录每张表、每个主题、每个索引是什么、归谁所有以及是如何派生而来的（数据血缘）。策略引擎决定谁可以读取哪一列，例如对分析师隐藏客户的卡号，但对支付服务不隐藏。目录在开放湖仓中更加重要：当许多引擎读取同一批 Iceberg 表时，目录就成为提交表版本和执行访问控制的唯一场所。如今，策略往往在多个环节被重复实现：数据库授权、Kafka ACL、数据仓库角色、向量存储过滤器。这种重复正是数据治理厂商的机会，也是在技术栈底层对数据进行分类的存储厂商的机会。参见 [第 8 章](ch08-catalogs-and-metastores.md)、[第 13 章](../02-pipelines-and-governance/ch13-data-quality-observability-lineage.md) 和 [第 15 章](../02-pipelines-and-governance/ch15-governance-security-privacy.md)。
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
+<a id="why-the-stack-fragmented"></a>
 ### 技术栈为何走向分化
 
 2005 年，Michael Stonebraker 与 Uğur Çetintemel 提出，作为万能解决方案出售的传统行存关系型数据库，终将输给为单一访问模式而打造的专用引擎。他们举的例子是流处理、列存数据仓库和文本检索。[^stonebraker] 其道理是物理层面的：让 10 行插入变得廉价的行式布局，会让 100 亿行的列扫描变得昂贵，反之亦然。为严格正确性而设计的加锁与日志机制，会拖慢批量分析。这篇论文在 2015 年获得了 ICDE 十年最具影响力论文奖。[^stonebraker] 此后 15 年验证了这一论断。列存（Vertica，之后是 Redshift 和 Snowflake）、NoSQL（MongoDB、Cassandra、DynamoDB）、流处理（Kafka）、搜索（Elasticsearch）以及后来的向量数据库，都从通用 RDBMS 手中夺走了份额。到 2020 年，a16z 那份广为流传的参考架构在数据源与仪表盘之间画了几十个方框。[^a16z] 这种专业化是理性的，但每多一个方框，就多一条数据管道、一份副本和一份契约。
 
+<a id="why-it-is-re-converging"></a>
 ### 技术栈为何重新聚合
 
 四股力量正在把各个环节重新折叠到一起：
@@ -201,6 +210,7 @@ sequenceDiagram
 
 专业化的最强版本论证依然成立。融合以前就被许诺过。Oracle"一个数据库包揽一切"的说法从未终结专业化；一个在向量检索或高吞吐流处理上表现平庸的融合平台，会把这些工作负载输给专注型厂商。可能的结局是：少数几个以开放格式为核心的平台，再加上在性能值得付费的边缘地带活跃的专业厂商。
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 | 层（跳） | 代表系统与厂商 | 定位说明 |
@@ -218,6 +228,7 @@ sequenceDiagram
 
 *图 1.7 — 按环节划分的厂商类别。后续每一章各讲其中一行；第 4 部分对相关公司做专题剖析。*
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 ```mermaid
@@ -237,6 +248,7 @@ timeline
 
 这条轨迹可分为三个阶段。在**单体时代**（1970s–2000s），一个关系型数据库支撑整个业务；另有一个数据仓库每晚接收批量副本，所以"昨天"就是最新的分析答案。在**专业化时代**（约 2005–2020），Stonebraker 的论断得到印证：每种访问模式都有了自己的引擎和厂商，2010 年代后期的"现代数据栈"把云数据仓库、托管数据摄取、dbt 和 BI 工具拼接在一起。a16z 在 2020 年绘制了这张图，后来又做了更新。[^a16z] 分化对风险投资人来说是门好生意：每个方框都是一家初创公司。**融合时代**（2020 年至今）始于湖仓一体，并在 2025–2026 年随着平台收购 Postgres 公司、IBM–Confluent、Fivetran–dbt，以及需要一次性掌握整张地图的 AI 智能体而加速。[第 42 章](../06-history-and-future/ch42-history-of-databases.md) 和 [第 43 章](../06-history-and-future/ch43-modern-data-stack.md) 讲述完整的故事，[第 44 章](../06-history-and-future/ch44-future-trends.md) 评估融合会走多远。
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源 / 日期 |
@@ -255,10 +267,12 @@ timeline
 
 *图 1.9 — 延迟比例源于物理规律且相对稳定；市场数据每季度都会变化，使用前应重新核实。*
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** 每一跳都运行在不同的存储特征之上。OLTP 需要低延迟、同步写入的块存储来承载 WAL。Kafka 需要顺序写入吞吐，并越来越多地使用对象存储来实现分层保留。湖仓需要高吞吐、兼容 S3 的对象存储，并具备良好的小对象和元数据性能。向量索引越来越多地放在闪存而非 DRAM 上。副本在整个旅程中不断倍增，因此存储容量随环节数量增长，而不仅仅随数据量增长。这是[数据引力](../glossary.md#data-gravity)的根源之一：Dave McCrory 约在 2010 年提出这一术语，指大型数据集会把应用和计算吸引到自己身边。[^mccrory] 关于介质与协议的细节，请参阅配套的 *Everpure Tech Atlas*。关于出口流量费与数据引力的经济学，参见 [第 24 章](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)；关于战略选项，参见 [第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)。
 
+<a id="how-to-read-the-rest-of-the-atlas"></a>
 ## 如何阅读本书其余部分
 
 | 部分 | 涵盖内容 | 从这里开始 |
@@ -274,6 +288,7 @@ timeline
 
 *图 1.10 — 一个字节的旅程是本书的主线：第 1–3 部分解释各个环节，第 4 部分讲述其负责方，第 5 部分讲经济学，第 6 部分讲演进方向。[第 39 章](../05-business-and-economics/ch39-ma-history.md) 汇总相关交易，[第 48 章](../07-conversation-toolkit/ch48-question-bank.md) 汇总相关问题。*
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理提出的三个问题**
@@ -296,10 +311,12 @@ timeline
 - "零 ETL 意味着没有数据管道。"它意味着厂商替你运行数据管道。各个环节依然存在，依然要花钱。
 - "存储是技术栈底下的大宗商品。"每一跳都有独特的存储特征，而且副本会随环节倍增。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 > **深入（L3）。** 阅读 2005 年 Stonebraker–Çetintemel 的论文以了解最初的性能论证，并阅读 CIDR 2021 的湖仓论文了解支持融合的反方论证。[^stonebraker][^lakehouse] 关于基于日志的 CDC 内部机制，请阅读 Debezium Postgres 连接器文档中关于复制槽、快照和逻辑解码的内容。[^debezium] 关于把日志作为核心抽象，请阅读 2011 年的 Kafka 论文，然后阅读 [第 11 章](../02-pipelines-and-governance/ch11-streaming-and-event-platforms.md)。关于 WAL 与 MVCC 的内部机制，参见 [第 3 章](ch03-database-internals.md)。
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [OLTP](../glossary.md#oltp) — 联机事务处理：大量小规模、快速、正确的读写操作，用于记录业务事件。
@@ -321,6 +338,7 @@ timeline
 - [数据目录](../glossary.md#data-catalog) — 横跨整个技术栈、记录数据资产、所有者、数据血缘和访问策略的登记册。
 - [数据引力](../glossary.md#data-gravity) — 大型数据集吸引应用、计算和更多数据向其靠拢的倾向。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^stonebraker]: Michael Stonebraker and Uğur Çetintemel, "'One Size Fits All': An Idea Whose Time Has Come and Gone," *Proceedings of the 21st International Conference on Data Engineering (ICDE 2005)*, Tokyo, pp. 2–11, IEEE, https://doi.org/10.1109/ICDE.2005.1，发布于 2005-04；获奖背景：Brown University CS, "Ugur Cetintemel Wins IEEE Data Engineering (ICDE) 2015 Influential Paper Award," https://cs.brown.edu/news/2015/02/27/ugur-cetintemel-wins-icde-2015-influential-paper-award/，发布于 2015-02-27；检索于 2026-11-01。[VERIFY: 核实该 DOI 是否指向这篇论文]

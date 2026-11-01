@@ -1,6 +1,7 @@
 # 15. 数据治理、安全与隐私
 > **深度：** L2 · **阅读时间：** 约 19 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 8 章 — 目录与元数据存储](../01-data-systems-foundations/ch08-catalogs-and-metastores.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - 数据治理（governance）要为每一份数据回答三个问题：*它是什么*、*谁可以出于何种目的使用它*，以及*它流向了哪里*。数据分类（data classification）回答第一个问题，访问策略回答第二个，数据血缘（lineage）回答第三个。每一环都依赖前一环，而大多数失败都始于第一环：没人知道某一列存放着银行卡号，策略就无从保护它。
@@ -9,6 +10,7 @@
 - 该品类正在向更大的安全与数据保护平台整合。Palo Alto 收购了 Dig（2023 年），Proofpoint 同意收购 Normalyze（2024 年），并于 2026 年 10 月同意以约 $6.3B 的交易价值（约 $5.71B 股权价值；尚待完成，预计 2027 年上半年交割）收购 Varonis；Veeam 则完成了对 Securiti 的 $1.725B 收购（2025 年 12 月）。[^dig][^normalyze][^varonis-8k][^securiti] Everpure 以 $125.0M 收购了 1touch（2026 年 5 月交割）。[^ep-10q] Cyera 是坚持独立的一家，媒体报道估值为 $12B。[^cyera-g]
 - 监管创造需求。截至 2026 年 1 月，GDPR 罚款累计约 €7.1B；[^dla] 在 IBM 2025 年的研究中，数据泄露平均成本全球为 $4.44M、美国为 $10.22M；[^ibm] 经 2026 年 AI Omnibus（Regulation (EU) 2026/1744）调整后，EU AI Act 对高风险系统的数据治理义务现定于：独立系统（附件 III）自 2027 年 12 月 2 日起、嵌入产品的系统（附件 I）自 2028 年 8 月 2 日起适用。[^omnibus] AI 智能体（agent）进一步放大了风险，因为它们读取的数据量远超任何分析师。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业视角 + Everpure 视角）
 
 本书涉及的每一个数据平台最终都会售卖数据治理能力。目录（catalog，见[第 8 章](../01-data-systems-foundations/ch08-catalogs-and-metastores.md)）是权限所在之处，这正是 Databricks 与 Snowflake 争夺目录的原因。数据血缘（[第 13 章](ch13-data-quality-observability-lineage.md)）让删除和审计成为可能。语义层（semantic layer，[第 14 章](ch14-semantic-layers-and-bi.md)）决定 AI 智能体看到哪些定义。这三者背后的共同问题是：系统是否知道数据*是什么*。只有知道了这一点，系统才能决定谁可以看它。
@@ -19,8 +21,10 @@
 
 一家存储公司为什么要买一个分类器？因为存储层能看到每一个字节，包括那些从未进入目录的副本：备份、快照（snapshot）、导出文件、临时存储桶，以及十年前的 SMB 共享。数据治理厂商需要在连接器上投入大量资金才能触达这些数据，而存储系统本身就持有它们。简言之，其逻辑是：分类加上语义上下文，能把原始容量变成*受治理、可供 AI 使用*的数据，而受治理的数据每 TB 价值更高。[主要参与者](#whos-who)一节列出了基于公开信息、战略团队可能评估的选项。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="access-control-models-from-roles-to-attributes"></a>
 ### 访问控制模型：从角色到属性
 
 **RBAC** 是大多数企业仍在使用的模型。诸如对 `crm.customers` 的 SELECT 之类的权限被授予 `analyst_emea` 之类的角色，再把用户分配到角色。它易于审计（"谁拥有这个角色？"），但扩展性差。面对 5,000 张表、40 个敏感级别和 30 个地区，管理员最终要为每一种组合创建一个角色，从业者称之为*角色爆炸*（role explosion）。每张新表还需要重新授权，因此保护总是滞后于创建。
@@ -55,6 +59,7 @@ flowchart LR
 
 > **类比：硬件内存标签。** ABAC 类似 ARM 的内存标签扩展（Memory Tagging Extension，MTE）。MTE 为每个 16 字节内存颗粒存储一个小标签，并在指针中存储匹配的标签，硬件在每次访问时比对两者。相比之下，在 RBAC 下，权限取决于*你运行在哪张页表里*。数据标签扮演着内存标签的角色：检查随数据而行，而不是随程序而行。CHERI 之类的能力（capability）系统更进一步，把访问权变成不可伪造的令牌。如今目录向查询引擎签发的有范围限制的短期凭证（[第 8 章](../01-data-systems-foundations/ch08-catalogs-and-metastores.md)）遵循的也是同一原理。
 
+<a id="inside-a-discovery-and-classification-engine"></a>
 ### 数据发现与分类引擎内部
 
 标签必须有来源，分类引擎负责生成它们。各商业产品的包装方式不同，但底层管道大同小异。
@@ -131,10 +136,12 @@ flowchart LR
 
 > **深入（L3）。** 置信度评分组合各检测器输出的方式，与贝叶斯垃圾邮件过滤器组合词语证据的方式非常相似。每个检测器贡献一个似然比（"Visa"字样旁一个通过 Luhn 校验的 16 位数字串是强证据；一个孤立的 9 位数字是弱证据），在样本上进行列级聚合可以使估计更精确。如果 200 个抽样值中有 180 个匹配，即使有 10% 不匹配，该列也会被打上标签。要询问厂商：阈值是否按数据源分别校准，以及数据管理员的更正如何反馈到模型中。
 
+<a id="dspm-from-labels-to-posture"></a>
 ### DSPM：从标签到态势
 
 分类说明数据是什么。**DSPM** 是 Gartner 约从 2022 年开始跟踪的一个品类，它把分类结果与数据*位于何处*、*谁能触达*结合起来，再对暴露风险进行排序。[^dspm-market] 典型发现包括：一份生产环境客户快照被复制到测试账户中一个未加密的存储桶；一个存放工资文件的 SharePoint 文件夹被共享给"所有人"；或者一个 AI 助手的索引建立在包含健康数据的共享之上。DSPM 借鉴了云安全态势管理的模式，并且常常与之对接：持续扫描、风险评分和整改工单。相邻能力，如数据检测与响应（对异常访问告警）和数据防泄漏（DLP，阻止数据外流），正在融入同一批产品。Cyera 以 $162M 收购 DLP 公司 Trail Security 就是一例。[^cyera-trail]
 
+<a id="protecting-data-that-must-be-used"></a>
 ### 保护必须被使用的数据
 
 分类与策略决定某人*能否*看到数据。另一套工具则改变他们*看到什么*。
@@ -155,10 +162,12 @@ flowchart LR
 
 > **类比：地址转换。** 令牌化就是敏感值的页表。应用持有的是一个*虚拟*标识符（令牌），它本身毫无用处，只有特权转换步骤（金库，或保格式方案中的密钥）才能把它映射到*物理*值。与 MMU 一样，安全性来自对谁能执行转换的控制，代价则是每次解引用都多一次查找。无金库方案类似固定的基于哈希的映射：无需遍历表，但持有密钥的任何人都能转换一切。
 
+<a id="lineage-based-compliance-access-erasure-retention"></a>
 ### 基于血缘的合规：访问、删除、保留
 
 GDPR 赋予个人访问权（第 15 条）和删除权（第 17 条），控制者必须在一个月内答复，复杂请求可再延长两个月。[^gdpr] 要大规模做到这一点，需要分类引擎的实体地图（此人的数据存放在哪里？）以及数据血缘（[第 13 章](ch13-data-quality-observability-lineage.md)）来显示这些数据流入了哪些派生表、特征、嵌入（embedding）和备份。湖仓一体（lakehouse）中的删除也不是即时的。Iceberg 或 Delta 中的 DELETE 只是把行从*当前*快照中移除，字节会一直保留，直到压缩和快照过期运行完毕（[第 7 章](../01-data-systems-foundations/ch07-open-table-formats.md)）。因此，以 `retain_until=2027-12-31` 这类标签写成的保留策略是数据治理的一部分，而不只是存储层面的日常维护。嵌入向量和微调模型带来了一个悬而未决的问题："删除"一个人是否需要重建索引或重新训练模型。监管机构尚未对此定论。
 
+<a id="worked-example-an-agent-asks-for-customers-at-risk-of-churn"></a>
 ## 实例：智能体被问到"有流失风险的客户"
 
 Maria 是都柏林的一名客户成功经理，她问公司的 AI 智能体：*"我的客户中哪些有流失风险，原因是什么？"* 该智能体通过一个 MCP 服务器和语义层工作（[第 14 章](ch14-semantic-layers-and-bi.md)、[第 22 章](../03-ai-data-stack/ch22-agents-and-data.md)）。相关数据已经完成分类：
@@ -200,6 +209,7 @@ sequenceDiagram
 
 失败模式同样具有启发性。假设一名工程师在 `crm.customers` 中新增了一个 `notes` 列，而一位客户经理把护照号码粘贴了进去。在分类器的漂移扫描为该列打上标签之前，ABAC 无从发挥作用，智能体就可能把这些内容暴露出来。以小时或天计的分类延迟，才是真正的暴露窗口。
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 | 决策 | 选项 A | 选项 B | A 胜出的情形… | B 胜出的情形… |
@@ -215,6 +225,7 @@ sequenceDiagram
 
 **为替代方案构建最强版本论证（steelman）。** 支持*平台原生*策略的理由很充分：在引擎内部执行速度最快，无法通过直连绕过，而且正在快速改进。Unity Catalog 和 Snowflake 现在都已原生评估由标签驱动的策略。[^uc-abac][^sf-tag] 支持*叠加层*的理由是：很少有大企业只运行一个平台，而审计师希望对"谁能看到客户数据？"得到唯一的答案。在检测器方面，反对 LLM 分类的理由是成本与可重复性：同一份文档在两次运行中可能得到不同标签，若没有置信度阈值和人工复核，审计师不会接受。支持它的理由则是：正则表达式从来读不懂一份并购备忘录。
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 | 厂商 | 所有者 / 状态（2026 年 11 月） | 方法 | 结构化 / 非结构化 | 部署方式 | 重要交易或融资 |
@@ -246,6 +257,7 @@ sequenceDiagram
 
 看空逻辑是：分类正在成为目录和云的免费功能。看多逻辑是：没有任何目录能看到存储所能看到的非结构化数据和影子副本。[第 33 章](../04-company-deep-dives/ch33-governance-catalog-security-companies.md)对这些公司做了详细介绍，[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)则把这一举措放在存储厂商向上层栈延伸的背景下讨论。
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 ```mermaid
@@ -271,6 +283,7 @@ timeline
 
 **下一步。** 欧盟 Digital Omnibus 中的 GDPR 部分于 2025 年 11 月提出，将收窄个人数据的认定范围并增加 AI 处理相关条款，截至 2026 年底仍在谈判中。[^omnibus] 智能体治理（与用途绑定的凭证、MCP 网关、按智能体审计）是下一轮建设重点。Snowflake 同意以约 $110M（主要以股票支付）收购 MCP 网关公司 Natoma（2026 年 5 月宣布；交割情况未核实），表明平台厂商正在进入这一领域。[^natoma]
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源 / 日期 |
@@ -293,10 +306,12 @@ timeline
 
 *图 15.8 — 罚款金额巨大但并不常见。泄露成本和不断增加的 AI 相关事件对预算的推动作用更大。数据上下文类资产的定价参照，从规模化上市厂商约 8 倍收入（Varonis，待被收购），到私募成长轮据报道约 80 倍 ARR（Cyera，公司对该数字提出异议）。*
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** 分类是关于内容的元数据，而存储本身已经持有大量此类元数据：对象标签、文件 ACL、快照目录、访问日志。驻留在存储中的分类器可以在靠近数据的位置扫描而无需产生出口流量费（egress fees），可以在共享数据块的快照之间对扫描去重，还能为从未在任何目录中登记的影子副本（备份、克隆、临时存储桶）打标签。难点在于对生产阵列施加的读取负载，以及把标签*写出*到执行策略的目录中。快照、元数据和对象标签的机制请参见配套的 *Everpure Tech Atlas*。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理提问**
@@ -321,6 +336,7 @@ timeline
 - "分类是一次性项目。"数据资产每天都在变化，漂移监控才是产品本身。
 - "EU AI Act 的高风险规则自 2026 年 8 月起适用。"2026 年的 Omnibus 已将其推迟到 2027 年 12 月和 2028 年 8 月。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 - NIST SP 800-162，了解形式化的 ABAC 模型（主体、客体、环境、策略）。[^nist-abac]
@@ -329,6 +345,7 @@ timeline
 - Microsoft Purview 数据分类概述，了解 EDM、指纹识别和可训练分类器。[^purview-class]
 - Dwork、McSherry、Nissim 和 Smith（2006 年），差分隐私的奠基论文。[^dwork]
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [基于角色的访问控制](../glossary.md#role-based-access-control) — 把权限授予角色，再把角色分配给用户。
@@ -361,6 +378,7 @@ timeline
 - [数据主权](../glossary.md#data-sovereignty) — 数据受其存储地或数据主体居住地法律管辖。
 - [模型上下文协议](../glossary.md#model-context-protocol) — 把 AI 智能体连接到工具和数据的开放协议。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^ep-wwt]: World Wide Technology（转载 Pure Storage 新闻稿），"Pure Storage rebrands to Everpure and announces intent to acquire 1touch," https://www.wwt.com/news/pure-storage-rebrands-to-everpure-and-announces-intent-to-acquire-1touch，发布 2026-02-23；检索 2026-11-01。另见 Cleary Gottlieb，"Everpure (f/k/a Pure Storage) to Acquire 1touch," https://www.clearygottlieb.com/news-and-insights/news-listing/everpure-f-k-a-pure-storage-to-acquire-1touch，发布 2026-02；检索 2026-11-01。

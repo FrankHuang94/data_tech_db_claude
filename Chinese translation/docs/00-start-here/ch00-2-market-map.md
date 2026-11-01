@@ -1,6 +1,7 @@
 # 0.2 一页纸市场地图
 > **深度：** L1 · **阅读时间：** 约 9 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [0.1 如何使用本图谱](ch00-1-how-to-use.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - 数据与 AI 数据行业可以画成 **九个层级**，底层是对象存储（object storage），顶层是智能体（agent）与应用。本图谱中的每家公司都位于其中一层或多层，而最大的那些公司正试图占据全部九层。
@@ -9,11 +10,12 @@
 - 技术栈的中间层在 2025–26 年被纷纷出售。Informatica 归入 Salesforce（约 $8B），Confluent 归入 IBM（约 $11B），Dremio 归入 SAP，Neon 归入 Databricks，AWS 也签署了收购 DuckLabs 的协议。私人资本则集中流向少数赢家：VAST Data（$30B）、Scale AI（隐含约 $29B）、ClickHouse（$15B）和 Cyera（$12B）。[^ma][^funding]
 - Everpure 的公开举措位于第 1 层（存储），自 **$125.0M** 收购 1touch 以来，已延伸至第 3 层（数据发现、数据分类与语义上下文）。[^ep-1touch] [第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)阐述了相关可选方案。
 
+<a id="the-map"></a>
 ## 地图
 
 下面这张地图就是一页纸上的整本图谱。请自下而上阅读：每一层都依赖于其下一层，而每往上一层，就离提出问题的人或智能体更近一步。
 
-![数据与 AI 数据栈的分层市场地图，共九条水平带。自下而上依次为：基础设施与对象存储（AWS S3、Azure Blob、Google Cloud Storage、Everpure、NetApp、Dell、VAST Data、MinIO）；文件与表格式（Parquet、Arrow、Lance、Iceberg、被 Databricks 收购的 Tabular、Delta Lake、Hudi）；目录与数据治理（Unity Catalog、Polaris 与 Horizon、Glue、Dataplex、Purview、Collibra、Atlan、Alation、BigID、Cyera、被 Everpure 收购的 1touch、待出售给 Proofpoint 的 Varonis）；运营型数据库（Oracle、MongoDB、PostgreSQL、归入 Databricks 的 Neon、归入 Snowflake 的 Crunchy Data、Supabase、Redis、CockroachDB、DynamoDB、Spanner、Aurora）；分析平台与引擎（Databricks、Snowflake、BigQuery、Redshift、Fabric、ClickHouse、DuckDB、归入 AWS 的 DuckLabs、Trino、Starburst、归入 SAP 的 Dremio、Teradata）；数据管道与流处理（Fivetran 与 dbt Labs、Airbyte、归入 Salesforce 的 Informatica、归入 IBM 的 Confluent、Redpanda、Flink、Airflow、Astronomer、归入 Prefect 的 Dagster）；语义层与 BI（Power BI、Tableau、Looker、Sigma、ThoughtSpot、Cube、AtScale）；AI 数据（Pinecone、Weaviate、Qdrant、Milvus 与 Zilliz、Unstructured、LlamaIndex、Scale AI、Snorkel AI、MLflow、归入 CoreWeave 的 Weights and Biases）；以及智能体与应用（Model Context Protocol、Salesforce Agentforce 与 Data 360、ServiceNow、SAP Business Data Cloud、Palantir AIP、Workday Data Cloud）。右侧一个高箭头表示价值向上迁移。Everpure 和 1touch 以朱红色轮廓标出](../assets/diagrams/ch00-market-map.svg)
+![数据与 AI 数据栈的分层市场地图，共九条水平带。自下而上依次为：基础设施与对象存储（AWS S3、Azure Blob、Google Cloud Storage、Everpure、NetApp、Dell、VAST Data、MinIO）；文件与表格式（Parquet、Arrow、Lance、Iceberg、被 Databricks 收购的 Tabular、Delta Lake、Hudi）；目录与数据治理（Unity Catalog、Polaris 与 Horizon、Glue、Dataplex、Purview、Collibra、Atlan、Alation、BigID、Cyera、被 Everpure 收购的 1touch、待出售给 Proofpoint 的 Varonis）；运营型数据库（Oracle、MongoDB、PostgreSQL、归入 Databricks 的 Neon、归入 Snowflake 的 Crunchy Data、Supabase、Redis、CockroachDB、DynamoDB、Spanner、Aurora）；分析平台与引擎（Databricks、Snowflake、BigQuery、Redshift、Fabric、ClickHouse、DuckDB、归入 AWS 的 DuckLabs、Trino、Starburst、归入 SAP 的 Dremio、Teradata）；数据管道与流处理（Fivetran 与 dbt Labs、Airbyte、归入 Salesforce 的 Informatica、归入 IBM 的 Confluent、Redpanda、Flink、Airflow、Astronomer、归入 Prefect 的 Dagster）；语义层与 BI（Power BI、Tableau、Looker、Sigma、ThoughtSpot、Cube、AtScale）；AI 数据（Pinecone、Weaviate、Qdrant、Milvus 与 Zilliz、Unstructured、LlamaIndex、Scale AI、Snorkel AI、MLflow、归入 CoreWeave 的 Weights and Biases）；以及智能体与应用（Model Context Protocol、Salesforce Agentforce 与 Data 360、ServiceNow、SAP Business Data Cloud、Palantir AIP、Workday Data Cloud）。右侧一个高箭头表示价值向上迁移。Everpure 和 1touch 以朱红色轮廓标出](../../../docs/assets/diagrams/ch00-market-map.svg)
 
 *图 0.2.1 — SV-1，一页纸市场地图。九个层级，约 80 家具名公司和项目，以及一个发展方向：价值正从字节转向位于其上的元数据、语义和智能体。标签边框表示上市（实线）、私有（虚线）和开源（灰色）状态；"A → B"表示 2024–26 年的一笔收购。*
 
@@ -35,6 +37,7 @@
 
 *图 0.2.2 — 按层级列示公司。最大的价值集中在底部（超大规模云厂商）和顶部（应用与智能体平台）；中间层则是 2025–26 年交易发生的地方。2021–22 年的私募估值尚未重新定价，应视为过时数据。*
 
+<a id="layer-by-layer"></a>
 ## 逐层解读
 
 **1. 基础设施与对象存储。** 每个现代数据平台都把持久化副本保存在对象存储中：云上是 AWS S3、Azure Blob Storage 或 Google Cloud Storage，本地部署则是 Everpure（FlashBlade）、NetApp、Dell、VAST Data 或 MinIO 提供的 S3 兼容系统。超大规模云厂商在容量上占据主导，并正在把数据库功能直接加入存储 API，例如 S3 Tables 和 S3 Vectors（[第 24 章](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)）。存储同业都在向上延伸：VAST 自建了数据库和引擎，NetApp 收购了 DataPelago，Everpure 收购了 1touch（[第 28 章](../04-company-deep-dives/ch28-hyperscaler-data-platforms.md)、[第 32 章](../04-company-deep-dives/ch32-ai-native-data-companies.md)、[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)）。
@@ -55,6 +58,7 @@
 
 **9. 智能体与应用。** 在顶层，应用厂商掌握着记录系统及其对象的业务含义：Salesforce（Agentforce 与 Data 360）、ServiceNow、SAP（Business Data Cloud）、Workday（Data Cloud）和 Palantir（AIP，构建于其本体之上）。[Model Context Protocol](../glossary.md#model-context-protocol)（MCP）已成为连接智能体与数据源的标准接口。这些厂商如今通过零拷贝（zero-copy）链接而非导出的方式与 Databricks 和 Snowflake 共享数据，这使得应用层既是这些平台的客户，又是它们的竞争对手（[第 34 章](../04-company-deep-dives/ch34-application-giants-data-platforms.md)、[第 22 章](../03-ai-data-stack/ch22-agents-and-data.md)）。
 
+<a id="where-value-is-migrating"></a>
 ## 价值正向何处迁移
 
 本图谱的核心论点是：数据领域的[价值迁移（value migration）](../glossary.md#value-migration)是向上进行的。下面的流程图把它压缩为四个步骤，并标出了标志每一步的交易。
@@ -88,6 +92,7 @@ flowchart LR
 
 对 Everpure 而言，基于公开信息，这张地图提示了战略团队可能评估的三个问题。阵列级元数据能在第 3 层上走多远（来自 1touch 的 Data Intelligence）？哪些引擎合作伙伴能把第 1 层变成经过认证的湖仓一体（lakehouse）底座（Databricks 的 Storage Ecosystem，Everpure 是其具名的首发合作伙伴，另有 Dremio 和 Starburst 的参考设计）？[^storage-eco] 以及，哪些小型的第 3 层或第 8 层能力买比造更便宜？[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)将展开讨论这些可选方案。
 
+<a id="the-data-industry-in-10-diagrams"></a>
 ## 用 10 张图看懂数据行业
 
 如果你只看图，就看这十张。每个链接都指向所在章节的标志性图示。
@@ -103,6 +108,7 @@ flowchart LR
 9. **智能体访问路径** —— [第 22 章](../03-ai-data-stack/ch22-agents-and-data.md#the-access-path-from-agent-to-bytes)。智能体只能通过 MCP、语义层和目录的策略引擎才能触达字节，因此数据治理才是真正的产品。
 10. **可比公司散点图** —— [第 37 章](../05-business-and-economics/ch37-public-comps-valuation.md#evntm-against-growth-the-regression)。增长率对估值倍数差异的解释力远不到一半，而 Everpure 位于其增长率所预测的回归线下方。
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 期间 / 截至 |
@@ -125,6 +131,7 @@ flowchart LR
 
 *图 0.2.4 — 关键数字。每个数字都带有标签和日期；云业务的增长率主要由 AI 计算驱动，而不是由本地图上的数据产品驱动。*
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [开放表格式（Open table format）](../glossary.md#open-table-format) —— 把对象存储上的文件变成事务型表的元数据层。
@@ -141,6 +148,7 @@ flowchart LR
 - **市场地图（Market map）** —— 把公司放置到行业技术栈各层级中的示意图（术语表条目已暂存）。
 - **控制点（Control point）** —— 所有其他组件都必须经过的层级，赋予其所有者定价权和策略制定权（术语表条目已暂存）。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^db-aug26]: Databricks, "Databricks Grows >80% YoY, Surpasses $7B Revenue Run-Rate…," https://www.databricks.com/company/newsroom/press-releases/databricks-grows-80-yoy-surpasses-7b-revenue-run-rate-scales，发布 2026-08-13；检索 2026-11-01。公司披露，未经审计。估值依据 `data/private_funding.csv`。

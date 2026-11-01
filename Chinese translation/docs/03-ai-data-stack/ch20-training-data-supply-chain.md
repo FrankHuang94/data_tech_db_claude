@@ -1,6 +1,7 @@
 # 20. 训练数据供应链
 > **深度：** L2 · **阅读时间：** 约 16 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 16 章 — AI 数据生命周期](ch16-ai-data-lifecycle.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - 前沿模型由四类输入渠道构建：爬取的网络数据、授权内容、人工产出的数据（标注、偏好排序、专家示范）以及由其他模型生成的合成数据（synthetic data）。每个渠道都有各自的成本曲线、法律风险和供应商结构。它们共同构成一条供应链，而数据整理（curation，包括去重、质量过滤、PII 移除、配比混合）就是位于中间的"炼油厂"。
@@ -9,6 +10,7 @@
 - 法律背景在 2025–2026 年发生了变化。两家美国地区法院根据各自的案卷认定，用书籍训练模型可以构成合理使用（fair use）（Bartz v. Anthropic；Kadrey v. Meta，2025 年 6 月）。在 Bartz 案中，用盗版副本建立资料库是另一个问题，这让 Anthropic 付出了 $1.5B 的集体诉讼和解金，该和解于 2026 年 7 月获得最终批准。[^bartz-final][^fairuse] 如今，授权看起来不太像法律盾牌，而更像是为新鲜、难以爬取的内容支付的访问费。
 - 数据整理胜过原始规模。FineWeb-Edu 从 15T token 的网络语料中只保留了"具有教育价值"的 1.3T token，在其上训练的模型在知识和推理基准测试上得分显著更高。[^fineweb] 相关工具（MinHash 去重、由 LLM 标注训练的质量分类器、NVIDIA NeMo Curator 等 GPU 数据管道）如今已是通用商品。仍然稀缺的是决定混合配比中放入什么的判断力。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业 + Everpure 视角）
 
 算力占据了新闻头条，但数据才是区分各家前沿实验室的投入要素。每家实验室都能买到同样的 GPU。但很少有实验室能买到同样由专家撰写的推理轨迹、同样的授权档案，或同样调优过的数据配比。这就是为什么人工数据支出在三年内成长为一个数十亿美元规模的市场。大学求职网络 Handshake 在大约一年内建立了一项年化运行率约 $1B 的 AI 数据业务（公司披露的年化运行率；总账单额）。[^handshake] 这也是为什么最有价值的数据供应商看起来不太像软件公司，而更像人力派遣公司或特种材料供应商——这对如何为它们估值至关重要。
@@ -17,8 +19,10 @@
 
 Everpure 的切入点在第三个问题。训练语料和整理后的数据集体量大、生命周期长且有版本管理。一家实验室会保存原始爬取快照、若干经过去重和过滤的衍生版本，以及每个模型检查点背后的确切配比，有时长达数年，以满足可复现性和诉讼需要。根据 Anthropic 的和解协议，该公司必须销毁其持有的盗版文件，[^bartz-final] 因此可证明的删除和数据血缘如今已是法律要求，而不仅仅是良好的数据卫生习惯。企业微调在较小规模上面临同样的问题：找到敏感数据、对其分类、清除并留存记录。这正是 Everpure 于 2026 年收购 1touch（数据发现、数据分类和语义上下文）所要承担的工作。[^everpure-1touch] 参见下文的存储桥接和[第 15 章](../02-pipelines-and-governance/ch15-governance-security-privacy.md)。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="four-channels-into-one-refinery"></a>
 ### 四条渠道汇入一座炼油厂
 
 可以把模型的训练数据看作一份物料清单。预训练（pretraining）消耗数万亿 token，主要是爬取的网络文本，加上代码、书籍和论文。后训练消耗的 token 少得多，但每个 token 的成本高得多。它们包括监督式示范、用于[人类反馈强化学习](../glossary.md#reinforcement-learning-from-human-feedback)（reinforcement learning from human feedback，RLHF）的偏好排序、由专家评分的评分细则（rubric），以及越来越多的 [RL 环境](../glossary.md#rl-environment)（RL environment）：可以自动为模型的尝试打分的模拟任务。InstructGPT 论文（2022）在早期偏好学习研究的基础上，推广了 RLHF 方法，正是这一方法催生了人工数据市场。[^instructgpt]
@@ -57,6 +61,7 @@ flowchart LR
 
 *图 20.1 — 训练数据供应链。资金从少数几家实验室沿链条回流。人工数据的大部分资金经由供应商流向承包商，因此供应商的真实利润是其抽成比例（take rate），而非总账单额。*
 
+<a id="human-data-from-crowd-labels-to-rented-phds"></a>
 ### 人工数据：从众包标注到租用博士
 
 人工数据供应商采用三种商业模式，其差异直接体现在利润率上。
@@ -69,6 +74,7 @@ flowchart LR
 
 > **类比：半导体供应链。** 把这些供应商映射到晶圆厂的投入品上。众包标注是**大宗化学品**：可互换、多源采购、按成本定价。专家数据是**特种气体和光刻胶**：用量小，却对良率至关重要，由少数合格供应商生产，并能获得高利润率，因为实验室难以在项目进行中重新认证新的供应来源。RL 环境和评估套件则希望成为 **ASML**：一种每个客户都需要、却很少有人能造出来的可复用工具。差距在于，ASML 的护城河是数十年的物理学积累和专利壁垒，而数据供应商的护城河是招募来的劳动力队伍和一套质量流程，资金充裕的对手一年就能复制。
 
+<a id="worked-example-what-143b-buys-when-it-is-not-an-acquisition"></a>
 ### 实算示例：当 $14.3B 不是一笔收购时，它买到了什么
 
 2025 年 6 月，据媒体报道，Meta 斥资约 $14.3B 收购 Scale AI 49% 的**无投票权**股份，隐含估值约 $29B。CEO Alexandr Wang 离职去领导 Meta 的超级智能项目，Jason Droege 出任临时 CEO。[^meta-scale] 一年前，Scale 的 F 轮融资对其定价为 $13.8B（公司披露，2024 年 5 月）。[^scale-f] 以媒体报道的 2024 年收入约 $870M 计算，[^surge-bb] 隐含倍数约为过去 12 个月收入的 33 倍（估算）。
@@ -86,12 +92,14 @@ Meta 实际上买到了什么？一种有用的拆解方式：
 
 对任何在集中市场中为供应商估值的人来说，教训正是 TSMC 赖以立业的那条原则：永远不要被某个客户控股，也不要与客户竞争。当少数几家实验室占据大部分支出时（Sacra 估计 Surge 从约 12 个客户处获得了超过 $1B 的收入），[^surge-sacra] 一家实验室持有的股份就会给其他实验室离开的理由。同样的风险也可能来自运营失误。2026 年 3 月底发生安全漏洞后，Meta 暂停了与 Mercor 的合作，OpenAI 和 Anthropic 则在评估自身受影响程度（媒体报道）。[^mercor-breach] 实验室将其数据配方视为商业机密。一个能看到多家实验室配方的供应商，既是一个供应商，也是机密的集中地。
 
+<a id="synthetic-data-the-model-as-its-own-supplier"></a>
 ### 合成数据：模型成为自己的供应商
 
 [合成数据](../glossary.md#synthetic-data)是由模型生成、而非从人或现实世界采集的训练数据。其最常见的形式是[蒸馏](../glossary.md#distillation)（distillation）：一个大型"教师"模型撰写答案或推理轨迹，一个较小的"学生"模型在其上训练。NVIDIA 围绕这一点打造了一条产品线。Nemotron-4 340B Instruct 超过 98% 的对齐数据是合成的，NVIDIA 以开放模型许可证（2024 年 6 月）发布了生成器、用于为其输出打分的奖励模型以及整条数据管道。[^nemotron] 在机器人和自动驾驶领域，NVIDIA 的 Cosmos 世界模型（2025 年 1 月）可以生成符合物理规律的视频。NVIDIA 表示这些模型在 2,000 万小时的视频上训练（厂商声明）。[^cosmos] NVIDIA 还于 2025 年 3 月以未披露的价格收购了合成表格数据初创公司 Gretel，据 Wired 报道金额为九位数（媒体报道）。[^gretel]
 
 其吸引力在于经济性。GPU 时间比专家时间便宜，而且无需招聘即可扩展。风险则是统计层面的。Shumailov 等人（*Nature*，2024 年 7 月）表明，在自身输出上递归训练的模型会发生[模型崩溃](../glossary.md#model-collapse)（model collapse）。原始分布中罕见的"尾部"最先消失，经过足够多代之后，输出会退化为重复文本。[^collapse] 实践中，实验室通过三种方式管理这一风险。它们保留一个固定的真实数据锚点。它们将合成数据添加到这个锚点上，而不是替换它。它们主要在输出可自动核验的地方使用合成数据，例如必须通过测试的代码，或答案可验证的数学题。因此，合成数据与专家数据之间更多是互补而非替代关系：专家编写高难度的种子样本和评分器，模型则将其成倍扩增。
 
+<a id="licensed-content-and-the-legal-backdrop"></a>
 ### 授权内容与法律背景
 
 授权交易始于 2023 年，并在 2024 年全面铺开。据报道，Reddit 以每年约 $60M 的价格将其帖子授权给 Google（2024 年 2 月，媒体报道），[^reddit-google] 并授权给 OpenAI（2024 年 5 月；每年约 $70M 为外部估算）。[^reddit-openai] 据报道，News Corp 与 OpenAI 签署了五年约 $250M 的协议（2024 年 5 月，媒体报道）。[^newscorp] 此前与 Associated Press（2023 年 7 月）、Shutterstock（2023 年 7 月）和 Axel Springer（2023 年 12 月）的交易确立了模板。各方未披露这些交易的财务条款。[^early-deals] 学术出版商也成为重要的卖方。据二手来源报道，Wiley 在其 FY2026（2025 年 5 月–2026 年 4 月）报告了约 $49M 的 AI 授权收入。[^wiley]
@@ -120,6 +128,7 @@ timeline
 
 > **类比：知识产权授权。** 如今的内容交易大多是**一次性付清的授权**（paid-up license）：为获取访问权支付固定年费，类似于解决专利纠纷的交叉授权。版权方想要的是 Qualcomm 和 Arm 所拥有的模式——与每件售出产品挂钩的**持续版税**（running royalty），在这个市场中意味着与每次回答的查询或每次展示的引用挂钩。合理使用判决削弱了"大棒"（禁令威胁），因此授权的价值如今取决于"胡萝卜"：无法自由爬取的新鲜、结构化内容。这就是为什么掌控其 API 和实时数据访问权的 Reddit，据报道能够在 2025 年寻求第二轮交易。[^reddit-next]
 
+<a id="curation-at-scale-dedup-quality-pii"></a>
 ### 规模化数据整理：去重、质量、PII
 
 原始网络文本大多是重复内容、模板化文字和垃圾信息。数据整理通过一系列固定阶段将其转化为训练数据，成本最低的阶段最先执行。
@@ -148,6 +157,7 @@ flowchart LR
 
 > **深入（L3）。** 若有 *b* 个 LSH 频带、每个频带 *r* 行，那么 Jaccard 相似度为 *s* 的两个文档至少在一个频带中碰撞的概率为 1 − (1 − s^r)^b。这条 S 形曲线让工程师可以设定阈值（通常在 0.7–0.8 左右），并在召回率与算力之间权衡。NVIDIA 的 NeMo Curator 借助 RAPIDS 在 GPU 上运行 MinHash、LSH 和连通分量分组。NVIDIA 声称，一次 4.5 TB 的 RedPajama 模糊去重从 CPU 上的 37 小时降至四个 DGX A100 节点上的 3 小时，并将结果概括为快 20 倍、便宜 5 倍（厂商声明）。注意，从 37 小时降到 3 小时约为 12 倍，因此 20 倍的标题数字大概基于不同的基线或配置。[^curator] `[VERIFY: 20 倍数字背后的 NeMo Curator 基准基线]` FineWeb 的开源 `datatrove` 库以及 Spark、Ray 或 Daft 作业可以在 CPU 上完成同样的工作。
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 | 渠道 | 单位成本 | 扩展依赖 | 法律 / 伦理风险 | 质量上限 | 谁掌控供给 |
@@ -161,6 +171,7 @@ flowchart LR
 
 主张减少购买人工数据的最强版本论证是：合成生成加上自动验证器将持续压低人类撰写 token 的占比。反方观点是：仍然需要有人来编写高难度的种子问题，并为难以自动评判的领域（法律、医学、战略）打分，因此市场会转向更稀缺的专家，而不是消失。2025 年之后，支持授权的最强版本论证变弱了。训练本身看起来站得住脚，因此授权如今买到的是新鲜度和访问权，而非法律上的安宁。*NYT v. OpenAI* 案中的一项严厉判决，或未来案件中的市场稀释证据，都可能逆转这一局面。
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 | 供应商 | 模式 | 客户（公开报道） | 最新融资 / 估值（口径，日期） | 状态，2026 年 11 月 | 利润率概况 | 差异化 |
@@ -178,12 +189,13 @@ flowchart LR
 
 *图 20.6 — 人工数据供应商，从托管服务到专家网络再到商品化众包依次排列。估值跟随供给的稀缺性，而非员工人数。*
 
-![AI 训练数据供应商估值横向条形图：Scale AI 约 $29B（由 Meta 2025 年 6 月入股隐含），Mercor $10B（2025 年 10 月）及报道中的 $20B 洽谈，Snorkel AI $3.5B（2026 年 9 月），Turing $2.2B，Invisible 超过 $2B，Surge AI 仅显示报道中的 $25B 洽谈](../assets/charts/ch20_data_vendor_valuations.png)
+![AI 训练数据供应商估值横向条形图：Scale AI 约 $29B（由 Meta 2025 年 6 月入股隐含），Mercor $10B（2025 年 10 月）及报道中的 $20B 洽谈，Snorkel AI $3.5B（2026 年 9 月），Turing $2.2B，Invisible 超过 $2B，Surge AI 仅显示报道中的 $25B 洽谈](../../../docs/assets/charts/ch20_data_vendor_valuations.png)
 
 *图 20.7 — 已定价的估值集中在 $2B 到 $10B 之间，Scale 是一个一次性的战略性估值。最大的数字（Surge、Mercor 的下一轮）是洽谈，而非已完成的融资。资料来源：`data/private_funding.csv`、本章暂存数据行及 `data/ch20_valuation_talks.csv`。*
 
 **数据整理与合成工具。** NVIDIA 覆盖 GPU 一端：用于文本和视频整理的 NeMo Curator、用于合成生成的 Nemotron 和 Cosmos，以及负责表格数据合成的 Gretel 团队。[^curator][^nemotron][^cosmos][^gretel] Hugging Face 托管开放数据集（FineWeb 等）以及 `datatrove` 工具。[^fineweb] Databricks 和 Anyscale（Ray）是通用的 CPU 和 GPU 批处理引擎。Daft 是一个较新的多模态数据框引擎。实验室内部的数据管道仍是所有"供应商"中最大的一个。对这些数据集进行版本管理和服务的 MLOps 平台见[第 21 章](ch21-ml-platforms-feature-stores-llmops.md)，AI 原生数据公司见[第 32 章](../04-company-deep-dives/ch32-ai-native-data-companies.md)。
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 - **2009–2019：众包时代。** ImageNet 式的标注让众包标注成为一门生意。Appen 和 Scale（成立于 2016 年）依靠计算机视觉和自动驾驶业务成长起来。
@@ -194,6 +206,7 @@ flowchart LR
 
 **发展轨迹。** 预计会出现三个转变。第一，从出售劳动力转向出售可复用资产：可以授权给多家实验室的环境、评估和评分器。第二，买方在多家供应商之间分散采购，并把专家网络内化，从而压缩抽成比例。第三，行业整合，模型和云厂商收购数据整理与合成数据能力，正如 NVIDIA 收购 Gretel 那样。并购视角见[第 39 章](../05-business-and-economics/ch39-ma-history.md)。
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源 / 日期 |
@@ -216,10 +229,12 @@ flowchart LR
 
 *图 20.8 — 需要记住的数字。注意其中经过审计的寥寥无几：这个市场依靠媒体报道和公司披露的年化运行率运转，而且大多是未扣除承包商报酬的总额。*
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** 训练语料是一个有特殊要求的数据湖。它达到 PB 级规模、一次写入，但在每次训练运行中会被多次重读。每个衍生版本（去重后、过滤后、配比后）都必须保留，并与其所供给的模型检查点绑定，既为了可复现性，也为了诉讼保全。Anthropic 和解协议中销毁盗版文件的要求表明，删除也必须是可证明的。快照、不可变版本管理、数据血缘元数据和快速并行读取是其中涉及的存储层能力。Everpure 基于 1touch 的数据智能（数据发现、数据分类、敏感数据上下文）可以对应企业微调数据集的 PII 清除和溯源阶段。这是基于公开信息、战略团队可能评估的一个选项。AI 存储细节请参阅姊妹篇 *Everpure Tech Atlas*。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理提问**
@@ -244,6 +259,7 @@ flowchart LR
 - "合成数据会让人工数据过时。"模型崩溃和对验证器的需求使人类仍留在环路中。工作转向了更难的任务，而不是消失了。
 - "数据越多越好。"FineWeb-Edu 表明，语料库中 9% 的切片就能胜过整体。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 - Penedo 等人，*The FineWeb Datasets*（NeurIPS 2024），对去重和质量过滤最清晰的公开消融研究。[^fineweb]
@@ -252,6 +268,7 @@ flowchart LR
 - Shumailov 等人，*Nature*（2024），关于模型崩溃。[^collapse]
 - NVIDIA，*Nemotron-4 340B Technical Report*（2024），关于合成对齐数据管道。[^nemotron]
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [人类反馈强化学习](../glossary.md#reinforcement-learning-from-human-feedback) — 利用从人类偏好排序中学习到的奖励信号来调优模型。
@@ -270,6 +287,7 @@ flowchart LR
 - [合理使用](../glossary.md#fair-use) — 美国版权法中的抗辩事由，综合权衡使用的目的、作品性质、使用数量和市场影响。
 - [人才收购](../glossary.md#acquihire) — 主要目的是招揽团队而非收购业务的交易。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^meta-scale]: TechCrunch, "Scale AI confirms 'significant' investment from Meta, says CEO Alexandr Wang is leaving," https://techcrunch.com/2025/06/13/scale-ai-confirms-significant-investment-from-meta-says-ceo-alexandr-wang-is-leaving/，发布于 2025-06-13；CNBC via NBC Chicago, https://www.nbcchicago.com/news/business/money-report/scale-ais-alexandr-wang-confirms-departure-for-meta-as-part-of-14-3-billion-deal/3767336/，发布于 2025-06；DeepLearning.AI, The Batch, https://www.deeplearning.ai/the-batch/meta-invests-14-3-billion-in-scale-ai-hires-ceo-alexandr-wang，发布于 2025-06；检索于 2026-11-01。$14.3B 和约 $29B 为媒体报道数字（与 `data/private_funding.csv` 一致）。

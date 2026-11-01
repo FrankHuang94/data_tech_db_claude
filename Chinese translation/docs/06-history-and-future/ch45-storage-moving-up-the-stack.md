@@ -1,6 +1,7 @@
 # 45. 对一家向上层延伸的存储公司意味着什么
 > **深度：** L2 · **阅读时间：** 约 12 分钟 · **最后核实：** 2026-11-01 · **前置阅读：** [第 24 章 — 数据栈与计算和存储的交汇点](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)，[第 44 章 — 未来趋势](ch44-future-trends.md)
 
+<a id="tldr"></a>
 ## 要点速览（TL;DR）
 
 - **存储如今在四个地方与数据交汇：**[湖仓一体](../glossary.md#lakehouse)（lakehouse）底座（[对象存储](../glossary.md#object-storage)（object storage）上的开放表）、被 AI 检索和推理推到闪存上的向量层和 [KV 缓存](../glossary.md#kv-cache)（KV cache）层、元数据智能（数据发现、数据分类和语义上下文），以及网络弹性。每一个都是独立的市场，买家、合作伙伴和竞争对手各不相同。
@@ -9,6 +10,7 @@
 - **按层级划分的选项（仅基于公开信息）：** 在引擎层和目录层*合作*；在阵列已经能看到数据的地方（元数据、向量/KV 层）*自建或扩展*；在 Data Intelligence 周边*收购*小型能力；只在不会伤害合作伙伴的地方*竞争*。从 EMC–Greenplum（2010）到 NetApp–DataPelago（2026）的先例表明，收购整个引擎是风险最大的路径。
 - **投资者将根据软件收入占比而非口号来评判这一举措。** 截至 Q2 FY2027，订阅 ARR 为 $2.1B（+20%），订阅服务约占季度收入的 42%（估算）。市值为 $43.79B，EV/未来 12 个月收入约 8.5x（2026-10-01）。这一倍数介于 NetApp 的约 5.1x 和 Rubrik 的约 16x 之间，而向上延伸的故事正是试图弥合这一差距。
 
+<a id="why-this-matters-business--everpure-lens"></a>
 ## 为何重要（商业 + Everpure 视角）
 
 一家始终只做存储的公司卖的是容量和性能。这是一门好生意，但市场按硬件为其定价：2026-10-01，NetApp 的企业价值（EV）/未来 12 个月收入约为 5.1x。而以备份副本为基础的数据安全公司 Rubrik 约为 16x。[^comps-peers] 这两个倍数之间的差距，正是本章每一则"向上层延伸"公告背后的经济奖赏。这也是为什么在这些公告体现为已报告的软件收入之前，投资者会对其打折扣。
@@ -17,42 +19,49 @@ Everpure（原 Pure Storage；NYSE: P，原代码 PSTG）把新名称定位为�
 
 本章不重复讲解存储。它描绘存储与第 1–3 部分所述数据层和 AI 层的交汇之处，列出 Everpure 在每一层已公开宣布的内容，并与同行进行比较。随后，它列出战略团队可能评估的选项（基于公开信息）。其中没有任何内容描述 Everpure 的非公开计划。
 
+<a id="how-it-works"></a>
 ## 工作原理
 
+<a id="the-seven-layer-map"></a>
 ### 七层地图
 
 从字节开始向上阅读这个技术栈。第 1–2 层是传统存储：介质、阵列和对象存储，然后是快照（snapshot）、复制（replication）和网络恢复等数据服务。第 3 层是元数据智能：知道数据是什么、是否敏感，以及它与其他数据有何关联。第 4–5 层是数据平台：开放表格式和目录（[第 7 章](../01-data-systems-foundations/ch07-open-table-formats.md)、[第 8 章](../01-data-systems-foundations/ch08-catalogs-and-metastores.md)），以及查询它们的引擎。第 6 层是 AI 检索：嵌入（向量）、向量索引，以及推理服务器从 GPU 显存中溢出的 KV 缓存。第 7 层是消费上述一切的应用和智能体。
 
-![分层技术栈地图，共七个层带，从底部的介质、阵列和对象存储，到顶部的 AI 应用和智能体。Everpure 已宣布的产品以朱红色高亮显示在第 1、2、3 和 6 层，第 4、5 和 7 层以虚线表示为相邻的合作伙伴层](../assets/diagrams/ch45-storage-data-ai-stack.svg)
+![分层技术栈地图，共七个层带，从底部的介质、阵列和对象存储，到顶部的 AI 应用和智能体。Everpure 已宣布的产品以朱红色高亮显示在第 1、2、3 和 6 层，第 4、5 和 7 层以虚线表示为相邻的合作伙伴层](../../../docs/assets/diagrams/ch45-storage-data-ai-stack.svg)
 
 *图 45.1 — Everpure 的公开宣布集中在存储层、元数据智能层以及向量/KV 层的一部分。表格式、引擎和智能体平台通过合作伙伴和连接器触达，而这条边界正是战略选择所在之处。来源：本章脚注。*
 
 各层的价值并不相等。越往上，毛利率（gross margin）和估值倍数越高，但资金雄厚的在位者也越多。第 4–5 层是 Databricks（收入年化运行率 >$7B，公司披露，August 2026）和 Snowflake 交锋的地方[^db-7b]（[第 27 章](../04-company-deep-dives/ch27-databricks-vs-snowflake.md)）。第 3 层是 DSPM 和目录供应商以高价整合的地方（[第 33 章](../04-company-deep-dives/ch33-governance-catalog-security-companies.md)）。第 6 层仍在定义之中。
 
+<a id="opportunity-1-the-lakehouse-substrate"></a>
 ### 机会 1：湖仓底座
 
 每一个湖仓都是构建在对象存储之上的一套软件栈（[第 24 章](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)）。超大规模云厂商花了五年时间，把数据库功能下沉到这一存储层。AWS 在 2024 年加入了条件写入，在存储桶内提供托管的 [Apache Iceberg](../glossary.md#apache-iceberg) 表（S3 Tables，December 2024），以及原生向量索引（S3 Vectors，December 2025 正式可用）。[^s3tables][^s3-vectors] 任何本地 S3 兼容平台如今都要以此为标杆接受评判。
 
 Everpure 在这里的公开定位是合作。FlashBlade 有与 Dremio（现归 SAP 所有）和 Starburst 合作的 Iceberg 湖仓参考架构。[^dremio-pure][^starburst-ep][^sap-dremio] 当 Databricks 于 2026-06-10 宣布其 Storage Ecosystem 时，Everpure 与 MinIO 和 Qumulo 一同成为首发合作伙伴。[^storage-eco] 在该计划下，一个处于私有预览阶段的 OpenSharing 连接器让 Databricks 能够治理和查询存放在 Everpure 对象存储上的 Delta 和 Iceberg 表，而无需复制数据 [VERIFY: 正式可用状态]。[^everpure-os] 在 Snowflake 一侧，公开记录较少：Pure Storage 出现在 Snowflake 文档中自称已测试其产品的 S3 兼容厂商名单里（Snowflake 表示不对其进行认证），双方于 2022 年 5 月宣布了一项本地外部表解决方案。目前未发现 Snowflake 对 FlashBlade 的现行认证（[第 40 章](../05-business-and-economics/ch40-gtm-partnerships.md)）。[^sf-s3compat][^pure-sf] 对存储供应商而言，价值在于位置。受监管或涉及主权的数据留在本地，每个引擎都读取同一份副本。
 
+<a id="opportunity-2-the-vector-and-kv-tier-on-flash"></a>
 ### 机会 2：闪存上的向量层与 KV 层
 
 两类 AI 工作负载已经从 DRAM 迁移到闪存。第一类是十亿规模的[近似最近邻](../glossary.md#approximate-nearest-neighbor)（ANN）检索。[DiskANN](../glossary.md#diskann) 论文用一台 64 GB 内存的工作站加一块 SSD 提供了十亿向量的检索服务，平均延迟低于 3 ms（作者的基准测试）。[^diskann] Milvus 2.6 加入了跨 RAM、SSD 和对象存储的[分层存储](../glossary.md#tiered-storage)（tiered storage），对该版本的报道将 Pure Storage 列为其存储合作伙伴之一。[^milvus26] 2026-06-17 发布的 Data Stream，让 Everpure 站到了同一工作负载的生产一侧。它利用 NVIDIA AI Data Platform 参考设计，筛选数据，在 FlashBlade 上借助 NVIDIA GPU 将其向量化，并施加流级别的访问控制。[^ep-ds][^aidp]
 
 第二类工作负载是推理上下文。一个采用分组查询注意力的 70B 级模型，每个 token 约占用 0.33 MB 的 KV 状态，因此一百万 token 的上下文大约需要 330 GB（估算）。[^kv-math] 这超出了单块 GPU 的容量。NVIDIA 的 Dynamo 将 KV 块从 GPU 显存逐级下放到网络存储，而 NVIDIA 的 CMX 上下文内存平台则为此正式确立了一个闪存层。行业报道称 Dell、IBM、VAST 和 WEKA 是 CMX 的支持者。[^dynamo-kv][^nvidia-cmx] Everpure 的 KVA 与 Dynamo 集成，通过 NFS 和 S3 把可复用的提示词前缀保存在 FlashBlade 上（厂商声明）[VERIFY: 正式可用日期]。[^ep-kva] 这是所有向上延伸机会中最具存储原生属性的一个。但它也是由 NVIDIA 设定接口的一个，因此差异化必须来自延迟、密度和运维，而不是来自专有 API。
 
+<a id="opportunity-3-metadata-and-data-intelligence"></a>
 ### 机会 3：元数据与数据智能
 
 1touch 的逻辑分三步。**数据发现**（discovery）找到数据，无论它存放在哪里。**数据分类**（classification）标注数据是什么，包括敏感数据。**语义上下文**记录数据意味着什么，以及它与其他数据有何关联。输出是元数据，而元数据正是目录、策略引擎和智能体所消费的东西。Everpure 于 2026 年 6 月将 1touch 重新发布为 **Data Intelligence**。行业报道称，它可以跨 Everpure 阵列、第三方存储、公有云和 SaaS 工作而无需复制数据，其连接器包括 Databricks、Snowflake、Oracle 和 SQL Server。[^ep-cw][^ep-tz] 2026 年 10 月的一次更新增加了仅处理元数据的 File Edition 和一个[模型上下文协议](../glossary.md#model-context-protocol)（MCP）接口，使智能体可以直接查询元数据。[^ep-oct]
 
 结构性论点是：存储系统能看到没有在任何目录中登记的副本，包括快照、克隆和临时卷（[第 15 章](../02-pipelines-and-governance/ch15-governance-security-privacy.md)）。反方论点是：分类只有在策略得到执行的地方才有意义。执行环节位于 Unity Catalog、Horizon、Purview 和身份系统中，而它们都自带分类器。因此，更可能胜出的设计是"在靠近字节处分类，把标签发布到执行发生的地方"，而不是一个与之竞争的控制台。
 
+<a id="opportunity-4-the-cyber-resilience-adjacency"></a>
 ### 机会 4：与网络弹性相邻的领域
 
 备份供应商从另一侧抵达了同一层。备份保存着所有数据的一份已建索引、带版本的副本，因此对其分类成本很低。Rubrik 于 2023 年 8 月收购了 Laminar（DSPM），交易条款未披露 [VERIFY: 一手新闻稿]。Veeam 于 2025 年 10 月宣布收购 Securiti，并于 2025 年 12 月以 $1.725B 完成交易，Securiti 的创始人出任 Veeam 安全与 AI 总裁。[^dspm-tuckins][^securiti] Everpure 的智能控制平面包括网络异常检测和合规报告。[^ep-cp] 结果是竞合关系（coopetition）。备份供应商在 Everpure 阵列上是合作伙伴，在数据智能领域则是竞争对手。双方都希望自己的标签成为记录系统。
 
 > **类比：存储器厂商和 Arm 的向上延伸。** SK hynix 和 Samsung 把商品化的 DRAM 变成了 HBM，这是一种协同设计、纳入 NVIDIA 路线图销售的产品，而这一举措之所以提升了利润率，是因为平台所有者需要它。它们的存内处理产品（Samsung HBM-PIM、SK hynix AiM）则更进一步向上，把计算放在 DRAM 存储体旁边。采用进展缓慢，因为编程模型归主机厂商所有，软件必须重写（[存内计算](../glossary.md#compute-in-memory)）。Arm 从授权 IP 转向销售预集成的 Neoverse 计算子系统，以及有报道称它正在设计自己的芯片，则展示了另一种风险：向上延伸可能让你成为自己被授权方的竞争对手。[^tk-bridge] 对存储的启示是直接的。Data Stream 和 KVA 类似于 HBM，因为它们接入 NVIDIA 的参考设计。一个存储原生的数据库则类似于 PIM 或 Arm 自己的芯片：可能有价值，但需要合作伙伴改变行为或接受一个新的竞争对手。
 
+<a id="design-choices-and-trade-offs"></a>
 ## 设计选择与权衡
 
 战略问题不是"要不要向上延伸"，而是*在哪一层采取何种姿态*。下面的矩阵列出了战略团队可能评估的选项（基于公开信息）。它并不描述 Everpure 的计划。
@@ -130,6 +139,7 @@ flowchart LR
 
 *图 45.3 — 合作、竞争与收购地图。粗线表示最深入的公开合作关系（NVIDIA），实线表示已宣布的合作或收购，虚线表示重叠领域或可选项。仅基于公开信息。*
 
+<a id="whos-who"></a>
 ## 主要参与者
 
 下面的比较保持中立，仅限于公开宣布的内容。其中几行依据的是 2025 年之前的知识，已作标注。
@@ -151,6 +161,7 @@ flowchart LR
 
 各同行在中立性上也有差别。Hammerspace 和 Everpure 的 Data Intelligence 都声称能在客户已有的存储（包括竞争对手的阵列）上创造价值。VAST 的引擎主要运行在 VAST 上。Veeam 的 Securiti 既能处理备份，也能处理主存储和 SaaS 数据，因此它与存储侧的分类争夺同样的标签。[^securiti]
 
+<a id="history-and-trajectory"></a>
 ## 历史与发展轨迹
 
 存储供应商以前就尝试过这条路，结果好坏参半。EMC 于 2010 年收购 Greenplum，以进军分析型数据库。Greenplum 于 2013 年被并入 Pivotal，并于 2015 年开源。Hitachi Data Systems 于 2015 年收购 Pentaho，后来将其并入 Hitachi Vantara。在这家 Hadoop 发行商濒临关闭后，HPE 于 2019 年收购了 MapR 的资产。[^ma-csv] 那些交易买下的是整个引擎，并要求存储销售团队去销售它们。2023–2026 年的交易规模更小，也更贴近阵列：数据分类、数据保护和就地处理。
@@ -183,6 +194,7 @@ timeline
 
 发展轨迹有三条主线。超大规模云厂商不断把表语义和向量语义拉进对象存储，这抬高了本地存储的门槛。NVIDIA 不断标准化 AI 数据路径（AI Data Platform、Dynamo、CMX），这奖励那些选择接入而非另起炉灶的存储供应商。安全和备份供应商不断收购数据分类能力，因此元数据智能领域正在迅速变得拥挤。[第 44 章](ch44-future-trends.md)把这些主线放进了更广阔的未来趋势图景中。
 
+<a id="kpis-and-signposts-investors-would-watch"></a>
 ## 投资者会关注的 KPI 与路标
 
 | KPI 或路标 | 最新公开数值 | 口径 | 为何重要 |
@@ -200,6 +212,7 @@ timeline
 
 解读收入结构数字时要谨慎。Q2 FY2027 收入增长 38%（GAAP），产品收入（$687M）增速快于订阅服务。[^ep-q2] 在产品强劲的季度里订阅占比下降，并不能作为反对软件战略的证据。但这确实意味着，仅凭总体 ARR 无法判断 Data Intelligence 是否卖得好。能说明问题的是[附加率](../glossary.md#attach-rate)（attach rate）、数据软件的[净收入留存率](../glossary.md#net-revenue-retention)（NRR），以及卖给数据或安全买家的交易占比。这些目前都没有披露。
 
+<a id="numbers-that-matter"></a>
 ## 关键数字
 
 | 指标 | 数值 | 口径 | 来源 / 日期 |
@@ -220,10 +233,12 @@ timeline
 
 *图 45.8 — 与同行的数据智能交易相比，1touch 交易规模很小。这与"自建加合作"的姿态相符，而不是试图买下一个平台。*
 
+<a id="storage-bridge"></a>
 ## 存储桥接
 
 > **存储桥接。** 上述所有向上延伸的选项，都依赖于本图谱不再重复讲解的存储特性：湖仓提交所需的 S3 条件写入正确性和元数据延迟、驻留闪存的 ANN 索引所需的小块随机读尾延迟、KV 缓存重新加载所需的持续吞吐量，以及以较低生产影响进行分类所需的快照和元数据访问能力。配套的 *Everpure Tech Atlas* 介绍了 FlashBlade、FlashArray 和协议细节。这里的要点是：第 3 层到第 6 层的每一款产品，其可信度都来自与合作伙伴共同发布的第 1 层基准测试。
 
+<a id="conversation-playbook"></a>
 ## 对话手册
 
 **向产品经理提出的问题**
@@ -248,6 +263,7 @@ timeline
 - "存储公司收购软件总是失败。"EMC–Greenplum 确实举步维艰，但 Portworx 和 1touch 规模更小、更相邻，且已产品化。
 - "KV 缓存卸载是 Everpure 自己的标准。"接口由 NVIDIA 定义（Dynamo、CMX）；存储供应商在其框架内竞争。
 
+<a id="going-deeper"></a>
 ## 深入阅读
 
 - [第 24 章](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)介绍湖仓对对象存储的要求，[第 18 章](../03-ai-data-stack/ch18-embeddings-and-vector-search.md)介绍 DiskANN 和驻留闪存的向量索引。
@@ -255,6 +271,7 @@ timeline
 - [第 32 章](../04-company-deep-dives/ch32-ai-native-data-companies.md)介绍 VAST、Hammerspace 和 AI 原生数据公司；[第 39 章](../05-business-and-economics/ch39-ma-history.md)介绍完整的并购历史；[第 40 章](../05-business-and-economics/ch40-gtm-partnerships.md)介绍存储与平台的合作关系如何销售。
 - NVIDIA 的 Dynamo KV 缓存管理器文档，了解存储必须满足的分层接口。[^dynamo-kv]
 
+<a id="key-terms"></a>
 ## 关键术语
 
 - [向上层延伸](../glossary.md#moving-up-the-stack)（Moving up the stack）— 从较低层级（如存储）扩展到其上方价值更高的软件层。
@@ -280,6 +297,7 @@ timeline
 - [软件收入占比](../glossary.md#software-mix)（Software mix）— 来自软件和订阅（而非硬件）的收入所占比例。
 - [净收入留存率](../glossary.md#net-revenue-retention)（Net revenue retention）— 现有客户群当前收入与一年前相比的比率。
 
+<a id="sources"></a>
 ## 资料来源
 
 [^db-7b]: Databricks, "Databricks Grows >80% YoY, Surpasses $7B Revenue Run-Rate, Scales Lakebase, Genie and Unity AI Gateway," https://www.databricks.com/company/newsroom/press-releases/databricks-grows-80-yoy-surpasses-7b-revenue-run-rate-scales，发布于 2026-08-13；检索于 2026-11-01（同第 25 章所引）。公司披露的年化运行率，未经审计。
