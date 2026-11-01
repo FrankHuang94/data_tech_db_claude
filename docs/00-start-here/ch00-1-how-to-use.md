@@ -11,7 +11,7 @@
 
 ## Who this is for
 
-The primary reader is a strategy and corporate-development professional with a CFA, an MBA and a legal background, who has done semiconductor and AI-infrastructure M&A and is joining Everpure as the company moves from storage arrays into data management and data intelligence. That reader can value a business, read a 10-Q and structure a deal. What they need is fluency in the layer *above* storage: why Databricks paid a reported ~$2B for the company behind a table format, why a catalog is worth fighting over, and why every major data platform bought or built a Postgres service in 2025–26.
+The primary reader is a strategy and corporate-development professional with a CFA, an MBA and a legal background, who has done semiconductor and AI-infrastructure M&A and is joining Everpure as the company moves from storage arrays into data management and data intelligence. That reader can value a business, read a 10-Q and structure a deal. What they need is fluency in the layer *above* storage: why Databricks paid a reported ~$2B for the company behind a table format, why a catalog is worth fighting over, and why Databricks, Snowflake and the hyperscalers all bought or built Postgres services in 2025–26.
 
 The atlas therefore skips what the reader already knows. It does not re-teach storage. Where a storage concept matters, a short **Storage bridge** box points to the companion *Everpure Tech Atlas* and moves on. It also leans on the reader's home ground for analogies: memory hierarchies, wafer yield, royalties and annuities, cohort analysis. Those appear as **Bridge** boxes.
 
@@ -94,7 +94,7 @@ flowchart LR
 
 *Figure 0.1.4 — The path table. The 2-hour path is about 90 minutes of reading plus time on the diagrams; the 2-day path is roughly 12–14 hours.*
 
-The 2-hour path is built around one argument that recurs through the atlas. Open formats made data portable. Power moved to whoever runs the catalog and the semantic context on top. Agents are now the biggest new consumers of that context. If you can explain that chain and put company names on it, you can hold your own in a first meeting.
+The 2-hour path is built around one argument that recurs through the atlas. Open formats made data portable. Power moved to whoever runs the catalog and the semantic context on top. Agents are now a fast-growing new consumer of that context (no vendor yet discloses how large a share). If you can explain that chain and put company names on it, you can hold your own in a first meeting.
 
 The atlas is organised as eight Parts. The mindmap below shows what each Part covers; the Part 4 deep dives are the longest single block.
 
@@ -153,7 +153,7 @@ Numbers that appear in more than one chapter live in one place: the CSV files un
 
 - `data/public_comps.csv` holds 26 public companies with market cap, enterprise value, forward revenue, multiple, growth and margin, each with its basis and as-of date.
 - `data/private_funding.csv` holds 110 private rounds with amount, post-money valuation and whether the valuation is company-stated or press-reported.
-- `data/ma_deals.csv` holds 143 curated deals from 2010 to October 2026, each with value, value basis (disclosed, press-reported or undisclosed), status, rationale and outcome.
+- `data/ma_deals.csv` holds 146 curated deals: 143 from 2010 to October 2026, the set [Ch 39](../05-business-and-economics/ch39-ma-history.md) analyses, plus three 2007 BI deals used in Ch 42, each with value, value basis (disclosed, press-reported or undisclosed), status, rationale and outcome.
 - `data/company_financials.csv` and `data/market_sizes.csv` hold reported financials and analyst market sizes. Chapter-specific files such as `data/ch28_cloud_segments.csv` add series used by one chapter.
 
 Every row in every file has a `source` and an `as_of` column. Charts are never drawn by hand. `scripts/make_charts.py` reads the CSVs and regenerates every PNG in `docs/assets/charts/`, using per-chapter scripts in `scripts/charts/` and a shared colour-blind-safe palette. If a number changes, the CSV is updated and the charts are rebuilt, so text and charts cannot drift apart. Dense layered diagrams, such as the market map in [0.2](ch00-2-market-map.md), are original SVGs in `docs/assets/diagrams/`; flows and timelines are Mermaid diagrams written inline in the chapters.

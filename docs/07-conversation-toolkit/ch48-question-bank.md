@@ -1,4 +1,4 @@
-# 48. Question Bank: 150 Questions
+# 48. Question Bank: 154 Questions
 > **Depth:** L2 · **Reading time:** ~36 min · **Last verified:** 2026-11-01 · **Prerequisites:** [Ch 46 — Talking with data people](ch46-talking-with-data-people.md), [Ch 47 — Diligence checklist](ch47-diligence-checklist.md)
 
 ## TL;DR
@@ -508,7 +508,7 @@ Background: [Ch 24 — Where the data stack meets compute and storage](../03-ai-
 
 **138.** For KV-cache offload, what is p99 time-to-first-token with prefixes reloaded from storage versus recompute, and at what concurrency? *[Topic: storage meets data · Audience: Engineer, Customer]* — *Listen for:* benchmarks with the partner's name on them. NVIDIA defines the interfaces; storage vendors compete inside them.
 
-**139.** What exactly does the platform certify for on-premises object storage, and is it a formal programme or a vendor-reported compatibility list? *[Topic: storage meets data · Audience: Partner manager]* — *Listen for:* the difference. Databricks runs a named Storage Ecosystem programme;[^dbx-storage] Snowflake publishes a vendor-reported list and says it does not certify third-party products ([Ch 40](../05-business-and-economics/ch40-gtm-partnerships.md)).
+**139.** What exactly does the platform certify for on-premises object storage, and is it a formal programme or a vendor-reported compatibility list? *[Topic: storage meets data · Audience: Partner manager]* — *Listen for:* the difference. Databricks runs a named Storage Ecosystem programme;[^dbx-storage] Snowflake's documentation lists S3-compatible vendors (Pure Storage among them) but says Snowflake does not itself test or validate third-party products, and now asks providers to offer a "tested and compliant" service ([Ch 40](../05-business-and-economics/ch40-gtm-partnerships.md)).
 
 **140.** If your documents live on on-premises object storage, can the AI pipeline read them in place, and how are permissions carried through to retrieval? *[Topic: storage meets data · Audience: Customer, Engineer]* — *Listen for:* an S3-compatible read path plus permission propagation, not "copy it to our cloud first".
 

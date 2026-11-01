@@ -203,7 +203,7 @@ A: One machine is too small, one machine is a single point of failure, or the da
 <details markdown="1">
 <summary>Q16: Sharding vs. replication: which is harder, and why?</summary>
 
-A: Replication. Sharding splits data so the system scales; replication copies it so the system survives failures, and copies drift apart (replication lag) unless the system pays to keep them in agreement through consensus. (→ [Ch 4](../01-data-systems-foundations/ch04-distributed-databases.md))
+A: Keeping replicas consistent. Sharding splits data so the system scales; replication copies it so the system survives failures, and copies drift apart (replication lag) unless the system pays to keep them in agreement through consensus. Sharding has its own hard part, transactions and joins that span shards. (→ [Ch 4](../01-data-systems-foundations/ch04-distributed-databases.md))
 
 </details>
 
@@ -1360,7 +1360,7 @@ A: Dremio, the Iceberg lakehouse engine (announced 2026-05-04, completed 2026-07
 <details markdown="1">
 <summary>Q171: Teradata vs. Palantir: how far apart are the multiples?</summary>
 
-A: Teradata trades at about 1.7x EV/revenue on roughly flat revenue; Palantir at about 53x EV/NTM (FY2026 guide basis), or about 70x on trailing revenue (both as of late October 2026). Legacy is cheap for a reason; Palantir is a different regime.[^comps] (→ [Ch 31](../04-company-deep-dives/ch31-analytical-engine-challengers-legacy.md))
+A: Teradata trades at about 1.7x EV/revenue on roughly flat revenue; Palantir at about 53x EV/NTM (FY2026 guide basis, per `data/public_comps.csv`), or about 70x EV/TTM (both as of late October 2026). Legacy is cheap for a reason; Palantir is a different regime.[^comps] (→ [Ch 31](../04-company-deep-dives/ch31-analytical-engine-challengers-legacy.md))
 
 </details>
 
@@ -1409,7 +1409,7 @@ A: From $3B (November 2024) to $12B post-money (June 2026), both press-reported:
 <details markdown="1">
 <summary>Q178: What are the terms of Proofpoint–Varonis?</summary>
 
-A: $49.75 per share in cash: about $6.3B transaction value and about $5.71B equity value, announced 2026-10-15, expected to close in 1H 2027. About 8.5x calendar-2026 revenue guidance (estimate).[^varonis-8k] (→ [Ch 33](../04-company-deep-dives/ch33-governance-catalog-security-companies.md))
+A: $49.75 per share in cash: about $6.3B transaction value and about $5.71B equity value, announced 2026-10-15, expected to close in 1H 2027. About 8.5x calendar-2026 revenue guidance on the transaction value, or ~7.7x on equity value (estimates).[^varonis-8k] (→ [Ch 33](../04-company-deep-dives/ch33-governance-catalog-security-companies.md))
 
 </details>
 
@@ -1531,7 +1531,7 @@ A: Net revenue retention. Snowflake's NRR fell from 178% (FY2022) to 126% (FY202
 <details markdown="1">
 <summary>Q190: What does RPO measure, and what did Snowflake's do in 2026?</summary>
 
-A: Remaining performance obligations: contracted backlog not yet recognised, not a forecast. Snowflake's fell from $9.77B to about $9.0B in the two quarters to July 2026 while revenue accelerated, because customers burned prepaid capacity faster than they signed new commitments.[^fin][^sf-q2] (→ [Ch 36](../05-business-and-economics/ch36-unit-economics-kpis.md))
+A: Remaining performance obligations: contracted backlog not yet recognised, not a forecast. Snowflake's fell from $9.77B to about $9.0B in the two quarters to July 2026 while revenue accelerated. Part of that is seasonal: many renewals are signed in fiscal Q4, and customers then burn prepaid capacity faster than new commitments arrive in Q1–Q2. About 54% of the Q2 figure is expected within 12 months (cRPO).[^fin][^sf-q2] (→ [Ch 36](../05-business-and-economics/ch36-unit-economics-kpis.md))
 
 </details>
 
@@ -1580,7 +1580,7 @@ A: Preferred-stock terms, primary vs. secondary mix, strategic money and run-rat
 <details markdown="1">
 <summary>Q197: At what revenue multiples do control transactions clear?</summary>
 
-A: Roughly 5–9x: Informatica ~5x NTM, Splunk ~7x trailing, Varonis ~8.5x FY-guide revenue and Confluent ~9.4x trailing. Strategic buyers have not paid public growth-leader multiples for data assets since 2021.[^infa37][^splk][^varonis-8k][^comps-cflt] (→ [Ch 37](../05-business-and-economics/ch37-public-comps-valuation.md))
+A: Roughly 5–9x: Informatica ~5x NTM, Splunk ~7x trailing, Varonis ~8.5x FY-guide revenue (on the $6.3B transaction value; ~7.7x on equity value) and Confluent ~9.4x trailing. Strategic buyers have not paid public growth-leader multiples for data assets since 2021.[^infa37][^splk][^varonis-8k][^comps-cflt] (→ [Ch 37](../05-business-and-economics/ch37-public-comps-valuation.md))
 
 </details>
 
@@ -1629,7 +1629,7 @@ A: Where a hyperscaler had revenue at stake it funded a fork: OpenSearch (2021),
 <details markdown="1">
 <summary>Q204: Does an open-source origin earn a valuation premium?</summary>
 
-A: No visible one. MongoDB, Elastic and GitLab trade at 4.6–9.0x EV/NTM revenue against 16.9–21.5x for proprietary Snowflake and Datadog (October 2026 market data), and growth explains most of the gap.[^comps] (→ [Ch 38](../05-business-and-economics/ch38-open-source-strategy.md))
+A: No visible one. MongoDB, Elastic and GitLab trade at 4.6–9.0x EV/NTM revenue against 16.9–21.5x for proprietary Snowflake and Datadog (October 2026 market data). Growth explains only a small part of the gap (about one turn of the ~8-turn Snowflake–MongoDB spread on the Ch 37 regression); retention, consumption visibility and AI exposure explain more, and the licence does not.[^comps] (→ [Ch 38](../05-business-and-economics/ch38-open-source-strategy.md))
 
 </details>
 
@@ -1856,7 +1856,7 @@ A: Practitioners led by Benn Stancil argued the stack had become a marketing cat
 <details markdown="1">
 <summary>Q233: What does "rebundling" mean in 2025–26?</summary>
 
-A: Fivetran bought Census and Tobiko and merged with dbt Labs; Datadog bought Metaplane; Snowflake bought Observe; Prefect agreed to buy Dagster; FICO and Boomi bought data-quality tools. Value pooled at platforms, consolidators and metadata control points.[^ma] (→ [Ch 43](../06-history-and-future/ch43-modern-data-stack.md))
+A: Fivetran agreed to buy Census (closing not separately confirmed), bought Tobiko and merged with dbt Labs; Datadog bought Metaplane; Snowflake bought Observe; Prefect agreed to buy Dagster; FICO and Boomi bought data-quality tools. Value pooled at platforms, consolidators and metadata control points.[^ma] (→ [Ch 43](../06-history-and-future/ch43-modern-data-stack.md))
 
 </details>
 
@@ -1929,7 +1929,7 @@ A: Launch-partner status in the Databricks Storage Ecosystem (announced 2026-06-
 <details markdown="1">
 <summary>Q240: What is the Everpure–Snowflake relationship, from public information?</summary>
 
-A: No named storage-partner program. Snowflake reads S3-compatible storage through external stages and Iceberg external volumes, and Ch 40 reports Everpure on Snowflake's S3-compatible vendor list (Ch 27 flags the list for re-checking). Data Intelligence lists Snowflake as a connector target.[^sf-s3compat] (→ [Ch 27](../04-company-deep-dives/ch27-databricks-vs-snowflake.md))
+A: No named storage-partner program. Snowflake reads S3-compatible storage through external stages and Iceberg external volumes. Its documentation has listed Pure Storage among S3-compatible vendors, but Snowflake says it does not itself test or validate third-party products and now asks providers to offer a "Snowflake S3-compatible tested and compliant" service; FlashBlade's status under that newer wording is unconfirmed [VERIFY]. Pure Storage and Snowflake announced an on-prem and colocation joint solution with FlashBlade in May 2022. Data Intelligence lists Snowflake as a connector target.[^sf-s3compat][^pure-sf] (→ [Ch 27](../04-company-deep-dives/ch27-databricks-vs-snowflake.md))
 
 </details>
 
@@ -2006,7 +2006,7 @@ A: The NVIDIA AI Data Platform (from March 2025) and the Databricks Storage Ecos
 <details markdown="1">
 <summary>Q251: What was Pure Storage's earlier move up the stack?</summary>
 
-A: Portworx, bought in September 2020 for about $370M (company-announced; the dataset row is flagged for re-verification [VERIFY]), which became the anchor of its Kubernetes data services.[^ma] (→ [Ch 39](../05-business-and-economics/ch39-ma-history.md))
+A: Portworx, announced 2020-09-16 for about $370M (disclosed), which became the anchor of its Kubernetes data services.[^ma] (→ [Ch 39](../05-business-and-economics/ch39-ma-history.md))
 
 </details>
 
@@ -2114,7 +2114,7 @@ The table below expands the 79 acronyms that come up most in data-platform, AI-d
 
 ## Market-map poster
 
-The map below arranges about 40 representative companies and projects into the eight layers the atlas uses, from storage at the top down to agents and applications. It is a reference poster, not a ranking. Each layer shows the names you are most likely to hear, and some companies span several layers. Databricks and Snowflake, for example, now sell into almost every layer below the agents; each is placed at its centre of gravity. The full layered map with positioning notes is in [Ch 0.2](../00-start-here/ch00-2-market-map.md). The deep dives behind each layer are in Parts 1–4.
+The map below arranges about 40 representative companies and projects into eight layers, from storage at the top down to agents and applications. It compresses the nine-layer map in Ch 0.2: catalogs sit with table formats, and operational databases (MongoDB) sit with engines. It is a reference poster, not a ranking. Each layer shows the names you are most likely to hear, and some companies span several layers. Databricks and Snowflake, for example, now sell into almost every layer below the agents; each is placed at its centre of gravity. The full layered map with positioning notes is in [Ch 0.2](../00-start-here/ch00-2-market-map.md). The deep dives behind each layer are in Parts 1–4.
 
 ```mermaid
 flowchart TB
@@ -2200,7 +2200,7 @@ These 25 deals, read from `data/ma_deals.csv`, are the precedents that come up m
 | 2018-10-03 | Cloudera | Hortonworks | $5.2B (disclosed) | Two Hadoop distributors merged in a declining architecture; taken private in 2021 at about the same equity value. |
 | 2019-06-06 | Google | Looker | $2.6B (disclosed) | A hyperscaler bought the semantic-modelling BI layer (LookML) to pull analytics onto its cloud. |
 | 2019-06-10 | Salesforce | Tableau | $15.7B (disclosed) | Largest data-tools deal of the 2010s; Salesforce bought the analyst front end. |
-| 2020-09-16 | Pure Storage (now Everpure) | Portworx | $370M (disclosed; dataset flags for re-check) | Pure Storage's first move up the stack, into Kubernetes data services. |
+| 2020-09-16 | Pure Storage (now Everpure) | Portworx | $370M (disclosed) | Pure Storage's first move up the stack, into Kubernetes data services. |
 | 2022-03-02 | Snowflake | Streamlit | $800M (disclosed) | Snowflake bought an app layer for Python developers; now Streamlit in Snowflake. |
 | 2023-06-26 | Databricks | MosaicML | $1.3B (disclosed) | AI training platform plus talent; now Mosaic AI inside Databricks' >$1.4B AI run-rate. |
 | 2023-09-21 | Cisco | Splunk | $28B (disclosed) | Machine-data platform bought at ~7x trailing revenue; sets the observability-data precedent. |
@@ -2217,7 +2217,7 @@ These 25 deals, read from `data/ma_deals.csv`, are the precedents that come up m
 | 2026-05-04 | SAP | Dremio | Undisclosed | An app vendor bought an Iceberg lakehouse engine, and a FlashBlade reference partner changed owner. |
 | 2026-07-16 | NetApp | DataPelago | Undisclosed | A storage peer bought accelerated data-processing compute to sit next to its arrays. |
 | 2026-08-26 | AWS | DuckLabs | Undisclosed; announced | A hyperscaler agreed to buy the in-process OLAP engine company while DuckDB stays MIT-licensed. |
-| 2026-10-15 | Proofpoint (Thoma Bravo) | Varonis | $6.3B (disclosed, transaction value); ~$5.71B equity value; pending | The largest 2026 data-security deal; DSPM consolidating into security platforms at ~8.5x revenue. |
+| 2026-10-15 | Proofpoint (Thoma Bravo) | Varonis | $6.3B (disclosed, transaction value); ~$5.71B equity value; pending | The largest 2026 data-security deal; DSPM consolidating into security platforms at ~8.5x CY2026 revenue guidance on transaction value (~7.7x on equity value). |
 
 *Figure 50.18 — Deal-table poster. The pattern runs from buying engines (2010) to buying metadata, context and control points (2024–2026). Storage and data-protection buyers (EMC, Pure Storage, Veeam, Everpure, NetApp) appear at both ends, and the later deals are smaller and closer to the data's meaning. Dates are announcement dates. Source: `data/ma_deals.csv`.[^ma]*
 
@@ -2250,7 +2250,7 @@ The two platforms have converged on product features. They still differ on where
 | Agent layer | Agent Bricks; Genie One; Unity AI Gateway | Cortex Agents; Snowflake CoWork; CoCo; Natoma (announced) | Product launches 2026[^summit26][^uc-dais26] |
 | M&A spend (deals with values) | ~$4.4B (MosaicML, Tabular, Neon, Arcion) | ~$1.86B filed; ~$2.35B with press figures | Our sum of `data/ma_deals.csv`[^ma] |
 | Hyperscaler channel | Azure Databricks is a first-party Microsoft service | Marketplace co-sell on AWS, Azure, Google Cloud; >$2B AWS Marketplace sales in CY2025 | Company-stated[^sf-aws-2b] |
-| Everpure tie (public info) | Storage Ecosystem launch partner (2026-06-10); OpenSharing connector in private preview | S3-compatible external stages and Iceberg volumes; no named storage program | Company-stated[^storage-eco][^everpure-os][^sf-s3compat] |
+| Everpure tie (public info) | Storage Ecosystem launch partner (2026-06-10); OpenSharing connector in private preview | S3-compatible external stages and Iceberg volumes; Pure Storage on Snowflake's S3-compatible vendor list (Snowflake does not validate; current status [VERIFY]); May 2022 joint on-prem solution; no named storage program | Company-stated[^storage-eco][^everpure-os][^sf-s3compat][^pure-sf] |
 
 *Figure 50.19 — Databricks vs. Snowflake on one page. The bases differ row by row: Databricks figures are company-stated and unaudited, Snowflake's are GAAP or defined KPIs. The comparable rows are those about scale, product and channel. Rows about valuation compare a private equity mark with a public EV and need the caveat said out loud.*
 
@@ -2334,7 +2334,7 @@ The two platforms have converged on product features. They still differ on where
 
 [^s3v]: AWS News Blog, "Amazon S3 Vectors now generally available with increased scale and performance," https://aws.amazon.com/blogs/aws/amazon-s3-vectors-now-generally-available-with-increased-scale-and-performance, published 2025-12-02; AWS What's New, "Amazon S3 Vectors is now generally available with 40 times the scale of preview," https://aws.amazon.com/about-aws/whats-new/2025/12/amazon-s3-vectors-generally-available/, published 2025-12-02; latency and cost claims per AWS, "Top announcements of AWS re:Invent 2025," https://aws.amazon.com/blogs/aws/top-announcements-of-aws-reinvent-2025, published 2025-12; retrieved 2026-11-01. Company-stated.
 
-[^ma]: AI Data Atlas dataset `data/ma_deals.csv` (143 curated deals, 2010 to October 2026; each row carries its own source URL, publication date and value basis: disclosed, press-reported or undisclosed), as_of 2026-11-01; retrieved 2026-11-01. Deal-table values in this chapter are read directly from the file with pandas.
+[^ma]: AI Data Atlas dataset `data/ma_deals.csv` (143 curated deals, 2010 to October 2026, plus three 2007 BI deals added for Ch 42, 146 rows in all; each row carries its own source URL, publication date and value basis: disclosed, press-reported or undisclosed), as_of 2026-11-01; retrieved 2026-11-01. Deal-table values in this chapter are read directly from the file with pandas.
 
 [^redshift-2012]: Computerworld, "Amazon introduces data warehouse service" (Redshift launch; reserved pricing under $1,000/TB/year; AWS estimate of $19,000–25,000/TB/year in-house), https://www.computerworld.com/article/1401411/amazon-introduces-data-warehouse-service.html, published 2012-11-28; retrieved 2026-11-01. In-house figure is an AWS estimate cited from Jeff Barr's launch post.
 
@@ -2576,7 +2576,8 @@ The two platforms have converged on product features. They still differ on where
 
 [^everpure-os]: Everpure blog, "Everpure OpenSharing Connector," https://blog.everpuredata.com/products/everpure-opensharing-connector/, published 2026-06; retrieved 2026-11-01. Vendor-stated; private preview from 2026-06-09.
 
-[^sf-s3compat]: Snowflake documentation, "Work with Amazon S3-compatible storage," https://docs.snowflake.com/en/user-guide/data-load-s3-compatible-storage, living document; retrieved 2026-11-01.
+[^sf-s3compat]: Snowflake documentation, "Work with Amazon S3-compatible storage," https://docs.snowflake.com/en/user-guide/data-load-s3-compatible-storage, living document; retrieved 2026-11-01. Vendor list (including PureStorage) is vendor-reported; Snowflake says it does not test or validate third-party products and now requires a "Snowflake S3-compatible tested and compliant" service (`meta/verified-facts.md` #21).
+[^pure-sf]: Blocks & Files, "Pure gets FlashBlade up close and cloud-adjacent co-lo personal with Snowflake," https://blocksandfiles.com/2022/05/11/pure-gets-flashblade-up-close-and-cloud-adjacent-co-lo-personal-with-snowflake/, published 2022-05-11; retrieved 2026-11-01 (as cited in Ch 40; `meta/verified-facts.md` #21).
 
 [^ep-q4]: Everpure, Q4 FY2026 earnings press release (8-K Ex. 99.1), https://www.sec.gov/Archives/edgar/data/1474432/000147443226000015/pstg-ex991q4fy2026.htm, published 2026-02-25; retrieved 2026-11-01. FY2026 revenue >$3.6B (+16%), subscription ARR $1.924B, RPO $3.7B, FCF $616M (non-GAAP); Q4 subscription services $440M of ~$1.1B revenue (~40%, our estimate).
 

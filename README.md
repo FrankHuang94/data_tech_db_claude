@@ -23,10 +23,12 @@ Depth labels used throughout: **L1** vocabulary, **L2** mechanism (default), **L
 ## Contents and progress
 
 <!-- AUTO:CONTENTS START -->
-**46 chapters · 173,971 prose words · 428 visuals · 470 open [VERIFY] markers** (counts from `scripts/qa_report.py`; prose excludes tables, code/Mermaid, captions and footnotes).
+**52 chapters · 208,622 prose words · 484 visuals · 447 open [VERIFY] markers** (counts from `scripts/qa_report.py`; prose excludes tables, code/Mermaid, captions and footnotes).
 
 | Part | Chapter | Prose words | Visuals | [VERIFY] | Reviewed |
 |---|---|---|---|---|---|
+| Part 0 | [0.1 How to Use This Atlas](docs/00-start-here/ch00-1-how-to-use.md) | 1,760 | 5 | 0 | ✓ |
+| Part 0 | [0.2 The One-Page Market Map](docs/00-start-here/ch00-2-market-map.md) | 2,053 | 4 | 0 | ✓ |
 | Part 1 | [1. The Data Stack Map](docs/01-data-systems-foundations/ch01-data-stack-map.md) | 3,429 | 10 | 4 | ✓ |
 | Part 1 | [2. Data Models](docs/01-data-systems-foundations/ch02-data-models.md) | 3,230 | 7 | 4 | ✓ |
 | Part 1 | [3. How a Database Works Inside](docs/01-data-systems-foundations/ch03-database-internals.md) | 4,485 | 10 | 1 | ✓ |
@@ -51,28 +53,32 @@ Depth labels used throughout: **L1** vocabulary, **L2** mechanism (default), **L
 | Part 3 | [22. Agents and Data](docs/03-ai-data-stack/ch22-agents-and-data.md) | 4,328 | 10 | 4 | ✓ |
 | Part 3 | [23. Real-Time Analytics and HTAP](docs/03-ai-data-stack/ch23-real-time-analytics-htap.md) | 3,366 | 9 | 10 | ✓ |
 | Part 3 | [24. Where the Data Stack Meets Compute and Storage](docs/03-ai-data-stack/ch24-data-meets-compute-and-storage.md) | 3,641 | 11 | 3 | ✓ |
-| Part 4 | [25. Databricks](docs/04-company-deep-dives/ch25-databricks.md) | 5,339 | 13 | 6 | ✓ |
+| Part 4 | [25. Databricks](docs/04-company-deep-dives/ch25-databricks.md) | 5,346 | 13 | 6 | ✓ |
 | Part 4 | [26. Snowflake](docs/04-company-deep-dives/ch26-snowflake.md) | 6,449 | 16 | 29 | ✓ |
-| Part 4 | [27. Databricks vs. Snowflake: Head-to-Head](docs/04-company-deep-dives/ch27-databricks-vs-snowflake.md) | 3,918 | 11 | 17 | ✓ |
+| Part 4 | [27. Databricks vs. Snowflake: Head-to-Head](docs/04-company-deep-dives/ch27-databricks-vs-snowflake.md) | 4,026 | 11 | 16 | ✓ |
 | Part 4 | [28. Hyperscaler Data Platforms: AWS, Google, Microsoft and Oracle](docs/04-company-deep-dives/ch28-hyperscaler-data-platforms.md) | 5,371 | 10 | 26 | ✓ |
 | Part 4 | [29. Operational Database Vendors](docs/04-company-deep-dives/ch29-operational-database-vendors.md) | 4,557 | 11 | 40 | ✓ |
-| Part 4 | [30. Data Movement and Streaming Companies](docs/04-company-deep-dives/ch30-data-movement-streaming-companies.md) | 4,365 | 10 | 25 | ✓ |
-| Part 4 | [31. Analytical Engine Challengers and Legacy Platforms](docs/04-company-deep-dives/ch31-analytical-engine-challengers-legacy.md) | 4,460 | 8 | 21 | ✓ |
+| Part 4 | [30. Data Movement and Streaming Companies](docs/04-company-deep-dives/ch30-data-movement-streaming-companies.md) | 4,371 | 10 | 25 | ✓ |
+| Part 4 | [31. Analytical Engine Challengers and Legacy Platforms](docs/04-company-deep-dives/ch31-analytical-engine-challengers-legacy.md) | 4,473 | 8 | 21 | ✓ |
 | Part 4 | [32. AI-Native Data Companies](docs/04-company-deep-dives/ch32-ai-native-data-companies.md) | 4,760 | 11 | 24 | ✓ |
 | Part 4 | [33. Governance, Catalog and Data-Security Companies](docs/04-company-deep-dives/ch33-governance-catalog-security-companies.md) | 3,647 | 9 | 15 | ✓ |
-| Part 4 | [34. Data Platforms of the Application Giants](docs/04-company-deep-dives/ch34-application-giants-data-platforms.md) | 3,817 | 12 | 38 | ✓ |
-| Part 5 | [35. Business Models: Consumption, Subscription, Open Core and Managed Cloud](docs/05-business-and-economics/ch35-business-models.md) | 3,881 | 9 | 1 |  |
-| Part 5 | [36. Unit Economics and KPIs](docs/05-business-and-economics/ch36-unit-economics-kpis.md) | 4,083 | 11 | 10 |  |
-| Part 5 | [37. Public Comps and Valuation](docs/05-business-and-economics/ch37-public-comps-valuation.md) | 3,199 | 15 | 6 |  |
-| Part 5 | [38. Open Source as Strategy](docs/05-business-and-economics/ch38-open-source-strategy.md) | 3,283 | 8 | 6 |  |
-| Part 5 | [39. M&A History of the Data Industry, 2010–2026](docs/05-business-and-economics/ch39-ma-history.md) | 4,745 | 11 | 2 |  |
-| Part 5 | [40. Go-to-Market and Partnerships](docs/05-business-and-economics/ch40-gtm-partnerships.md) | 2,915 | 9 | 6 |  |
-| Part 5 | [41. Market Sizing and Growth Drivers](docs/05-business-and-economics/ch41-market-sizing.md) | 1,762 | 7 | 6 |  |
-| Part 6 | [42. A History of Databases, 1960s–2026](docs/06-history-and-future/ch42-history-of-databases.md) | 4,565 | 7 | 31 |  |
-| Part 6 | [43. The Modern Data Stack: Rise, Unbundling and Rebundling](docs/06-history-and-future/ch43-modern-data-stack.md) | 2,284 | 6 | 5 |  |
-| Part 6 | [44. Future Trends, 2026–2032](docs/06-history-and-future/ch44-future-trends.md) | 4,204 | 9 | 12 |  |
-| Part 6 | [45. Implications for a Storage Company Moving Up the Stack](docs/06-history-and-future/ch45-storage-moving-up-the-stack.md) | 2,707 | 8 | 17 |  |
-| Part 7 | [46. Talking with Data-Platform PMs, Engineers, Partners and Founders](docs/07-conversation-toolkit/ch46-talking-with-data-people.md) | 3,846 | 7 | 0 |  |
+| Part 4 | [34. Data Platforms of the Application Giants](docs/04-company-deep-dives/ch34-application-giants-data-platforms.md) | 3,827 | 12 | 38 | ✓ |
+| Part 5 | [35. Business Models: Consumption, Subscription, Open Core and Managed Cloud](docs/05-business-and-economics/ch35-business-models.md) | 3,881 | 9 | 1 | ✓ |
+| Part 5 | [36. Unit Economics and KPIs](docs/05-business-and-economics/ch36-unit-economics-kpis.md) | 4,124 | 11 | 9 | ✓ |
+| Part 5 | [37. Public Comps and Valuation](docs/05-business-and-economics/ch37-public-comps-valuation.md) | 3,412 | 15 | 6 | ✓ |
+| Part 5 | [38. Open Source as Strategy](docs/05-business-and-economics/ch38-open-source-strategy.md) | 3,316 | 8 | 6 | ✓ |
+| Part 5 | [39. M&A History of the Data Industry, 2010–2026](docs/05-business-and-economics/ch39-ma-history.md) | 4,782 | 11 | 1 | ✓ |
+| Part 5 | [40. Go-to-Market and Partnerships](docs/05-business-and-economics/ch40-gtm-partnerships.md) | 2,964 | 9 | 7 | ✓ |
+| Part 5 | [41. Market Sizing and Growth Drivers](docs/05-business-and-economics/ch41-market-sizing.md) | 1,782 | 7 | 6 | ✓ |
+| Part 6 | [42. A History of Databases, 1960s–2026](docs/06-history-and-future/ch42-history-of-databases.md) | 4,723 | 7 | 10 | ✓ |
+| Part 6 | [43. The Modern Data Stack: Rise, Unbundling and Rebundling](docs/06-history-and-future/ch43-modern-data-stack.md) | 2,304 | 6 | 5 | ✓ |
+| Part 6 | [44. Future Trends, 2026–2032](docs/06-history-and-future/ch44-future-trends.md) | 4,325 | 9 | 11 | ✓ |
+| Part 6 | [45. Implications for a Storage Company Moving Up the Stack](docs/06-history-and-future/ch45-storage-moving-up-the-stack.md) | 2,765 | 8 | 15 | ✓ |
+| Part 7 | [46. Talking with Data-Platform PMs, Engineers, Partners and Founders](docs/07-conversation-toolkit/ch46-talking-with-data-people.md) | 3,865 | 7 | 0 | ✓ |
+| Part 7 | [47. Technical and Business Diligence Checklist for a Data-Infrastructure Target](docs/07-conversation-toolkit/ch47-diligence-checklist.md) | 3,671 | 6 | 1 | ✓ |
+| Part 7 | [48. Question Bank: 154 Questions](docs/07-conversation-toolkit/ch48-question-bank.md) | 8,292 | 15 | 0 | ✓ |
+| Part 7 | [49. Explain It in 30 Seconds](docs/07-conversation-toolkit/ch49-explain-in-30-seconds.md) | 4,676 | 7 | 0 | ✓ |
+| Part 7 | [50. Self-Test and Cheat Sheets](docs/07-conversation-toolkit/ch50-self-test-cheat-sheets.md) | 13,286 | 19 | 2 | ✓ |
 <!-- AUTO:CONTENTS END -->
 
 ## How the numbers work

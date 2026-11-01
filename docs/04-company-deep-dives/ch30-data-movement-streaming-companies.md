@@ -40,7 +40,7 @@ timeline
     2022 : dbt Labs Series D at 4.2 billion dollars
     2023 : Confluent buys Immerok for Flink : Qlik closes Talend : Databricks buys Arcion
     2024 : Confluent buys WarpStream : IBM closes StreamSets and webMethods : Boomi buys Rivery : Snowflake buys Datavolo
-    2025 : Redpanda Series D : Fivetran buys Census and Tobiko : Salesforce closes Informatica : IBM agrees to buy Confluent
+    2025 : Redpanda Series D : Fivetran agrees to buy Census, buys Tobiko : Salesforce closes Informatica : IBM agrees to buy Confluent
     2026 : IBM closes Confluent : Fivetran and dbt Labs close merger : Boomi buys Elementary
 ```
 
@@ -64,7 +64,7 @@ George Fraser and Taylor Brown founded Fivetran in 2012 and built it into the le
 
 dbt began in 2016 inside Fishtown Analytics, Tristan Handy's consultancy. It made SQL transformation code version-controlled and testable, and created the "analytics engineer" job title (see [Ch 12](../02-pipelines-and-governance/ch12-transformation-and-orchestration.md)). The company renamed itself dbt Labs in 2021 and raised a $222M Series D at $4.2B in February 2022.[^funding] It monetized through dbt Cloud, a hosted development environment, scheduler and semantic layer, while dbt Core stayed open source. It passed $100M ARR with more than 5,000 dbt Cloud customers in February 2025 (company-stated).[^dbt-100m]
 
-Fivetran then assembled a full stack by acquisition. It bought **Census** for reverse ETL (announced May 2025), **Tobiko Data** for SQLMesh, dbt's most credible challenger (September 2025), and then agreed an all-stock merger with **dbt Labs** (announced 13 October 2025, closed 1 June 2026). In May 2026 it also took over stewardship of the Great Expectations open-source project.[^census][^tobiko][^ft-dbt-close][^ma-csv] Fraser is CEO and Handy is president.
+Fivetran then assembled a full stack by acquisition. It agreed to buy **Census** for reverse ETL (announced May 2025; closing not separately confirmed), **Tobiko Data** for SQLMesh, dbt's most credible challenger (September 2025), and then agreed an all-stock merger with **dbt Labs** (announced 13 October 2025, closed 1 June 2026). In May 2026 it also took over stewardship of the Great Expectations open-source project.[^census][^tobiko][^ft-dbt-close][^ma-csv] Fraser is CEO and Handy is president.
 
 ### Airbyte and Redpanda
 

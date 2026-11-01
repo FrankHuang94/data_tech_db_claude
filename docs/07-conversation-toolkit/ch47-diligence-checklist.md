@@ -7,7 +7,7 @@
 - **Each workstream follows the same pattern: what to ask, what to request, what good looks like, and the red flags.** A red-flag table (Figure 47.5) lists 18 tests. A weighted scoring matrix (Figure 47.6) turns the findings into a number the investment committee (IC) can compare across targets, and it includes gating criteria that override the total.
 - **Unit economics carries the most weight because the definitions are the least standard.** [Revenue run-rate](../glossary.md#revenue-run-rate), [ARR](../glossary.md#annual-recurring-revenue) and GAAP revenue are three different numbers. Databricks reports a company-stated run-rate above $7B, while Fivetran and dbt Labs report combined ARR "approaching $600M". Neither is audited revenue.[^db-7b][^fivetran-dbt]
 - **Platform-absorption risk is the defining product question.** Vector search, document parsing, Postgres, lakehouse engines and MCP gateways all became platform features or platform acquisitions between 2024 and 2026.[^s3-vectors][^datavolo][^dremio][^ducklabs][^natoma] Screen targets on differentiation against absorption risk (Figure 47.2) before spending diligence money.
-- **For a storage acquirer, integration fit is a workstream of its own.** The questions are channel conflict with data-platform partners, keeping an open-source community after the deal, and reconciling per-TB and consumption pricing. The 1touch deal ($125.0M cash, closed May 7, 2026) is the template for a small, metadata-layer purchase that avoided most of these traps.[^1touch]
+- **For a storage acquirer, integration fit is a workstream of its own.** The questions are channel conflict with data-platform partners, keeping an open-source community after the deal, and reconciling per-TB and consumption pricing. The 1touch deal ($125.0M cash, closed May 7, 2026) is a recent example of a small, metadata-layer purchase structured to avoid most of these traps; it is too early to judge the outcome.[^1touch]
 
 ## Why this matters (business + Everpure lens)
 
@@ -116,6 +116,8 @@ This workstream carries the largest weight in the scoring matrix because the met
 | Magic number | (Quarter revenue − prior quarter revenue) × 4 ÷ prior-quarter S&M | ~0.7 is the common healthy threshold[^scale] | Day-count and one-quarter noise |
 | CAC payback | 12 ÷ (magic number × gross margin), in months | Derived from the two rows above | Ignores churn; inherits noise |
 | SBC intensity | SBC ÷ revenue | Snowflake ~27% (press-reported, Q2 FY2027)[^secapi] | Excluded from non-GAAP; dilution is permanent |
+| Rule of 40 | Revenue growth % + FCF margin % (state which growth period and which margin: FCF, adjusted FCF, non-GAAP operating) | Snowflake ~58: 35% GAAP total revenue growth (Q2 FY2027) + 23% FY2027 adjusted FCF-margin guide (our arithmetic, estimate)[^r40] | Mixes periods and margin definitions; SBC-adjusted FCF gives a much lower score |
+| RPO and cRPO | RPO: contracted revenue not yet recognised (GAAP disclosure). cRPO: the part expected to be recognised within 12 months | Snowflake RPO ~$9.0B, ~54% expected within 12 months (GAAP, Q2 FY2027)[^fin-csv] | For consumption vendors, recognition depends on usage and unused capacity can roll over; RPO is seasonal (high after fiscal Q4 renewals) |
 | On-demand share | On-demand revenue ÷ total revenue | Snowflake ~1% (FY2026)[^sf-10k26] | Low share does not mean low volatility, because prepaid capacity is still recognized only as consumed |
 
 *Figure 47.3 — KPI definitions for the unit-economics workstream. Rebuild every metric from the monthly revenue file rather than accepting management's figure. The reference points are comparison anchors, not pass marks.*
@@ -149,7 +151,7 @@ Data-infrastructure products process customers' personal data, and AI features w
 
 ### 8. Integration fit for a storage acquirer
 
-This workstream is specific to the buyer. For a storage company it decides whether the target adds value to the installed base or creates friction with the data platforms the customer already runs. [Ch 39](../05-business-and-economics/ch39-ma-history.md) shows that storage buyers did better when they bought metadata and data services (Portworx, 1touch) than when they bought engines (Greenplum, Pentaho).
+This workstream is specific to the buyer. For a storage company it decides whether the target adds value to the installed base or creates friction with the data platforms the customer already runs. [Ch 39](../05-business-and-economics/ch39-ma-history.md) shows that storage buyers did better when they bought metadata and data services (Portworx; 1touch closed in May 2026 and is too recent to judge) than when they bought engines (Greenplum, Pentaho).
 
 - **What to ask.** Which integration path applies: a connector into an existing data-intelligence layer, software that runs on the array, metadata published into Unity Catalog or Horizon, or a co-packaged appliance? Does the target compete with Databricks, Snowflake or Starburst, all of which have public relationships with storage vendors?[^storage-eco][^starburst-ep] If the target is open source, will the community stay after a storage company owns the project? How does consumption pricing map onto per-TB or reserve-commitment pricing?
 - **What to request.** The partner list with revenue by partner, the community's governance documents, and a pricing reconciliation that runs the target's top ten customers through the acquirer's pricing model.
@@ -190,7 +192,7 @@ This workstream is specific to the buyer. For a storage company it decides wheth
 | 17 | Copyleft code inside proprietary components | Forced disclosure or rewrite after close | Independent SCA scan, not the target's own |
 | 18 | Price anchors taken from press reports | Press figures often exceed filed prices | Use filed figures: Snowflake–Crunchy Data was $164.5M filed against ~$250M press-reported[^crunchy] |
 
-*Figure 47.5 — Eighteen red flags with a test for each. Rows 1–6 sit with the financial team, 7–13 with the technical and product team, and 14–18 with HR, legal and corporate development. Rows 7, 16 and 17 are usually gating.*
+*Figure 47.5 — Eighteen red flags with a test for each. Rows 1–6 sit with the financial team, 7–13 with the technical and product team, and 14–18 with HR, legal and corporate development. Rows 1, 7, 16 and 17 are usually gating, matching the gating column in Figure 47.6.*
 
 ## Scoring matrix
 
@@ -258,6 +260,8 @@ Ask for documents 1–4 before the management meeting if possible. A target that
 - [Gross revenue retention](../glossary.md#gross-revenue-retention) — the share of a cohort's prior spend kept after contraction and churn, excluding expansion.
 - [Magic number](../glossary.md#magic-number) — annualized new revenue divided by the prior quarter's sales and marketing spend.
 - [CAC payback](../glossary.md#cac-payback) — months of gross profit needed to recover acquisition spend.
+- [Rule of 40](../glossary.md#rule-of-40) — revenue growth plus a stated margin (usually FCF); 40 or more is the usual benchmark.
+- [Remaining performance obligations](../glossary.md#remaining-performance-obligations) and [current remaining performance obligations](../glossary.md#current-remaining-performance-obligations) — contracted, unrecognised revenue in total and within 12 months.
 - [Stock-based compensation](../glossary.md#stock-based-compensation) — employee pay in equity, a real but non-cash cost.
 - [Serverless compute](../glossary.md#serverless-compute) — vendor-run compute whose cloud cost sits in the vendor's COGS.
 - [Bring your own cloud](../glossary.md#bring-your-own-cloud) — deployment in which the customer's cloud account runs and pays for the compute.
@@ -317,4 +321,5 @@ Ask for documents 1–4 before the management meeting if possible. A target that
 [^starburst-ep]: Everpure partner page, "Starburst" (Scalable Lakehouse Analytics reference architecture), https://www.everpuredata.com/la/partners/technology-alliance-partners/starburst.html, n.d.; retrieved 2026-11-01 (via `meta/research-briefing.md`).
 [^everpure-os]: Everpure blog, "Everpure OpenSharing Connector," https://blog.everpuredata.com/products/everpure-opensharing-connector/, published 2026-06; retrieved 2026-11-01. Vendor-stated; private preview from 2026-06-09.
 [^ep-10k]: Everpure, Inc. (formerly Pure Storage), Form 10-K for the fiscal year ended February 1, 2026 (Subscription ARR definition incl. on-demand billings × 4; Evergreen//One reserve commitment and on-demand structure), https://www.sec.gov/Archives/edgar/data/1474432/000147443226000027/pstg-20260201.htm, published 2026-03; retrieved 2026-11-01.
+[^r40]: AI Data Atlas dataset `data/ch36_rule_of_40.csv`, Snowflake row (Q2 FY2027 GAAP total revenue growth 35% plus FY2027 company guidance for non-GAAP adjusted FCF margin 23% = 58), source Snowflake Q2 FY2027 release, https://www.nasdaq.com/press-release/snowflake-reports-financial-results-second-quarter-fiscal-2027-2026-09-02, published 2026-09-02; retrieved 2026-11-01. Score is author arithmetic (estimate); FY2027 = Feb 2026–Jan 2027.
 [^crunchy]: Snowflake Inc., Form 10-Q for the quarter ended 2025-10-31, https://www.sec.gov/Archives/edgar/data/1640147/000164014725000211/snow-20251031.htm, published 2025-12; TechCrunch, "Snowflake to acquire database startup Crunchy Data," https://www.techcrunch.com/2025/06/02/snowflake-to-acquire-database-startup-crunchy-data/, published 2025-06-02; retrieved 2026-11-01. $164.5M filed vs ~$250M press-reported, as summarized in Ch 39.

@@ -221,7 +221,7 @@ The open question is whether the catalog itself rebundles into the platforms or 
 - "The modern data stack is dead." The tools still run in production. What ended is the venture model of one company per box.
 - "dbt Labs was worth $4.2B." That was a 2022 private mark, never re-tested; the merger was all-stock with no price.
 - "Platforms will bundle everything." Cross-platform neutrality and the catalog remain contested. Independents with control points (Atlan, Fivetran–dbt) still exist.
-- "Reverse ETL failed." It became a suite feature (Census, inside Fivetran) and, at Hightouch, a marketing product.
+- "Reverse ETL failed." It is becoming a suite feature (Census, which Fivetran agreed to buy; closing not separately confirmed) and, at Hightouch, a marketing product.
 
 ## Going deeper
 

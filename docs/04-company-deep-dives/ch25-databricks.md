@@ -310,7 +310,7 @@ quadrantChart
 
 ## Why it's winning / bull case
 
-1. **Growth is accelerating at scale.** Reported growth went from ~50% at $4B (mid-2025) to >80% at $7B (mid-2026).[^db-4b][^db-7b] Very few software companies have ever re-accelerated above $5B. If the figures are anywhere near right, the AI-workload tailwind is real and showing up in consumption.
+1. **Growth is accelerating at scale.** Reported growth went from ~50% at a $4B revenue run-rate (mid-2025) to >80% at a $7B run-rate (mid-2026), both company-stated.[^db-4b][^db-7b] Very few software companies have ever re-accelerated above $5B. If the figures are anywhere near right, the AI-workload tailwind is real and showing up in consumption.
 2. **It owns the AI-data control point.** Unity Catalog governs tables, files, models, functions and, since 2026, AI gateway traffic. Agents need governed context and permissions, and the company that already holds lineage and access policies is the natural place to enforce them. That makes AI a second leg of growth rather than a substitute for the platform.
 3. **Open formats reduce sales friction.** "Your data stays in your bucket in open formats" wins security reviews and lowers perceived lock-in, which shortens enterprise sales cycles. Lock-in moves to the catalog, the pipelines and the skills of the team, where it is stickier but less visible.
 4. **Platform breadth compounds net retention.** Each new product (SQL, Lakeflow, Lakebase, Apps, Lakewatch) is another meter on the same contract. Net retention >140% at this scale implies that existing customers alone add ~40% a year.[^db-54]

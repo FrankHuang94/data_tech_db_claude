@@ -290,3 +290,4 @@ Judgment calls made during the autonomous build. Newest at the bottom.
 | ch50 | 2026-11-01 | ch50: Palantir multiple quoted as "~53x EV/NTM (FY2026 guide basis) or ~70x EV/TTM", following the CSV correction row; Ch 31/34/37 still quote ~70x EV/TTM only. | drafter judgment |
 | ch50 | 2026-11-01 | ch50: The market-map poster has 40 nodes (assignment cap ≤40) rather than the style guide's ~25, using 8 subgraphs with short labels; it lints cleanly. | drafter judgment |
 | ch50 | 2026-11-01 | ch50: Ch 40 states Everpure appears on Snowflake's S3-compatible storage vendor list, while Ch 27 flags the same point [VERIFY]. Ch 50 reports both positions rather than choosing one; the integrator should reconcile. | drafter judgment |
+| 12 | 2026-11-01 | GitHub Pages deployment left to the owner: the build job passes, but the deploy job gets 404 until Pages is enabled with Source = GitHub Actions. | The repository settings API isn't available to the build agent. |

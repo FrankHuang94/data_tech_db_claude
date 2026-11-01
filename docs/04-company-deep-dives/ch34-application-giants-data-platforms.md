@@ -6,7 +6,7 @@
 ## TL;DR
 
 - **The thesis.** Agents need two things a warehouse cannot give them alone: context that spans systems, and permission to *write back* into the system of record. The application vendors hold the write path and the business semantics (what an "opportunity", "incident" or "cost center" means). Each one is now building a data layer so that its own agents, not Databricks' or Snowflake's, become the "system of intelligence".
-- **The defence.** Seat-based pricing is exposed if agents do the work humans used to do. The market has de-rated the seat model: Salesforce's market cap fell about 21% and Workday's about 27% year over year, while Palantir, an ontology-and-agents vendor, trades near **70x** trailing revenue.[^comps-crm][^comps-wday][^comps-pltr] Owning the data layer lets vendors re-price around consumption and agent actions.
+- **The defence.** Seat-based pricing is exposed if agents do the work humans used to do. The market has de-rated the seat model: Salesforce's market cap fell about 21% and Workday's about 27% year over year, while Palantir, an ontology-and-agents vendor, trades near **70x EV/TTM revenue** (~53x EV/NTM on its FY2026 guidance basis, per `data/public_comps.csv`).[^comps-crm][^comps-wday][^comps-pltr] Owning the data layer lets vendors re-price around consumption and agent actions.
 - **The deals.** Salesforce paid ~$8B for Informatica (closed November 2025), on top of MuleSoft ($6.5B), Tableau ($15.7B) and Own ($1.9B). ServiceNow bought Moveworks ($2.85B, closed December 2025) and agreed to buy data.world (May 2025; no closing date found). SAP bought Dremio (2026, undisclosed).[^ma-csv][^dremio][^now-ir]
 - **Zero-copy is a truce, not a merger.** App vendors and data platforms now expose tables to each other in place instead of exporting them. Salesforce runs bidirectional sharing with Snowflake, Databricks, BigQuery and Redshift. SAP embeds Databricks inside Business Data Cloud and in late 2025 added BigQuery and Snowflake. Workday launched a Data Cloud with zero-copy links to Databricks, Salesforce, Snowflake and BigQuery. Each side still wants to be the place where the agent runs.[^zcpn][^sf-snow][^sap-snow][^wday-dc]
 - **Everpure angle.** These data clouds run almost entirely on hyperscalers. The on-prem openings are narrower but real: SAP now owns Dremio, an existing FlashBlade partner; sovereign deployments (SAP, Palantir, Oracle) need local infrastructure; and copies of SaaS data still need discovery and protection.[^briefing-a]
@@ -47,7 +47,7 @@ timeline
     title Application-vendor data and agent acquisitions 2018 to 2026
     2018 : Salesforce buys MuleSoft for 6.5 billion dollars : Salesforce buys Datorama
     2019 : Salesforce buys Tableau for 15.7 billion dollars
-    2022 : Salesforce launches the Genie customer data platform, later Data Cloud
+    2022 : Salesforce launches the Genie customer data platform, later Data Cloud (now Data 360)
     2024 : Workday buys HiredScore and Evisort : Salesforce buys Own for 1.9 billion dollars : Agentforce launches : ServiceNow announces Workflow Data Fabric
     2025 : SAP launches Business Data Cloud with Databricks : ServiceNow buys Moveworks and agrees data.world : Salesforce buys Informatica for about 8 billion dollars : Workday buys Paradox and Sana : Workday Data Cloud : SAP adds BigQuery and Snowflake : Data Cloud renamed Data 360
     2026 : SAP buys Dremio : Salesforce reports Data 360 ARR of 2.4 billion dollars

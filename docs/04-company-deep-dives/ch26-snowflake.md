@@ -57,7 +57,7 @@ timeline
     2021 to 2022 : Snowpark : Streamlit acquired : Unistore and Iceberg tables announced
     2023 : Optimization downturn : Neeva acquired : Cortex AI announced
     2024 : Sridhar Ramaswamy becomes CEO : Polaris catalog : Iceberg tables GA : Datavolo acquired
-    2025 : Crunchy Data acquired : Openflow and Snowflake Intelligence : Gen2 and adaptive warehouses
+    2025 : Crunchy Data acquired : Openflow and Snowflake Intelligence (now CoWork) : Gen2 and adaptive warehouses
     2026 : Observe and Natoma : Polaris graduates at Apache : CoWork and CoCo renames : Growth reaccelerates
 ```
 

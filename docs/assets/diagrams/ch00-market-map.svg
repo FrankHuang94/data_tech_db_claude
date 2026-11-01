@@ -128,12 +128,12 @@
     <text x="790.9" y="472.5" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">ClickHouse</text>
     <rect x="841.8" y="455.0" width="66.1" height="26" rx="5" fill="#EDEDED" stroke="#888888" stroke-width="1.2"/>
     <text x="874.8" y="472.5" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000" font-style="italic">DuckDB</text>
-    <rect x="915.9" y="455.0" width="124.6" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
-    <text x="978.2" y="472.5" text-anchor="middle" font-size="12.5" fill="#000000">DuckLabs <tspan font-weight="bold" fill="#000000">→ AWS</tspan></text>
-    <rect x="1048.5" y="455.0" width="52.9" height="26" rx="5" fill="#EDEDED" stroke="#888888" stroke-width="1.2"/>
-    <text x="1074.9" y="472.5" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000" font-style="italic">Trino</text>
-    <rect x="1109.4" y="455.0" width="83.5" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
-    <text x="1151.1" y="472.5" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Starburst</text>
+    <rect x="915.9" y="455.0" width="177.8" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="1004.8" y="472.5" text-anchor="middle" font-size="12.5" fill="#000000">DuckLabs <tspan font-weight="bold" fill="#000000">→ AWS (agreed)</tspan></text>
+    <rect x="1101.7" y="455.0" width="52.9" height="26" rx="5" fill="#EDEDED" stroke="#888888" stroke-width="1.2"/>
+    <text x="1128.2" y="472.5" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000" font-style="italic">Trino</text>
+    <rect x="462.4" y="489.0" width="83.5" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="504.2" y="506.5" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Starburst</text>
     <rect x="262.0" y="489.0" width="107.7" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
     <text x="315.9" y="506.5" text-anchor="middle" font-size="12.5" fill="#000000">Dremio <tspan font-weight="bold" fill="#000000">→ SAP</tspan></text>
     <rect x="377.8" y="489.0" width="76.6" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
@@ -161,8 +161,8 @@
     <text x="1049.1" y="380.9" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000" font-style="italic">Apache Airflow</text>
     <rect x="1114.0" y="363.4" width="94.1" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2" stroke-dasharray="4 3"/>
     <text x="1161.1" y="380.9" text-anchor="middle" font-size="12.5" font-weight="normal" fill="#000000">Astronomer</text>
-    <rect x="262.0" y="397.4" width="138.2" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
-    <text x="331.1" y="414.9" text-anchor="middle" font-size="12.5" fill="#000000">Dagster <tspan font-weight="bold" fill="#000000">→ Prefect</tspan></text>
+    <rect x="262.0" y="397.4" width="188.0" height="26" rx="5" fill="#FFFFFF" stroke="#333333" stroke-width="1.2"/>
+    <text x="356.0" y="414.9" text-anchor="middle" font-size="12.5" fill="#000000">Dagster <tspan font-weight="bold" fill="#000000">→ Prefect (pending)</tspan></text>
   </g>
   <g id="layer7">
     <rect x="16" y="260.1" width="1216" height="85.6" rx="6" fill="#F7E8F0" stroke="#CC79A7" stroke-width="1.2"/>

@@ -110,7 +110,7 @@ flowchart LR
 
 **Discover.** Start with their scorecard, not your pitch. Ask which joint customers already run both products and what those customers complain about. With Databricks, ask how the Storage Ecosystem is meant to grow Unity Catalog's reach over data outside the cloud.[^storage-eco] With Snowflake, ask how Iceberg tables on external volumes affect a customer's consumption a year later ([Ch 26](../04-company-deep-dives/ch26-snowflake.md)). With a hyperscaler, ask which hybrid workloads its field is chasing this year.
 
-**Technical fit.** This is where you prove you are worth a second meeting. Ask which table formats and versions are supported, where credentials are vended, whether queries push down or scan everything, and which catalog is the system of record ([Ch 8](../01-data-systems-foundations/ch08-catalogs-and-metastores.md)). Ask what "certified" means. Snowflake's documentation says its list of S3-compatible storage vendors is vendor-reported and that it does not certify third-party products.[^sf-s3compat] A partner who claims "Snowflake certified us" is either mistaken or using the word loosely.
+**Technical fit.** This is where you prove you are worth a second meeting. Ask which table formats and versions are supported, where credentials are vended, whether queries push down or scan everything, and which catalog is the system of record ([Ch 8](../01-data-systems-foundations/ch08-catalogs-and-metastores.md)). Ask what "certified" means. Snowflake's documentation lists S3-compatible storage vendors (Pure Storage among them), but says Snowflake does not itself test or validate third-party products, and the current page asks the storage provider to offer a "Snowflake S3-compatible tested and compliant" service.[^sf-s3compat] A partner who claims "Snowflake certified us" is either mistaken or using the word loosely.
 
 **GTM fit.** Ask what changes field behaviour: listing, validation, or co-sell registration. Ask whether partner-sourced deals count toward the platform seller's quota. Ask about recognition programmes as well as tiers. MinIO, for example, was named Databricks' 2026 ISV Storage Partner of the Year,[^minio-poy] which tells you what the alliance team rewards.
 
@@ -203,7 +203,7 @@ Technical listeners use vocabulary as a filter. One slip does not end a meeting,
 | "Open format means no lock-in" | Lock-in has moved to the catalog, its policies and its credentials. | [Ch 8](../01-data-systems-foundations/ch08-catalogs-and-metastores.md) |
 | "$190B is Databricks' market cap" | $190B is a private post-money valuation set by preferred shares. | [Ch 37](../05-business-and-economics/ch37-public-comps-valuation.md) |
 | "Snowflake is profitable" | Non-GAAP operating margin was 15.3% in Q2 FY2027; GAAP operating margin was −17.0%. | [Ch 26](../04-company-deep-dives/ch26-snowflake.md) |
-| "Marketplaces take 20%" | Private offers now carry fees of 1.5–3%. | [Ch 40](../05-business-and-economics/ch40-gtm-partnerships.md) |
+| "Marketplaces take 20%" | AWS Marketplace private offers now carry listing fees of 1.5–3%, by contract size. | [Ch 40](../05-business-and-economics/ch40-gtm-partnerships.md) |
 | "Databricks and Snowflake run on-prem" | They are cloud services that can read on-prem data through S3-compatible tables, OpenSharing or federation. | [Ch 24](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md) |
 | "Kafka is a message queue" | Kafka is a replayable log; queue semantics arrived late. | [Ch 11](../02-pipelines-and-governance/ch11-streaming-and-event-platforms.md) |
 
