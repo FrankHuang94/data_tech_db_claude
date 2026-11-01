@@ -264,3 +264,135 @@ timeline
 **哪些成功了。** MosaicML 和 Neon 是最明确的成功案例。前者发展成一条 AI 产品线，公司称其到 2026 年 1 月已突破 $1.4B 年化运行率，不过该数字涵盖所有 AI 产品，而不仅是源自 Mosaic 的收入。[^db-54] 后者成为 Lakebase，在交易宣布约 14 个月后年化运行率突破 $100M。[^db-7b] Tabular 是最具战略意义的交易。为一家仅融资约 $37M 的公司支付约 $2B，是对期权价值的防御性收购：它阻止了 Snowflake（同一周宣布了 Polaris 目录）联合 Iceberg 社区对抗 Delta。[^tabular] Antimatter、SiftD、Panther 和 Electric 时间太短，尚难判断。
 
 **投资。** Databricks Ventures 在其生态中进行少数股权投资；例如，它参与了 Sigma Computing 2026 年的 E 轮融资。[^funding] 公司自身也已成为战略投资的对象。Microsoft、NVIDIA 和 Meta 均持有其股份，这使其三家最重要的供应商和渠道与其成功利益一致。[^funding]
+
+## 竞争地位
+
+Databricks 同时在四条战线上竞争。**Snowflake** 是争夺分析与 AI 平台预算的正面对手。**超大规模云厂商**既转售 Databricks，也打造替代品。**Palantir** 争夺"基于企业数据的 AI"这一面向高管的叙事和预算。ClickHouse 等**专业引擎**则在其更快或更便宜的特定工作负载上发起进攻。
+
+| 维度 | Databricks | Snowflake | Microsoft Fabric | Google BigQuery | AWS（Redshift、SageMaker、S3 Tables） | Palantir | ClickHouse |
+|---|---|---|---|---|---|---|---|
+| 大本营买方 | 数据工程、ML | SQL 分析师、财务 | Microsoft 365 / Power BI 存量客户 | GCP 原生分析团队 | AWS 开发者 | 高管层、运营、政府 | 实时 / 可观测性工程师 |
+| 存储模式 | 客户对象存储中的 Delta + UniForm | 托管专有格式；Iceberg 表已 GA | OneLake（基于 Delta），可快捷连接到其他存储 | 托管存储；BigLake/Iceberg | S3 Tables（托管 Iceberg） | 基于已连接数据源的 Ontology | MergeTree；对象存储分层 |
+| 目录 / 控制点 | Unity Catalog（开源） | Horizon；Apache Polaris（已捐赠） | OneLake 目录；Purview | Knowledge Catalog（原 Dataplex） | Glue / SageMaker Catalog | Ontology | 极简 |
+| 计价单位 | 按 SKU 计的 DBU（按用量计费） | Credits（按用量计费） | 容量单位（预留） | Slots 或扫描字节数 | 实例小时 / 无服务器 RPU | 大型企业合同 | 云端按用量 / 开源 |
+| 运营型数据库 | Lakebase（Neon） | Snowflake Postgres（Crunchy） | Fabric SQL DB、Cosmos DB | AlloyDB、Spanner | Aurora、DSQL | 不适用 | 不适用 |
+| 智能体 / AI 叙事 | Agent Bricks、Genie One、AI Gateway | CoWork（原 Snowflake Intelligence）、Cortex | Fabric IQ、Copilot | Gemini Enterprise、数据智能体 | Bedrock、SageMaker | AIP | MCP / Langfuse |
+| 最新规模指标 | >$7B 年化运行率，>80% 增速（公司披露） | Q2 FY2027 收入 $1.55B，+35%（GAAP） | 包含在 Microsoft 内；未单独披露 | 包含在 Google Cloud 内；未单独披露 | 包含在 AWS 内；未单独披露 | 过去 12 个月收入约 $6.2B，增速约 79%（GAAP） | 估值 $15B（2026 年 1 月，媒体报道） |
+| *可比性说明* | *年化运行率（公司自定义，未经审计）* | *季度 GAAP 总收入* | | | | *过去 12 个月 GAAP 收入* | *私募估值，非收入* |
+
+*图 25.11 — 竞争矩阵。来源：Snowflake Q2 FY2027 财报新闻稿；`data/public_comps.csv`；超大规模云厂商活动总结；Bloomberg 关于 ClickHouse 的报道。[^sf-q2][^comps-pltr][^ignite][^next26][^reinvent][^clickhouse]*
+
+```mermaid
+quadrantChart
+    title 数据层开放程度 vs 工作负载广度（作者判断）
+    x-axis 专有存储 --> 客户存储中的开放格式
+    y-axis 窄工作负载 --> 宽工作负载
+    quadrant-1 开放平台
+    quadrant-2 封闭套件
+    quadrant-3 封闭专业厂商
+    quadrant-4 开放专业厂商
+    Databricks: [0.82, 0.86]
+    Snowflake: [0.52, 0.78]
+    Microsoft Fabric: [0.62, 0.80]
+    BigQuery: [0.48, 0.70]
+    AWS analytics: [0.70, 0.62]
+    Palantir: [0.28, 0.66]
+    ClickHouse: [0.58, 0.30]
+```
+
+*图 25.12 — 定位（作者判断，并非实测数据）。所有厂商都在向右上方移动，这正是开放格式本身已不再能使 Databricks 形成差异化的原因。*
+
+**对比 Snowflake。** Snowflake 盈利能力更强且完全公开披露：Q2 FY2027 GAAP 收入 +35%，非 GAAP 产品毛利率约 75%，NRR 126%。[^sf-q2] 按其自身披露口径，Databricks 的增速是 Snowflake 的两倍多，拥有更强的 ML 和工程业务，并且现在宣称其数据仓库业务已超过 $1.5B。Snowflake 几乎对每一步都作出了回应：以 Iceberg 表和 Polaris 目录对抗 Unity Catalog，以 Crunchy Data 和 Snowflake Postgres 对抗 Neon 和 Lakebase，以 Openflow 对抗 Lakeflow，以 CoWork 对抗 Genie。[第 26 章](ch26-snowflake.md)和[第 27 章](ch27-databricks-vs-snowflake.md)给出了完整比较。
+
+**对比超大规模云厂商。** 这是结构性风险。Microsoft 将 Azure Databricks 作为第一方服务销售，参与了 2026 年 2 月完成交割的那轮投资，同时也在力推 **Fabric**：以 OneLake 作为单一存储，Fabric 数据库已 GA，Fabric IQ 语义处于预览阶段。[^funding][^ignite] Fabric 被捆绑进大多数企业已经拥有的 Power BI 资产中。Google 的 **BigQuery** 在 Next '26 上新增了跨云湖仓查询，以及来自 Spanner、AlloyDB 和 Cloud SQL 的原生复制。[^next26] AWS 将 **S3 Tables**（托管 Iceberg）和 S3 Vectors 变成原生存储功能，把"对象存储上的开放表"这一层纳入了存储服务本身。[^reinvent] Databricks 的防御是多云中立性加上更快的产品迭代节奏。每家超大规模云厂商都更愿意自己攫取这部分利润，但无论如何，它们都能赚到底层的计算和存储收入。
+
+**对比 Palantir 与专业厂商。** Palantir（过去 12 个月收入约 $6.2B，过去 12 个月增速约 79%，截至 2026-10-30 约 70x EV/过去 12 个月收入）向高管销售 Ontology 和运营型 AI 应用。它与 Genie 和 Agent Bricks 在应用层的重叠，多于与数据仓库的重叠。[^comps-pltr] ClickHouse（估值 $15B，2026 年 1 月）凭借性价比赢得实时和可观测性工作负载，而 Lakehouse//RT 以及 Panther/Lakewatch 的安全布局显然正瞄准这一细分市场。[^clickhouse][^dais26]
+
+## 制胜原因 / 看多逻辑
+
+1. **规模化下增长仍在加速。** 报告增速从约 50%（$4B 收入年化运行率，2025 年年中）升至 >80%（$7B 年化运行率，2026 年年中），二者均为公司披露。[^db-4b][^db-7b] 极少有软件公司在超过 $5B 规模后还能重新加速。只要这些数字大致准确，AI 工作负载的顺风就是真实的，并且已体现在消耗量中。
+2. **它掌握了 AI 数据的控制点。** Unity Catalog 治理表、文件、模型、函数，并自 2026 年起治理 AI 网关流量。智能体需要受治理的上下文和权限，而已经掌握数据血缘和访问策略的公司，自然是执行这些规则的地方。这使 AI 成为第二条增长腿，而非平台的替代品。
+3. **开放格式降低销售摩擦。** "你的数据以开放格式留在你自己的存储桶里"有助于通过安全审查，并降低客户感知到的锁定风险，从而缩短企业销售周期。锁定转移到了目录、数据管道和团队技能上，这些地方黏性更强但更不易察觉。
+4. **平台广度推高净收入留存。** 每个新产品（SQL、Lakeflow、Lakebase、Apps、Lakewatch）都是同一合同上的又一块"电表"。在这一规模下 >140% 的净收入留存率意味着，仅现有客户每年就带来约 40% 的增长。[^db-54]
+5. **资本与"货币"优势。** $190B 的私募股票"货币"，且无需接受季度审视，支撑了"买而非建"策略（16 笔交易）以及通过要约收购留住人才。公开市场的对手若要做到这一点，就必须在众目睽睽之下稀释股东权益。
+6. **按增长调整后的估值站得住脚。** 每个百分点增速约 0.34x 投后价值/年化运行率，而 Snowflake 约为每个百分点 0.48x EV/未来 12 个月收入（分子和分母均不同，因此仅供参考）；再加上 Palantir 的交易倍数接近 70x EV/过去 12 个月收入，看多者可以主张 $190B 已经计入了大幅减速（见上文估值桥接）。
+
+## 风险 / 看空逻辑与待解问题
+
+1. **倍数所假设的增长和利润率未经审计。** 在约 27x 年化运行率下，这一价格需要多年 40%+ 的增长*以及*成熟软件公司的利润率。PitchBook 的分析（由 Morningstar 转载）估计其经营价值更接近 **$68.7B**，折价 64%，并发现即便在 80% 毛利率的乐观情景下也只能达到约 $182B。[^ms] 年化运行率的定义未披露，而 S-1 可能重塑整体图景。
+2. **无服务器稀释毛利率。** 随着工作负载迁移到无服务器，云基础设施成本进入 COGS。对一个自行运行全部计算的平台而言，Snowflake 约 75% 的非 GAAP 产品毛利率是现实的归宿，而这低于 Databricks 在 2024 年引用的 >80% 订阅毛利率。[^db-j][^sf-q2] 与 Snowflake、BigQuery 和 Fabric 在 SQL 上的价格竞争会带来进一步压力。
+3. **开放格式是一把双刃剑。** 帮助赢单的开放性，同样让更换引擎变得更便宜。如果客户的表可被 Iceberg 读取并在开放目录中治理，那么 Snowflake、Trino、DuckDB 或某个超大规模云厂商的引擎都可以竞标每一个工作负载。Databricks 收购 Tabular 部分是为了管理这一风险，而 AWS S3 Tables 表明超大规模云厂商可以从底层将表这一层商品化。[^reinvent]
+4. **Microsoft 既是伙伴也是对手。** Azure Databricks 是一个主要渠道，但 Fabric 被捆绑进 Databricks 无法匹敌的存量客户群中。Microsoft 销售薪酬侧重点的变化，可能悄然改变销售线索的流向。没有公开数据显示 Azure 在 Databricks 收入中的占比 [VERIFY: Azure 在收入中的占比]。
+5. **流动性悬置与股权激励费用。** 连续多轮融资为员工要约收购和 RSU 预扣税提供了资金。[^db-j][^db-48] 这表明股权激励费用（SBC）很高，而"FCF 为正"的说法并未扣除这部分。任何 IPO 都会带来规模极大的员工持股解禁。Ghodsi 称 2026 年是"上市的糟糕年份"（媒体报道），他暗示的最早窗口是 2027 年。截至 Morningstar 那篇文章发布时，尚无提交保密 S-1 的报道。[^ipo][^ms]
+6. **整合广度与聚焦度。** 2026 年在安全、Postgres 和电子表格领域的五笔交易拉长了产品战线。Lakewatch 使 Databricks 与 Splunk/Cisco、CrowdStrike 和 Palo Alto 正面交锋，而这些厂商在安全领域的积累远比它深厚。
+7. **需持续跟踪的待解问题。** 年化运行率的确切定义是什么？无服务器在 DBU 中的占比是多少，无服务器的毛利率是多少？有多少收入来自 Azure？LTAP 能否交付？Lakebase 是蚕食外部 Postgres 还是带来新增工作负载？S-1 何时提交？
+
+## 与 Everpure 的相关性
+
+> **存储桥接。** Databricks 将对象存储视为商品化的基础层：基于 S3 兼容 API 的 Delta/Iceberg 文件，由 Unity Catalog 决定谁可以读取。性能来自 Photon、缓存和文件布局，而非存储阵列，因此存储厂商的议价筹码在于数据*存放在哪里*（本地、主权环境、靠近 GPU）以及元数据，而不在于为 Databricks SQL 提供的原始吞吐量。有关 S3 语义和 FlashBlade 对象性能，请参见配套的 *Everpure Tech Atlas*。
+
+**Databricks 能在本地部署运行吗？** 不能作为一款产品运行。Databricks 是运行在 AWS、Azure 和 Google Cloud 上的云服务。其官方外部位置文档涵盖云对象存储和 Cloudflare R2，社区讨论帖则描述了将 Unity Catalog 指向 MinIO 等本地 S3 兼容存储的做法——可行但不受官方支持。[^extloc] 混合访问在过去意味着配对集成（例如 2023 年的 Dell ECS 集成）或联邦查询。[^dell-ecs] 这一情况在 2026 年 6 月发生了变化。Databricks 推出了 **Storage Ecosystem（存储生态）**，存储厂商在其对象存储旁运行托管的 **OpenSharing** 服务器。Databricks 工作区随后即可在本地原位发现、治理和查询 Delta 与 Iceberg 表，无需复制。首发合作伙伴为 **Everpure、MinIO 和 Qumulo**。Cohesity、Commvault、HPE、NetApp、Nutanix、Rubrik 和 VAST Data 被列为后续加入者。[^storage-eco] Everpure 自己的博客描述了一款**自 2026 年 6 月 9 日起处于私有预览**的 **OpenSharing 连接器**。它指向 FlashBlade 或 FlashArray 对象存储上的存储桶，并为 Databricks 提供对其中 Iceberg 和 Delta 表的受控访问。[^everpure-os] 各方来源对成熟度的说法不一：Databricks 的页面将其列为首发合作伙伴服务，而 Everpure 的博客称其为预览版。我们未找到正式可用的公告 [VERIFY: Everpure OpenSharing 连接器 GA 状态]。
+
+**基于公开信息，战略团队可能评估的选项：**
+
+| 选项 | 含义 | 为何可能重要 | 注意事项 |
+|---|---|---|---|
+| 将 OpenSharing 连接器推进至 GA 并联合销售 | 让"受监管数据留在 Everpure 上，由 Databricks 治理和查询"成为受支持、联合营销的模式 | 将 Databricks 在主权/混合场景的短板转化为 Everpure 的连带销售；在 10 家存储厂商中占得先机 | 存储合作伙伴之间的切换成本低；差异化必须来自性能、数据服务和支持 |
+| 将 Data Intelligence（1touch）与 Unity Catalog 集成 | 把 Everpure 的数据发现与分类标签推送到 Unity Catalog，并将 Unity Catalog 策略回传 | Everpure 基于 1touch 的 Data Intelligence 已将 Databricks 列为连接器目标，双向元数据连接可深化这一关系[^1touch] | Unity Catalog 自身也在增加分类功能；存在重叠而非互补的风险 |
+| 将 FlashBlade 定位为靠近 GPU 的湖仓表本地落地区 | FlashBlade 上的 Iceberg/Delta 表通过 OpenSharing 为 Data Stream 和 Databricks 供数 | 与 Everpure 的"数据优先"以及 NVIDIA AI Data Platform 相关工作相契合 | Databricks 的增长引擎是云端无服务器，因此本地部署仍是少数场景 |
+| 关注 Lakebase 的存储层 | Neon 式 Postgres 将页面分层到对象存储 | 智能体创建的数据库会成倍扩大对象存储占用；混合版 Lakebase 将需要本地对象存储 | 尚无公开的本地 Lakebase 计划；属推测 |
+
+*图 25.13 — 合作选项（仅基于公开信息）。竞争风险是间接的：如果 Unity Catalog 成为企业的元数据控制点，存储侧的"数据智能"就必须与之互操作，而不是取而代之。*
+
+存储厂商向技术栈上层延伸的更广泛趋势见[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)，数据引力（data gravity）与出口流量费（egress fees）的经济学见[第 24 章](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)。
+
+## 对话手册
+
+**向 Databricks 产品经理或高管提出的三个问题**
+
+1. "现在有多大比例的 DBU 运行在无服务器上？无服务器 SQL 的毛利率与经典 Jobs 计算相比如何？" *好的回答*会给出方向和机制，例如预热池带来的利用率和 Photon 的效率可以抵消云 COGS，并承认产品结构变化会稀释毛利率百分比，同时增加毛利润金额。
+2. "对于基于 OpenSharing 的存储合作伙伴，Unity Catalog 在本地治理的是什么：权限、血缘、审计，还是三者全部？共享服务器的 SLA 由谁负责？" *好的回答*会区分目录负责执行的内容与存储合作伙伴负责运营的内容，并说明支持的表格式和查询路径（下推还是全量扫描）。
+3. "你们如何定义所披露的收入年化运行率？净收入留存率按美元还是按 DBU 计算？" *好的回答*会说明算法：季度 × 4 还是期末月 × 12。在这一问题上的回避本身就是一个数据点。
+
+**向 Databricks 工程师或合作伙伴架构师提出的三个问题**
+
+1. "当外部引擎读取 S3 兼容存储上的 Unity Catalog 表时，凭证如何分发？在非 AWS 端点上会怎样？" *好的回答：* 具体描述临时凭证的作用域，以及端点和签名要求。
+2. "使用 UniForm 时，目前哪些 Iceberg 特性（删除向量、v3 类型）可被第三方引擎读取？Delta 提交后元数据生成的延迟是多少？" *好的回答：* 具体说明版本，以及异步与同步元数据写入的区别。
+3. "Lakebase 将页面和 WAL 存放在哪里？该存储层能否放在客户管理的对象存储上？" *好的回答：* 清楚解释 safekeeper/pageserver 的拆分；如果确实不行，坦诚回答"目前不行"。
+
+**好的回答听起来是什么样的。** 它们使用公司自己的单位（DBU、年化运行率、SKU），区分经典计算与无服务器，并把 Unity Catalog 而非 Delta 视为战略资产。它们会点明权衡取舍，例如无服务器改善了用户体验但带来了 COGS，而不是罗列发布名称。
+
+**不要这样说**
+
+- "Databricks 的收入是 $7B。" *这是公司披露的年化运行率下限，并非 GAAP 收入；最近披露的财年收入约为 $2.6B（截至 2025 年 1 月的财年）。*
+- "Databricks 就是 Spark。" *Spark 如今只是多个引擎之一；Photon、Lakebase 和无服务器 SQL 承担了大量工作。*
+- "Delta vs. Iceberg 才是主战场。" *这场争夺在 2024 年已基本平息（Tabular、UniForm）；真正的争夺层是目录。*
+- "Databricks 可以本地部署运行。" *它是云服务；本地数据通过合作伙伴和 OpenSharing 访问，而不是通过本地安装的 Databricks。*
+- "Everpure 与 Databricks 没有任何关系。" *Everpure 是 2026 年 6 月 Storage Ecosystem 的指定首发合作伙伴（连接器处于私有预览）。*
+- "$190B 是它的市值。" *这是由优先股定价的私募投后估值。*
+
+## 关键术语
+
+- [湖仓一体（Lakehouse）](../glossary.md#lakehouse) — 在对象存储中的开放文件之上实现数据仓库级别的管理和性能。
+- [Delta Lake](../glossary.md#delta-lake) — Databricks 的开放表格式（open table format）：Parquet 文件加 JSON 事务日志。
+- [UniForm](../glossary.md#uniform) — Delta 的一项功能，同时写入与 Iceberg 兼容的元数据，使其他引擎可以读取同一张表。
+- [Apache Iceberg](../glossary.md#apache-iceberg) — 源自 Netflix 的开放表格式；Databricks 通过收购 Tabular 化解了这一竞争标准。
+- [Photon](../glossary.md#photon) — Databricks 的向量化 C++ 查询引擎。
+- [向量化执行（Vectorized execution）](../glossary.md#vectorized-execution) — 按批次处理列数据，使 CPU 能够使用 SIMD 指令。
+- [Unity Catalog](../glossary.md#unity-catalog) — Databricks 面向数据和 AI 资产的治理目录（2024 年开源）。
+- [控制平面（Control plane）](../glossary.md#control-plane) — 由厂商托管、负责管理、调度和治理工作的服务。
+- [计算平面（Compute plane）](../glossary.md#compute-plane) — 实际处理数据的地方（经典模式在客户账户中，无服务器模式在厂商账户中）。
+- [无服务器计算（Serverless compute）](../glossary.md#serverless-compute) — 由厂商管理、即时可用、全包计费的计算资源。
+- [DBU](../glossary.md#dbu) — Databricks Unit，驱动计费的处理计量单位。
+- [收入年化运行率（Revenue run-rate）](../glossary.md#revenue-run-rate) — 将当期收入年化后的数值；并非经审计的年度收入。
+- [净收入留存率（Net revenue retention）](../glossary.md#net-revenue-retention) — 去年客户群组今年的消费 ÷ 他们一年前的消费。
+- [Lakebase](../glossary.md#lakebase) — Databricks 基于 Neon 构建的无服务器 Postgres。
+- [OpenSharing](../glossary.md#opensharing) — Linux Foundation 旗下的协议（Delta Sharing 的后继者），用于跨平台共享数据和 AI 资产。
+- [Delta Sharing](../glossary.md#delta-sharing) — Databricks 早期用于跨组织共享实时表的开放协议。
+- [外部位置（External location）](../glossary.md#external-location) — 将存储路径与凭证绑定的 Unity Catalog 对象。
+- [Apache Spark](../glossary.md#apache-spark) — 诞生于伯克利 AMPLab 的分布式处理引擎。
+- [Agent Bricks](../glossary.md#agent-bricks) — Databricks 用于构建、评估和优化 AI 智能体的工具。
+- [Genie](../glossary.md#genie) — Databricks 的自然语言分析智能体（自 2026 年起为 Genie One）。
+- [Lakeflow](../glossary.md#lakeflow) — Databricks 的数据摄取、数据管道与编排套件。
+- [清算优先权（Liquidation preference）](../glossary.md#liquidation-preference) — 在出售公司时，优先股股东先于普通股股东获得偿付的权利。
+- [要约收购（Tender offer）](../glossary.md#tender-offer) — 由公司或投资者组织、向员工和持有人购买现有股份的行为。

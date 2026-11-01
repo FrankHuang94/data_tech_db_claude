@@ -246,3 +246,102 @@ flowchart LR
 Microsoft 在 FabCon 2025 上表示，Fabric 已有超过 **19,000 家付费客户**（公司披露，经二手回顾报道）。[^fabric-cust] 后来的财报电话会引用了更高的数字，但我们未能为本章核实 [VERIFY: 公司最新披露的 Fabric 付费客户数和收入增速]。一家付费客户可能只是一笔小额容量采购，因此这个数字更能说明覆盖广度而非深度。Fabric 真正的优势在于分发：每个 Power BI Premium 租户都已拥有可以运行 Fabric 工作负载的容量。
 
 在市场份额方面，Gartner 的 DBMS 研究估算 **2024 年**市场总规模为 **$119.7B**（分析师估算，+13.4%），并且多年来一直把 Microsoft、AWS、Oracle 和 Google 列为按收入计最大的四家 DBMS 厂商，排在 Databricks 和 Snowflake 之前。[^gartner-dbms] 最新一版中的厂商排名和份额位于 Gartner 付费墙之后 [VERIFY: 从公开的 Gartner 摘要中获取 2024 或 2025 年厂商排名和份额]。到 2024 年，云 DBMS 已占市场的大部分（根据 Gartner 摘要估算；见 `data/market_sizes.csv`）。[^gartner-dbms]
+
+## 并购与投资
+
+超大规模云厂商大多自建数据产品而非收购。即便收购，它们买的也是缺失的一层能力或一个开发者社区，而不是收入。
+
+| 日期 | 收购方 | 标的 | 金额 | 交易逻辑 | 结果 |
+|---|---|---|---|---|---|
+| 2014 年 10 月 | Google | Firebase | 未披露 | 移动后端即服务 | 成为 Firestore 和 Google 的应用平台[^ma] |
+| 2019 年 1 月 | Microsoft | Citus Data | 未披露 | 分布式 Postgres | Azure Cosmos DB for PostgreSQL；支撑 HorizonDB 背后的 Postgres 战略[^ma] |
+| 2019 年 2 月 | Google | Alooma | 未披露 | 通往 BigQuery 的数据管道 | 并入迁移工具[^ma] |
+| 2019 年 6 月（2020 年 2 月完成） | Google | Looker | $2.6B（已披露） | 语义层与 BI | Google Cloud 的 BI 与语义层[^looker-acq] |
+| 2020 年 12 月 | Google | Dataform | 未披露 | SQL 数据转换 | 在 BigQuery 内免费提供[^dataform] |
+| 2026 年 8 月 | AWS | DuckLabs（DuckDB） | 未披露 | 面向智能体和 S3 的进程内分析 | 已宣布；DuckDB 在 DuckDB Foundation 下保持 MIT 许可；尚未确认完成交割 [VERIFY][^ducklabs] |
+| 2009 年 | Oracle | GoldenGate | 未披露 | 基于日志的复制 | 至今仍是 Oracle 的复制与 CDC 产品[^goldengate] |
+
+*图 28.8 — 部分数据层交易。超大规模云厂商的数据类并购大多是补强型收购，战略性资金则投向资本开支和少数股权。*
+
+规模更大的“投资”是对独立厂商的入股。Microsoft、AWS 以及 Google 旗下的 CapitalG 都出现在 Databricks 的融资历史中。[^funding] 入股一家同时与你竞争的公司是一种对冲：它让合作伙伴保持利益一致，而且如果对方胜出，你也能获益。
+
+## 竞争地位
+
+| 维度 | AWS | Google Cloud | Microsoft | Oracle | Databricks | Snowflake |
+|---|---|---|---|---|---|---|
+| 锚定资产 | S3 | BigQuery | Fabric 工作空间与 Power BI 存量用户 | Oracle Database 与 Exadata | Unity Catalog 与湖仓 | 托管数据仓库与 Horizon |
+| 开放格式立场 | S3 Tables 中的 Iceberg | 通过 BigLake 支持 Iceberg | 原生 Delta，可读 Iceberg | 通过 Autonomous AI Lakehouse 支持 Iceberg | Delta 加 UniForm（Iceberg） | Iceberg 表正式可用；Polaris |
+| 多云覆盖 | 弱 | 中（跨云湖仓） | 中（快捷方式） | 强（三大云上的 Database@） | 强（三大云） | 强（三大云） |
+| 操作型数据库深度 | 很高 | 高 | 高 | 很高（关键任务） | 新兴（Lakebase） | 新兴（Snowflake Postgres） |
+| BI 分发能力 | 弱（QuickSight） | 中（Looker） | 很高（Power BI） | 低 | 中（AI/BI） | 低 |
+| 智能体叙事 | Bedrock、SageMaker | Gemini Enterprise 与 Agent Platform | Foundry、Copilot、Fabric IQ | 库内智能体 | Agent Bricks、Genie One | CoWork、Cortex |
+| 规模指标 | 每季度 $46.0B，+39%（Q3 2026，GAAP 分部） | 每季度 $30.7B，+103% | Azure 每季度约 $33.2B，+48% | OCI 约 $7.4B，+121%；RPO $664B | 年化运行率 >$7B（公司披露） | 每季度 $1.55B，+35%（GAAP） |
+
+*图 28.9 — 竞争矩阵（定性各行为作者判断）。资料来源：图 28.4–28.6；Databricks 和 Snowflake 公告。[^db-7b][^sf-q2] 各规模指标不可直接比较。*
+
+这个矩阵说明了为什么没有一家云厂商能取代独立厂商。每家超大规模云厂商在自己的云*内部*最强，但大型企业同时运行两到三朵云，需要一个横跨各云的统一治理和分析层。Databricks 和 Snowflake 是中立选项。Oracle 通过把 Exadata 带进每一朵云，在数据库层让自己成为中立方。Google 的跨云湖仓和 Microsoft 的 OneLake 快捷方式，都是在不要求客户迁移数据的前提下伸手触及竞争对手存储的尝试。
+
+## 制胜原因 / 看多逻辑
+
+1. **分发和捆绑胜过功能。** Fabric 触达每一个 Power BI 租户，零 ETL 触达每一个 Aurora 客户，BigQuery 触达每一个 Google Workspace 和 Google Ads 分析团队。即便是“够用”的产品，只要预装好并能消耗现有承诺额度，也能胜出。
+2. **存储引力。** 大多数企业的湖仓数据早已存放在 S3、ADLS 或 Cloud Storage 中。S3 Tables 和 S3 Vectors 把表和向量管理移入存储服务，于是超大规模云厂商掌握了独立引擎所依赖的那一层。[^s3tables][^reinvent25]
+3. **它们从竞争对手身上赚钱。** 基础设施、云市场费用和承诺额度消耗意味着，Databricks 或 Snowflake 赢单，超大规模云厂商同样赢。这是任何独立厂商都不具备的对冲。
+4. **操作型数据库是护城河。** Aurora、DynamoDB、Spanner、Azure SQL、Cosmos DB 和 Oracle Database 承载着记录系统。从这些系统到云厂商自家数据仓库的零 ETL，是通往分析的最短路径。
+5. **AI 需求正在填满产能。** Google Cloud 和 OCI 的三位数增长、Azure 的 48% 以及 AWS 的 39%（约五年来最快）表明，AI 工作负载正在落到超大规模云基础设施上，数据产品也随之受益。[^amzn-q3][^goog-q3][^msft-q1][^orcl-q1]
+
+## 风险 / 看空逻辑与待解问题
+
+1. **在 AI 资本开支的故事里，数据产品只是零头。** 增长如今由 GPU 和 TPU 产能驱动。如果 AI 需求放缓，资本开支（Alphabet 单季度 $51.4B、Microsoft 单季度 $39.4B（后者为媒体报道）；Oracle TTM $75.7B）将变成折旧负担，而数据产品无法填补这一缺口。[^comps][^orcl-fcf]
+2. **Oracle 的集中度与融资风险。** $664B 的积压订单之下，是为负的自由现金流、沉重的净负债和一次 $20B 的股票发行。据报道，其中大部分与单一交易对手挂钩，而该交易对手自身的融资依赖资本市场。[^orcl-q1][^openai-oracle]
+3. **开放格式削弱锁定效应。** 存放在客户自有存储上、由开放目录治理的 Iceberg 和 Delta，让任何引擎都能竞标任何工作负载。超大规模云厂商帮助推动了这些格式的标准化，也因此降低了客户离开它们自家数据仓库的成本。
+4. **产品蔓延与频繁更名。** Agentspace 变成 Gemini Enterprise，Dataplex 变成 Knowledge Catalog，Vertex AI 变成 Agent Platform，Azure AI Foundry 变成 Microsoft Foundry。持续更名反映出战略摇摆，也让买家困惑。独立厂商的单一平台叙事更容易销售。
+5. **监管与主权。** 欧盟《数据法案》（EU Data Act）的转换规则和主权云要求，提高了超大规模云厂商捆绑策略的成本，并有利于境内或本地部署方案。
+6. **待解问题。** 云收入中数据与分析占多大比例？Databricks 和 Snowflake 的消费中有多少经由云市场流转？Fabric 的客户增长能否转化为数据仓库支出中的大份额？AWS 会如何处置 DuckDB？
+
+## 与 Everpure 的相关性
+
+**竞争。** 超大规模云厂商的对象存储是湖仓和 AI 数据的默认归宿，而 AWS 正在把表（S3 Tables）和向量（S3 Vectors）内置进存储服务。[^s3tables][^reinvent25] 这抬高了任何本地对象存储平台的门槛：它需要具备感知 Iceberg 的管理能力和面向向量的数据管道，而不仅仅是兼容 S3 API。
+
+**合作。** Everpure Cloud 支持 Azure 原生虚拟机（在 Accelerate 2026 上宣布正式可用）。Everpure 的 Data Intelligence 连接器覆盖对象存储、Databricks、Snowflake、SQL Server 和 Oracle。[^ep-acc26][^ep-di] Everpure 还是 Databricks Storage Ecosystem 的首发合作伙伴，因此运行在超大规模云上的 Databricks 工作空间可以通过 OpenSharing 治理和查询存放在 Everpure 存储上的表。[^storage-eco][^everpure-os]
+
+**逆向趋势。** 数据主权（data sovereignty）和 AI 数据引力正把部分数据推回客户可控的基础设施。超大规模云厂商自己也通过 Oracle Database@ 部署、主权云区域和本地部署版本（Azure Local、Google Distributed Cloud、Oracle Cloud@Customer）承认了这一点 [VERIFY: AWS European Sovereign Cloud 的当前状态]。[^oracle-dbazure]
+
+> **存储桥接。** 对超大规模云厂商而言，存储是一种近乎亏本引流的底座，其真正价值在于吸引来的计算。S3 Tables 和 S3 Vectors 把表维护和向量检索推入这一底座。本地对象存储平台的竞争点在于数据必须存放在哪里以及它暴露的元数据，而不在于原始吞吐量。关于 S3 语义和对象存储性能，请参阅配套的 *Everpure Tech Atlas*。
+
+**基于公开信息，战略团队可能评估的选项：**
+
+| 选项 | 含义 | 为何可能重要 | 注意事项 |
+|---|---|---|---|
+| 可消耗 MACC/EDP 的云市场上架 | 通过 Azure 和 AWS 云市场销售 Everpure Cloud 和 Evergreen 订阅 | 客户可以把已承诺的云预算花在 Everpure 上；获得联合销售渠道 | 云市场费用；货架由超大规模云厂商掌控 |
+| 感知 Iceberg 的本地对象存储层 | 在 FlashBlade 上提供类似 S3 Tables 的托管 Iceberg 维护 | 为主权湖仓匹配超大规模云厂商的功能组合 | 需要目录互操作性（Polaris、Unity、Glue REST） |
+| 主权 AI 数据定位 | 瞄准无法将 AI 数据放在公有云存储上的受监管客户 | 与 Data Stream 和 Data Intelligence 相契合 | 超大规模云厂商的主权区域正在缩小差距 |
+| 以 Data Intelligence 作为跨云分类器 | 对 S3、ADLS、OneLake 和本地存储中的数据进行分类 | 任何单一云厂商都不提供的中立层 | Purview 和 Knowledge Catalog 是捆绑提供的，近乎免费 |
+
+*图 28.10 — 选项（仅基于公开信息）。*
+
+关于数据引力和出口流量费的经济性，见[第 24 章](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)；关于云市场联合销售机制，见[第 40 章](../05-business-and-economics/ch40-gtm-partnerships.md)。
+
+## 对话手册
+
+**向超大规模云厂商产品负责人或合作伙伴经理提出的三个问题**
+
+1. “你们的数据与分析消费中，有多大比例来自云市场上的第三方平台、多大比例来自原生服务？一线销售在两者上分别如何计酬？” *好的回答*会承认两者都计入销售配额和承诺额度，并说明原生产品在哪些方面享有额外激励。
+2. “哪些云市场购买计入客户的承诺额度，按什么比例计入？” *好的回答*会说出资格规则和任何上限，并把私有报价与按目录价购买区分开来。
+3. “目录（Glue、Knowledge Catalog、OneLake 目录）是用来治理其他引擎读取的数据，还是只服务你们自己的引擎？” *好的回答*会说出 Iceberg REST 端点、凭证下发机制以及支持哪些外部引擎。
+
+**向工程师或合作伙伴架构师提出的三个问题**
+
+1. “当 S3 Tables 或 BigLake 的 Iceberg 表由你们的引擎写入时，Databricks 或 Snowflake 也能安全地写入吗？” *好的回答：*具体说明由目录协调的提交，以及哪些引擎已获认证可以写入，而不仅仅是读取。
+2. “零 ETL 或镜像如何处理模式变更和删除？端到端延迟是多少？” *好的回答：*清楚描述 CDC 路径及其限制，以及源端模式变更时会发生什么。
+3. “使用 Database@Azure 或 @AWS 时，Exadata 硬件放在哪里、由谁运维、与宿主云之间的网络如何连接？” *好的回答：*硬件由 Oracle 运维、位于宿主云的数据中心内，通过低延迟私有互连连接，并通过宿主云计费。
+
+**好的回答听起来是什么样的。** 它们会把*存储*、*目录*和*引擎*分开，并指出哪一层制造锁定效应。它们使用厂商自己的计量单位（slot、RPU、容量单位），并承认云市场联合销售意味着无论客户选择哪款产品，超大规模云厂商往往都是赢家。
+
+**不要这样说**
+
+- “Google Cloud 103% 的增长说明 BigQuery 正在击败 Snowflake。” *增长主要来自 AI 基础设施，包括 TPU 系统销售；BigQuery 收入并未披露。*
+- “Oracle 有 $664B 的收入即将到来。” *RPO 是已签约的积压订单，高度后置、集中，并取决于交易对手的支付能力。*
+- “Azure Databricks 是 Microsoft 的产品。” *它是 Databricks 的平台，由 Microsoft 作为第一方服务销售和计费；Microsoft 自己的产品是 Fabric。*
+- “Fabric 以专有格式存储数据。” *OneLake 存储的是 Delta/Parquet，并暴露兼容 Iceberg 的元数据。*
+- “超大规模云厂商想干掉 Databricks 和 Snowflake。” *它们通过基础设施、云市场费用和承诺额度消耗从两家身上赚钱。*
+- 把“Dataplex”或“Agentspace”当作现行名称。*它们现在分别叫 Knowledge Catalog 和 Gemini Enterprise。*

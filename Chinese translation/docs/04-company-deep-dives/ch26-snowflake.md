@@ -265,3 +265,104 @@ Snowflake 不断推出让客户现有查询更便宜的改进。更快的引擎�
 
 **活动与 TAM。** 一年一度的 Summit（6 月，旧金山）同时也是产品发布会和投资者日。据报道，在 2026 年投资者日上，管理层将其总可服务市场（TAM）测算为目前约 $225B、未来增长至超过 $460B（公司披露，来自一份质量较弱的电话会纪要摘要）[VERIFY: Snowflake IR 演示材料中的数字]。[^tam]
 
+## 并购与投资
+
+Snowflake 的并购规模比 Databricks 小，且更多由人才和功能驱动。它收购过一个大品牌（Streamlit），以及一连串补强型交易，每一笔都为平台增加一个计量点。请注意最近两笔交易中的**"媒体报道与文件披露差异"**：10-Q 和 10-K 中的数字是购买会计法下的对价，低于媒体报道。
+
+| 日期 | 标的 | 金额 | 交易逻辑 | 整合结果 |
+|---|---|---|---|---|
+| 2019 年 3 月 | Numeracy | 未披露 | SQL 查询界面 | 成为 Snowsight 界面的基础[^numeracy] |
+| 2022 年 3 月 | Streamlit | $800M（已披露；主要为股票） | 开源 Python 数据应用框架 | Streamlit in Snowflake；仍保持开源[^streamlit] |
+| 2022 年 8 月 | Applica | 未披露 | 文档理解 AI 团队 | 支撑 Document AI[^applica] |
+| 2023 年 5 月 | Neeva | $185.4M 现金（10-Q） | AI 搜索人才 | 创始人 Ramaswamy 于 2024 年 2 月出任 CEO[^neeva] |
+| 2023 年 12 月 | Samooha | 未披露 | 跨云数据洁净室 | Snowflake Data Clean Rooms[^samooha] |
+| 2024 年 5 月 | TruEra | 未披露 | LLM/ML 评估与可观测性（TruLens） | Cortex AI 可观测性 [VERIFY: 交易日期][^truera] |
+| 2024 年 9 月 | Night Shift Development | 未披露 | 美国公共部门分析 | 设立专门的公共部门业务单元[^nightshift] |
+| 2024 年 11 月 | Datavolo | 未披露 | 基于 Apache NiFi 的多模态数据摄取 | 成为 Openflow[^datavolo] |
+| 2025 年 6 月 | Crunchy Data | $164.5M（10-Q），媒体报道约 $250M（WSJ） | 企业级 Postgres | Snowflake Postgres，2026 年 GA[^crunchy][^crunchy-tc] |
+| 2025 年 11 月 | Select Star | 未披露 | 元数据发现与数据血缘（lineage） | 并入 Horizon[^selectstar] |
+| 2026 年 1 月 | Observe | $596.2M 初步对价（10-K），媒体报道约 $1B | 基于 Snowflake 存储的可观测性；Snowflake 此前已持股 | 2026-02-02 完成交割；Observe CEO Jeremy Burton 退出 Snowflake 董事会[^sf-observe] |
+| 2026 年 5 月 | Natoma Labs | 声明对价约 $110M，主要为股票（10-Q） | 面向智能体工具访问的企业级 MCP 网关 | 已宣布；交割未确认 [VERIFY][^natoma] |
+
+*图 26.13 — 交易表。Snowflake 的模式是买下一项能力，再用 credit 对其重新计量。文件披露的购买对价（10-Q/10-K）是 GAAP 数字；媒体数字往往更高，因为其中包含留任激励、对赌支付（earn-out）或标题企业价值。*
+
+```mermaid
+timeline
+    title Snowflake 收购主题
+    2019 : Numeracy，用于查询界面
+    2022 : Streamlit，用于 Python 数据应用 : Applica，用于文档 AI
+    2023 : Neeva，获取 AI 搜索人才 : Samooha，用于数据洁净室
+    2024 : TruEra，用于 LLM 评估 : Night Shift，面向公共部门 : Datavolo，用于数据摄取
+    2025 : Crunchy Data，用于 Postgres : Select Star，用于元数据
+    2026 : Observe，用于可观测性 : Natoma，用于智能体治理
+```
+
+*图 26.14 — 交易序列从用户体验（2019–2022）转向 AI 人才与协作（2023），再转向新的数据工作负载（2024–2026）。每一笔交易几乎都一对一地回应了 Databricks 的某个动作。*
+
+**成功之处。** **Neeva** 是公司历史上影响最深远的交易，看重的是人才而非技术：它带来了现任 CEO 和 AI 战略议程。**Streamlit** 为 Snowflake 提供了可信的开发者界面，至今仍是被广泛使用的开源项目。**Datavolo → Openflow** 在约六个月内从收购变为 GA 产品，整合速度很快。[^datavolo][^openflow-ga] **Crunchy Data** 在一年内实现了 Snowflake Postgres GA，并提供通往分析表的镜像数据管道。[^sf-pg-mirror] **Observe** 是近期最大的一笔押注。它把增长最快的数据类型——遥测数据——转化为 Snowflake 的存储和计算，但这也让 Snowflake 在一个买家根深蒂固的市场中与 Datadog、Splunk/Cisco 和 ClickHouse 正面竞争。现在下结论为时尚早。
+
+**投资。** Snowflake Ventures 在其生态系统中持有少数股权（Atlas 融资数据集记录了 Coalesce 和 Hex 的融资轮次）。[^coalesce][^hex] 大部分大额投资投向那些产品能带动 Snowflake 用量的公司。
+
+## 竞争地位
+
+Snowflake 在四条战线上竞争。**Databricks** 是争夺企业分析与 AI 平台预算的正面对手（[第 25 章](ch25-databricks.md)、[第 27 章](ch27-databricks-vs-snowflake.md)）。**超大规模云厂商**（BigQuery、Redshift、Microsoft Fabric）把替代品捆绑进云账单。ClickHouse 等**专业引擎**凭借性价比赢得实时和可观测性工作负载。每当数据存放在 Iceberg 中，**开放引擎**（Trino、DuckDB、Spark）就会获得议价能力。
+
+| 维度 | Snowflake | Databricks | Google BigQuery | AWS Redshift | Microsoft Fabric | ClickHouse |
+|---|---|---|---|---|---|---|
+| 核心买家 | SQL 分析师、财务、BI | 数据工程、机器学习 | GCP 原生分析团队 | 以 AWS 为中心的构建者 | Microsoft 365 / Power BI 存量用户 | 实时与可观测性工程师 |
+| 存储模式 | 托管专有格式；Iceberg 表 GA | 客户存储中的 Delta + UniForm | 托管存储；BigLake Iceberg | 托管存储（RA3）；S3 Tables 支持 Iceberg | OneLake（基于 Delta） | MergeTree；对象存储分层 |
+| 目录 / 控制点 | Horizon；Apache Polaris（已捐赠） | Unity Catalog（开源） | Knowledge Catalog（原 Dataplex） | Glue / SageMaker Catalog | OneLake catalog；Purview | 极简 |
+| 计价单位 | Credit（按用量） | 按 SKU 计的 DBU | Slot 或扫描字节数 | 节点小时或无服务器 RPU | 容量单位（预留） | 云服务按用量；开源 |
+| 多云 | AWS、Azure、GCP | AWS、Azure、GCP | GCP（通过 Omni 跨云） | 仅 AWS | 仅 Azure | 三家均支持（云服务） |
+| 运营型数据库 | Snowflake Postgres；Hybrid Tables | Lakebase（Neon） | AlloyDB、Spanner | Aurora、DSQL | Fabric SQL DB | 不适用 |
+| 智能体 / AI 叙事 | CoWork、Cortex Agents、CoCo | Agent Bricks、Genie One | Gemini、数据智能体 | Bedrock、SageMaker | Copilot、Fabric IQ | MCP、Langfuse |
+| 最新规模指标 | Q2 FY2027 收入 $1.55B，+35%（GAAP） | 年化运行率 >$7B，>80%（公司披露） | 未单独披露 | 未单独披露 | 未单独披露 | 估值 $15B（2026 年 1 月，媒体报道） |
+| *可比性说明* | *季度 GAAP 总收入（×4 ≈ $6.2B）* | *年化运行率，公司自定义，未经审计；不可与 GAAP 收入直接比较* | | | | *私募估值，非收入* |
+
+*图 26.15 — 竞争矩阵。Snowflake 的独特资产是多云中立性、共享网络和易于运维。其独特短板是默认情况下数据并不存放在客户自有存储中。来源：Snowflake 和 Databricks 新闻稿；超大规模云厂商活动摘要；Bloomberg 关于 ClickHouse 的报道。[^sf-q2][^db-7b][^next26][^reinvent][^ignite][^clickhouse]*
+
+**对比 Databricks。** 双方的竞争已经趋同。如今每家都提供数据仓库、带治理目录的开放表格式（open table format）、Postgres、数据摄取、智能体和语义层（semantic layer）。Snowflake 的优势在于运维简单（无需调优集群）、庞大的 SQL 分析师存量用户群、共享网络以及经审计的盈利能力。Databricks 的优势在于增长（按其披露口径超过 Snowflake 的两倍）、数据工程与机器学习业务，以及 Snowflake 后来才采纳的"你的存储桶、开放格式"叙事。两家的大客户基数如今相近：Snowflake 有 828 家客户过去 12 个月产品收入超过 $1M（2026 年 7 月），Databricks 则有">800"家客户年化运行率超过 $1M（2026 年 1 月）。两者定义不同，且对快速增长的客户而言，年化运行率门槛更容易达到，因此相对 Snowflake 而言，Databricks 的数字有所美化。[^sf-q2][^db-54] 许多大型企业同时使用两者，真正的竞争在于**下一个工作负载落在哪个平台上**。
+
+**对比超大规模云厂商。** BigQuery 是 Snowflake 在架构上最直接的同类（无服务器、存算分离），并被捆绑在 Google Cloud 承诺中。Redshift 主要在以 AWS 为中心的客户中竞争，而 AWS 通过 **S3 Tables**（托管 Iceberg）把开放表层直接推进到了存储本身。[^s3tables][^reinvent] **Microsoft Fabric** 是捆绑威胁：许多企业早已拥有 OneLake 加 Power BI 容量许可。[^ignite] Snowflake 的防线是中立性：一家使用两三朵云的跨国企业可以获得统一的治理与共享平面。如果开放格式让每家云的原生引擎都能廉价地查询同一批 Iceberg 表，这道防线就会削弱。
+
+**对比专业厂商。** ClickHouse（估值 $15B，2026 年 1 月，媒体报道）在亚秒级、高并发和可观测性工作负载上胜出，而在这些场景中 Snowflake 的仓库模式成本高昂。[^clickhouse] Observe 交易和 Snowpipe Streaming 是 Snowflake 的回应。DuckDB 等嵌入式引擎是长尾威胁：大量中小型工作负载根本不再需要云数据仓库。
+
+## 制胜原因 / 看多逻辑
+
+1. **增长在大体量上重新加速。** 在约 $6B 的基数上，产品收入增速从 29%（FY2026）升至 37%（Q2 FY2027），指引两次上调。收入超过 $5B 后还能重新加速的软件公司寥寥无几。在 126% 的稳定 NRR 之上，AI 工作负载、Postgres 和新数据类型似乎正在增加用量。[^sf-q2]
+2. **AI 让数据平台更有价值，而不是更没价值。** 智能体需要受治理、建模良好的数据、语义层和访问控制。Snowflake 已经为客户掌握了其最重要的结构化数据中的这些要素，因此 CoWork 和 Cortex Agents 把现有数据转化为更多查询，而更多查询就是更多 credit。
+3. **开放格式转向正在奏效。** 通过拥抱 Iceberg 并捐赠 Polaris，Snowflake 消除了竞争性交易中最有力的反对理由。早期证据（收入加速）表明，它赢得的计算多于失去的存储。
+4. **经营杠杆真实可见。** 非 GAAP 营业利润率从 10.5%（FY2026）升至 15.3%（Q2 FY2027）。SBC 占收入比重在一年内从 41% 降至 34%。如果 SBC 继续降至 20–25%，而毛利率维持在 75% 左右，GAAP 盈利将在几年内到来（作者判断）。[^sf-q2][^sf-10k26]
+5. **相对增长而言估值并不苛刻。** 以约 17x EV/未来 12 个月收入（2026-10-30）对应 35% 以上的增长，Snowflake 在标题口径上明显低于 Databricks 约 27x 的私募估值，更远低于 Palantir（70.3x EV/*过去 12 个月*收入，2026-10-30），而且其数字经过审计。但按增长调整后，它*并不*比 Databricks 便宜（每个增长百分点约 0.48x 对约 0.34x，口径不可比），因此看多逻辑依赖的是经审计的质量与持久性，而非折价。[^comps-sf][^comps-pltr]
+
+## 风险 / 看空逻辑与待解问题
+
+1. **开放格式让客户可以自带引擎。** 一旦客户数据以 Iceberg 格式存放在其自有存储桶中、由中立目录治理，每个工作负载都可以被竞标。Trino、DuckDB、Spark、Databricks 和各家超大规模云厂商都能查询同一批表。Snowflake 过去的锁定来自存储。未来的锁定必须来自 Horizon 数据治理（governance）、语义视图和智能体，这些更具黏性，但意志坚定的买家也更容易复制。全部影响要到下一轮大客户续约时才会显现。
+2. **AI 增长以毛利率为代价。** 由于 AI 工作负载占比上升，FY2027 非 GAAP 产品毛利率指引被下调至 74%。[^sf-q2] AI 推理带有 Snowflake 无法控制的 GPU 和第三方模型成本。如果 AI 占到用量的三分之一且毛利率低得多，综合毛利率将持续下滑，毛利增长将落后于收入增长。
+3. **股权激励是真实成本。** $1.6B 的 SBC 超过了 FY2026 的调整后自由现金流。GAAP 营业利润率仍为 −17%。多头指向不断下降的比率。空头则指出，为抵消稀释而进行的回购消耗了大部分自由现金流，因此每股价值创造小于非 GAAP 数字所暗示的水平。[^sf-10k26]
+4. **效率逆风可能卷土重来。** Gen2 和自适应仓库的设计目标就是减少每条查询的 credit。如果 AI 驱动的需求停滞，效率提升将表现为收入下降，正如 2022–2023 年那样。
+5. **超大规模云厂商的挤压。** Snowflake 从销售 BigQuery、Redshift 和 Fabric 的公司那里购买计算资源。这些对手可以捆绑和补贴，并且决定着 Snowflake 最大的投入成本。
+6. **Databricks 的势头。** 一个增速超过其两倍、拥有 $190B 估值作为收购"货币"的私营竞争对手，正在争夺同一份平台预算（[第 25 章](ch25-databricks.md)）。
+7. **待解问题。** AI 占用量的比例是多少，其毛利率又是多少？重新加速中有多少来自少数超大客户？随着 FY2026 那份创纪录的合同被消耗，cRPO 会重新加速吗？Observe 多快能产生贡献？经历 2025–2026 年的高管变动后，领导层梯队如何 [VERIFY: CRO 与产品领导层变动]？
+
+## 与 Everpure 的相关性
+
+> **存储桥接。** Snowflake 把存储视为其元数据层之下的商品。托管存储是由 Snowflake 运营的云对象存储，而 Iceberg 表则位于指向客户自有存储桶的"外部卷"上。性能来自剪枝和仓库的 SSD 缓存，而不是存储阵列，因此存储厂商的筹码在于位置（本地部署、主权、靠近 GPU）和元数据，而非原始吞吐量。关于 S3 语义和 FlashBlade 对象存储性能，参见配套的 *Everpure Tech Atlas*。
+
+**Snowflake 能否使用本地部署存储？** Snowflake 的计算只运行在 AWS、Azure 和 Google Cloud 区域中，不存在本地部署版 Snowflake。但它可以访问这些云之外的 **S3 兼容存储**。Snowflake 文档记载了基于 S3 兼容端点的外部 stage 和外部表，其 Iceberg 外部卷也可以指向 S3 兼容存储 [VERIFY: S3 兼容外部卷的 GA 状态及支持厂商列表]。[^sf-s3compat][^sf-extvol] 实践中，位于云区域的 Snowflake 仓库通过网络读取保存在本地对象存储上的 Iceberg 或 Parquet 数据。这适用于出于数据主权（data sovereignty）或成本原因必须留在本地、但仍偶尔需要云端分析的数据。延迟、带宽和出口流量费（egress fees）的经济性使其仅限于选择性查询，而非大规模扫描。据报道，在 2022 年宣布这一能力时，包括 Pure Storage 在内的存储厂商位列 Snowflake 的 S3 兼容合作伙伴之中 [VERIFY: Pure Storage–Snowflake 2022 年公告及当前认证状态]。与 Databricks 2026 年 6 月的 Storage Ecosystem（Everpure 是其指名的首发合作伙伴）不同，本次梳理未发现 2026 年 Snowflake 与 Everpure 的联合公告（[第 25 章](ch25-databricks.md)）。
+
+**两家公司的交汇点。** Everpure 的 **Data Intelligence**（1touch 技术的产品化版本，2026 年 6 月发布）将 Snowflake 列为其数据发现（discovery）与数据分类（classification）的连接器目标之一。[^1touch] Snowflake 的 **Horizon** 目录凭借 Select Star 的发现能力和基于标签的策略，希望成为分类信息的归属地。这既是合作也是竞争。如果 Everpure 的分类结果流入 Horizon 标签，Snowflake 就负责执行。如果双方各自独立分类，客户就会面对两个事实来源。
+
+**基于公开信息，战略团队可能评估的选项：**
+
+| 选项 | 含义 | 为何可能重要 | 注意事项 |
+|---|---|---|---|
+| 将 FlashBlade 认证为 Snowflake Iceberg 表的 S3 兼容外部卷 | 发布经过测试的"FlashBlade 上的 Iceberg，由 Snowflake 查询"参考架构 | 为受监管客户提供一个主权落地区，Snowflake、Databricks（通过 OpenSharing）、Starburst 和 Dremio/SAP 均可读取：存储作为中立层 | Snowflake 计算仍在云端；网络和出口流量费限制重度使用；存储厂商之间的切换成本低 |
+| 将 Data Intelligence 与 Horizon 标签集成 | 把 Everpure 的分类结果推送至 Horizon（及 Unity Catalog），并回拉策略 | 使 Everpure 成为跨平台的分类权威来源，而非一个与之竞争的控制台 | Horizon 和 Select Star 正在增加原生分类；必须证明对非结构化数据和本地数据的覆盖更好 |
+| 将本地 Iceberg 定位为多引擎"中立区" | 推广在 Everpure 上保存一份 Iceberg 副本，由 Polaris 或其他开放目录治理，供任意引擎查询 | 与 Snowflake 自身的开放格式宣传以及数据主权需求一致 | 数据位于 Snowflake 托管存储时 Snowflake 赚得最多，因此其联合营销意愿可能有限 |
+| 探索遥测与可观测性 | 将 Everpure 阵列遥测导出至基于 Snowflake 的 Observe，或导出至客户自己的 Snowflake 账户 | Snowflake 正在其存储之上构建可观测性业务；基础设施遥测是天然的数据源 | 带有推测性；双方均无公开的兴趣信号 |
+
+*图 26.16 — 合作选项（仅基于公开信息）。现实路径是互操作（外部卷、目录标签），而非深度联合销售（co-sell）。Snowflake 的经济模式偏好数据存放在其托管存储中，而 Databricks 在争取存储厂商方面行动更快。*
+
+更广泛的"存储向上层栈延伸"模式见[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)，数据引力（data gravity）与出口流量费见[第 24 章](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)。
+
