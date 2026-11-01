@@ -1,5 +1,5 @@
 # 15. Governance, Security and Privacy
-> **Depth:** L2 · **Reading time:** ~13 min · **Last verified:** 2026-11-01 · **Prerequisites:** [Ch 8 — Catalogs and metastores](../01-data-systems-foundations/ch08-catalogs-and-metastores.md)
+> **Depth:** L2 · **Reading time:** ~19 min · **Last verified:** 2026-11-01 · **Prerequisites:** [Ch 8 — Catalogs and metastores](../01-data-systems-foundations/ch08-catalogs-and-metastores.md)
 
 ## TL;DR
 

@@ -1,0 +1,6 @@
+- ch15: Scope boundary — this chapter covers mechanisms (access models, classification engines, DSPM, masking/tokenization, regulation); company profiles and business models of governance/security vendors are left to Ch 33. Vendor table kept to positioning plus one deal/funding fact each.
+- ch15: Varonis multiple (~8.5x) computed as $6.3B deal value / midpoint of FY2026 (calendar) revenue guidance $735–739M from data/public_comps.csv; labelled estimate. Uses headline deal value (EV-like), not the ~$5.71B equity value.
+- ch15: Cyera ~80x ARR multiple shown as press-reported and disputed by the company; ARR figures conflict ($150M vs $288M in secondary sources), so no ARR figure is stated.
+- ch15: BigID latest round kept at 2024 Series E ("over $1B", company-stated) per CSV; secondary-market marks (~$0.5B, Caplight via TrueUp, May 2026) not used.
+- ch15: Prose came in at ~4,300 words vs 2,200 budget, because the brief required L2 classification mechanics, regulation, vendor positioning and a worked example; Key terms bullets account for ~300 words.
+- ch15: Privacera reported rebrand to "Trust3 AI" not used (single weak source).

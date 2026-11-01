@@ -1,0 +1,9 @@
+- ch15: Amazon Macie per-GB inspection tier schedule above 50 TB (third-party sources cite $0.50 and $0.25 tiers; not confirmed on AWS page).
+- ch15: IAPP count of US states with comprehensive privacy laws as of 2026-11 (secondary summaries say ~20; one cites 23 enacted as of 2026-04-13).
+- ch15: Independent DSPM market-size figure (only vendor-cited ~$415M for 2024 via Palo Alto Networks Cyberpedia).
+- ch15: Veeam–Securiti AI announcement date (believed Oct 2025; completion 2025-12-11 confirmed).
+- ch15: Rubrik–Laminar primary press release (announced 2023-08, terms undisclosed).
+- ch15: Exact GA date of Unity Catalog ABAC row-filter/column-mask policies (governed tags GA 2026-04-02; one GCP docs page still showed Public Preview).
+- ch15: US Census Bureau differential-privacy page URL not re-fetched.
+- ch15: EDPB Meta €1.2B fine press-release URL not re-fetched.
+- ch15: Stanford DigiChina PIPL translation URL not re-fetched.

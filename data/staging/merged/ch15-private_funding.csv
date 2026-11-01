@@ -1,0 +1,4 @@
+company,date,round,amount_usd_m,post_money_valuation_usd_b,valuation_basis,lead_investors,category,source,as_of,notes
+Sentra,2025-04-22,Series B,50,,undisclosed,Key1 Capital,data security/DSPM,https://www.businesswire.com/news/home/20250422569273/en,2026-11-01,"Bessemer, Zeev, Standard Investments, Munich Re Ventures participated; >$100M total raised (company-stated)"
+Sentra,2023-02-02,Series A,30,,undisclosed,Standard Investments,data security/DSPM,https://www.helpnetsecurity.com/2023/02/02/sentra-funding/,2026-11-01,Total ~$53M after round
+Immuta,2022-06-08,Series E,100,,undisclosed,,data security/DSPM,https://www.businesswire.com/news/home/20220608005624/en,2026-11-01,"CORRECTION of blank Immuta Series E row: $100M confirmed by Business Wire release title; lead and valuation [VERIFY]"

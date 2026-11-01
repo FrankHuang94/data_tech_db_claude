@@ -74,3 +74,12 @@ Every `[VERIFY: …]` left in the text is listed here with its chapter. Resolve 
 | ch25 | ch25: Share of Databricks revenue transacted through Azure Databricks (no public figure found). | open |
 | ch25 | ch25: Everpure OpenSharing connector GA status (private preview from 2026-06-09 per Everpure blog; Databricks lists Everpure as launch partner). | open |
 | ch25 | ch25: Primary source (Bloomberg TV, June 2026) for Ghodsi's "terrible year to go public" comment; currently from a secondary summary. | open |
+| ch15 | ch15: Amazon Macie per-GB inspection tier schedule above 50 TB (third-party sources cite $0.50 and $0.25 tiers; not confirmed on AWS page). | open |
+| ch15 | ch15: IAPP count of US states with comprehensive privacy laws as of 2026-11 (secondary summaries say ~20; one cites 23 enacted as of 2026-04-13). | open |
+| ch15 | ch15: Independent DSPM market-size figure (only vendor-cited ~$415M for 2024 via Palo Alto Networks Cyberpedia). | open |
+| ch15 | ch15: Veeam–Securiti AI announcement date (believed Oct 2025; completion 2025-12-11 confirmed). | open |
+| ch15 | ch15: Rubrik–Laminar primary press release (announced 2023-08, terms undisclosed). | open |
+| ch15 | ch15: Exact GA date of Unity Catalog ABAC row-filter/column-mask policies (governed tags GA 2026-04-02; one GCP docs page still showed Public Preview). | open |
+| ch15 | ch15: US Census Bureau differential-privacy page URL not re-fetched. | open |
+| ch15 | ch15: EDPB Meta €1.2B fine press-release URL not re-fetched. | open |
+| ch15 | ch15: Stanford DigiChina PIPL translation URL not re-fetched. | open |
