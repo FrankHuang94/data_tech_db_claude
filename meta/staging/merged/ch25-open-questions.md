@@ -1,0 +1,6 @@
+- ch25: Databricks company-stated employee headcount (only aggregator/Wikipedia estimates ~10k-12k found).
+- ch25: Full participant lists for Databricks Series G and later rounds (snapshot "notable investors" row) per data/private_funding.csv notes.
+- ch25: Current status of the Mosaic AI brand vs. Agent Bricks (believed folding in; not confirmed).
+- ch25: Share of Databricks revenue transacted through Azure Databricks (no public figure found).
+- ch25: Everpure OpenSharing connector GA status (private preview from 2026-06-09 per Everpure blog; Databricks lists Everpure as launch partner).
+- ch25: Primary source (Bloomberg TV, June 2026) for Ghodsi's "terrible year to go public" comment; currently from a secondary summary.

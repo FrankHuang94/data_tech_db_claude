@@ -1,0 +1,6 @@
+- ch25: Databricks fiscal year treated as ending Jan 31 (per Series J release, "Q4 ending January 31, 2025"). Quarters labelled by months (e.g., "fiscal Q2, May-Jul 2026") rather than FY numbers because Databricks does not publish FY labels.
+- ch25: All run-rates treated as floors ("surpassed $X"). The 2024-07 ($2.4B) and 2025-01 ($3B) points are company projections, plotted on the same series but labelled as projections in the CSV and chart note. The CNBC $3.7B projection for Jul 2025 is omitted from the chart because the actual (>$4B) superseded it.
+- ch25: Valuation multiple ~27x = $190B / $7B run-rate (author arithmetic). Forward ~22x NTM assumes a 50% run-rate rise over 12 months (illustrative estimate, labelled).
+- ch25: Research briefing section A said no Everpure-Databricks partnership was found; new search shows Everpure is a named launch partner of the Databricks Storage Ecosystem (2026-06-10) with an OpenSharing connector in private preview. Chapter uses the newer finding.
+- ch25: DBU list prices cited from third-party 2026 pricing guides (databricks.com/product/pricing not fetchable); labelled as such.
+- ch25: Aug 2026 round valuation_basis changed from press-reported to company-stated (Databricks press release) via staging correction.

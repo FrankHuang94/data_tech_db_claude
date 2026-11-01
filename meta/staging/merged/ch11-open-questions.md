@@ -1,0 +1,5 @@
+- ch11: WarpStream Tableflow (Iceberg output from WarpStream BYOC) — confirm product name and GA status.
+- ch11: AutoMQ "table topic" Iceberg feature — confirm GA status.
+- ch11: Redpanda Cloud Topics — confirm GA date (targeted March 2026 per Streamfest 2025 blog).
+- ch11: Google Cloud Managed Service for Apache Kafka — confirm service GA date (release notes show feature GAs but not core GA).
+- ch11: Databricks "Introducing Apache Spark 4.1" blog — confirm exact publication date (2025-12?).

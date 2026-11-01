@@ -1,4 +1,5 @@
 """Private-market charts from data/private_funding.csv."""
+import re
 from chartlib import load, num, save, source_note, PALETTE, SERIES, plt
 import pandas as pd
 
@@ -18,7 +19,7 @@ def make():
     for _, r in db.iterrows():
         if last is not None and (r["dt"] - last["dt"]).days < 150 and abs(r["val"] - last["val"]) < 10:
             continue  # skip near-duplicate points (final closes, term sheet vs close)
-        label = str(r["round"]).replace(" (close)", "").replace(" final close + debt", "")[:22]
+        label = re.sub(r" [(].*", "", str(r["round"])).replace(" final close + debt", "").replace(" completion", "")
         ax.annotate(f"{label}\n${r['val']:.0f}B", (r["dt"], r["val"]), fontsize=7, xytext=(-28, 8), textcoords="offset points")
         last = r
     ax.set_title("Databricks post-money valuation by round (US$B)")

@@ -1,0 +1,9 @@
+- ch10: Talend Open Studio retirement status/date (vendor table, Qlik Talend row).
+- ch10: Publication dates of Informatica's IPU consumption-pricing and Flex IPU blog posts.
+- ch10: Launch date of Airbyte capacity-based (Data Workers) pricing (BigDATAwire item; possibly Feb 2025).
+- ch10: Matillion credits-per-task-hour ratio by edition (pricing page vs Credit Consumption Terms conflict).
+- ch10: Azure Data Factory USD rates ($1 per 1,000 orchestration runs; $0.25/DIU-hour) against the Azure pricing calculator.
+- ch10: Publication date of Databricks "Announcing General Availability of Lakeflow Connect" blog (Salesforce, Workday).
+- ch10: Estuary Series A amount ($17M company release vs $14M SiliconANGLE headline).
+- ch10: dltHub $8M seed announcement date (Aug vs Nov 2025).
+- ch10: AWS EC2 m6i.xlarge on-demand price ($0.192/hour, US East) used as worked-example assumption.

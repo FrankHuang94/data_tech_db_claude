@@ -1,0 +1,6 @@
+- ch10: Worked example uses Fivetran's published Standard tier table at list price; the "pooled" comparison applies today's table at account level to isolate the per-connection tiering effect, explicitly not a reconstruction of pre-March-2025 (credit-based) invoices.
+- ch10: Visual 5 is a Mermaid timeline, not a funding chart: data/private_funding.csv has only two "data integration" rows (Fivetran, Airbyte), too few for a chart. Added Airbyte correction plus Estuary and dltHub rows in staging.
+- ch10: Airbyte Cloud entry-tier credit prices conflict across secondary sources ($10 vs $20/month; $2.50 vs $5 per credit); omitted rather than cited.
+- ch10: Connector counts use company-stated 700+ for both Fivetran and Airbyte (Airbyte's older docs say 600+).
+- ch10: Quadrant positions are labelled as analyst judgment, not measured data.
+- ch10: Web search budget was exhausted before Lakeflow Connect pricing/GA date and AWS DMS/AppFlow rates could be checked; those are described qualitatively without numbers.

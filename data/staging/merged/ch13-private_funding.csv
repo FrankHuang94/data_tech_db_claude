@@ -1,0 +1,6 @@
+company,date,round,amount_usd_m,post_money_valuation_usd_b,valuation_basis,lead_investors,category,source,as_of,notes
+Monte Carlo,2022-05-24,Series D,135,1.6,company-stated,IVP,observability/quality,https://www.businesswire.com/news/home/20220524005417/en/,2026-11-01,"CORRECTION of Monte Carlo Series D row: lead investor IVP and date 2022-05-24 confirmed (Business Wire; Gunderson Dettmer)"
+Bigeye,2021-09-23,Series B,45,,undisclosed,Coatue,observability/quality,https://www.businesswire.com/news/home/20210923005170/en/,2026-11-01,Total funding $66M after round (company-stated)
+Anomalo,2024-01,Series B,33,,undisclosed,SignalFire,observability/quality,https://tfir.io/anomalo-raises-33m-in-series-b-funding-for-its-data-quality-platform/,2026-11-01,Databricks Ventures participated; ~$10M extension reported Nov 2024 [VERIFY]
+Acceldata,2023-02,Series C,50,,undisclosed,March Capital,observability/quality,https://www.omm.com/news/in-the-news/global-legal-chronicle-acceldata-s-50-million-series-c-funding-round/,2026-11-01,Insight Partners and Industry Ventures participated
+Sifflet,2025-06-19,Series B [VERIFY],18,,undisclosed,EQT Ventures; Mangrove Capital Partners (existing),observability/quality,https://pulse2.com/sifflet-18-million-raised-for-data-observability-platform/amp/,2026-11-01,CB Insights lists $18.32M dated 2025-06-19; Capmont Technology new investor

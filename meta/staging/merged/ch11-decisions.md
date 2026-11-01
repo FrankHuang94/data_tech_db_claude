@@ -1,0 +1,5 @@
+- ch11: Worked example models self-managed Kafka on EC2 (RF=3, 3 AZs, 1 GB/s compressed, 30-day month, $0.02/GB per cross-AZ GB = $0.01 out + $0.01 in). Shows MSK separately because AWS MSK pricing states inter-broker replication is not billed; client cross-AZ still billed. Object-storage case counts only S3 request fees (9 agents, 250 ms flush, GETs = 3x PUTs); S3 storage/compute excluded and stated.
+- ch11: Consumer-group bridge framed as "closer to static partitioning than work-stealing", with share groups (KIP-932, production-ready in Kafka 4.2) as the true queue/work-sharing analogue — more accurate than the brief's straight work-stealing analogy.
+- ch11: Confluent FY2025 revenue ($1,167M) and Confluent Cloud ($624M) taken from data/public_comps.csv notes, which flag them as from a secondary summary [VERIFY vs 10-K]; cited to the 10-K URL with that caveat.
+- ch11: Kafka 4.0 release date stated as "March 2025" (2025-03-18 per secondary coverage); Flink 2.0 stated as "2025" (March 2025 per one secondary source).
+- ch11: Event-platform vendor table latency tiers are indicative (vendor docs/benchmarks), not measured.

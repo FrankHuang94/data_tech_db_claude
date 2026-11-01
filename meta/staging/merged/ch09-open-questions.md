@@ -1,0 +1,3 @@
+- ch09: Fivetran–Census closing date (announced 2025-05-01; no closing announcement found; ma_deals.csv status still "announced").
+- ch09: Exact publication date of Snowflake blog "Bidirectional Data Sharing Between Snowflake and Salesforce Data Cloud Is Now Generally Available" (believed 2024).
+- ch09: BigQuery "Introduction to federated queries" doc page not re-opened this session (search budget exhausted); confirm URL and supported sources (Cloud SQL, Spanner, AlloyDB).

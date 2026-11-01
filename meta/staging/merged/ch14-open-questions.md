@@ -1,0 +1,4 @@
+- ch14: Databricks Unity Catalog metric views GA date (Public Preview 2025-05-29; 2026 status of "Unity Catalog Metrics/Business Semantics" rests on secondary sources).
+- ch14: Sigma current pricing tiers (per-user; whether viewers are free on current plans).
+- ch14: Complete list of Leaders in the 2026 Gartner ABI Magic Quadrant (dated 2026-06-29); only Salesforce/Tableau, Google/Looker, Qlik confirmed from vendor pages.
+- ch14: Exact GA date of Looker Conversational Analytics (Google blog undated in search; aggregator says Apr 2026).

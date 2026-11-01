@@ -1,0 +1,5 @@
+- ch14: Quadrant chart (Figure 14.5) is explicitly labelled author's qualitative judgment, not Gartner placement.
+- ch14: Text-to-SQL benchmarks presented with labels (academic preprint vs vendor-run); dbt 2026 figures are for in-scope questions only. Did not use an unsourced "83%" figure.
+- ch14: Gartner MQ cited as 2025 (full Leaders list from public summaries) plus partial 2026 confirmation, since the 2026 Leaders list could not be fully verified.
+- ch14: No Storage bridge box content beyond a pointer; semantic layers do not change storage. Everpure lens framed as classification -> semantic context -> agents (links ch15, ch45).
+- ch14: Fiscal calendar in worked example (Feb-start FY) is a hypothetical company, not a real customer.

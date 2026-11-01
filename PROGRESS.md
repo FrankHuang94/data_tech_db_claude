@@ -21,7 +21,7 @@
 
 Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + comparison tables (`scripts/qa_report.py`).
 
-**Totals:** 8/52 chapters drafted · 27,918 prose words · 67 visuals · 32 [VERIFY] markers.
+**Totals:** 15/52 chapters drafted · 52,462 prose words · 130 visuals · 68 [VERIFY] markers.
 
 | Ch | File | Status | Words | Budget | Visuals | VERIFY | Reviewed |
 |---|---|---|---|---|---|---|---|
@@ -35,12 +35,12 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 6 | ch06-file-formats.md | QA pass | 2,967 | 1800 | 7 | 6 | no |
 | 7 | ch07-open-table-formats.md | QA pass | 3,602 | 2000 | 9 | 2 | no |
 | 8 | ch08-catalogs-and-metastores.md | QA pass | 2,640 | 1600 | 6 | 8 | no |
-| 9 | ch09-pipeline-patterns.md | not started | 0 | 2000 | 0 | 0 | no |
-| 10 | ch10-ingestion-and-integration.md | not started | 0 | 1900 | 0 | 0 | no |
-| 11 | ch11-streaming-and-event-platforms.md | not started | 0 | 2200 | 0 | 0 | no |
-| 12 | ch12-transformation-and-orchestration.md | not started | 0 | 1900 | 0 | 0 | no |
-| 13 | ch13-data-quality-observability-lineage.md | not started | 0 | 1800 | 0 | 0 | no |
-| 14 | ch14-semantic-layers-and-bi.md | not started | 0 | 2000 | 0 | 0 | no |
+| 9 | ch09-pipeline-patterns.md | QA pass | 3,461 | 2000 | 10 | 3 | no |
+| 10 | ch10-ingestion-and-integration.md | QA pass | 2,751 | 1900 | 8 | 9 | no |
+| 11 | ch11-streaming-and-event-platforms.md | QA pass | 3,593 | 2200 | 10 | 5 | no |
+| 12 | ch12-transformation-and-orchestration.md | QA pass | 3,250 | 1900 | 7 | 3 | no |
+| 13 | ch13-data-quality-observability-lineage.md | QA pass | 3,395 | 1800 | 8 | 6 | no |
+| 14 | ch14-semantic-layers-and-bi.md | QA pass | 2,857 | 2000 | 7 | 4 | no |
 | 15 | ch15-governance-security-privacy.md | not started | 0 | 2200 | 0 | 0 | no |
 | 16 | ch16-ai-data-lifecycle.md | not started | 0 | 2200 | 0 | 0 | no |
 | 17 | ch17-unstructured-data-processing.md | not started | 0 | 2100 | 0 | 0 | no |
@@ -51,7 +51,7 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 22 | ch22-agents-and-data.md | not started | 0 | 2400 | 0 | 0 | no |
 | 23 | ch23-real-time-analytics-htap.md | not started | 0 | 2000 | 0 | 0 | no |
 | 24 | ch24-data-meets-compute-and-storage.md | not started | 0 | 2200 | 0 | 0 | no |
-| 25 | ch25-databricks.md | not started | 0 | 4500 | 0 | 0 | no |
+| 25 | ch25-databricks.md | QA pass | 5,237 | 4500 | 13 | 6 | no |
 | 26 | ch26-snowflake.md | not started | 0 | 4500 | 0 | 0 | no |
 | 27 | ch27-databricks-vs-snowflake.md | not started | 0 | 2500 | 0 | 0 | no |
 | 28 | ch28-hyperscaler-data-platforms.md | not started | 0 | 3500 | 0 | 0 | no |

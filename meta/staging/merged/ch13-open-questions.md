@@ -1,0 +1,7 @@
+- ch13: Confirm Gartner $12.9M wording ("average" vs "at least") and original document (2020 MQ for Data Quality Solutions reference survey; repeated in Gartner July 2024 "12 Actions…").
+- ch13: Original publication date of Monte Carlo blog "Introducing the 5 Pillars of Data Observability" (believed 2020).
+- ch13: Exact GX (Great Expectations) 1.0 / GX Core release date (believed Aug 2024).
+- ch13: Confirm Unity Catalog column-lineage behaviour (automatic capture; gaps for path-based access, some UDFs, hive_metastore) against official Databricks lineage docs; current sources are community posts.
+- ch13: Sifflet 2025 round label (Series A vs B) and exact date (CB Insights: 2025-06-19, $18.32M).
+- ch13: Great Expectations open-source project start year (2017, from general knowledge; used in timeline).
+- ch13 (staging CSV only): Anomalo ~$10M Series B extension reported Nov 2024; confirm amount/date.

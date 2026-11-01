@@ -1,0 +1,4 @@
+- ch09: Worked-example costs given as a relative run-cost index (1x / ~2–3x / ~4–8x), labelled illustrative estimate, rather than invented dollar figures.
+- ch09: Hightouch Series D ($150M at $2.75B, 2026-04-29) treated as press-reported; The Trade Desk page labels it Series C, majority of coverage says Series D. Staged in data/staging/ch09-private_funding.csv with the label conflict noted.
+- ch09: Chapter runs ~3,460 prose words vs 2,000 budget because the assigned scope (ETL/ELT, cadence, CDC, reverse ETL, zero-ETL, sharing, medallion, worked example) needed it; no padding.
+- ch09: Web search budget exhausted after ~24 searches; remaining items cited from known doc URLs and marked VERIFY where not re-opened.

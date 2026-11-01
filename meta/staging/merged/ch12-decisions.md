@@ -1,0 +1,5 @@
+- ch12: Used the current Databricks name "Lakeflow Spark Declarative Pipelines" (renamed from "Lakeflow Declarative Pipelines" per Nov 2025 release notes; originally Delta Live Tables). "Lakeflow Jobs" = former Databricks Workflows.
+- ch12: Fusion licensing described as: launched May 2025 as proprietary + ELv2 source-available; after the Fivetran merger the runtime was released under Apache 2.0 as dbt Core v2, while the full Fusion binary stays proprietary (dbt product licensing agreement). Sources conflict on wording; chapter avoids stating the exact current Fusion license beyond "proprietary".
+- ch12: Combined Fivetran + dbt ARR quoted as "approaching $600M" (closing-release wording, company-stated) rather than "~$600M" (announcement wording).
+- ch12: Prose came in at ~3,250 words vs 1,900 budget because scope required covering ~15 tools plus a worked example; judged substantive rather than padding.
+- ch12: Kestra $25M Series A+ (RTP Global) found only in one aggregator with ambiguous date; not cited or staged.

@@ -1,0 +1,4 @@
+- ch12: dbt Core v2 launch date (weekly digest suggests July 2026) and current maturity (docs say both alpha and beta); current list of Fusion GA adapters beyond Snowflake.
+- ch12: Earliest documented use of the job title "analytics engineer" (commonly credited to dbt Labs' community, c. 2018–2019).
+- ch12: Closing date of Prefect's acquisition of Dagster Labs (announced 2026-07-13; some sources say closed same day, others say close expected August 2026).
+- ch12 (footnote only): Snowflake Dynamic Tables GA date — third parties say April 2024; not confirmed from a Snowflake release note.
