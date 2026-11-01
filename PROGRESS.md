@@ -22,7 +22,7 @@
 
 Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + comparison tables (`scripts/qa_report.py`).
 
-**Totals:** 45/52 chapters drafted · 170,125 prose words · 421 visuals · 470 [VERIFY] markers.
+**Totals:** 46/52 chapters drafted · 173,971 prose words · 428 visuals · 470 [VERIFY] markers.
 
 | Ch | File | Status | Words | Budget | Visuals | VERIFY | Reviewed |
 |---|---|---|---|---|---|---|---|
@@ -57,11 +57,11 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 27 | ch27-databricks-vs-snowflake.md | reviewed | 3,918 | 2500 | 11 | 17 | yes |
 | 28 | ch28-hyperscaler-data-platforms.md | reviewed | 5,371 | 3500 | 10 | 26 | yes |
 | 29 | ch29-operational-database-vendors.md | reviewed | 4,557 | 3000 | 11 | 40 | yes |
-| 30 | ch30-data-movement-streaming-companies.md | QA pass | 4,365 | 3000 | 10 | 25 | no |
-| 31 | ch31-analytical-engine-challengers-legacy.md | QA pass | 4,460 | 3000 | 8 | 21 | no |
-| 32 | ch32-ai-native-data-companies.md | QA pass | 4,760 | 3500 | 11 | 24 | no |
-| 33 | ch33-governance-catalog-security-companies.md | QA pass | 3,647 | 2500 | 9 | 15 | no |
-| 34 | ch34-application-giants-data-platforms.md | QA pass | 3,817 | 2000 | 12 | 38 | no |
+| 30 | ch30-data-movement-streaming-companies.md | reviewed | 4,365 | 3000 | 10 | 25 | yes |
+| 31 | ch31-analytical-engine-challengers-legacy.md | reviewed | 4,460 | 3000 | 8 | 21 | yes |
+| 32 | ch32-ai-native-data-companies.md | reviewed | 4,760 | 3500 | 11 | 24 | yes |
+| 33 | ch33-governance-catalog-security-companies.md | reviewed | 3,647 | 2500 | 9 | 15 | yes |
+| 34 | ch34-application-giants-data-platforms.md | reviewed | 3,817 | 2000 | 12 | 38 | yes |
 | 35 | ch35-business-models.md | QA pass | 3,881 | 2500 | 9 | 1 | no |
 | 36 | ch36-unit-economics-kpis.md | QA pass | 4,083 | 2500 | 11 | 10 | no |
 | 37 | ch37-public-comps-valuation.md | QA pass | 3,199 | 2500 | 15 | 6 | no |
@@ -73,7 +73,7 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 43 | ch43-modern-data-stack.md | QA pass | 2,284 | 2000 | 6 | 5 | no |
 | 44 | ch44-future-trends.md | QA pass | 4,204 | 3000 | 9 | 12 | no |
 | 45 | ch45-storage-moving-up-the-stack.md | QA pass | 2,707 | 2000 | 8 | 17 | no |
-| 46 | ch46-talking-with-data-people.md | not started | 0 | 2200 | 0 | 0 | no |
+| 46 | ch46-talking-with-data-people.md | QA pass | 3,846 | 2200 | 7 | 0 | no |
 | 47 | ch47-diligence-checklist.md | not started | 0 | 2000 | 0 | 0 | no |
 | 48 | ch48-question-bank.md | not started | 0 | 2000 | 0 | 0 | no |
 | 49 | ch49-explain-in-30-seconds.md | not started | 0 | 1500 | 0 | 0 | no |

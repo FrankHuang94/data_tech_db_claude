@@ -23,7 +23,7 @@ Depth labels used throughout: **L1** vocabulary, **L2** mechanism (default), **L
 ## Contents and progress
 
 <!-- AUTO:CONTENTS START -->
-**45 chapters · 170,125 prose words · 421 visuals · 470 open [VERIFY] markers** (counts from `scripts/qa_report.py`; prose excludes tables, code/Mermaid, captions and footnotes).
+**46 chapters · 173,971 prose words · 428 visuals · 470 open [VERIFY] markers** (counts from `scripts/qa_report.py`; prose excludes tables, code/Mermaid, captions and footnotes).
 
 | Part | Chapter | Prose words | Visuals | [VERIFY] | Reviewed |
 |---|---|---|---|---|---|
@@ -56,11 +56,11 @@ Depth labels used throughout: **L1** vocabulary, **L2** mechanism (default), **L
 | Part 4 | [27. Databricks vs. Snowflake: Head-to-Head](docs/04-company-deep-dives/ch27-databricks-vs-snowflake.md) | 3,918 | 11 | 17 | ✓ |
 | Part 4 | [28. Hyperscaler Data Platforms: AWS, Google, Microsoft and Oracle](docs/04-company-deep-dives/ch28-hyperscaler-data-platforms.md) | 5,371 | 10 | 26 | ✓ |
 | Part 4 | [29. Operational Database Vendors](docs/04-company-deep-dives/ch29-operational-database-vendors.md) | 4,557 | 11 | 40 | ✓ |
-| Part 4 | [30. Data Movement and Streaming Companies](docs/04-company-deep-dives/ch30-data-movement-streaming-companies.md) | 4,365 | 10 | 25 |  |
-| Part 4 | [31. Analytical Engine Challengers and Legacy Platforms](docs/04-company-deep-dives/ch31-analytical-engine-challengers-legacy.md) | 4,460 | 8 | 21 |  |
-| Part 4 | [32. AI-Native Data Companies](docs/04-company-deep-dives/ch32-ai-native-data-companies.md) | 4,760 | 11 | 24 |  |
-| Part 4 | [33. Governance, Catalog and Data-Security Companies](docs/04-company-deep-dives/ch33-governance-catalog-security-companies.md) | 3,647 | 9 | 15 |  |
-| Part 4 | [34. Data Platforms of the Application Giants](docs/04-company-deep-dives/ch34-application-giants-data-platforms.md) | 3,817 | 12 | 38 |  |
+| Part 4 | [30. Data Movement and Streaming Companies](docs/04-company-deep-dives/ch30-data-movement-streaming-companies.md) | 4,365 | 10 | 25 | ✓ |
+| Part 4 | [31. Analytical Engine Challengers and Legacy Platforms](docs/04-company-deep-dives/ch31-analytical-engine-challengers-legacy.md) | 4,460 | 8 | 21 | ✓ |
+| Part 4 | [32. AI-Native Data Companies](docs/04-company-deep-dives/ch32-ai-native-data-companies.md) | 4,760 | 11 | 24 | ✓ |
+| Part 4 | [33. Governance, Catalog and Data-Security Companies](docs/04-company-deep-dives/ch33-governance-catalog-security-companies.md) | 3,647 | 9 | 15 | ✓ |
+| Part 4 | [34. Data Platforms of the Application Giants](docs/04-company-deep-dives/ch34-application-giants-data-platforms.md) | 3,817 | 12 | 38 | ✓ |
 | Part 5 | [35. Business Models: Consumption, Subscription, Open Core and Managed Cloud](docs/05-business-and-economics/ch35-business-models.md) | 3,881 | 9 | 1 |  |
 | Part 5 | [36. Unit Economics and KPIs](docs/05-business-and-economics/ch36-unit-economics-kpis.md) | 4,083 | 11 | 10 |  |
 | Part 5 | [37. Public Comps and Valuation](docs/05-business-and-economics/ch37-public-comps-valuation.md) | 3,199 | 15 | 6 |  |
@@ -72,6 +72,7 @@ Depth labels used throughout: **L1** vocabulary, **L2** mechanism (default), **L
 | Part 6 | [43. The Modern Data Stack: Rise, Unbundling and Rebundling](docs/06-history-and-future/ch43-modern-data-stack.md) | 2,284 | 6 | 5 |  |
 | Part 6 | [44. Future Trends, 2026–2032](docs/06-history-and-future/ch44-future-trends.md) | 4,204 | 9 | 12 |  |
 | Part 6 | [45. Implications for a Storage Company Moving Up the Stack](docs/06-history-and-future/ch45-storage-moving-up-the-stack.md) | 2,707 | 8 | 17 |  |
+| Part 7 | [46. Talking with Data-Platform PMs, Engineers, Partners and Founders](docs/07-conversation-toolkit/ch46-talking-with-data-people.md) | 3,846 | 7 | 0 |  |
 <!-- AUTO:CONTENTS END -->
 
 ## How the numbers work

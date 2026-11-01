@@ -45,6 +45,6 @@ def make():
     ax.legend(h1 + h2, l1 + l2, fontsize=8, frameon=False, loc="upper left")
     ax.set_title("Confluent revenue and growth, FY2019–FY2025 (GAAP; acquired by IBM 2026-03-17)")
     source_note(ax, "Source: data/ch30_confluent_financials.csv (Confluent S-1/10-K filings, SEC EDGAR CIK 1699838). "
-                    "FY2019–FY2024 totals recalled from filings and flagged [VERIFY]; FY2025 per data/public_comps.csv; "
+                    "FY2019–FY2024 totals recalled from filings and flagged [VERIFY]; FY2025 per Confluent FY2025 10-K (total $1,166.7M GAAP; Cloud $624M); "
                     "FY2024 Cloud revenue derived from stated FY2025 Cloud growth of 27%. Retrieved 2026-11-01.")
     return [save(fig, "ch30_confluent")]

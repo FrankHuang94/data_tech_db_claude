@@ -688,3 +688,7 @@
 - **Channel conflict** — Friction that arises when a vendor's own product competes with the partners that resell, embed or integrate it. (ch45)
 - **Attach rate** — The share of customers or deals that also buy a given add-on product. (ch45)
 - **Software mix** — The share of a company's revenue that comes from software and subscriptions rather than hardware. (ch45)
+- **Burn multiple** — Net cash burn divided by net new ARR over the same period; lower means growth is bought more efficiently. (ch46)
+- **Wedge** — The first narrow, painful job a startup does better than anyone, used to win its first accounts before expanding. (ch46)
+- **Partner-sourced pipeline** — Sales opportunities a partner originated, as distinct from partner-influenced pipeline that a partner only touched. (ch46)
+- **Reference call** — A diligence conversation with an existing customer of the company being evaluated, ideally with the day-to-day operator. (ch46)

@@ -1,0 +1,1 @@
+- ch46: No [VERIFY] markers in text. Inherited caveat: NVIDIA AI Data Platform launch partner list (ten storage partners) is flagged [VERIFY] in Ch 40's footnote and is reused here.

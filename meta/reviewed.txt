@@ -27,3 +27,8 @@ ch21-ml-platforms-feature-stores-llmops.md
 ch22-agents-and-data.md
 ch23-real-time-analytics-htap.md
 ch24-data-meets-compute-and-storage.md
+ch30-data-movement-streaming-companies.md
+ch31-analytical-engine-challengers-legacy.md
+ch32-ai-native-data-companies.md
+ch33-governance-catalog-security-companies.md
+ch34-application-giants-data-platforms.md

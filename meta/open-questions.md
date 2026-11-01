@@ -379,3 +379,4 @@ Every `[VERIFY: …]` left in the text is listed here with its chapter. Resolve 
 | ch45 | ch45: Cohesity Gaia and Rubrik AI data-access features: confirm current product names and status. | open |
 | ch45 | ch45: Bridge facts: Samsung HBM-PIM (2021), SK hynix GDDR6-AiM (2022), Arm Neoverse Compute Subsystems (2023), and 2025 reports that Arm is designing its own chips; find primary announcements. | open |
 | ch45 | ch45: Pure Storage–Portworx price (~$370M, 2020) rests on training knowledge in data/ma_deals.csv; confirm against the company announcement. | open |
+| ch46 | ch46: No [VERIFY] markers in text. Inherited caveat: NVIDIA AI Data Platform launch partner list (ten storage partners) is flagged [VERIFY] in Ch 40's footnote and is reused here. | open |

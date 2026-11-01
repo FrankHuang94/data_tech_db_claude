@@ -1,0 +1,8 @@
+- **Burn multiple** — Net cash burn divided by net new ARR over the same period; lower means growth is bought more efficiently. (ch46)
+- **Wedge** — The first narrow, painful job a startup does better than anyone, used to win its first accounts before expanding. (ch46)
+- **Partner-sourced pipeline** — Sales opportunities a partner originated, as distinct from partner-influenced pipeline that a partner only touched. (ch46)
+- **Reference call** — A diligence conversation with an existing customer of the company being evaluated, ideally with the day-to-day operator. (ch46)
+- **Cloud COGS** — The share of a SaaS vendor's cost of goods sold that is public-cloud infrastructure, which sets a floor on gross margin. (ch46)
+- **Annual recurring revenue** — The annualized value of recurring subscription or committed contracts at a point in time (ARR). (ch46)
+- **Co-sell** — Joint selling in which a hyperscaler's or partner's sellers help close a vendor's deal and earn credit for it. (ch46)
+- **Private offer** — Custom price and terms that a seller publishes to one buyer's cloud-marketplace account. (ch46)

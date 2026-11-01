@@ -1,0 +1,4 @@
+- ch46: Built entirely from finished atlas chapters and their footnotes (web search exhausted); every number reuses an existing chapter footnote (Ch 7, 9, 22, 23, 25, 26, 31, 32, 33, 38, 40, 45). No new figures introduced.
+- ch46: "Strong answer" examples in Figure 46.5 are illustrative and deliberately avoid matching any company's reported KPI (e.g., NRR shown as 118%, not Snowflake's 126%); caption says so.
+- ch46: Links to ch47-diligence-checklist.md and ch48-question-bank.md point to planned sibling chapters (paths from meta/outline.md); they resolve once those chapters are written.
+- ch46: Prose ran to ~3,850 words vs 2,200 budget; kept because the extra length is the four question sets and persona mechanics, not padding.
