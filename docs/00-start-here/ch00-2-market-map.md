@@ -1,5 +1,5 @@
 # 0.2 The One-Page Market Map
-> **Depth:** L1 · **Reading time:** ~10 min · **Last verified:** 2026-11-01 · **Prerequisites:** [0.1 How to use this atlas](ch00-1-how-to-use.md)
+> **Depth:** L1 · **Reading time:** ~9 min · **Last verified:** 2026-11-01 · **Prerequisites:** [0.1 How to use this atlas](ch00-1-how-to-use.md)
 
 ## TL;DR
 
