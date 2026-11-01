@@ -79,9 +79,9 @@ def margin_bridge(f):
     ax.set_xticks(x)
     ax.set_xticklabels(["FY2025\n(Feb 2024-Jan 2025)", "FY2026\n(Feb 2025-Jan 2026)", "Q2 FY2027\n(May-Jul 2026)"])
     ax.set_ylabel("Percent of total revenue")
-    ax.set_ylim(-48, 50)
+    ax.set_ylim(-48, 70)
     ax.set_title("Snowflake: GAAP losses, non-GAAP profits; stock comp is most of the gap")
-    ax.legend(fontsize=8, frameon=False, loc="upper left", ncol=2)
+    ax.legend(fontsize=8, frameon=False, loc="upper right", ncol=2)
     source_note(ax, "Source: data/company_financials.csv (Snowflake 10-K FY2026 for SBC; Q4 FY2026 and Q2 FY2027 releases for margins). "
                     "SBC % = GAAP stock-based compensation / GAAP total revenue (author arithmetic). n/a = not in dataset. "
                     "Q2 FCF margin is seasonally low; FY2027 guide is 23%. Retrieved 2026-11-01.")

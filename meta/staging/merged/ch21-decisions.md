@@ -1,0 +1,6 @@
+- ch21: Glossary term written as "Training-serving skew" (slug `training-serving-skew`) to avoid a slash; prose shows "Training/serving skew" linked to that slug.
+- ch21: Anyscale step-up computed as ~20% ($1.65B vs $1.38B 2022); Runtime Wire's "65% above" appears to be an arithmetic error, so not used.
+- ch21: Tecton "$900M" headline figures treated as Tecton's 2022 valuation, not the Databricks deal price (undisclosed asset acquisition).
+- ch21: Pre-2025 historical dates (Michelangelo 2017, MLflow 2018, Feast 2019, SageMaker Feature Store 2020, Vertex AI 2021, MLflow to Linux Foundation 2020) cited to original announcements from training knowledge; search budget exhausted before re-opening them.
+- ch21: Humanloop, JFrog–Qwak and other 2024–2025 MLOps tuck-ins omitted because they could not be verified within the search budget.
+- ch21: Neptune staged as notes-only CORRECTION: "<$400M in stock" press-reported by several outlets citing The Information; value_usd_m left blank because no point value exists.

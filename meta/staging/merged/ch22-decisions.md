@@ -1,0 +1,6 @@
+- ch22: Lakebase GA dated to Feb 2026 (AWS) and Mar 2026 (Azure) per Databricks blogs and Azure Updates AZ557991, not "GA at DAIS 2026" as stated in meta/research-briefing.md section B; DAIS 2026 added cross-region/cross-cloud failover and Free Edition availability. Recommend ch25 and other chapters align.
+- ch22: Spider 2.0 headline uses the arXiv v2 abstract figure (21.3%, o1-preview with agent framework) rather than the widely quoted 17.1% (o1-preview alone, secondary sources only).
+- ch22: BIRD "top" cited as Huawei DataGallery 82.39% (Sept 2026, press-reported); Gemini-SQL2 80.04% (Jun 2026) is the single-model track; leaderboard not fetched directly.
+- ch22: Neon ">80% of databases created by agents" quoted strictly as company-stated telemetry from the May 2025 deal announcement; a press-reported Supabase "60%+ of new databases launched by AI tools" figure was not used (no primary source).
+- ch22: Agent-memory vendors (Letta, Zep) described qualitatively; their funding figures came only from weak comparison sites and were omitted.
+- ch22: Search budget ran out after ~20 queries; AlloyDB, Neon architecture and MCP launch details rest on pre-2025 knowledge with docs citations marked "not re-fetched".

@@ -110,3 +110,25 @@ Every `[VERIFY: …]` left in the text is listed here with its chapter. Resolve 
 | ch17 | ch17: Docling's donation to the Linux Foundation (which foundation; date). | open |
 | ch17 | ch17: NVIDIA "Finding the Best Chunking Strategy" blog — publication date. | open |
 | ch17 | ch17: Official Gemini 3 Flash list price ($0.50 / $3.00 per 1M input/output tokens per aggregator). | open |
+| ch18 | ch18: Cohere Embed v4 release date (secondary sources say April 2025; confirm against Cohere release notes). | open |
+| ch18 | ch18: S3 Standard list storage price still $0.023/GB-month (US East, first 50 TB) as of 2026-11-01. | open |
+| ch18 | ch18: turbopuffer Dec 2025 round — amount and lead (aggregators cite Thrive Capital and Lachy Groom; one lists $10M seed, unconfirmed). | open |
+| ch18 | ch18: Publication date of The Information / Calcalist report that Pinecone explored a sale (believed 2025). | open |
+| ch18 | ch18: Vespa.ai spin-out from Yahoo (believed 2023) and its funding round (believed $31M led by Blossom Capital) — not re-verified. | open |
+| ch19 | ch19: Confirm whether Anthropic applies a long-context surcharge to Claude Sonnet 5.5 prompts above 200K tokens (illustrative cost example assumes flat $2/$10 pricing). | open |
+| ch19 | ch19: Verify the press-reported GPT-5.5 surcharge ($10/$45 per M tokens for prompts above 272K tokens) against OpenAI's pricing page. | open |
+| ch19 | ch19: Verify Cohere Rerank 4 Fast/Pro rates ($2.00/$2.50 per 1,000 searches) on Cohere's own pricing page; check the reported Oct 2026 per-token Rerank 5 pricing. | open |
+| ch19 | ch19: Find Glean's primary press release for $300M ARR (May 2026); currently seen only via secondary sources and data/private_funding.csv notes. | open |
+| ch19 | ch19: Exact publication date of Snowflake blog "Cortex Search: State-of-the-Art Hybrid Search for RAG Applications" (2024). | open |
+| ch19 | ch19: Date on which Databricks renamed Vector Search to "Databricks AI Search". | open |
+| ch19 | ch19: GA date of Everpure KVA integration with NVIDIA Dynamo (reported as planned for Feb–Apr 2026). | open |
+| ch21 | ch21: no [VERIFY] markers left in text. Open items for later: confirm Cisco–Galileo (2026-05-22) and PANW–Portkey (2026-05-29) close dates from primary sources; Check Point–Lakera close date; Portkey Series A day. | open |
+| ch22 | ch22: Contents and status of the reported 2026-07-28 MCP specification revision (only 2025-06-18 and 2025-11-25 confirmed via search). | open |
+| ch22 | ch22: Postgres-for-agents table (Figure 22.7) cells marked "n.v." — branching, scale-to-zero and pricing units for Snowflake Postgres, Supabase, AlloyDB, Azure HorizonDB, PlanetScale Postgres, Xata, Prisma Postgres and Turso; Lakebase pricing unit. | open |
+| ch22 | ch22: Microsoft Entra Agent ID GA date (sources conflict: announced Build May 2025; GA reported variously as 2025 or April 2026). | open |
+| ch22 | ch22: Snowflake–Natoma acquisition — confirm with a Snowflake press release (currently weak aggregator, ~2026-05-28). | open |
+| ch24 | ch24: Voltron Data operating status in 2026 (last public news found: Accenture investment 2025-02-20, Carahsoft partnership 2025-04); confirm whether Theseus is still sold. | open |
+| ch24 | ch24: NVIDIA–HEAVY.AI acquisition — date, terms and primary announcement (only PitchBook/NEA/dbdb.io and NVIDIA-hosted docs found). | open |
+| ch24 | ch24: RAPIDS launch date (believed GTC Europe, October 2018) used in the History timeline. | open |
+| ch24 | ch24: S3 request list prices ($0.005 per 1,000 PUT/LIST; $0.0004 per 1,000 GET) not re-confirmed on the live AWS pricing page. | open |
+| ch24 | ch24: EU Data Act dates (application 2025-09-12; switching charges to zero by 2027-01-12) not re-checked against EUR-Lex. | open |

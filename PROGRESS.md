@@ -21,7 +21,7 @@
 
 Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + comparison tables (`scripts/qa_report.py`).
 
-**Totals:** 24/52 chapters drafted · 86,344 prose words · 215 visuals · 123 [VERIFY] markers.
+**Totals:** 25/52 chapters drafted · 89,970 prose words · 223 visuals · 143 [VERIFY] markers.
 
 | Ch | File | Status | Words | Budget | Visuals | VERIFY | Reviewed |
 |---|---|---|---|---|---|---|---|
@@ -44,9 +44,9 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 15 | ch15-governance-security-privacy.md | QA pass | 4,343 | 2200 | 8 | 9 | no |
 | 16 | ch16-ai-data-lifecycle.md | QA pass | 3,600 | 2200 | 6 | 1 | no |
 | 17 | ch17-unstructured-data-processing.md | QA pass | 3,144 | 2100 | 10 | 11 | no |
-| 18 | ch18-embeddings-and-vector-search.md | QA pass | 4,333 | 2600 | 11 | 5 | no |
+| 18 | ch18-embeddings-and-vector-search.md | QA pass | 4,359 | 2600 | 11 | 5 | no |
 | 19 | ch19-retrieval-architectures.md | QA pass | 3,781 | 2200 | 11 | 7 | no |
-| 20 | ch20-training-data-supply-chain.md | not started | 0 | 2200 | 0 | 0 | no |
+| 20 | ch20-training-data-supply-chain.md | QA pass | 3,600 | 2200 | 8 | 20 | no |
 | 21 | ch21-ml-platforms-feature-stores-llmops.md | QA pass | 3,436 | 2100 | 9 | 0 | no |
 | 22 | ch22-agents-and-data.md | QA pass | 4,255 | 2400 | 10 | 4 | no |
 | 23 | ch23-real-time-analytics-htap.md | QA pass | 3,360 | 2000 | 9 | 13 | no |

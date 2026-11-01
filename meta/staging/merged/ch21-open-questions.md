@@ -1,0 +1,1 @@
+- ch21: no [VERIFY] markers left in text. Open items for later: confirm Cisco–Galileo (2026-05-22) and PANW–Portkey (2026-05-29) close dates from primary sources; Check Point–Lakera close date; Portkey Series A day.

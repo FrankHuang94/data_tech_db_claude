@@ -1,0 +1,7 @@
+- ch18: Memory/cost worked example uses round-number illustrative media prices ($8/GB DRAM, $0.12/GB NVMe) clearly labelled as assumptions; S3 at list $0.023/GB-month. Ratios, not absolute dollars, are the point.
+- ch18: DiskANN on-SSD record size assumes max graph degree 64 with 4-byte IDs (3,328 B, one 4 KB page). Per-query reads (~100 nodes, ~25 round trips) labelled as estimate; consistent with paper's <3 ms mean.
+- ch18: SQL Server 2025 — VECTOR type GA (Nov 2025) but DiskANN index labelled preview on-prem per Microsoft Learn (devblog wording ambiguous); Learn treated as authoritative.
+- ch18: turbopuffer ARR claims ($100M) found only on aggregator sites; omitted from chapter.
+- ch18: Pinecone "Dedicated Read Nodes" GA and "Pinecone Nexus" found only on event/aggregator pages; omitted.
+- ch18: Funding chart reused as-is (core_funding.py); Chroma excluded because CSV row lacks an amount. No new CSV rows staged (turbopuffer round amount unconfirmed).
+- ch18: Word count exceeds the 2,600 budget (~4,300) because the assignment required seven-plus visuals, a worked example and a 19-row product table with steelman; no padding added.

@@ -1,0 +1,5 @@
+- ch18: Cohere Embed v4 release date (secondary sources say April 2025; confirm against Cohere release notes).
+- ch18: S3 Standard list storage price still $0.023/GB-month (US East, first 50 TB) as of 2026-11-01.
+- ch18: turbopuffer Dec 2025 round — amount and lead (aggregators cite Thrive Capital and Lachy Groom; one lists $10M seed, unconfirmed).
+- ch18: Publication date of The Information / Calcalist report that Pinecone explored a sale (believed 2025).
+- ch18: Vespa.ai spin-out from Yahoo (believed 2023) and its funding round (believed $31M led by Blossom Capital) — not re-verified.

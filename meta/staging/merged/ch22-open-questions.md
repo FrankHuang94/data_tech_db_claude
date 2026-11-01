@@ -1,0 +1,4 @@
+- ch22: Contents and status of the reported 2026-07-28 MCP specification revision (only 2025-06-18 and 2025-11-25 confirmed via search).
+- ch22: Postgres-for-agents table (Figure 22.7) cells marked "n.v." — branching, scale-to-zero and pricing units for Snowflake Postgres, Supabase, AlloyDB, Azure HorizonDB, PlanetScale Postgres, Xata, Prisma Postgres and Turso; Lakebase pricing unit.
+- ch22: Microsoft Entra Agent ID GA date (sources conflict: announced Build May 2025; GA reported variously as 2025 or April 2026).
+- ch22: Snowflake–Natoma acquisition — confirm with a Snowflake press release (currently weak aggregator, ~2026-05-28).
