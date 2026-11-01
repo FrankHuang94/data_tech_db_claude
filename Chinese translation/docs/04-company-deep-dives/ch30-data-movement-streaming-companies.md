@@ -313,3 +313,116 @@ Fivetran 的逻辑是以扩大范围代替降价。单纯的摄取正被平台�
 ## 与 Everpure 的相关性
 
 > **存储桥接。** 无盘 Kafka 和"由主题生成 Iceberg"把流数据保留变成了一种对象存储工作负载：大块顺序 PUT、回放突发以及数周的历史数据。能把开放格式写入任意兼容 S3 端点的摄取工具，可以把湖仓表落在本地。对象存储性能细节见姊妹篇 *Everpure Tech Atlas*，成本算例见[第 11 章](../02-pipelines-and-governance/ch11-streaming-and-event-platforms.md)。
+
+**竞争还是合作？** 这些公司都不销售存储，因此关系大多是"合作或忽略"。例外是 IBM：它拥有 Confluent，同时也销售存储（IBM Storage Scale 和 FlashSystem），因此既是渠道对象，也是竞争对手。Everpure 自身的举措（1touch，现为 Data Intelligence；FlashBlade 上的 Data Stream）位于这一层旁边而非其中。Data Intelligence 对数据进行原地分类（data classification），Data Stream 则为 AI 数据管道准备数据。[^everpure-ds][^1touch]
+
+**基于公开信息，战略团队可能评估的选项：**
+
+| 选项 | 含义 | 为何可能重要 | 注意事项 |
+|---|---|---|---|
+| 将 FlashBlade 认证为对象原生流处理的后端 | 在兼容 S3 的本地存储上，与 WarpStream BYOC、Redpanda 分层存储与 Cloud Topics、AutoMQ 或 Bufstream 形成经过验证的设计 [VERIFY: 各厂商对兼容 S3 存储的支持] | 流数据保留正把字节从 broker 磁盘迁到对象存储，而本地受监管的流处理需要一个归宿 | 必须测试延迟特性、请求速率和元数据服务行为；IBM 可能会引导 Confluent 使用自家存储 |
+| 数据移动的落地区参考设计 | Fivetran 的混合部署选项 [VERIFY: 对兼容 S3 目的地的支持]、Airbyte 自管理版、dlt 或 Openflow BYOC 将 Iceberg 写入 FlashBlade | 数据移动工具决定表落在哪里；可自托管的工具让这一决定保持开放 | 托管 SaaS 工具默认使用云端目的地；需求可能较为小众 |
+| 让 Data Stream 成为流数据消费者 | 从 Kafka 或 CDC 主题为 Data Stream 的向量化供数，使 AI 索引保持新鲜 | 让 Everpure 与这里每个买家都讲述的"为智能体提供实时上下文"的故事保持一致 | 需要连接器开发工作；与 Confluent 自身的智能体功能有重叠 |
+| 关注合作伙伴中立性的变化 | 跟踪 Informatica（Salesforce）和 Confluent（IBM）是否保持存储中立 | 认证计划的变化可能打开或关上大门 | 仅限公开信息；尚无信号 |
+
+*图 30.10 — 选项矩阵（仅基于公开信息）。杠杆最大的抓手是流处理向对象存储的转移，因为它改变了字节在物理上存放的位置。*
+
+## 对话手册
+
+**向这些公司的产品负责人或高管提出的三个问题**
+
+1. *问 Confluent/IBM：*"新增的 Confluent 工作负载中有多大比例落在 Freight 或 WarpStream 上而不是标准集群上，每 GB 收入会怎样变化？" **好的回答：**给出结构变化趋势，并说明数据量增长如何跑赢每 GB 价格的下降，同时诚实给出蚕食效应的数字。
+2. *问 Fivetran + dbt Labs：*"约 $600M ARR 中有多大比例来自同时购买摄取和 dbt 的客户？合并以来净留存率如何变化？" **好的回答：**给出交叉销售的附加率和分批次（cohort）视图，而不只是客户数量。
+3. *问 Informatica/Salesforce：*"到 2027 年，IDMC 中哪些非 Salesforce 的目的地和数据源会获得一等的路线图优先级？" **好的回答：**给出具名承诺（SAP、Snowflake、Databricks）和合同层面的中立性，而不是"我们保持开放"。
+
+**向合作伙伴架构师或工程师提出的三个问题**
+
+1. "哪些兼容 S3 的本地存储已获得 WarpStream、Tableflow 或 Redpanda Cloud Topics 的认证？你们是在怎样的请求速率和延迟下测试的？"
+2. "当 Fivetran 或 Airbyte 把 Iceberg 写入客户的存储桶时，它可以注册到哪些目录？是否支持非 AWS 的端点？"
+3. "Confluent 的 Real-Time Context Engine 或 Streaming Agents 如何把主题暴露给智能体：MCP、REST 还是 Flink SQL？"
+
+**好的回答听起来是什么样的。** 它们会区分标价与实际价格、协议与产品。它们会给出针对具体配置的延迟和成本数字。它们也会承认平台如今在哪些地方胜出。
+
+**不要这样说**
+
+- "IBM 收购 Confluent 出价过高。"按粗略的增长调整口径（每个增长百分点约 0.45x，过去 12 个月口径），这个价格与公开可比公司一致。
+- "Fivetran 收购了 dbt Labs。"这是一次由双方联合领导的全股票合并。
+- "Informatica 是老旧的本地部署 ETL。"在出售之前，大部分新业务已经转向 IDMC 云端按用量计费。
+- "Kafka 现在属于 IBM 了。"Apache Kafka 是 Apache 软件基金会的项目；IBM 拥有的是 Confluent。
+- "Airbyte 的连接器是免费的，所以不花钱。"软件是免费的，运维却不是（[第 10 章](../02-pipelines-and-governance/ch10-ingestion-and-integration.md)）。
+
+## 关键术语
+
+- [月活跃行数（Monthly active rows）](../glossary.md#monthly-active-rows) — Fivetran 的计费单位：每个连接每月发生变化的不同行数。
+- [变更数据捕获（Change data capture）](../glossary.md#change-data-capture) — 读取数据库日志，以流式传送插入、更新和删除操作。
+- [反向 ETL（Reverse ETL）](../glossary.md#reverse-etl) — 把建模后的数据仓库数据同步回业务应用。
+- [iPaaS](../glossary.md#ipaas) — 集成平台即服务，用于应用与应用之间的集成。
+- [Informatica 处理单元（Informatica Processing Unit）](../glossary.md#informatica-processing-unit) — Informatica 用于 IDMC 服务的预付、共享池化消费单位。
+- [自带云（Bring your own cloud）](../glossary.md#bring-your-own-cloud) — 厂商的数据平面运行在客户的云账户中。
+- [无盘 Kafka（Diskless Kafka）](../glossary.md#diskless-kafka) — 以对象存储为主存储的 Kafka 兼容设计。
+- [主数据管理（Master data management）](../glossary.md#master-data-management) — 把重复记录解析为每个实体一条可信的"黄金记录"。
+- [Tableflow](../glossary.md#tableflow) — Confluent 的一项功能，把 Kafka 主题物化为 Iceberg 或 Delta 表。
+- [私有化（Take-private）](../glossary.md#take-private) — 使上市公司退市的收购，通常由私募股权发起。
+- [全股票合并（All-stock merger）](../glossary.md#all-stock-merger) — 以股份支付、不设定现金价格的合并。
+- [先例交易（Precedent transaction）](../glossary.md#precedent-transaction) — 以其倍数作为估值基准的过往交易。
+- [开放核心（Open core）](../glossary.md#open-core) — 免费提供开源核心、销售专有功能或托管服务的模式。
+
+## 资料来源
+
+[^ibm-close]: IBM, "IBM Completes Acquisition of Confluent," via Stock Titan, https://www.stocktitan.net/news/IBM/ibm-completes-acquisition-of-confluent-making-real-time-data-the-lbuwdbharsqe.html，发布 2026-03-17；ChannelWeb UK, "IBM completes $11bn Confluent acquisition," https://www.channelweb.co.uk/news-network/2026/ibm-completes-11bn-confluent-acquisition，发布 2026-03；检索 2026-11-01。客户数量为公司披露、媒体报道。
+[^ibm-10q]: IBM, Form 10-Q for the quarter ended 2026-03-31（Confluent 收购价 $11,602M），SEC EDGAR, https://www.sec.gov/Archives/edgar/data/0000051143/000005114326000038/ibm-20260331.htm，发布 2026-04；检索 2026-11-01。
+[^comps-cflt]: AI Data Atlas 数据集 `data/public_comps.csv`，Confluent 行（EV 约 $11.0B；FY2025 收入 $1,167M，+21%；Confluent Cloud $624M，+27%；9.4x EV/过去 12 个月收入），截至 2026-03-17；来源：IBM 10-Q（见上）及 Confluent Form 10-K FY2025, https://www.sec.gov/Archives/edgar/data/1699838/000169983826000006/cflt-20251231.htm，发布 2026；检索 2026-11-01。FY2025 数据已与 10-K 及 Business Wire Q4/FY2025 公告核对确认（meta/verified-facts.md #1）。
+[^cflt-fin]: AI Data Atlas 数据集 `data/ch30_confluent_financials.csv`（Confluent FY2019–FY2025 GAAP 收入及 FY2024–FY2025 Confluent Cloud 收入），整理自 Confluent S-1 与 Form 10-K 申报文件，SEC EDGAR, https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001699838&type=10-K；检索 2026-11-01。FY2024（$963.6M）与 FY2025（$1,166.7M；Cloud $624M）已与 FY2025 10-K 及公告核对确认；FY2019–FY2023 数值凭记忆取自申报文件，本次未重新打开 [VERIFY]；FY2024 Cloud 收入为推算值（估算）。
+[^cflt-10k]: Confluent, Inc., Form 10-K for fiscal year ended 2025-12-31（公司历史、创始人、GAAP 经营业绩：收入 $1,166.7M，订阅 $1,119.7M，服务 $47.0M，GAAP 营业亏损 $380.1M），SEC EDGAR, https://www.sec.gov/Archives/edgar/data/1699838/000169983826000006/cflt-20251231.htm，发布 2026-02；Confluent via Business Wire, "Confluent Announces Fourth Quarter and Fiscal Year 2025 Financial Results"（Q4 $314.8M；Cloud 全年 $624M、Q4 $169M；非 GAAP 营业利润率 7.4%，上年为 2.9%），https://www.businesswire.com/news/home/20260210008002/en/Confluent-Announces-Fourth-Quarter-and-Fiscal-Year-2025-Financial-Results，发布 2026-02-10/11；检索 2026-11-01。除标注为非 GAAP 者外均为 GAAP。
+[^cflt-ipo]: Confluent, Inc., Form S-1 and Rule 424(b) prospectus (Nasdaq: CFLT, June 2021), SEC EDGAR, https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001699838&type=424B4，发布 2021-06；检索 2026-11-01。IPO 定价细节本次未重新打开 [VERIFY]。
+[^comps-sf]: AI Data Atlas 数据集 `data/public_comps.csv`，Snowflake 行（16.9x EV/未来 12 个月收入，截至 2026-10-30）；增速取自 Snowflake Q2 FY2027 公告（GAAP 收入 +35%），https://secure.businesswire.com/news/home/20260902386235/en/Snowflake-Reports-Financial-Results-for-the-Second-Quarter-of-Fiscal-2027，发布 2026-09-02；检索 2026-11-01。
+[^comps-ibm]: AI Data Atlas 数据集 `data/public_comps.csv`，IBM 行（Q3 2026，2026 年 7–9 月：Data +19%，含 Confluent，非内生），来源 IBM Q3 2026 earnings exhibit, https://www.sec.gov/Archives/edgar/data/0000051143/000005114326000093/ibm-20261021xex991.htm，发布 2026-10-21；检索 2026-11-01。GAAP 分部增速。
+[^crm-q2fy27]: Salesforce, Q2 FY2027 results release and investor deck（截至 2026-07-31 的季度；Agentforce + Data 360 ARR 约 $3.9B；Data 360 ARR $2.4B，含 $1.1B Informatica Cloud ARR；Agentforce ARR 定义扩大），investor.salesforce.com 及 https://s205.q4cdn.com/626266368/files/doc_financials/2027/q2/，发布 2026-08-26；经 meta/verified-facts.md #19 检索 2026-11-01。公司披露的 ARR，非 GAAP 收入。
+[^comps-crm]: AI Data Atlas 数据集 `data/public_comps.csv`，Salesforce 行（市值 $188.61B，EV $219.58B；市值同比下跌约 21%），stockanalysis.com, https://stockanalysis.com/stocks/crm/market-cap/，截至 2026-10-30；检索 2026-11-01。
+[^infa-close]: Salesforce via Business Wire (FinancialContent), "Salesforce Completes Acquisition of Informatica," https://markets.financialcontent.com/clarkebroadcasting.mymotherlode/article/bizwire-2025-11-18-salesforce-completes-acquisition-of-informatica，发布 2025-11-18；Bloomberg Law, "Salesforce Agrees to Buy Informatica in Deal Worth $8 Billion," https://news.bloomberglaw.com/tech-and-telecom-law/salesforce-agrees-to-buy-informatica-in-deal-worth-8-billion，发布 2025-05-27；检索 2026-11-01。
+[^infa-fin]: Informatica Inc., Form 10-K for fiscal year ended 2024-12-31 and IPO prospectus (NYSE: INFA, October 2021), SEC EDGAR full-text search, https://www.sec.gov/edgar/search/#/q=%22Informatica%20Inc.%22，发布 2025-02 及 2021-10；检索 2026-11-01。FY2024 收入（约 $1.6B，GAAP）、IPO 日期与 CEO 本次未重新打开 [VERIFY]。
+[^infa-hist]: Informatica Corporation, historical Form 10-K filings（1993 年创立；1999 年 IPO；FY2014 收入约 $1.05B，GAAP），SEC EDGAR full-text search, https://www.sec.gov/edgar/search/#/q=%22Informatica%20Corporation%22，日期不详；检索 2026-11-01。凭记忆；经审阅者确认为 2025 年前的既定事实；申报文件未重新打开。
+[^infa-pe]: Permira, "Informatica announces agreement to be acquired by the Permira funds and Canada Pension Plan Investment Board," https://www.permira.com/news-and-insights/news/informatica-announces-agreement-to-be-acquired-by-the-permira-funds-and-canada-pension-plan-investment-board/，发布 2015-04-07；检索 2026-11-01。
+[^infa-2024]: 媒体报道（Wall Street Journal、Reuters）Salesforce–Informatica 洽谈及其破裂，2024 年 4 月；本次未重新检索 [VERIFY: 原始文章 URL 与日期]。媒体报道。
+[^infa-ipu]: Informatica blog, "Announcing Consumption Pricing for Informatica Intelligent Data Management Cloud," https://www.informatica.com/blogs/announcing-consumption-pricing-for-informatica-intelligent-data-management-cloud.html，日期不详；检索 2026-11-01。
+[^ft-dbt-close]: Fivetran, "Fivetran & dbt Labs Complete Merger to Create the Data Infrastructure for Trusted AI Agents," https://www.fivetran.com/press/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents，发布 2026-06-01；合并公告：Business Wire, https://www.businesswire.com/news/home/20251013172495/en，发布 2025-10-13；检索 2026-11-01。合并 ARR 为公司披露。
+[^merger-ann]: dbt Labs blog, "dbt Labs and Fivetran merge announcement," https://www.getdbt.com/blog/dbt-labs-and-fivetran-merge-announcement，发布 2025-10-13；Reuters via TradingView, "a16z-backed data firms Fivetran, dbt Labs to merge in all-stock deal," https://de.tradingview.com/news/reuters.com%2C2025%3Anewsml_L6N3VU00K%3A0-a16z-backed-data-firms-fivetran-dbt-labs-to-merge-in-all-stock-deal，发布 2025-10-13；检索 2026-11-01。>10,000 家客户为公司披露。
+[^ft-300m]: Fivetran, "Fivetran Surpasses $300M ARR, Driven by Growing AI and Data Movement Demand," https://www.fivetran.com/press/fivetran-surpasses-300m-arr-driven-by-growing-ai-and-data-movement-demand，发布 2024-09-27；检索 2026-11-01。公司披露。
+[^hvr]: Fivetran, "Fivetran to Acquire HVR; Announces $565 Million in Series D Funding," https://www.fivetran.com/press/fivetran-to-acquire-hvr-announces-565-million-in-series-d-funding，发布 2021-09-20；检索 2026-11-01。
+[^dbt-100m]: dbt Labs blog, "dbt Labs surpasses $100M ARR," https://getdbt.com/blog/dbt-labs-100m-arr-milestone，发布 2025-02-05；检索 2026-11-01。公司披露。
+[^census]: Business Wire, "Fivetran Signs Agreement to Acquire Census," https://www.businesswire.com/news/home/20250501266140/en，发布 2025-05-01；检索 2026-11-01。交割未单独确认。
+[^tobiko]: Fivetran, "Fivetran Acquires Tobiko Data…," https://www.fivetran.com/press/fivetran-acquires-tobiko-data-to-power-the-next-generation-of-advanced-ai-ready-data-transformation，发布 2025-09-03；检索 2026-11-01。
+[^ft-sdk]: Fivetran blog, "Fivetran Connector SDK: Unlocking every data source," https://www.fivetran.com/blog/fivetran-connector-sdk-unlocking-every-data-source，发布 2025-06-02；检索 2026-11-01。
+[^metricflow]: dbt Labs, "dbt Labs Affirms Commitment to Open Semantic Interchange by Open Sourcing MetricFlow," https://www.getdbt.com/blog/dbt-labs-affirms-commitment-to-open-semantic-interchange-by-open-sourcing-metricflow，发布 2025-10-14；检索 2026-11-01。
+[^core-v2]: dbt Labs developer blog, "dbt Core v2 is here," https://docs.getdbt.com/blog/dbt-core-v2-is-here，2026（确切日期未核实）；检索 2026-11-01。
+[^ft-pricing]: Fivetran, "Pricing," https://www.fivetran.com/pricing，持续更新的文档；检索 2026-11-01。标价。
+[^ft-2025]: Fivetran Docs, "Usage-Based Pricing Updates 2025," https://fivetran.com/docs/usage-based-pricing/2025-pricing-faq，发布 2025；检索 2026-11-01。
+[^ft-2026]: Fivetran Docs, "Usage-Based Pricing Updates 2026," https://fivetran.com/docs/core-concepts/usage-based-pricing/pricing-updates/2026-pricing-updates，发布 2025-12/2026；检索 2026-11-01。
+[^funding]: AI Data Atlas 数据集 `data/private_funding.csv`（Fivetran D 轮 2021-09-20，$565M，估值 $5.6B；dbt Labs D 轮 2022-02-24，$222M，估值 $4.2B；均为公司披露，经由 Sacra https://sacra.com/c/fivetran/ 与 https://sacra.com/c/dbt/），截至 2026-11-01；检索 2026-11-01。
+[^ab-seriesb]: Airbyte via Business Wire, "Airbyte Closes $150 Million Series B Funding Round Led by Altimeter Capital and Coatue Management," https://www.businesswire.com/news/home/20211217005648/en/，发布 2021-12-17；检索 2026-11-01。估值为公司披露。
+[^ab-ai]: Airbyte via Business Wire，Airbyte 1.0 发布及 Connector Builder 的 AI Assistant, https://www.businesswire.com/news/home/20240924140740/en，发布 2024-09-24；检索 2026-11-01。
+[^ab-license]: Airbyte Docs, "Licenses," https://docs.airbyte.com/community/licenses/，持续更新的文档；检索 2026-11-01。
+[^ab-pricing]: Airbyte, "Pricing," https://www.airbyte.com/pricing，持续更新的文档；检索 2026-11-01。
+[^rp-fund]: Redpanda, "Redpanda Raises $100M Series D," https://www.redpanda.com/press/redpanda-raises-100m-launches-enterprise-agentic-ai-platform，发布 2025-04；Bloomberg Law, "GV, Lightspeed Funding Lifts Redpanda to Unicorn Valuation," https://news.bloomberglaw.com/ip-law/gv-lightspeed-funding-deal-lifts-redpanda-to-unicorn-valuation，发布 2025-04；检索 2026-11-01。
+[^rp-iceberg]: Redpanda, "Redpanda 25.1: Iceberg Topics now generally available," https://redpanda.com/blog/redpanda-25-1-iceberg-topics-ga，发布 2025-04-07；检索 2026-11-01。
+[^rp-streamfest]: Redpanda, "Streamfest day 2: Smarter streaming in the cloud and the future of Kafka," https://www.redpanda.com/blog/redpanda-streamfest-2025-day-2，发布 2025；检索 2026-11-01。
+[^rp-benthos]: Redpanda 收购 Benthos（以 Redpanda Connect 名义推出），2024 年 5 月宣布，条款未披露；经审阅者确认为 2025 年前的既定事实；本次未检索原始公告 URL。
+[^matillion-e]: Matillion E 轮公告（General Atlantic 领投 $150M，2021 年 9 月；估值约 $1.5B，媒体报道）；经审阅者确认为 2025 年前的既定事实；本次未检索原始 URL。
+[^matillion]: Matillion, "Pricing," https://matillion.com/pricing，持续更新的文档；检索 2026-11-01。Maia 发布日期未确认 [VERIFY]。
+[^estuary]: Estuary Series A release via Venture Capital Access Online, https://www.vcaonline.com/news/2025102107/estuary-raises-17m-series-a-to-power-ai-for-enterprises-with-right-time-data-movement/，发布 2025-10-21；SiliconANGLE, https://siliconangle.com/2025/10/21/estuary-raises-14m-try-solve-one-hardest-problems-data-movement/，发布 2025-10-21；检索 2026-11-01。
+[^qlik-talend]: Qlik, "Qlik Acquires Talend," https://www.qlik.com/us/news/company/press-room/press-releases/qlik-acquires-talend，发布 2023-05-16；检索 2026-11-01。条款未披露。
+[^boomi-dell]: Dell Technologies 将 Boomi 出售给 Francisco Partners 和 TPG（2021-05 宣布，公告价值 $4B；2021-10 完成）；经审阅者确认为 2025 年前的既定事实；本次未检索 Dell 新闻稿 URL。
+[^rivery]: Boomi via Business Wire, "Boomi Boosts Data Management Capabilities with Acquisition of Modern Data Integration Provider Rivery," https://www.businesswire.com/news/home/20241212909154/en，发布 2024-12-12；Calcalist（约 $100M，媒体报道），https://www.calcalistech.com/ctechnews/article/h1eodtavjl，2024-12；检索 2026-11-01。
+[^elementary]: iTWire/Business Wire, "Boomi acquires Elementary Data…," https://itwire.com/it-industry-news/deals/boomi-acquires-elementary-data-to-bring-trusted-governed-data-to-the-ai-era，发布 2026-10-19；检索 2026-11-01。
+[^mulesoft]: Salesforce, "Salesforce Signs Definitive Agreement to Acquire MuleSoft," https://investor.salesforce.com/news/news-details/2018/Salesforce-Signs-Definitive-Agreement-to-Acquire-MuleSoft/default.aspx，发布 2018-03-20；检索 2026-11-01。MuleSoft FY2017 收入（约 $297M，GAAP）凭记忆取自其 10-K；经审阅者确认为 2025 年前的既定事实；申报文件未重新打开。
+[^hashicorp]: IBM–HashiCorp 收购（2024-04 宣布，约 $6.4B；2025-02 完成）及 HashiCorp FY2024 收入（约 $583M，GAAP，财年截至 2024-01-31），SEC EDGAR full-text search, https://www.sec.gov/edgar/search/#/q=%22HashiCorp%22，日期不详；检索 2026-11-01。凭记忆；经审阅者确认为 2025 年前的既定事实；申报文件未重新打开。
+[^ibm-ss]: IBM Newsroom, "IBM Completes Acquisition of StreamSets and webMethods," https://newsroom.ibm.com/2024-07-01-IBM-Completes-Acquisition-of-StreamSets-and-webMethods,-Bolstering-its-Automation,-Data-and-AI-Portfolios，发布 2024-07-01；检索 2026-11-01。
+[^ma-csv]: AI Data Atlas 数据集 `data/ma_deals.csv`（行：IBM–Red Hat；Confluent–Immerok，据 10-Q 现金 $54.9M；Confluent–WarpStream，据 Q3 2024 10-Q 为 $135.1M https://www.sec.gov/Archives/edgar/data/1699838/000095017024119042/cflt-20240930.htm；IBM–DataStax，2025-05-28 完成；Fivetran–GX Core 项目管理权，2026-05-13），截至 2026-11-01；检索 2026-11-01。
+[^tableflow]: Confluent, "Confluent Announces the General Availability of Tableflow," Business Wire, https://www.businesswire.com/news/home/20250318342911/en/confluent-announces-the-general-availability-of-tableflow，发布 2025-03-18；检索 2026-11-01。
+[^freight]: Confluent, "Freight Clusters Are Generally Available," https://www.confluent.io/blog/freight-clusters-are-generally-available/，发布 2025；检索 2026-11-01。公司声称。
+[^confluent-intel]: Confluent, "Introducing Real-Time Context Engine," https://www.confluent.io/blog/introducing-real-time-context-engine-ai/，发布 2025-10；检索 2026-11-01。
+[^kip1150]: Aiven, "KIP-1150 accepted and the road ahead," https://aiven.io/blog/kip-1150-accepted-and-the-road-ahead，发布 2026-03-12；检索 2026-11-01。
+[^lakeflow]: Databricks Docs, "Managed connectors in Lakeflow Connect," https://docs.databricks.com/aws/en/ingestion/lakeflow-connect/，持续更新的文档；检索 2026-11-01。
+[^openflow]: Snowflake, "Snowflake Agrees to Acquire Open Data Integration Platform, Datavolo," https://www.snowflake.com/news/snowflake-agrees-to-acquire-open-data-integration-platform-datavolo/，发布 2024-11-20；检索 2026-11-01。
+[^everpure-ds]: Everpure, "Everpure Announces Data Stream," https://www.everpuredata.com/company/newsroom/press-releases/everpure-announces-data-stream.html，发布 2026-06-17；检索 2026-11-01。
+[^1touch]: Computer Weekly, "Everpure aims to bridge AI data gap with Universal Data Intelligence," https://www.computerweekly.com/news/366644438/Everpure-aims-to-bridge-AI-data-gap-with-Universal-Data-Intelligence，发布 2026-06；检索 2026-11-01。

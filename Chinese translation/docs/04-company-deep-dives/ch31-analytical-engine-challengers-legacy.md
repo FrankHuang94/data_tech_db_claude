@@ -299,3 +299,108 @@ quadrantChart
 *图 31.8 — 合作选项（仅基于公开信息）。SAP 拥有 Dremio 是最大的变化：一个中立的引擎合作伙伴，已经成为一家拥有自有云和超大规模云联盟的应用厂商的一部分。*
 
 关于存储厂商向技术栈上层移动的更广泛规律，请参阅[第 45 章](../06-history-and-future/ch45-storage-moving-up-the-stack.md)。关于本地湖仓的经济性，请参阅[第 24 章](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)。
+
+## 对话手册
+
+**向产品经理、高管或合作伙伴提出的三个问题**
+
+1. *问 SAP 或 Dremio：*"Dremio 是否会继续作为面向非 SAP 数据的独立本地 Iceberg 引擎进行销售和支持？采用哪些存储认证？" *好的回答*会给出具体的产品线、支持承诺和合作伙伴计划，而不是"一切都并入 Business Data Cloud"。
+2. *问 Starburst：*"你们的收入中自管或混合部署与 Galaxy 各占多少？Dell 这样的 OEM 合作伙伴与存储合作伙伴如何并存？" *好的回答*会给出方向，并坦诚说明渠道冲突规则。
+3. *问 ClickHouse：*"你们超过 $250M 的 ARR 中，可观测性和 AI 遥测占多少？有多少以自管方式运行并采用对象存储分层？" *好的回答*会把 Cloud 与自管区分开来，并说明分层架构。
+
+**向工程师或合作伙伴架构师提出的三个问题**
+
+1. "在本地 S3 上运行 Trino 或 Dremio，规模化时的瓶颈是什么：GET 吞吐量、LIST 与元数据调用，还是缓存未命中？" *好的回答：*给出请求速率和缓存命中率的具体数字，而不是"视情况而定"。
+2. "在 ClickHouse 中，冷数据片段如何迁移到对象存储？查询触及这些片段时 p99 延迟会怎样？" *好的回答：*清楚描述存储策略、缓存机制和预期延迟。
+3. "Palantir 的动作如何回写到 SAP？失败和权限如何处理？" *好的回答：*描述事务边界和审计轨迹，而不是做一场演示。
+
+**好的回答听起来是什么样的。** 它们会把开源项目与公司区分开，给出收入口径标签（ARR、年化运行率、GAAP），并承认平台厂商在哪些方面已追平挑战者。它们把目录和部署位置视为战略杠杆，而不是引擎基准测试。
+
+**不要这样说**
+
+- "DuckDB 被 AWS 收购了。" *AWS 同意收购的是 DuckLabs 这家公司；DuckDB 在独立的 DuckDB Foundation 名下保持 MIT 许可。*
+- "ClickHouse 赚了 $15B。" *$15B 是媒体报道的投后估值；ARR 超过 $250M（公司披露）。*
+- "Trino 和 Presto 是同一个项目。" *二者同源，但 Trino 是创建者的分支，于 2020 年 12 月更名；Presto 则在 Linux Foundation 下继续发展。*
+- "Palantir 的估值是 70 倍远期收入。" *我们可比公司文件中的 70 倍是 EV 除以过去 12 个月收入。*
+- "Teradata 现在是一家云公司了。" *云 ARR 在增长，但大部分收入仍来自本地部署和混合部署的存量客户。*
+- "Dremio 是一个中立的合作伙伴。" *自 2026 年年中起，它已是 SAP 的一部分。*
+
+## 关键术语
+
+- [本体（Ontology）](../glossary.md#ontology) — 由业务对象、链接和动作组成的受治理模型；Palantir 的核心抽象。
+- [回写（Write-back）](../glossary.md#write-back) — 分析或 AI 应用修改源系统中的数据，而不仅仅是读取。
+- [数字孪生（Digital twin）](../glossary.md#digital-twin) — 映射物理或业务实体并能对其采取行动的实时软件模型。
+- [语义层（Semantic layer）](../glossary.md#semantic-layer) — 对业务指标和实体的共享、受治理的定义。
+- [MergeTree](../glossary.md#mergetree) — ClickHouse 的核心表引擎，由在后台合并的已排序、不可变数据片段组成。
+- [进程内数据库（In-process database）](../glossary.md#in-process-database) — 作为库在应用程序内部运行的数据库，例如 DuckDB。
+- [查询联邦（Query federation）](../glossary.md#query-federation) — 在多个系统中原地查询数据，无需先复制。
+- [Icehouse](../glossary.md#icehouse) — Starburst 对基于 Trino 和 Iceberg 构建的湖仓的称呼。
+- [开放核心（Open core）](../glossary.md#open-core) — 一种商业模式：开源核心免费，专有功能或服务收费。
+- [私有化（Take-private）](../glossary.md#take-private) — 通常由私募股权收购一家上市公司，随后使其退市。
+- [OEM](../glossary.md#oem) — 一家厂商将另一家厂商的产品嵌入自身产品中的安排。
+- [混合数据平台（Hybrid data platform）](../glossary.md#hybrid-data-platform) — 一套既能在本地运行、也能在公有云中运行的数据软件栈。
+- [大规模并行处理（Massively parallel processing）](../glossary.md#massively-parallel-processing) — 把查询分散到多个节点上执行，每个节点各自拥有一部分数据。
+- [Apache Arrow](../glossary.md#apache-arrow) — 标准的内存列式格式，由 Dremio 参与共同创建。
+- [湖仓一体（Lakehouse）](../glossary.md#lakehouse) — 在对象存储中的开放文件上实现数据仓库级的管理与性能。
+- [数据主权（Data sovereignty）](../glossary.md#data-sovereignty) — 要求数据在某一司法辖区内留存和处理的规则。
+
+## 资料来源
+
+[^ch-seriesd]: Bloomberg, "ClickHouse Lands $15 Billion Valuation in AI Database Race," https://bloomberg.com/news/articles/2026-01-16/clickhouse-lands-15-billion-valuation-in-ai-database-race，发布 2026-01-16；Business Wire 新闻稿（经 Standard-Journal 转载），https://www.standard-journal.com/ap/business/article_fc7656bf-059e-533c-9dae-7646b95fb9eb.html，2026-01-16；检索 2026-11-01（经由 `data/private_funding.csv`）。估值为媒体报道；$400M D 轮由 Dragoneer 领投。
+[^ch-seriesc]: Bloomberg, "Khosla-Led Deal Values Data Startup ClickHouse at $6.35 Billion," https://bloomberg.com/news/articles/2025-05-29/khosla-led-deal-values-data-startup-clickhouse-at-6-35-billion，发布 2025-05-29；检索 2026-11-01（经由 `data/private_funding.csv`）。媒体报道。
+[^ch-arr]: ClickHouse via Business Wire, "ClickHouse Tops $250M ARR and 4,000 Customers…," https://www.businesswire.com/news/home/20260527813115/en/，发布 2026-05-27；检索 2026-11-01（经由 `data/staging/merged/ch23-company_financials.csv` 及第 23 章）。公司披露的 ARR，为下限值。
+[^ch-inc]: ClickHouse via Business Wire, "ClickHouse, Inc. Announces Incorporation, Along With $50M In Series A Funding," https://businesswire.com/news/home/20210920005219/en/，发布 2021-09-20；检索 2026-11-01（经由第 23 章）。
+[^ch-history]: ClickHouse documentation, "ClickHouse history," https://clickhouse.com/docs/about-us/history（来源：github.com/ClickHouse/clickhouse-docs, docs/about-us/history.md），持续更新的文档；检索 2026-11-01。Yandex Metrica 的起源及集群数据为公司披露；该页面未注明开源月份。
+[^ch-paper]: R. Schulze, T. Schreiber, I. Yatsishin, R. Dahimene, A. Milovidov, "ClickHouse — Lightning Fast Analytics for Everyone," PVLDB 17(12): 3731–3744, https://www.vldb.org/pvldb/vol17/p3731-schulze.pdf，发布 2024；检索 2026-11-01。
+[^ch-smt]: ClickHouse documentation, "SharedMergeTree," https://clickhouse.com/docs/cloud/reference/shared-merge-tree，无日期；检索 2026-11-01（经由第 23 章）。
+[^ch-peerdb]: TechCrunch, "Real-time database startup ClickHouse acquires PeerDB to expand its Postgres support," https://techcrunch.com/2024/07/30/real-time-database-startup-clickhouse-acquires-peerdb-to-expand-its-postgres-support，发布 2024-07-30；检索 2026-11-01（经由 `data/ma_deals.csv`）。
+[^ch-hyperdx]: ClickHouse blog, "ClickHouse acquires HyperDX: the future of open-source observability," https://clickhouse.com/blog/clickhouse-acquires-hyperdx-the-future-of-open-source-observability，发布 2025-03-13；检索 2026-11-01（经由 `data/ma_deals.csv`）。
+[^ch-langfuse]: ClickHouse blog, "ClickHouse acquires Langfuse," https://clickhouse.com/blog/clickhouse-acquires-langfuse-open-source-llm-observability，发布 2026-01-16；检索 2026-11-01（经由 `data/ma_deals.csv`）。
+[^duck-history]: DuckDB, "DuckDB and Its Ecosystem"（历史页面），https://duckdb.org/history/（来源：github.com/duckdb/duckdb-web, history.md），持续更新的文档；检索 2026-11-01。涵盖：2018 年在 CWI 起步、DuckDB 0.1 亮相 SIGMOD 2019、DuckDB Labs 于 2021-07-14 分拆、DuckDB Foundation 2021 年成立、MotherDuck 合作 2022-11、DuckDB 1.0 于 2024-06-03 发布、DuckLake 1.0 于 2026-04-13 发布、更名为 DuckLabs 及员工 >30 人（2026 年）、AWS 公告 2026-08-26，以及 DuckDB 2.0 于 2026-10-21 发布。公司披露。
+[^duck-aws-blog]: M. Raasveldt, H. Mühleisen, "DuckLabs to Join AWS, Projects to Remain Open Source," DuckDB blog, https://duckdb.org/2026/08/26/ducklabs-to-join-aws.html（来源：github.com/duckdb/duckdb-web, _posts/2026-08-26-ducklabs-to-join-aws.md），发布 2026-08-26；检索 2026-11-01。文中称预计于 2026 年 9 月初生效。
+[^aws-duck]: Amazon, "AWS to acquire DuckLabs, the Amsterdam-based company behind DuckDB," https://www.aboutamazon.com/news/company-news/aws-ducklabs，发布 2026-08-26；The Register, "AWS buys DuckLabs, the people behind the popular in-process OLAP database," https://www.theregister.com/databases/2026/08/26/aws-buys-ducklabs-the-people-behind-the-popular-in-process-olap-database/5292590，2026-08-26；检索 2026-11-01（经由第 23 章及整合者备注）。条款未披露；交易完成尚未得到一手资料确认。
+[^duck-40k]: DuckDB blog, "Thank You for 40 000 Stars on GitHub," https://duckdb.org/2026/08/05/github-40k-stars.html（来源：github.com/duckdb/duckdb-web），发布 2026-08-05；检索 2026-11-01。访客数据为公司披露。
+[^duck-200]: DuckDB blog, "Announcing DuckDB 2.0.0 LTS," https://duckdb.org/2026/10/21/announcing-duckdb-200.html（来源：github.com/duckdb/duckdb-web），发布 2026-10-21；检索 2026-11-01。
+[^motherduck]: The Register, "MotherDuck funding," https://theregister.com/2023/09/21/motherduck_funding/，发布 2023-09-21；检索 2026-11-01（经由 `data/private_funding.csv`）。$52.5M B 轮；约 $400M 投后估值为媒体报道。
+[^md-redshift]: MotherDuck blog, "Redshift Files: The Hunt for Big Data," https://motherduck.com/blog/redshift-files-hunt-for-big-data/，发布 2024 [VERIFY: 确切日期]；检索 2026-11-01（经由第 23 章）。厂商分析。
+[^redset]: A. van Renen et al., "Why TPC Is Not Enough: An Analysis of the Amazon Redshift Fleet," PVLDB 17(11), https://vldb.org/pvldb/vol17/p3694-saxena.pdf，发布 2024；检索 2026-11-01（经由第 23 章）。
+[^aurora-duck]: AWS documentation, "How Aurora PostgreSQL analytics works," https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-analytics-how-it-works.html，无日期；检索 2026-11-01（经由第 23 章）。
+[^trino-rename]: M. Traverso, D. Sundstrom, D. Phillips, "We're rebranding PrestoSQL as Trino," Trino blog, https://trino.io/blog/2020/12/27/announcing-trino.html（来源：github.com/trinodb/trino.io, _posts/2020-12-27-announcing-trino.md），发布 2020-12-27；检索 2026-11-01。Presto 于 2012 年在 Facebook 创建；Presto Software Foundation 成立于 2019 年 1 月；Linux Foundation 旗下的 Presto Foundation 成立于 2019 年 9 月。
+[^presto-psf]: Trino (Presto Software Foundation), "Presto Software Foundation launch," https://trino.io/blog/2019/01/31/presto-software-foundation-launch.html（来源：github.com/trinodb/trino.io），发布 2019-01-31；检索 2026-11-01。文中称 Presto 于 2013 年以 Apache License 发布。
+[^starburst-d]: StartupIntros, "Starburst Series D," https://startupintros.com/news/2022-02-01-starburst-series-d，2022-02；检索 2026-11-01（经由 `data/private_funding.csv`；聚合网站来源）。约 $3.35B 估值为媒体报道，经审阅者确认为 2025 年前的公认事实；更正已暂存于 `data/staging/review-part-4b-private_funding.csv`。
+[^warp]: Starburst, "Announcing the public preview of Warp Speed in Starburst Galaxy," https://www.starburst.io/blog/announcing-warp-speed-starburst-galaxy/，2023；检索 2026-11-01（经由第 24 章）。加速效果为厂商宣称。
+[^starburst-ep]: Everpure, "Technology Alliance Partners: Starburst," https://www.everpuredata.com/la/partners/technology-alliance-partners/starburst.html，无日期；检索 2026-11-01（经由 `meta/research-briefing.md`）。
+[^starburst-dremio]: Starburst blog, "Dremio acquired by SAP," https://starburst.io/blog/dremio-acquired-by-sap/，2026；检索 2026-11-01（列于 `meta/sources.md`；本次未重新阅读该页面）。
+[^dremio-e]: Dremio, "Dremio raises $160M in Series E, doubles valuation to $2 billion," https://www.dremio.com/newsroom/dremio-raises-160m-in-series-e-doubles-valuation-to-2-billion，发布 2022-01-25；检索 2026-11-01（经由 `data/private_funding.csv`）。公司披露。
+[^sap-dremio]: Dremio newsroom, "SAP to Acquire Dremio to Unify SAP and Non-SAP Data to Power Agentic AI," https://www.dremio.com/newsroom/sap-to-acquire-dremio-to-unify-sap-and-non-sap-data-to-power-agentic-ai/，发布 2026-05-04；CIO.com, https://www.cio.com/article/4166881/sap-to-acquire-data-lakehouse-vendor-dremio.html，2026-05；Forrester, "SAP is targeting the AI data control plane," https://www.forrester.com/blogs/sap-is-targeting-the-ai-data-control-plane/，2026-05；检索 2026-11-01（经由 `meta/research-briefing.md` 和 `meta/sources.md`）。据研究简报，约于 2026 年 7 月完成 [VERIFY: 确切完成日期]。
+[^dremio-pure]: Dremio 合作伙伴页面，https://www.dremio.com/partners/pure-storage/，无日期；Pure Storage/Dremio solution brief, https://dremio.com/wp-content/uploads/2024/10/Dremio-Pure-Storage-Solutions-Brief-1.pdf，2024-10；检索 2026-11-01（经由 `meta/research-briefing.md`）。
+[^arrow-tlp]: Dremio, "The Origin and History of Apache Arrow," https://www.dremio.com/blog/origin-and-history-of-apache-arrow，无日期（文中称顶级项目公告日期为 2016-02-17）；检索 2026-11-01（经由第 6 章）。
+[^polaris]: Apache Software Foundation, "The Apache Software Foundation graduates two open source projects from incubator," https://news.apache.org/foundation/entry/the-apache-software-foundation-graduates-two-open-source-projects-from-incubator，发布 2026-03-05；检索 2026-11-01（经由 `meta/sources.md`）。
+[^firebolt]: `data/private_funding.csv`，Firebolt 行（C 轮，2022 年 1 月；约 $100M，估值约 $1.4B，媒体报道），截至 2026-11-01。经审阅者确认为 2025 年前的公认事实；未检索到一手资料 URL；更正已暂存于 `data/staging/review-part-4b-private_funding.csv`。
+[^imply-lumi]: Imply via Business Wire, "Imply Launches Imply Lumi: The Industry's First Observability Warehouse," https://www.businesswire.com/news/home/20250908960771/en，发布 2025-09-08；检索 2026-11-01（经由第 23 章）。"首个"为公司说法。
+[^startree]: BigDATAwire, "StarTree uncorks $47 million for Pinot," https://www.hpcwire.com/bigdatawire/2022/08/29/startree-uncorks-47-million-for-pinot/，发布 2022-08-29；检索 2026-11-01（经由 `data/private_funding.csv`）。
+[^druid-paper]: F. Yang et al., "Druid: A Real-time Analytical Data Store," SIGMOD 2014, http://static.druid.io/docs/druid.pdf，发布 2014-06；检索 2026-11-01（经由第 23 章）。
+[^palantir-ontology]: Palantir, "Ontology overview," Foundry documentation, https://www.palantir.com/docs/foundry/ontology/overview/，持续更新的文档；检索 2026-11-01（经由第 19 章）。
+[^comps-pltr]: stockanalysis.com, "Palantir market cap," https://stockanalysis.com/stocks/pltr/market-cap/，数据截至 2026-10-30；检索 2026-11-01（经由 `data/public_comps.csv`）。市值 $442.43B，EV $433.23B，EV/过去 12 个月收入 70.3 倍，过去 12 个月 GAAP 收入增长 79%，过去 12 个月 GAAP 毛利率 84.8%。
+[^fin-pltr]: stockanalysis.com, Palantir revenue and statistics, https://stockanalysis.com/stocks/pltr/revenue/ 和 https://stockanalysis.com/stocks/pltr/statistics/，数据截至 2026-10-30；检索 2026-11-01（经由 `data/company_financials.csv`）。FY2025 收入 $4.48B，截至 Q2 2026 过去 12 个月收入 $6.16B，GAAP。
+[^comps-tdc]: stockanalysis.com, "Teradata statistics," https://stockanalysis.com/stocks/tdc/statistics/，数据截至 2026-10-28；检索 2026-11-01（经由 `data/public_comps.csv`）。市值 $3.19B，EV $2.88B，过去 12 个月收入 $1.69B。
+[^fin-tdc]: stockanalysis.com, "Teradata revenue," https://stockanalysis.com/stocks/tdc/revenue/，数据截至 2026-10-23；检索 2026-11-01（经由 `data/company_financials.csv`）。过去 12 个月 GAAP 收入。
+[^comps-sap]: stockanalysis.com, "SAP market cap," https://stockanalysis.com/stocks/sap/market-cap/，数据截至 2026-10-30；SAP SE Form 6-K, Q3 2026 quarterly statement, https://www.sec.gov/Archives/edgar/data/0001000184/000110465926118617/tm2628113d1_ex99-1.htm，发布 2026-10-21；检索 2026-11-01（经由 `data/public_comps.csv`）。IFRS 数据。
+[^comps-ibm]: stockanalysis.com, IBM ratios, https://stockanalysis.com/stocks/ibm/financials/ratios/，数据截至 2026-10-30；IBM Form 8-K Ex. 99.1 (Q3 2026), https://www.sec.gov/Archives/edgar/data/0000051143/000005114326000093/ibm-20261021xex991.htm，发布 2026-10-21；检索 2026-11-01（经由 `data/public_comps.csv`）。GAAP。
+[^ibm-confluent]: StockTitan (IBM press release), "IBM completes acquisition of Confluent," https://www.stocktitan.net/news/IBM/ibm-completes-acquisition-of-confluent-making-real-time-data-the-lbuwdbharsqe.html，发布 2026-03-17；检索 2026-11-01（经由 `data/ma_deals.csv`）。
+[^ibm-datastax]: DBTA, "IBM Officially Closes Acquisition of DataStax," https://www.dbta.com/Editorial/News-Flashes/IBM-Officially-Closes-Acquisition-of-DataStax-169711.aspx，发布 2025-05；检索 2026-11-01（经由 `data/ma_deals.csv`）。
+[^ma-sybase]: SAP investor release, "SAP to acquire Sybase," https://www.sap.com/investors/en/financial-news/ad-hoc-news/2010/05/934992.html，发布 2010-05-12；检索 2026-11-01（经由 `data/ma_deals.csv`）。
+[^ma-netezza]: WilmerHale, "Netezza to be acquired for $1.7 billion in cash," https://www.wilmerhale.com/en/insights/news/netezza-to-be-acquired-for-1-7-billion-in-cash-september-22-2010，发布 2010-09-22；检索 2026-11-01（经由 `data/ma_deals.csv`）。
+[^ma-vertica]: TechCrunch, "HP acquires data management and real-time analytics company Vertica," https://techcrunch.com/2011/02/14/hp-acquires-data-management-and-real-time-analytics-company-vertica/，发布 2011-02-14；检索 2026-11-01（经由 `data/ma_deals.csv`；后续所有权依据 CSV 备注；OpenText 通过收购 Micro Focus（2023 年 1 月完成）取得所有权，属于 2025 年前的公认事实）。
+[^ma-aster]: Teradata Form 8-K (Aster Data merger agreement), https://www.sec.gov/Archives/edgar/data/0000816761/000119312511054332/d8k.htm，发布 2011-03-03；检索 2026-11-01（经由 `data/ma_deals.csv`）。
+[^ma-hadapt]: BigDATAwire, "Teradata acquires Revelytix, Hadapt," https://bigdatawire.com/2014/07/22/teradata-acquires-revelytix-hadapt，发布 2014-07-22；检索 2026-11-01（经由 `data/ma_deals.csv`）。
+[^ma-thinkbig]: SiliconANGLE, "Teradata buys out the hottest Hadoop consultancy in Silicon Valley," https://siliconangle.com/2014/09/04/teradata-buys-out-the-hottest-hadoop-consultancy-in-silicon-valley/，发布 2014-09-04；检索 2026-11-01（经由 `data/ma_deals.csv`）。
+[^ma-hortonworks]: TechCrunch, "Cloudera and Hortonworks announce $5.2 billion merger," https://techcrunch.com/2018/10/03/cloudera-and-hortonworks-announce-5-2-billion-merger，发布 2018-10-03；检索 2026-11-01（经由 `data/ma_deals.csv`）。为合并后股权价值，而非支付价格。
+[^ma-mapr]: HPE press release, "HPE advances its intelligent data platform with acquisition of MapR business assets," https://hpe.com/us/en/newsroom/press-release/2019/08/hpe-advances-its-intelligent-data-platform-with-acquisition-of-mapr-business-assets.html，发布 2019-08-05；检索 2026-11-01（经由 `data/ma_deals.csv`）。
+[^ma-cloudera]: `data/ma_deals.csv`，KKR 与 CD&R 对 Cloudera 的私有化（$5.3B，每股 $16，2021-06-01 宣布，2021-10-08 完成）；2025 年中以前的背景知识，经审阅者确认为公认事实。
+[^bladebridge]: Databricks press release, "Databricks acquires BladeBridge technology and talent," https://www.databricks.com/company/newsroom/press-releases/databricks-acquires-bladebridge-technology-and-talent，发布 2025-02-05；检索 2026-11-01（经由 `data/ma_deals.csv`）。
+[^cloudera-survey]: Virtualization Review, "Cloudera survey: 66 percent repatriated AI workloads from public cloud," https://virtualizationreview.com/articles/2026/08/12/cloudera-survey-66-percent-repatriated-ai-workloads-from-public-cloud.aspx，发布 2026-08-12；检索 2026-11-01（经由第 24 章）。厂商委托的调查。
+[^aws-esc]: Amazon press release, "AWS Launches AWS European Sovereign Cloud and Announces Expansion Across Europe," https://press.aboutamazon.com/2026/1/aws-launches-aws-european-sovereign-cloud-and-announces-expansion-across-europe，发布 2026-01-14；检索 2026-11-01（经由第 24 章）。
+[^sap-bdc]: SAP SE 关于 SAP Business Data Cloud 及 SAP Databricks 合作的公告，2025 年 2 月（日期由 SAP 2025 年 11 月的 Snowflake 新闻稿确认，该新闻稿称 Snowflake 是继 SAP Databricks 和 Google BigQuery 之后的第三项此类合作）；未重新检索 2025 年 2 月的一手资料 URL [VERIFY: 合作条款]；检索 2026-11-01。
+[^sap-snow]: SAP News, "SAP and Snowflake…" (SAP Snowflake; SAP BDC Connect for Snowflake), https://news.sap.com/2025/11/sap-snowflake-data-enterprise-ai-business-data-fabric/，发布 2025-11-04；Business Wire，2025-11-04；检索 2026-11-01，经由 `meta/verified-facts.md` #12。计划上市日期为公司披露。
+[^everpure-1touch]: World Wide Technology（转载 Pure Storage 新闻稿），"Pure Storage rebrands to Everpure and announces intent to acquire 1touch," https://www.wwt.com/news/pure-storage-rebrands-to-everpure-and-announces-intent-to-acquire-1touch，发布 2026-02-23；检索 2026-11-01（经由 `meta/research-briefing.md`）。
