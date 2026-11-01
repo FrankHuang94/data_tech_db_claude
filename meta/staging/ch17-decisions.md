@@ -1,0 +1,5 @@
+- ch17: Treated the "80–90% unstructured" statistic as a weakly sourced rule of thumb: cited the 1998 Merrill Lynch origin (via Grimes/Wikipedia), AIIM/CMSWire's failed provenance search, and the 2023 Box-sponsored IDC paper (~90%) labelled as sponsored research.
+- ch17: Cost-per-1,000-pages comparison uses vendor list prices only (first volume tier, US regions); data-platform functions (Databricks, Snowflake) are shown as "not a flat rate" rather than converted from credits.
+- ch17: Snowflake naming: used "AI Functions" (formerly Cortex AISQL) and AI_PARSE_DOCUMENT per Snowflake's migration guide; Openflow as the Datavolo product.
+- ch17: Quadrant vendor map placements are explicitly author judgment from public product descriptions.
+- ch17: Chapter runs ~3,100 prose words vs 2,100 budget; overage is the worked example, cost table commentary and ACL/sync mechanism, kept because they are the chapter's core.

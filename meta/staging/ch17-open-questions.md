@@ -1,0 +1,11 @@
+- ch17: Embedding list price assumption ($0.02 per million tokens) used in the worked example — confirm against a current embedding-model price list.
+- ch17: CMSWire (J. Mancini) "Deconstructing a content management urban legend" — publication date.
+- ch17: Databricks "From PDFs to Production" document-intelligence blog — exact publication day (Nov 2025); also whether ai_parse_document has left Beta/Public Preview.
+- ch17: Glean post-2025 ARR ($200M Dec 2025; ~$300M May 2026) — primary source; data/private_funding.csv note labels $300M "company-stated" but search found it only in Sacra (estimate).
+- ch17: Azure AI Document Intelligence current USD list rates (Read $1.50, Layout $10 per 1,000 pages) on the official pricing page.
+- ch17: Mistral OCR 3 announcement — exact day (Dec 2025).
+- ch17: LlamaParse credit price ($1.25 per 1,000 credits, from usagepricing tracker) on the official pricing page.
+- ch17: Reducto r-1 blog — exact publication day (Sept 2026) and confirmation of ~1 cent/page "all in".
+- ch17: Docling's donation to the Linux Foundation (which foundation; date).
+- ch17: NVIDIA "Finding the Best Chunking Strategy" blog — publication date.
+- ch17: Official Gemini 3 Flash list price ($0.50 / $3.00 per 1M input/output tokens per aggregator).
