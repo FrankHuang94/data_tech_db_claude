@@ -440,3 +440,173 @@ flowchart TB
 
 *图 48.12 — 混淆了现金、收入和利润率的商业模式回答；追问能将它们区分开来。*
 
+## 估值、并购与竞争
+
+背景阅读：[第 37 章 — 上市可比公司与估值](../05-business-and-economics/ch37-public-comps-valuation.md)，[第 38 章 — 开源战略](../05-business-and-economics/ch38-open-source-strategy.md)，[第 39 章 — 并购历史](../05-business-and-economics/ch39-ma-history.md)，[第 43 章 — 现代数据栈](../06-history-and-future/ch43-modern-data-stack.md)。
+
+**115.** 明年收入中有多大比例已经以 RPO 或承诺消费额度的形式签约，相比之下有多少是你们预期会落地的消耗？ *[Topic: valuation & M&A · Audience: CFO/Finance]* — *关注点：* 一个区间，以及对承诺如何转化为消耗的解释。
+
+**116.** 使用两个及以上产品的客户与单一产品客户之间，净收入留存率有何差异？ *[Topic: valuation & M&A · Audience: CFO/Finance, PM]* — *关注点：* 一个量化的平台效应。多产品交叉购买正是让一家公司从单点工具估值倍数跃升到平台估值倍数的关键。
+
+**117.** 今年的增长中哪部分来自价格，哪部分来自用量？ *[Topic: valuation & M&A · Audience: CFO/Finance]* — *关注点：* 将标价变动和成本转嫁与使用量增长区分开来。投资者资本化的是后者，而不是前者。
+
+**118.** 当你把一轮私募融资与一个公开市场倍数进行比较时，你如何针对优先权、年化运行率与 GAAP 的差异、股权价值与企业价值的差异以及流动性不足进行调整？ *[Topic: valuation & M&A · Audience: CFO/Finance]* — *关注点：* 全部四项调整。Databricks 的 $190B 是一个以公司披露的年化运行率为参照的优先股投后价格，而不是一个 EV/未来 12 个月收入倍数。[^db-7b]
+
+**119.** 当你为一家态势管理或目录类标的公司做基准比较时，你使用哪些可比公司，为什么选它们？ *[Topic: valuation & M&A · Audience: CFO/Finance, Founder/CEO]* — *关注点：* 将平台型交易与能力补强型收购（tuck-in）区分开，并说明每笔交易的价值口径。
+
+**120.** 这个标的会让我们的装机基础更有价值，还是会让我们与平台合作伙伴形成竞争？ *[Topic: valuation & M&A · Audience: Partner manager, Founder/CEO]* — *关注点：* 受影响的具名合作伙伴，以及标签或策略将如何流向它们的目录。
+
+**121.** 保留品牌还是吸收品牌？ *[Topic: valuation & M&A · Audience: Founder/CEO, PM]* — *关注点：* 一个与买方挂钩的选择。买方不同则支持保留品牌；买方相同且共用控制台则支持吸收品牌。
+
+**122.** 你为那笔交易引用的是哪种价值口径：股权价值、企业价值、名义总价还是媒体报道值？ *[Topic: valuation & M&A · Audience: CFO/Finance]* — *关注点：* 无需提示就主动说明口径。监管文件中的价格往往与媒体数字不同。
+
+**123.** 先例交易的结果如何，而不仅仅是它的价格？ *[Topic: valuation & M&A · Audience: Founder/CEO, CFO/Finance]* — *关注点：* 整合结果。收购数据库引擎的存储公司大多举步维艰；收购数据服务的则表现更好。
+
+**124.** 你们客户在生产环境中运行的代码采用哪种许可证，收入中有多大比例来自托管服务，多少来自自主管理的许可？ *[Topic: valuation & M&A · Audience: Founder/CEO, CFO/Finance]* — *关注点：* 按组件说明许可证。例如，SSPL 并未获得 OSI 批准；MongoDB 于 2019 年 3 月撤回了对它的审核申请。[^osi-sspl]
+
+**125.** 如果 AWS 或 Google 明天推出了你们项目的托管版本，你们还能卖出什么它们卖不了的东西？ *[Topic: valuation & M&A · Audience: Founder/CEO]* — *关注点：* 托管之外的控制点或能力，例如专有功能、支持深度或跨云定位。
+
+**126.** 谁持有贡献代码的版权或贡献者许可协议（CLA），谁拥有商标？ *[Topic: valuation & M&A · Audience: Founder/CEO, CFO/Finance]* — *关注点：* 清晰的所有权。更换许可证的选择权在尽职调查中是一项资产。
+
+**127.** 如果某个平台在下个季度推出一个"够用"的版本，客户会失去你们的哪些功能，又是什么让他们仍然继续向你们付费？ *[Topic: valuation & M&A · Audience: Founder/CEO, PM]* — *关注点：* 跨平台的中立性，或平台不想自己承担的某个工作流。
+
+**128.** 你们的控制点能否跨平台迁移，有多大比例的客户运行两个及以上平台？ *[Topic: valuation & M&A · Audience: Founder/CEO, Partner manager]* — *关注点：* 一个实测的多平台客户比例。在客户运行不止一个平台的地方，中立性最有价值。
+
+### 应当引起警惕的回答
+
+| 你可能听到的回答 | 为何应当警惕 | 追问 |
+|---|---|---|
+| "Databricks 的倍数更高，所以 Snowflake 很便宜。" | 口径不同：一个是基于年化运行率的优先股投后估值，另一个是基于未来 12 个月指引的公开市场 EV。 | "哪些调整能让两者具有可比性？" |
+| "私募融资轮决定了价格。" | 它为一类带有下行保护的优先股定价。 | "普通股之上叠加了哪些优先权和参与权？" |
+| "存储公司收购软件总会失败。" | 收购数据库引擎的案例大多举步维艰；收购相邻数据服务的案例表现更好。 | "哪个先例最接近，它是如何整合的？" |
+
+*图 48.13 — 跳过口径说明的估值与并购回答；每个倍数都需要一个日期、一个分子和一个分母。*
+
+## 存储与数据的交汇（Everpure 视角，仅基于公开信息）
+
+背景阅读：[第 24 章 — 数据栈与计算和存储的交汇之处](../03-ai-data-stack/ch24-data-meets-compute-and-storage.md)，[第 44 章 — 未来趋势](../06-history-and-future/ch44-future-trends.md)，[第 45 章 — 对一家向技术栈上层移动的存储公司的启示](../06-history-and-future/ch45-storage-moving-up-the-stack.md)。以下是战略团队基于公开信息，可能向合作伙伴、客户或自身产品团队提出的问题。它们不暗示任何非公开计划。
+
+> **存储桥接。** 这里的问题检验的是存储阵列与其上方数据层之间的接缝：用于表提交的条件写入、用于查询规划的元数据请求速率，以及为平台执行点提供输入的数据分类。配套的 *Everpure Tech Atlas* 涵盖存储机制本身；本组问题关注的是数据平台需要从这些机制中获得什么。
+
+**129.** 本地部署的客户目前针对 S3 兼容存储运行哪些引擎和目录，他们最先要求哪些验证（Databricks Storage Ecosystem、Snowflake 外部存储卷、Starburst、Dremio）？ *[Topic: storage meets data · Audience: Partner manager, Customer]* — *关注点：* 一份以实际交易为依据的排序清单，而不是一页 logo 幻灯片。
+
+**130.** 客户的 GPU 集群相对于其湖仓表位于何处，当两者分离时，他们报告的出口流量或复制成本是多少？ *[Topic: storage meets data · Audience: Customer, PM]* — *关注点：* 真实的副本数量和账单。退出费减免并不涵盖稳态下的跨云读取。
+
+**131.** 请给我看在大规模扫描运行期间，高请求速率下小型 GET 和 HEAD 请求的 p99 延迟。Iceberg 的查询规划时间会发生什么变化？ *[Topic: storage meets data · Audience: Engineer]* — *关注点：* 将元数据性能与吞吐量分开，并分别给出两者的数值。
+
+**132.** 在跨节点争用的情况下，你们如何实现 `If-Match` 和 `If-None-Match`，又是如何测试确保只有一个提交胜出的？ *[Topic: storage meets data · Audience: Engineer]* — *关注点：* 条件写入的正确性测试，而不仅仅是 API 覆盖。"S3 兼容"并不保证行为完全相同。
+
+**133.** 对于一个 GPU 加速的 Spark 或 cuDF 作业，运行时间中 I/O 与计算各占多少？ *[Topic: storage meets data · Audience: Engineer, Customer]* — *关注点：* 一份将两者拆开的性能剖析。GPU 对连接和聚合密集型作业的帮助大于对小型、受 I/O 限制的扫描的帮助。
+
+**134.** 哪些 Data Intelligence 部署覆盖了非 Everpure 存储，有多大比例的客户是从那里起步，而不是从 Everpure 阵列起步？ *[Topic: storage meets data · Audience: PM, CFO/Finance]* — *关注点：* 与存储无关的需求拉动的证据。Data Intelligence 是基于 1touch 构建的产品，Everpure 于 2026-02-23 宣布将收购 1touch，并于 2026 年 5 月完成交易。[^everpure-1touch]
+
+**135.** 当客户运行 Unity Catalog 或 Horizon 时，我们的分类结果最终去了哪里，由谁来执行？ *[Topic: storage meets data · Audience: PM, Partner manager]* — *关注点：* 将分类作为平台执行点的输入，并有一条具名的同步路径。
+
+**136.** 一次全量分类扫描与增量扫描相比，对生产性能的影响成本是多少，抽样如何调优？ *[Topic: storage meets data · Audience: Engineer, Customer]* — *关注点：* 限流控制、具体的吞吐量上限，以及面向数十亿对象的增量设计。
+
+**137.** 在并发提交的情况下，OpenSharing 连接器能否以与云对象存储相同的一致性保证提供 Iceberg 和 Delta 读取？ *[Topic: storage meets data · Audience: Engineer, Partner manager]* — *关注点：* 一个经过测试的回答，并明确说明条件写入和列举（listing）行为。
+
+**138.** 对于 KV 缓存卸载，从存储重新加载前缀与重新计算相比，首个令牌生成时间（time-to-first-token）的 p99 是多少，在什么并发度下？ *[Topic: storage meets data · Audience: Engineer, Customer]* — *关注点：* 署有合作伙伴名称的基准测试。NVIDIA 定义接口；存储厂商在这些接口内部展开竞争。
+
+**139.** 平台对本地对象存储究竟认证了什么，这是一个正式计划，还是一份由厂商自行报告的兼容性清单？ *[Topic: storage meets data · Audience: Partner manager]* — *关注点：* 两者的区别。Databricks 运营着一个具名的 Storage Ecosystem 计划；[^dbx-storage] Snowflake 的文档列出了 S3 兼容厂商（Pure Storage 位列其中），但表示 Snowflake 本身并不测试或验证第三方产品，并且现在要求提供商提供"经过测试且合规"的服务（[第 40 章](../05-business-and-economics/ch40-gtm-partnerships.md)）。
+
+**140.** 如果你们的文档存放在本地对象存储上，AI 流水线能否就地读取它们，权限如何一路传递到检索环节？ *[Topic: storage meets data · Audience: Customer, Engineer]* — *关注点：* 一条 S3 兼容的读取路径加上权限传播，而不是"先复制到我们的云上"。
+
+**141.** 你们的哪些数据服务运行在 NVIDIA 参考设计之内，哪些要求开发者采用你们自己的 API？ *[Topic: storage meets data · Audience: Partner manager, Founder/CEO]* — *关注点：* 将标准接口（S3、NFS、Iceberg）与专有接口区分开。进入名单只是入场券，而不是差异化所在。
+
+**142.** 随着客户在自有存储中采用开放表格式（open table format），他们数据平台支出中有多大比例会转向存储层？ *[Topic: storage meets data · Audience: CFO/Finance, PM]* — *关注点：* 认识到开放格式把表搬进了客户自己的账户，而计算仍然主导着账单。
+
+### 应当引起警惕的回答
+
+| 你可能听到的回答 | 为何应当警惕 | 追问 |
+|---|---|---|
+| "S3 兼容就意味着兼容。" | 条件写入、LIST 行为和分段上传的边界情况差异很大。 | "在并发情况下，你们通过了哪套兼容性测试？" |
+| "我们的存储获得了平台认证。" | 有些平台发布的是厂商自行报告的清单，并不认证第三方。 | "这是一个正式计划，还是一份自行报告的清单？" |
+| "GPU 能让每个查询都更快。" | 小型和受 I/O 限制的查询收益甚微。 | "性能剖析中 I/O 与计算的比例是多少？" |
+
+*图 48.14 — 存储与数据交汇领域中，合作伙伴幻灯片夸大了实际测试范围的回答。*
+
+## 创始人与初创公司尽职调查
+
+背景阅读：[第 47 章 — 尽职调查清单](ch47-diligence-checklist.md)，[第 32 章 — AI 原生数据公司](../04-company-deep-dives/ch32-ai-native-data-companies.md)，[第 38 章 — 开源战略](../05-business-and-economics/ch38-open-source-strategy.md)，[第 43 章 — 现代数据栈](../06-history-and-future/ch43-modern-data-stack.md)。
+
+**143.** 你们最近丢掉的十笔交易，客户最终选择了什么，为什么？ *[Topic: founder diligence · Audience: Founder/CEO, PM]* — *关注点：* 具名的替代方案，包括"在平台上自建"和"什么也没做"。一个从未输给平台的创始人，说明他根本没去看。
+
+**144.** 收入中有多大比例来自前三大客户，你们如何向彼此竞争的客户证明自己的中立性？ *[Topic: founder diligence · Audience: Founder/CEO, CFO/Finance]* — *关注点：* 一个集中度区间，以及数据隔离控制措施。
+
+**145.** 过去 12 个月的代码提交中有多大比例来自公司外部，有多少提交者（committer）不是你们的员工？ *[Topic: founder diligence · Audience: Engineer, Founder/CEO]* — *关注点：* 一个实测的外部贡献比例，以及一个具名的基金会或 CLA。没有外部提交者的"社区"只是一个营销渠道。
+
+**146.** 你们的收入中有多少是建立在某个平台的消耗计量之上的，当客户削减该平台账单时你们怎么办？ *[Topic: founder diligence · Audience: Founder/CEO, CFO/Finance]* — *关注点：* 一个应对客户 FinOps 团队介入时刻的计划。
+
+**147.** 你们的产品在哪里读写元数据：自有存储、平台目录还是开放标准？ *[Topic: founder diligence · Audience: Engineer, Founder/CEO]* — *关注点：* 明确说出 Iceberg REST、OpenLineage 或 Open Semantic Interchange。私有 API 是不牢靠的根基。
+
+**148.** 如果平台更改其 API 或捆绑了一个竞争功能，客户那边会有什么出问题？ *[Topic: founder diligence · Audience: Engineer, Customer]* — *关注点：* 一份具体的依赖清单，以及针对每一项的缓解措施。
+
+**149.** AI 智能体目前如何获取你们的数据血缘、数据质量和定义信号？ *[Topic: founder diligence · Audience: PM, Founder/CEO]* — *关注点：* 一个具名的 MCP 服务器或 API，真实客户以此作为智能体操作的准入关卡，以及与这种用途挂钩的定价。
+
+**150.** 你们引用的 ARR 是合同约定的经常性收入、年化运行率，还是扣除转嫁成本之前的总开票额？ *[Topic: founder diligence · Audience: CFO/Finance, Founder/CEO]* — *关注点：* 无需提示就主动给出口径标签。那些在支付外包人员报酬之前引用总年化运行率的劳务平台会夸大净收入。
+
+**151.** 扣除云基础设施成本后你们的毛利率是多少，随着最大客户规模扩大它会如何变化？ *[Topic: founder diligence · Audience: CFO/Finance]* — *关注点：* 一份列明调节手段（利用率、分层、预留容量）的成本结构，以及对大客户折扣的坦诚看法。
+
+**152.** 上一轮融资之后，股权结构表上的清算优先权、参与权和老股转让情况如何？ *[Topic: founder diligence · Audience: CFO/Finance, Founder/CEO]* — *关注点：* 透明度。一轮私募融资为一类带有下行保护的优先股定价，而不是为整家公司定价。
+
+**153.** 你们愿意让我们联系哪位已经在生产环境中使用超过一年、并且差点流失的客户？ *[Topic: founder diligence · Audience: Founder/CEO, Customer]* — *关注点：* 愿意提供一个有分量的参考客户，以及一个清晰的故事：出了什么问题、修复了什么。
+
+**154.** 如果我们选择合作而不是收购，在头 90 天里你们需要我们提供什么？ *[Topic: founder diligence · Audience: Founder/CEO, Partner manager]* — *关注点：* 具体的诉求，例如一个连接器、联合销售或一项联合基准测试。这些诉求揭示了价值所在。
+
+### 应当引起警惕的回答
+
+| 你可能听到的回答 | 为何应当警惕 | 追问 |
+|---|---|---|
+| "我们的 ARR 是 $X。"（未标注口径） | 它可能是总开票额、年化运行率或合同约定的经常性收入。 | "是合同约定的、年化的，还是扣除转嫁成本之前的总额？" |
+| "我们没有真正的竞争对手。" | 平台的捆绑功能和"什么也不做"永远是竞争对手。 | "你们最近丢掉的十笔交易，客户最终选择了什么？" |
+| "我们的社区非常庞大。" | 下载量不等于贡献者；外部提交者才体现真正的社区。 | "有多少提交者不是你们的员工？" |
+
+*图 48.15 — 应当触发尽职调查追问而不是点头附和的创始人回答。*
+
+## 关键术语
+
+- [收入年化运行率（Revenue run-rate）](../glossary.md#revenue-run-rate) — 将近期收入年化（季度乘以四或月度乘以十二）；不是经审计的年度收入。
+- [净收入留存率（Net revenue retention）](../glossary.md#net-revenue-retention) — 某一客户队列本期的收入除以同一队列一年前的收入。
+- [剩余履约义务（Remaining performance obligations）](../glossary.md#remaining-performance-obligations) — 已签约但尚未确认的收入；在按用量计费的合同下，只有随着客户消耗才会转化为收入。
+- [DBU](../glossary.md#dbu) — Databricks Unit，Databricks 计算消耗的计量单位。
+- [Snowflake 积分（Snowflake credit）](../glossary.md#snowflake-credit) — Snowflake 的计算消耗单位，按版本和区域定价。
+- [开放表格式（Open table format）](../glossary.md#open-table-format) — 一个元数据层和提交协议（Iceberg、Delta、Hudi），将对象存储上的文件转变为事务性表。
+- [技术目录（Technical catalog）](../glossary.md#technical-catalog) — 位于访问路径上的服务，负责解析表名、仲裁提交并执行访问控制。
+- [凭证分发（Credential vending）](../glossary.md#credential-vending) — 目录向获得授权的引擎签发短期有效、按表限定范围的存储凭证。
+- [变更数据捕获（Change data capture）](../glossary.md#change-data-capture) — 读取数据库日志，将每一次已提交的变更作为事件发出。
+- [零 ETL（Zero-ETL）](../glossary.md#zero-etl) — 由厂商运营、客户无需自建的复制管道，通常基于 CDC。
+- [权限感知检索（Permission-aware retrieval）](../glossary.md#permission-aware-retrieval) — 在内容到达模型之前，按请求用户的访问权限过滤结果的检索方式。
+- [模型上下文协议（Model Context Protocol）](../glossary.md#model-context-protocol) — 将 AI 智能体连接到工具和数据源的开放标准。
+- [致命三要素（Lethal trifecta）](../glossary.md#lethal-trifecta) — 一个同时具备私有数据访问权限、接触不可信内容以及向外发送数据途径的智能体。
+- [文本转 SQL（Text-to-SQL）](../glossary.md#text-to-sql) — 根据自然语言问题生成 SQL 查询。
+- [黄金测试集（Golden set）](../glossary.md#golden-set) — 一套经过精选和标注的问答集合，用于评估模型或检索系统。
+- [数据安全态势管理（Data security posture management）](../glossary.md#data-security-posture-management) — 在整个数据资产范围内发现、分类敏感数据并对其风险评分的工具。
+- [OpenSharing](../glossary.md#opensharing) — Databricks 的开放共享协议，存储合作伙伴用它将本地表暴露给 Unity Catalog。
+- [企业价值（Enterprise value）](../glossary.md#enterprise-value) — 股权价值加债务减现金；EV/收入倍数的基础。
+- [清算优先权（Liquidation preference）](../glossary.md#liquidation-preference) — 优先股股东在出售时先于普通股股东获得偿付的权利。
+- [关注点说明（Listen-for note）](../glossary.md#listen-for-note) — 在本问题库中，对一个问题的有力回答应包含哪些内容的简短描述。
+
+## 资料来源
+
+这些问题综合了第 1–45 章的"对话手册"部分；这些章节中的脚注为每一项底层论断提供了出处。本章引用的数字出处如下。
+
+[^db-7b]: Databricks, "Databricks Grows >80% YoY, Surpasses $7B Revenue Run-Rate, Scales Lakebase, Genie and Unity AI Gateway," https://www.databricks.com/company/newsroom/press-releases/databricks-grows-80-yoy-surpasses-7b-revenue-run-rate-scales, 发布 2026-08-13；与 IT Brief 交叉核对，https://itbrief.com.au/story/databricks-tops-usd-7-billion-run-rate-after-funding, 2026-08；检索 2026-11-01。公司披露的年化运行率，未经审计；投后估值 $190B（公司披露）。
+
+[^sf-q2]: Snowflake via Business Wire, "Snowflake Reports Financial Results for the Second Quarter of Fiscal 2027," https://secure.businesswire.com/news/home/20260902386235/en/Snowflake-Reports-Financial-Results-for-the-Second-Quarter-of-Fiscal-2027, 发布 2026-09-02；检索 2026-11-01（通过 `data/company_financials.csv`）。GAAP 营业利润率 −17.0%，非 GAAP 营业利润率 15.3%，与第 26 章和第 36 章所报告的一致；NRR 126% 为公司 KPI。FY2027 = 2026 年 2 月–2027 年 1 月。
+
+[^dbx-storage]: Databricks blog, "Announcing the Databricks Storage Ecosystem: Governing the Enterprise Data Estate Wherever It Lives," https://www.databricks.com/blog/announcing-databricks-storage-ecosystem-governing-enterprise-data-estate-wherever-it-lives, 发布 2026-06-10；检索 2026-11-01（第 25 章引用）。
+
+[^everpure-1touch]: World Wide Technology (reposting Pure Storage release), "Pure Storage rebrands to Everpure and announces intent to acquire 1touch," https://www.wwt.com/news/pure-storage-rebrands-to-everpure-and-announces-intent-to-acquire-1touch, 发布 2026-02-23；Everpure, Inc., Form 10-Q for the quarter ended 2026-05-03（交易于 2026-05-07 完成；现金对价 $125.0M），https://www.sec.gov/Archives/edgar/data/0001474432/000147443226000061/pstg-20260503.htm, 发布 2026-06；检索 2026-11-01。
+
+[^ibm-confluent]: IBM, "IBM Completes Acquisition of Confluent…," press release as syndicated by Stock Titan, https://www.stocktitan.net/news/IBM/ibm-completes-acquisition-of-confluent-making-real-time-data-the-lbuwdbharsqe.html, 发布 2026-03-17；检索 2026-11-01。交易价值依据 `data/ma_deals.csv`（公司披露，企业价值约 $11B）。
+
+[^fivetran-dbt]: Fivetran, "Fivetran & dbt Labs Complete Merger to Create the Data Infrastructure for Trusted AI Agents," press release, https://www.fivetran.com/press/fivetran-dbt-labs-complete-merger-to-create-the-data-infrastructure-for-trusted-ai-agents, 发布 2026-06-01；检索 2026-11-01。合并 ARR 为公司披露。
+
+[^ice-spec]: Apache Iceberg, "Iceberg Table Spec"（乐观并发、行级删除、删除向量），https://iceberg.apache.org/spec/, 持续更新的文档，最近更新于 2026-10-30；检索 2026-11-01。
+
+[^spider2]: Fangyu Lei et al., "Spider 2.0: Evaluating Language Models on Real-World Enterprise Text-to-SQL Workflows," ICLR 2025, arXiv:2411.07763v2, https://arxiv.org/abs/2411.07763v2, 发布 2025-03-17（v1 2024-11）；检索 2026-11-01。
+
+[^aws-fees]: AWS, "AWS Marketplace announces simplified and reduced listing fees for sellers," https://aws.amazon.com/about-aws/whats-new/2024/01/aws-marketplace-simplified-reduced-listing-fees/, 发布 2024-01；AWS Marketplace Seller Guide, "Understanding listing fees for AWS Marketplace sellers," https://docs.aws.amazon.com/marketplace/latest/userguide/listing-fees.html, 持续更新的文档；检索 2026-11-01。
+
+[^osi-sspl]: Open Source Initiative, "March 2019 License-Review Summary," https://opensource.org/blog/licensereview032019, 发布 2019-04；检索 2026-11-01。

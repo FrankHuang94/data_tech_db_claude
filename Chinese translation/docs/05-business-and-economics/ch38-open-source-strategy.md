@@ -66,3 +66,69 @@ flowchart LR
 *图 38.2 — 许可证比较。具有商业意义的是"对云厂商的限制"这一列。OSI 批准要求这一列为空，因此任何阻止超大规模云厂商转售的许可证，按定义都属于源码可用许可证。*[^osi-sspl][^cfl][^elastic-2021][^redis-2024][^hashi-bsl][^fsl][^dbt-fusion]
 
 > **深入（L3）。** 有两个条款承担了大部分作用。AGPL 第 13 条要求，任何允许用户通过网络与修改后软件交互的人，都必须向这些用户提供其源代码。SSPL 第 13 条将"源代码"扩展到运行该服务所需的一切：管理软件、用户界面、API、自动化、监控、备份和托管。这一定义如此宽泛，以至于没有任何云厂商能够遵守，而这正是其意图所在。第二个机制是**[贡献者许可协议（contributor license agreement）](../glossary.md#contributor-license-agreement)**（CLA）。厂商只能对自己有权重新许可的代码更换许可证。一份将贡献者版权转让或广泛授权给公司的 CLA，正是让日后更换许可证成为可能的关键。基金会项目要么使用将权利授予基金会的 CLA，要么依赖"入站即出站"（inbound-equals-outbound）的许可方式，因此没有任何一家公司能够单方面更换许可证。
+
+### 许可证之争，2018–2026
+
+```mermaid
+timeline
+    title 许可证变更、分叉与基金会动向，2018 至 2026
+    2018 : MongoDB 于 10 月采用 SSPL : 12 月推出 Confluent Community License
+    2019 : MongoDB 撤回 SSPL 的 OSI 审查 : Delta Lake 移交 Linux Foundation
+    2021 : Elastic 于 1 月转向 SSPL 和 ELv2 : AWS 于 4 月发布 OpenSearch 分叉
+    2023 : HashiCorp 于 8 月转向 BSL : OpenTofu 分叉加入 Linux Foundation : Sentry 推出 FSL
+    2024 : Redis 于 3 月转向 RSAL 和 SSPL : Valkey 分叉在 Linux Foundation 启动 : Unity Catalog 和 Polaris 开源 : CockroachDB 停止免费 Core 版 : Elastic 加入 AGPL : OpenSearch Software Foundation 成立
+    2025 : IBM 完成收购 HashiCorp : OpenTofu 加入 CNCF : Redis 8 加入 AGPL : dbt Fusion 以 ELv2 发布 : MCP 移交 Agentic AI Foundation
+    2026 : Polaris 成为 Apache 顶级项目 : IBM 完成收购 Confluent
+```
+
+*图 38.3 — 许可证变更分两波出现，分别在 2018–2021 年和 2023–2024 年，每次之后都伴随着分叉或部分回调。从 2024 年起，战略动作从限制许可证转向将项目捐赠给基金会。*[^mdb-sspl][^osi-sspl][^cfl][^delta-lf][^elastic-2021][^hashi-bsl][^opentofu-lf][^fsl][^redis-2024][^valkey][^ucoss][^polaris][^crdb-license][^elastic-agpl][^osf][^ibm-hashi][^tofu-cncf][^redis8][^dbt-fusion][^mcp][^comps]
+
+所有这些变更都只适用于未来版本。以 Apache、BSD 或 MPL 发布的版本永久保持该许可证。这为每一个分叉提供了起点。OpenSearch 从 Elasticsearch 7.10.2 分叉，Valkey 从 Redis 7.2.4 分叉，OpenTofu 从最后一个 MPL 许可的 Terraform 版本分叉。[^elastic-2021][^valkey][^opentofu-lf] 因此，分叉在第一天就继承了一个完整的、生产级的代码库。问题在于它能否吸引维护者。
+
+| 公司 | 变更（日期） | 分叉 | 对收入和社区的影响 | 后续回调 |
+|---|---|---|---|---|
+| MongoDB | AGPL → SSPL（2018 年 10 月） | 没有代码分叉。AWS 转而构建了 API 兼容的 DocumentDB 服务 | 收入从 $590M（FY2021）增至约 $2.46B（FY2026），GAAP。Atlas 占总收入的 73%。Debian 和 Fedora 移除了 MongoDB。 | 无。SSPL 仍在使用。 |
+| Confluent | 附加组件从 Apache → Confluent Community License（2018 年 12 月） | 无。Kafka 在 ASF 下仍为 Apache 许可，因此没有可分叉之物 | FY2025 收入达 $1,167M（GAAP）。IBM 以约 $11B 收购（2026 年 3 月完成）。 | 无需回调 |
+| Elastic | Apache → SSPL/ELv2（2021 年 1 月） | OpenSearch（AWS，2021 年 4 月），2024 年 9 月移交 Linux Foundation | 增长持续；FY2027 指引约 $2.0B。OpenSearch 报告截至 2024 年下载量超过 7 亿次。 | 加入 AGPL 作为可选许可证（2024 年 8 月） |
+| HashiCorp | MPL → BSL（2023 年 8 月） | OpenTofu（Linux Foundation，2023 年 9 月；自 2025 年 4 月起进入 CNCF Sandbox） | 以 $6.4B 出售给 IBM（2025 年 2 月完成）。OpenTofu 报告截至 2026 年 GitHub 下载量超过 1,000 万次。 | 无 |
+| Redis | BSD → RSALv2/SSPLv1（2024 年 3 月） | Valkey（Linux Foundation，2024 年 3 月；获 AWS、Google、Oracle 等支持） | Redis 称此次变更对其业务没有影响（公司披露）。大多数外部贡献者转投 Valkey。AWS 对 Valkey 的定价比 Redis OSS 低 20–33%。 | Redis 8 加入 AGPLv3（2025 年 5 月） |
+| Cockroach Labs | BSL（2019）；停止免费 Core 版，改为单一 Enterprise 许可证（2024 年 8 月） | 未见有基金会支持的分叉的报道 | 对年收入低于 $10M 的公司免费（基于诚信原则）；高于此标准按核心收费。结果未披露（私营公司）。 | 无 |
+| dbt Labs | 新 Fusion 引擎组件采用 ELv2（2025 年 5 月）；dbt Core 仍为 Apache 2.0 | 无分叉。SQLMesh 等竞争引擎转而与之竞争 | 社区对双轨产品表示担忧。许可证范围后来有所收窄 [VERIFY: 当前 Fusion 许可证的划分]。 | 部分回调（dbt Core v2 采用 Apache 2.0） |
+
+*图 38.4 — 许可证变更的结果。收入很少受损，受损的是对社区的控制。凡是涉及超大规模云厂商自有托管服务的地方（Elasticsearch、Redis），资金充足的分叉都在数周内出现。凡是核心位于基金会的地方（Kafka），这个问题从未出现。*[^mdb-atlas][^comps][^fedora][^cfl][^elastic-2021][^osf][^estc-q1][^ibm-hashi][^tofu-cncf][^redis-ceo][^devclass-redis][^valkey-price][^crdb-license][^dbt-fusion]
+
+由此可得三条教训。第一，更换许可证在短期内保护了收入，但在长期内损失了社区。在 Redis 变更后的一年里，只有 Redis 员工对 Redis 做出了重要贡献，而 Valkey 在头六个月就吸引了来自 10 家公司的 29 位贡献者，其中 18 位此前曾为 Redis 做出贡献。[^foster] 第二，回调只是部分的。Elastic 和 Redis 是在源码可用许可证之外*增加* AGPL，而不是用它替代。AGPL 让它们可以重新称其软件为开源，同时仍能威慑大多数云转售商。Elastic 的 CTO 表示，在分叉之后，与 AWS 的合作关系"比以往任何时候都更牢固"。[^elastic-agpl] 第三，更换过许可证的公司往往会成为收购目标。HashiCorp 和 Confluent 都被 IBM 收购，而 IBM 还拥有 Red Hat。
+
+> **类比：更换许可证如同在合同中途修改授权费条款。** 更换许可证类似于一家 IP 授权方：它无法对已授权的工艺节点重新定价，因为过去的版本保持原有条款，但它宣布所有未来节点对某一类被授权方收取新的授权费。依赖其路线图的被授权方只能接受新条款。规模大到能够自行承担路线图的被授权方，则停留在最后一个旧节点，自行向前设计。这就是分叉。指令集架构（ISA）领域也出现了同样的分化。Arm 的可授权 ISA 赚取授权费，并由 Arm 设定条款。RISC-V International 的开放 ISA 不赚钱，但任何人都无法对其重新定价。超大规模云厂商和大型 OEM 投资 RISC-V 进行对冲，与它们支持 Valkey 的理由相同。
+
+> **类比：分叉即第二供应源。** 半导体买家长期以来都要求在设计采用关键器件之前必须有第二供应源。IBM 在 1982 年要求 Intel 将 x86 授权给 AMD 就是经典案例。Valkey 和 OpenSearch 就是超大规模云厂商的第二供应源，无论大多数客户最终是否切换，它们的存在都约束了原厂商的定价。
+
+### "露天开采"之争
+
+厂商的论点是这样的。它们为几乎所有的工程开发提供资金。超大规模云厂商拿走免费代码，将其包装为托管服务（ElastiCache、Amazon OpenSearch Service、用于 Kafka 的 MSK），与自己的计费、身份认证和支持捆绑在一起，在不承担研发成本的情况下获取客户关系。于是，厂商自己的托管服务要与自己的代码竞争，而销售这些代码的供应商还掌握着客户的云账单。
+
+反方论点同样值得重视。超大规模云厂商确实有所贡献：AWS 称已有超过 225 位贡献者向 Valkey 提交了超过 1,500 个拉取请求。[^valkey-two] 托管服务还通过将技术带给那些永远不会自己运行它的客户而扩大了市场，其中许多客户后来会购买厂商自己的企业版。MongoDB 在与一个 API 兼容的 AWS 服务竞争的同时，让 Atlas 成长为其大部分收入来源。[^mdb-atlas] 大多数更换许可证的厂商最初也是主动选择了宽松许可证，因为这些许可证能最大化采用率。按这种观点，超大规模云厂商提供该软件，正是许可证所换来的分发渠道的代价。证据支持一种折中立场。当厂商的产品主要是"我们替你运行"时，露天开采是真实的风险。当厂商拥有超大规模云厂商版本所缺乏的功能或性能时，风险则小得多。
+
+### 基金会与治理
+
+基金会持有商标、版权许可和治理规则，因此没有任何一家公司能够更换项目的许可证或改变其路线图方向。各种模式的区别在于由谁做决定。
+
+| 维度 | Apache Software Foundation | Linux Foundation（含 LF AI & Data、CNCF） | 厂商控制的项目 |
+|---|---|---|---|
+| 谁做决定 | 由个人组成、按贡献选举产生的项目管理委员会（PMC）（"Apache 之道"）。雇主没有正式席位。 | 各项目的技术指导委员会。付费会员通常进入理事会，负责预算和市场推广。 | 公司的维护者和产品管理团队 |
+| 商标 | 归 ASF 所有 | 由 LF 或项目专属的 LF 实体持有 | 归公司所有 |
+| 许可证 | 仅 Apache 2.0 | 通常为 Apache 2.0（CNCF 的默认许可证；OpenTofu 的 MPL 需要例外批准） | 由公司自行选择，并可通过 CLA 更改 |
+| 中立性信号 | PMC 和提交者的多样性；ASF 理事会要求项目避免单一厂商控制 | 会员广度和贡献者多样性，但创始厂商仍可能占据主导 | 按其构造本身就没有 |
+| 数据与 AI 示例 | Iceberg、Spark、Kafka、Arrow、Parquet、Hudi、Polaris（2026 年成为顶级项目） | Delta Lake、Unity Catalog OSS、Valkey、OpenSearch、Presto、OpenTofu（CNCF）、MCP（Agentic AI Foundation） | MongoDB、Redis、Elasticsearch、Terraform、CockroachDB |
+
+*图 38.5 — 基金会治理。ASF 是最严格的中立性检验，因为投票权掌握在个人手中。Linux Foundation 更灵活、资金更充足，但项目的创始厂商可以继续掌控。厂商控制是唯一可以更换许可证的模式。*[^asf-fy25][^tofu-cncf][^delta-lf][^ucoss][^valkey][^osf][^mcp][^polaris]
+
+> **类比：基金会如同标准组织。** 基金会在软件领域扮演的角色，相当于 JEDEC 和 PCI-SIG 在硬件领域的角色。竞争对手共同编写规范（DDR5、PCIe 6.0、Iceberg 规范），就知识产权规则达成一致以确保所有人都能实现该规范，然后在实现上展开竞争。内存厂商不是靠拥有 JEDEC 取胜，而是靠按共享规范交付最好的器件取胜。区别在于，软件基金会还托管参考实现，因此控制提交者名单更接近于控制参考设计。
+
+**治理如何塑造了格式之争。** Iceberg 起源于 Netflix，后进入 ASF。截至 2026 年，其 PMC 和提交者名单分别增至 25 人和 39 人，来自 Apple、Netflix、AWS、Snowflake、Databricks（通过 Tabular）、Bloomberg 等公司。[^iceberg-board] 目前没有按雇主逐一统计的公开数据 [VERIFY: 按雇主划分的 Iceberg 提交者]。Dremio（一家与 Iceberg 立场一致的厂商）2022 年的一项分析发现，在 Iceberg 或 Hudi 中，没有任何一家公司的贡献占比达到三分之一，而 Delta Lake 的贡献则由一家公司主导。[^dremio-gov] Delta 于 2019 年移交 Linux Foundation，目前报告有来自 70 多个组织的 190 多名开发者，[^delta-lf][^delta-io] 但买家仍将其视为 Databricks 的项目。Snowflake、AWS 和 Google 可以采用 Iceberg 而无需依赖竞争对手的路线图，它们也确实这样做了。Databricks 的回应是在 2024 年 6 月收购了由 Iceberg 创建者创立的公司 Tabular。[^tabular]
+
+**2024 年 6 月的目录之争。** 同一个月，Snowflake 发布了 Iceberg REST 目录 Polaris，随后将其捐赠给 Apache 孵化器。Databricks 在 LF AI & Data 以 Apache 2.0 许可开源了 Unity Catalog。[^polaris][^ucoss] 两者都是防御性举措。每家公司都放弃了对自身目录接口的控制，以向客户表明不会锁定他们的元数据，同时将产生收入的治理功能保留在商业产品中。基金会的选择本身也传递了信号。Polaris 去了 ASF——更严格的中立性检验——并在 2026 年初成为顶级项目（ASF 于 2026-03-05 公告）。[^polaris] Unity Catalog 去了 LF，Databricks 在那里对其方向保留了更大的影响力。
+
+### 开放权重：下一章
+
+AI 模型正以新的形式经历同样的争论。Meta 的 Llama、Mistral、DeepSeek 等公开了模型权重，但条款各不相同。有些采用 Apache 2.0 或 MIT。另一些采用带有使用限制或用户数门槛的定制许可证，这些许可证除了名称之外，实质上都是源码可用许可证。2024 年 10 月，OSI 发布了开源 AI 定义 1.0（Open Source AI Definition 1.0）。它要求提供关于训练数据的足够信息，以便重建一个实质等同的系统，而 OSI 表示 Llama 的许可证不符合要求。[^osaid] 战略逻辑似曾相识：免费权重推动采用，而赚钱靠的是托管、微调和工具。治理在这里也在向基金会转移。Anthropic 于 2025 年 12 月将模型上下文协议（MCP）捐赠给 Linux Foundation 旗下的 Agentic AI Foundation。[^mcp] 可以预期，某个模型提供商会在未来某个版本上收紧条款；如果真的发生，也可以预期会出现一个基于最后一个开放检查点的分叉。
