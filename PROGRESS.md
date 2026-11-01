@@ -22,7 +22,7 @@
 
 Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + comparison tables (`scripts/qa_report.py`).
 
-**Totals:** 34/52 chapters drafted · 129,736 prose words · 321 visuals · 438 [VERIFY] markers.
+**Totals:** 34/52 chapters drafted · 129,774 prose words · 321 visuals · 439 [VERIFY] markers.
 
 | Ch | File | Status | Words | Budget | Visuals | VERIFY | Reviewed |
 |---|---|---|---|---|---|---|---|
@@ -53,7 +53,7 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 23 | ch23-real-time-analytics-htap.md | QA pass | 3,360 | 2000 | 9 | 13 | no |
 | 24 | ch24-data-meets-compute-and-storage.md | QA pass | 3,630 | 2200 | 11 | 5 | no |
 | 25 | ch25-databricks.md | QA pass | 5,237 | 4500 | 13 | 6 | no |
-| 26 | ch26-snowflake.md | QA pass | 6,200 | 4500 | 16 | 27 | no |
+| 26 | ch26-snowflake.md | QA pass | 6,238 | 4500 | 16 | 28 | no |
 | 27 | ch27-databricks-vs-snowflake.md | QA pass | 3,875 | 2500 | 11 | 17 | no |
 | 28 | ch28-hyperscaler-data-platforms.md | QA pass | 5,206 | 3500 | 10 | 29 | no |
 | 29 | ch29-operational-database-vendors.md | QA pass | 4,383 | 3000 | 11 | 46 | no |

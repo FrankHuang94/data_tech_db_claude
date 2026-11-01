@@ -263,3 +263,21 @@ Every `[VERIFY: …]` left in the text is listed here with its chapter. Resolve 
 | ch31 | ch31: IBM watsonx.data current engine mix (Presto/Spark) and Iceberg basis. | open |
 | ch31 | ch31: ClickHouse acquisitions of LibreChat (Nov 2025) and RunReveal (Sep 2026) — aggregator-only sources (shared with ch23). | open |
 | ch31 | ch31: MotherDuck "Redshift Files" blog exact date (shared with ch23). | open |
+| ch28 | ch28: AWS Q3 2026 segment sales, YoY growth and operating income (Amazon 8-K, late Oct 2026) — not compiled; web search budget exhausted. Add to data/ch28_cloud_segments.csv and Figure 28.5/28.6, snapshot table and competitive matrix. | open |
+| ch28 | ch28: Re-verify drafter-compiled 2024–2025 quarterly rows in data/ch28_cloud_segments.csv (AWS, Google Cloud, Azure growth, OCI) against company releases; URLs for Alphabet and Oracle rows are IR landing pages. | open |
+| ch28 | ch28: Microsoft Q1 FY2027 figures ($92.3B revenue, Azure ~$33.2B +48%, Microsoft Cloud $63.9B) rest on Runtime Wire — confirm against Microsoft IR. | open |
+| ch28 | ch28: Gartner DBMS vendor ranking and shares for 2024/2025 (public summary) — chapter states top-four as Microsoft, AWS, Oracle, Google without order/shares. | open |
+| ch28 | ch28: Latest company-stated Fabric paid-customer count and revenue growth (only FabCon 2025 "19,000+" verified). | open |
+| ch28 | ch28: Company-stated AWS Marketplace sales figures for Snowflake and Databricks. | open |
+| ch28 | ch28: Current AWS and Google rules on the share of marketplace purchases counting toward committed spend; Microsoft MACC benefit page not re-fetched. | open |
+| ch28 | ch28: Current amount and term of Snowflake's AWS purchase commitment (latest 10-K). | open |
+| ch28 | ch28: WSJ OpenAI–Oracle ~$300B contract (2025-09-10): URL and terms. | open |
+| ch28 | ch28: HPCwire URL for Vertex AI → Gemini Enterprise Agent Platform rename (2026-04-23). | open |
+| ch28 | ch28: SQL Server 2025 GA date and vector features. | open |
+| ch28 | ch28: Aurora-to-Redshift zero-ETL pricing (no separate replication charge?) and Knowledge Catalog pricing. | open |
+| ch28 | ch28: Oracle Autonomous AI Lakehouse Iceberg write support. | open |
+| ch28 | ch28: AWS European Sovereign Cloud launch status. | open |
+| ch28 | ch28: AWS–DuckLabs close status (announced ~2026-08-26). | open |
+| ch28 | ch28: Databricks Series G participant list (AWS, CapitalG) in data/private_funding.csv. | open |
+| ch28 | ch28: History footnote URLs (S3 launch, DynamoDB, Cosmos DB, Exadata, Autonomous DB, Database@Google Cloud/AWS), Azure Databricks GA blog, Fabric launch/GA blog, AlloyDB docs, Bedrock Knowledge Bases docs — not re-fetched. | open |
+| ch28 | ch28: Oracle headquarters — Austin vs announced Nashville move (status as of 2026). | open |
