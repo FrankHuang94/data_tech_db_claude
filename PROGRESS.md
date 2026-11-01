@@ -21,7 +21,7 @@
 
 Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + comparison tables (`scripts/qa_report.py`).
 
-**Totals:** 15/52 chapters drafted · 52,462 prose words · 130 visuals · 68 [VERIFY] markers.
+**Totals:** 16/52 chapters drafted · 56,805 prose words · 138 visuals · 77 [VERIFY] markers.
 
 | Ch | File | Status | Words | Budget | Visuals | VERIFY | Reviewed |
 |---|---|---|---|---|---|---|---|
@@ -41,7 +41,7 @@ Words = prose words (`scripts/wordcount.py`). Visuals = Mermaid + images + compa
 | 12 | ch12-transformation-and-orchestration.md | QA pass | 3,250 | 1900 | 7 | 3 | no |
 | 13 | ch13-data-quality-observability-lineage.md | QA pass | 3,395 | 1800 | 8 | 6 | no |
 | 14 | ch14-semantic-layers-and-bi.md | QA pass | 2,857 | 2000 | 7 | 4 | no |
-| 15 | ch15-governance-security-privacy.md | not started | 0 | 2200 | 0 | 0 | no |
+| 15 | ch15-governance-security-privacy.md | QA pass | 4,343 | 2200 | 8 | 9 | no |
 | 16 | ch16-ai-data-lifecycle.md | not started | 0 | 2200 | 0 | 0 | no |
 | 17 | ch17-unstructured-data-processing.md | not started | 0 | 2100 | 0 | 0 | no |
 | 18 | ch18-embeddings-and-vector-search.md | not started | 0 | 2600 | 0 | 0 | no |
